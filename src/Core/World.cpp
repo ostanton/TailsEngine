@@ -8,7 +8,7 @@ void tails::World::construct()
 {
     Object::construct();
 
-    createAndLoadLevel<Level>();
+    createAndOpenLevel<Level>();
 }
 
 void tails::World::create()

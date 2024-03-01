@@ -9,10 +9,6 @@
 namespace tails
 {
 class InputManager;
-}
-
-namespace tails
-{
 class GameInstance;
 }
 
@@ -85,7 +81,7 @@ public:
      * \return Pointer to the created level object
      */
     template<typename LevelT>
-    LevelT* createAndLoadLevel()
+    LevelT* createAndOpenLevel()
     {
         auto resultLevel = createLevel<LevelT>();
         openLevel(resultLevel);

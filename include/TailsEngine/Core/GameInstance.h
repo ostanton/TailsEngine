@@ -5,26 +5,14 @@
 namespace tails
 {
 class InputManager;
-}
-
-namespace tails
-{
 class ResourceManager;
-}
-
-namespace sf
-{
-class Clock;
-}
-
-namespace tails
-{
 class World;
 class ApplicationWindow;
 }
 
 namespace sf
 {
+class Clock;
 class View;
 }
 
