@@ -1,5 +1,6 @@
 ﻿#include "TailsEngine/Managers/ResourceManager.h"
 
+#include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
@@ -51,4 +52,21 @@ void tails::ResourceManager::loadSound(const std::string& id, const std::string&
     }
 
     soundManager.addAsset(id, buffer);
+}
+
+sf::Music& tails::ResourceManager::loadMusic(const std::string& path)
+{
+    if (!music.openFromFile(path))
+    {
+        Debug::log("ResourceManager::loadMusic - Failed to load music from file path");
+    }
+
+    return music;
+}
+
+void tails::ResourceManager::loadAndPlayMusic(const std::string& path, bool loop)
+{
+    sf::Music* resultMusic = &loadMusic(path);
+    resultMusic->play();
+    resultMusic->setLoop(loop);
 }

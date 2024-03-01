@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <SFML/Audio/Sound.hpp>
+
 #include "Entity.h"
 
 namespace tails
@@ -20,6 +22,11 @@ public:
     float runSpeedMultiplier{3.f};
     float baseSpeed {200.f};
     float currentSpeed;
+
+    float timer {0.f};
+    bool setOtherMusic {false};
+
+    sf::Sound sound;
 };
 
 }

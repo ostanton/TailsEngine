@@ -1,5 +1,7 @@
 ﻿#include "TailsEngine/Level/TailsEntity.h"
 
+#include <SFML/Audio/Music.hpp>
+
 #include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/ResourceManager.h"
 
@@ -14,6 +16,14 @@ void tails::TailsEntity::spawn()
     setPosition(480.f, 320.f);
 
     currentSpeed = baseSpeed * walkSpeedMultiplier;
+
+    getResourceManager().loadMusic("F:/Libraries/TailsEngine/src/Assets/Music/TailsLab.ogg");
+    getResourceManager().music.setVolume(50.f);
+    getResourceManager().music.play();
+
+    // Load a sound for use on user input
+    getResourceManager().loadSound("audio_jungle", "F:/Libraries/TailsEngine/src/Assets/Sounds/AudioJungle.ogg");
+    sound.setBuffer(getResourceManager().soundManager.getAssetRef("audio_jungle"));
 }
 
 void tails::TailsEntity::update(float deltaTime)
@@ -34,7 +44,24 @@ void tails::TailsEntity::update(float deltaTime)
     if (getInputManager().onActionRelease("b"))
         currentSpeed = baseSpeed * walkSpeedMultiplier;
 
+    if (getInputManager().onActionPress("a"))
+        sound.play();
+
     rotate(deltaTime * 25.f);
+
+    if (timer < 2.f)
+    {
+        timer += deltaTime;
+    }
+    else
+    {
+        if (!setOtherMusic)
+        {
+            setOtherMusic = true;
+            // play some other music
+            getResourceManager().loadAndPlayMusic("F:/Libraries/TailsEngine/src/Assets/Music/EmeraldCity.ogg");
+        }
+    }
 }
 
 void tails::TailsEntity::onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
