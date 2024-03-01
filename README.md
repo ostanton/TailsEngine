@@ -15,9 +15,9 @@ Setup instructions to come.
 - Input Manager (set up action and key bindings)
 - Basic Entity collision
 - Entities (limited, they are derived from sf::Sprite currently)
+- Simple GUI layer (`Screen`s composed of `sf::Drawable`s)
 
 # Future Additions:
 - Getting sf::Views working
-- Full (if simple) GUI layer
 - More complex collision handling
 - LDTK map format for levels
