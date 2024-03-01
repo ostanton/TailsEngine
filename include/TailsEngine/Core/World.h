@@ -74,12 +74,6 @@ public:
     unique_ptr<Level> currentLevel;
 
     /**
-     * \brief Set to false if you need all loaded levels to update each frame
-     */
-    bool onlyUpdateCurrentLevel {true};
-    // TODO - Do we need a similar bool for drawing? Probably not.
-
-    /**
      * \brief Gets the current level (that is "in play")
      * \return Pointer to the level
      */
@@ -91,18 +85,25 @@ public:
      * \return Pointer to the created level object
      */
     template<typename LevelT>
-    LevelT* loadLevel()
+    LevelT* createAndLoadLevel()
     {
-        Level* resultLevel { newObject<LevelT>(this) };
-
-        currentLevel.reset(resultLevel);
-        // Don't create() in level, as this is called from World's construct()!!
-        // resultLevel->create();
+        auto resultLevel = createLevel<LevelT>();
+        openLevel(resultLevel);
 
         return dynamic_cast<LevelT*>(resultLevel);
     }
     // TODO - overloaded loadLevel methods with specific inputs for things?
     // Could have a .json ldtk file input, so we don't even need subclasses?
+
+    void openLevel(Level* levelToOpen);
+
+    template<typename LevelT>
+    LevelT* createLevel()
+    {
+        Level* resultLevel { newObject<LevelT>(this) };
+
+        return dynamic_cast<LevelT*>(resultLevel);
+    }
 
 protected:
     /**

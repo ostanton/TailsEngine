@@ -8,7 +8,7 @@ void tails::World::construct()
 {
     Object::construct();
 
-    loadLevel<Level>();
+    createAndLoadLevel<Level>();
 }
 
 void tails::World::create()
@@ -27,14 +27,22 @@ tails::InputManager& tails::World::getInputManager() const
     return dynamic_cast<GameInstance*>(outer)->getInputManager();
 }
 
+void tails::World::openLevel(Level* levelToOpen)
+{
+    if (currentLevel)
+    {
+        // Call any methods on entities, etc. before resetting the pointer
+        for (const auto& entity : currentLevel->entities)
+        {
+            entity->despawn();
+        }
+    }
+    
+    currentLevel.reset(levelToOpen);
+}
+
 void tails::World::update(float deltaTime)
 {
-    if (onlyUpdateCurrentLevel && getCurrentLevel())
-    {
-        getCurrentLevel()->update(deltaTime);
-        return;
-    }
-
     currentLevel->update(deltaTime);
 }
 
