@@ -4,8 +4,8 @@
 #include <SFML/Graphics/View.hpp>
 #include <SFML/System/Clock.hpp>
 
-#include "TailsEngine/Debug/Debug.h"
-#include "TailsEngine/Widgets/Widget.h"
+#include "TailsEngine/Core/ApplicationWindow.h"
+#include "TailsEngine/Managers/ResourceManager.h"
 
 tails::Viewport::Viewport()
 {
@@ -15,38 +15,70 @@ tails::Viewport::Viewport()
 
 void tails::Viewport::create()
 {
-    
+    createAndDisplayScreen<Screen>();
 }
 
 void tails::Viewport::update()
 {
-    // Create an sf::Time object to store the time since last frame
     frameTime = clock->restart();
-    
-    updateWidgets(widgets);
-}
 
-void tails::Viewport::updateWidgets(const std::vector<unique_ptr<sf::Drawable>>& inWidgets)
-{
-    // Recursively iterate through widgets and update them
-    for (size_t i {0}; i < inWidgets.size(); i++)
+    for (const auto& screen : screens)
     {
-        Widget* widget { dynamic_cast<Widget*>(inWidgets[i].get()) };
-        widget->update(frameTime.asSeconds());
-        updateWidgets(widget->children);
+        screen->update(frameTime.asSeconds());
     }
 }
 
 void tails::Viewport::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    // Iterate through widgets and draw them to the render target
-    for (size_t i {0}; i < widgets.size(); i++)
+    for (auto& screen : screens)
     {
-        if (const auto drawable = dynamic_cast<sf::Drawable*>(widgets[i].get()))
-            target.draw(*drawable);
-        else
-        {
-            tails::Debug::log("Viewport::draw - Widget failed to cast to sf::Drawable");
-        }
+        target.draw(*screen);
     }
+}
+
+void tails::Viewport::displayScreen(Screen* screenToDisplay)
+{
+    screens.emplace_back(screenToDisplay);
+    screenToDisplay->display();
+}
+
+bool tails::Viewport::destroyScreen(const Screen* screenToDestroy)
+{
+    auto screensVec = getScreensRaw();
+    
+    if (std::find(screensVec.begin(), screensVec.end(), screenToDestroy) == screensVec.end())
+        return false;
+
+    screensVec.erase(std::find(screensVec.begin(), screensVec.end(), screenToDestroy));
+
+    screens.clear();
+    
+    for (auto screen : screensVec)
+    {
+        screens.emplace_back(screen);
+    }
+    
+    return true;
+}
+
+std::vector<tails::Screen*> tails::Viewport::getScreensRaw() const
+{
+    std::vector<Screen*> resultVector;
+    // Pre-allocate size so it doesn't need to in the for loop
+    resultVector.reserve(screens.size());
+    
+    for (auto& screen : screens)
+    {
+        resultVector.emplace_back(screen.get());
+    }
+
+    return resultVector;
+}
+
+tails::Screen* tails::Viewport::getTopMostScreen() const
+{
+    if (screens.empty())
+        return nullptr;
+    
+    return screens[0].get();
 }

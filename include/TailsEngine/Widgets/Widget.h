@@ -16,10 +16,19 @@ class Viewport;
 namespace tails
 {
 /**
- * \brief Base for all widgets in the UI. Because SFML doesn't virtually inherit in its classes, the diamond
- * problem exists, so we use sf::Drawable for all the members and inputs that should technically have tails::Widget
- * type. This makes it a bit strange to use, but you can cast from the sf::Drawable to get the tails::Widget
- * (or should be able to anyway). TODO - test that!!
+ * \brief There are two ways I can see of making these widgets. Either have this as a kind of abstract virtual class
+ * for "helping" with whatever its derived classes do (where its derived classes inherit from tails::Widgets and
+ * sf::Text or sf::Sprite, etc.). OR, have this class and its derived classes act as wrapper classes for the SFML
+ * classes. This would mean the tails::Widget class needs to inherit sf::Drawable and sf::Transformable, and very
+ * possible override some methods to wrap their member's positions and rotations, etc., which takes time, and I don't
+ * think sf::Transformable's methods are even virtual, so I'd need to make my own.
+ *
+ * So, in interest of keeping the engine simple, I will have a vector of sf::Drawable, which I can then cast to
+ * their desired SFML-inherited types. To cast to this tails::Widget type would then require an up-cast from that
+ * custom type (e.g. tails::TextWidget : sf::Text, tails::Widget). This will probably get refactored a bit over time,
+ * so nothing is concrete or done yet.
+ *
+ * This class is unused currently
  */
 class Widget : public Object
 {

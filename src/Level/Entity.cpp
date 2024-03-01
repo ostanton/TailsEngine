@@ -73,13 +73,3 @@ void tails::Entity::onEndCollision()
 {
     Debug::log("End collision");
 }
-
-tails::ResourceManager& tails::Entity::getResourceManager() const
-{
-    return getWorld()->getResourceManager();
-}
-
-tails::InputManager& tails::Entity::getInputManager() const
-{
-    return getWorld()->getInputManager();
-}

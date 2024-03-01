@@ -6,6 +6,7 @@
 
 namespace tails
 {
+class ResourceManager;
 class InputManager;
 class Viewport;
 class GameInstance;
@@ -28,6 +29,8 @@ namespace tails
  */
 class ApplicationWindow : public Object
 {
+    friend Object;
+    
 public:
     ApplicationWindow();
     
@@ -40,8 +43,6 @@ public:
 
     sf::Vector2u windowResolution {960, 640};
     sf::Vector2f viewResolution {240.f, 160.f};
-
-    InputManager& getInputManager() const;
 
     void construct() override;
     
@@ -62,6 +63,7 @@ public:
 
 private:
     unique_ptr<InputManager> m_inputManager;
+    unique_ptr<ResourceManager> m_resourceManager;
 };
 
 }

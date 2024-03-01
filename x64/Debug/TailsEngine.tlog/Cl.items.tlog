@@ -2,6 +2,7 @@ F:\Libraries\TailsEngine\src\Core\ApplicationWindow.cpp;F:\Libraries\TailsEngine
 F:\Libraries\TailsEngine\src\Core\GameInstance.cpp;F:\Libraries\TailsEngine\x64\Debug\GameInstance.obj
 F:\Libraries\TailsEngine\src\Core\Level.cpp;F:\Libraries\TailsEngine\x64\Debug\Level.obj
 F:\Libraries\TailsEngine\src\Core\Obj.cpp;F:\Libraries\TailsEngine\x64\Debug\Obj.obj
+F:\Libraries\TailsEngine\src\Core\Screen.cpp;F:\Libraries\TailsEngine\x64\Debug\Screen.obj
 F:\Libraries\TailsEngine\src\Core\Viewport.cpp;F:\Libraries\TailsEngine\x64\Debug\Viewport.obj
 F:\Libraries\TailsEngine\src\Core\World.cpp;F:\Libraries\TailsEngine\x64\Debug\World.obj
 F:\Libraries\TailsEngine\src\Debug\Debug.cpp;F:\Libraries\TailsEngine\x64\Debug\Debug.obj
@@ -11,4 +12,6 @@ F:\Libraries\TailsEngine\src\Level\TailsEntity.cpp;F:\Libraries\TailsEngine\x64\
 F:\Libraries\TailsEngine\src\main.cpp;F:\Libraries\TailsEngine\x64\Debug\main.obj
 F:\Libraries\TailsEngine\src\Managers\InputManager.cpp;F:\Libraries\TailsEngine\x64\Debug\InputManager.obj
 F:\Libraries\TailsEngine\src\Managers\ResourceManager.cpp;F:\Libraries\TailsEngine\x64\Debug\ResourceManager.obj
+F:\Libraries\TailsEngine\src\Widgets\RectWidget.cpp;F:\Libraries\TailsEngine\x64\Debug\RectWidget.obj
+F:\Libraries\TailsEngine\src\Widgets\TextWidget.cpp;F:\Libraries\TailsEngine\x64\Debug\TextWidget.obj
 F:\Libraries\TailsEngine\src\Widgets\Widget.cpp;F:\Libraries\TailsEngine\x64\Debug\Widget.obj

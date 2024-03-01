@@ -6,17 +6,13 @@
 
 #include "TailsEngine/Core/Viewport.h"
 #include "TailsEngine/Managers/InputManager.h"
+#include "TailsEngine/Managers/ResourceManager.h"
 
 tails::ApplicationWindow::ApplicationWindow()
 {
     videoMode.reset(new sf::VideoMode(windowResolution.x, windowResolution.y));
     renderWindow.reset(new sf::RenderWindow(*videoMode, "Tails Engine"));
     windowEvent.reset(new sf::Event);
-}
-
-tails::InputManager& tails::ApplicationWindow::getInputManager() const
-{
-    return *m_inputManager;
 }
 
 void tails::ApplicationWindow::construct()
@@ -29,6 +25,7 @@ void tails::ApplicationWindow::construct()
 void tails::ApplicationWindow::postInitSfml()
 {
     m_inputManager.reset(new InputManager);
+    m_resourceManager.reset(new ResourceManager);
     
     gameInstance.reset(newObject<GameInstance>(this));
     gameInstance->gameView->setViewport(sf::FloatRect(sf::Vector2f(0.f, 0.f), viewResolution));
@@ -82,7 +79,6 @@ void tails::ApplicationWindow::mainLoop()
         renderWindow->clear();
 
         gameInstance->update();
-        viewport->update();
 
         // TODO - get these views working
         //renderWindow->setView(*gameInstance->gameView);

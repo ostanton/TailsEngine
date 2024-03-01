@@ -20,7 +20,6 @@ void tails::GameInstance::construct()
 {
     Object::construct();
 
-    m_resourceManager.reset(new ResourceManager);
     world.reset(newObject<World>(this));
 }
 
@@ -39,14 +38,4 @@ void tails::GameInstance::update()
 void tails::GameInstance::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     target.draw(*world);
-}
-
-tails::ResourceManager& tails::GameInstance::getResourceManager() const
-{
-    return *m_resourceManager;
-}
-
-tails::InputManager& tails::GameInstance::getInputManager() const
-{
-    return dynamic_cast<ApplicationWindow*>(outer)->getInputManager();
 }

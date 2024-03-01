@@ -42,12 +42,6 @@ public:
     unique_ptr<sf::View> gameView;
     unique_ptr<sf::Clock> clock;
     unique_ptr<World> world;
-
-    ResourceManager& getResourceManager() const;
-    InputManager& getInputManager() const;
-
-private:
-    unique_ptr<ResourceManager> m_resourceManager;
 };
 
 }

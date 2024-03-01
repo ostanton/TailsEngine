@@ -65,9 +65,6 @@ protected:
 
     bool m_colliding {false};
     Entity* m_lastCollidingEntity {nullptr};
-
-    ResourceManager& getResourceManager() const;
-    InputManager& getInputManager() const;
 };
 
 }

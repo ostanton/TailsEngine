@@ -26,9 +26,6 @@ public:
     void construct() override;
     void create();
 
-    ResourceManager& getResourceManager() const;
-    InputManager& getInputManager() const;
-
     // TODO - destroy entities
     
     /**
@@ -93,6 +90,13 @@ public:
 
     void openLevel(Level* levelToOpen);
 
+    /**
+     * \brief Should favour createAndOpenLevel unless you need to setup things beforehand. createAndOpenLevel
+     * stores the created pointer into a smart pointer immediately. This uses no smart pointer. It is your
+     * responsibility to prevent leaks
+     * \tparam LevelT The level type to create
+     * \return Pointer to the created level object
+     */
     template<typename LevelT>
     LevelT* createLevel()
     {

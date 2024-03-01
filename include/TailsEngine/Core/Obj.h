@@ -1,6 +1,21 @@
 ﻿#pragma once
 #include <memory>
 
+namespace tails
+{
+class ResourceManager;
+}
+
+namespace tails
+{
+class ApplicationWindow;
+}
+
+namespace tails
+{
+class InputManager;
+}
+
 using std::unique_ptr;
 
 namespace tails
@@ -32,6 +47,10 @@ public:
      * \brief Called just before this object's base members are going to be deleted (they are still safe to use)
      */
     virtual void destruct();
+
+    ApplicationWindow* getApplicationWindow() const;
+    InputManager& getInputManager() const;
+    ResourceManager& getResourceManager() const;
 };
 
 template<typename ObjT>

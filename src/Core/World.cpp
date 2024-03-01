@@ -17,16 +17,6 @@ void tails::World::create()
     getCurrentLevel()->create();
 }
 
-tails::ResourceManager& tails::World::getResourceManager() const
-{
-    return dynamic_cast<GameInstance*>(outer)->getResourceManager();
-}
-
-tails::InputManager& tails::World::getInputManager() const
-{
-    return dynamic_cast<GameInstance*>(outer)->getInputManager();
-}
-
 void tails::World::openLevel(Level* levelToOpen)
 {
     if (currentLevel)
