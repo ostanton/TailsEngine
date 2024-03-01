@@ -2,18 +2,15 @@
 #include "TailsEngine/Core/Obj.h"
 #include <SFML/Graphics/Sprite.hpp>
 
+namespace sf
+{
+class Event;
+}
+
 namespace tails
 {
 class InputManager;
-}
-
-namespace tails
-{
 class ResourceManager;
-}
-
-namespace tails
-{
 class World;
 class Level;
 }
@@ -30,6 +27,12 @@ class Entity : public Object, public sf::Sprite
     friend World;
     friend Level;
 
+public:
+    /**
+     * \brief Destroys this entity (deletes memory, etc.)
+     */
+    void destroy() const;
+
 protected:
     /**
      * \brief Called once this entity has completely spawned in a level. All its members should be initialised
@@ -41,9 +44,12 @@ protected:
      * \param deltaTime Time since last frame
      */
     virtual void update(float deltaTime);
+
+    virtual void processInput(sf::Event& e);
     
     /**
-     * \brief Called before destruct() when this entity is being removed from a level
+     * \brief Called before destruct() when this entity is being removed from a level. Should probably delete
+     * any raw pointers contained in the Entity here
      */
     virtual void despawn();
     

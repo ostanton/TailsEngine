@@ -14,6 +14,7 @@ namespace sf
 {
 class Clock;
 class View;
+class Event;
 }
 
 namespace tails
@@ -29,14 +30,20 @@ public:
     GameInstance();
 
     void construct() override;
+
+    void pauseGame(bool pause);
+    bool isGamePaused() const;
     
 protected:
     /**
      * \brief Called in postInitialise of ApplicationWindow
      */
     void create();
+    virtual void processInput(sf::Event& e);
     virtual void update();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+    bool m_gamePaused {false};
 
 public:
     unique_ptr<sf::View> gameView;

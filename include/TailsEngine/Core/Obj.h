@@ -4,15 +4,7 @@
 namespace tails
 {
 class ResourceManager;
-}
-
-namespace tails
-{
 class ApplicationWindow;
-}
-
-namespace tails
-{
 class InputManager;
 }
 
@@ -45,14 +37,31 @@ public:
 
     /**
      * \brief Called just before this object's base members are going to be deleted (they are still safe to use)
+     * \note This is only called with manual deleteObject(). When an object is deleted from a smart pointer,
+     * its normal destructor is used. If you are unsure where to put destruction logic in a non-Entity Object
+     * subclass, put it in the destructor
      */
     virtual void destruct();
 
     ApplicationWindow* getApplicationWindow() const;
     InputManager& getInputManager() const;
     ResourceManager& getResourceManager() const;
+    /**
+     * \brief Gets the global delta time from ApplicationWindow. This is not the same as the delta time in the
+     * GameInstance and Viewport, however should return the same value (or negligibly similar)
+     * \return Delta time in seconds
+     */
+    float getGlobalDeltaTime() const;
 };
 
+/**
+ * \brief Creates a new object, optionally with an outer
+ * \tparam ObjT Object type to create
+ * \param outer Object that contains this new object
+ * \return Pointer to the created object
+ * \note Without an outer, global methods and variables like getGlobalDeltaTime() and various managers
+ * cannot be accessed
+ */
 template<typename ObjT>
 ObjT* newObject(Object* outer = nullptr)
 {
@@ -62,6 +71,24 @@ ObjT* newObject(Object* outer = nullptr)
     resultObj->construct();
 
     return dynamic_cast<ObjT*>(resultObj);
+}
+
+/**
+ * \brief Deletes an object pointer. This should only be used on raw pointers, as smart pointers destroy
+ * their data automatically
+ * \param object Object to delete
+ * \return Whether the deletion was successful
+ */
+inline bool deleteObject(Object* object)
+{
+    if (object)
+    {
+        object->destruct();
+        delete object;
+        return true;
+    }
+
+    return false;
 }
 
 }

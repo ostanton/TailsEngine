@@ -3,18 +3,35 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "TailsEngine/Core/GameInstance.h"
+#include "TailsEngine/Debug/Debug.h"
 
 void tails::World::construct()
 {
     Object::construct();
 
-    createAndOpenLevel<Level>();
+    currentLevel.reset(newObject<Level>(this));
 }
 
 void tails::World::create()
 {
-    // TODO - Level's outer is null at this point??
-    getCurrentLevel()->create();
+    currentLevel->create();
+}
+
+bool tails::World::destroyEntity(const Entity* entityToDestroy) const
+{
+    for (auto& entity : currentLevel->entities)
+    {
+        if (entity.get() == entityToDestroy)
+        {
+            entity->despawn();
+            entity.reset();
+            currentLevel->entities.erase(std::find(
+                currentLevel->entities.begin(), currentLevel->entities.end(), entity));
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void tails::World::openLevel(Level* levelToOpen)
@@ -29,11 +46,17 @@ void tails::World::openLevel(Level* levelToOpen)
     }
     
     currentLevel.reset(levelToOpen);
+    currentLevel->create();
 }
 
 void tails::World::update(float deltaTime)
 {
     currentLevel->update(deltaTime);
+}
+
+void tails::World::processInput(sf::Event& e)
+{
+    currentLevel->processInput(e);
 }
 
 void tails::World::draw(sf::RenderTarget& target, sf::RenderStates states) const

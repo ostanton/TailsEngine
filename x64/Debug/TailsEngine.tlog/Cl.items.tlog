@@ -3,6 +3,7 @@ F:\Libraries\TailsEngine\src\Core\GameInstance.cpp;F:\Libraries\TailsEngine\x64\
 F:\Libraries\TailsEngine\src\Core\Level.cpp;F:\Libraries\TailsEngine\x64\Debug\Level.obj
 F:\Libraries\TailsEngine\src\Core\Obj.cpp;F:\Libraries\TailsEngine\x64\Debug\Obj.obj
 F:\Libraries\TailsEngine\src\Core\Screen.cpp;F:\Libraries\TailsEngine\x64\Debug\Screen.obj
+F:\Libraries\TailsEngine\src\Core\TestScreen.cpp;F:\Libraries\TailsEngine\x64\Debug\TestScreen.obj
 F:\Libraries\TailsEngine\src\Core\Viewport.cpp;F:\Libraries\TailsEngine\x64\Debug\Viewport.obj
 F:\Libraries\TailsEngine\src\Core\World.cpp;F:\Libraries\TailsEngine\x64\Debug\World.obj
 F:\Libraries\TailsEngine\src\Debug\Debug.cpp;F:\Libraries\TailsEngine\x64\Debug\Debug.obj

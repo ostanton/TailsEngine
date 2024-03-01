@@ -14,9 +14,10 @@ class TailsEntity : public Entity
 public:
     void spawn() override;
     void update(float deltaTime) override;
+    void processInput(sf::Event& e) override;
+    void despawn() override;
 
     void onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds) override;
-    void onEndCollision() override;
 
     float walkSpeedMultiplier {1.f};
     float runSpeedMultiplier{3.f};

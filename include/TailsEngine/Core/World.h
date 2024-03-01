@@ -6,6 +6,11 @@
 #include "Obj.h"
 #include "TailsEngine/Level/Entity.h"
 
+namespace sf
+{
+class Event;
+}
+
 namespace tails
 {
 class InputManager;
@@ -26,7 +31,12 @@ public:
     void construct() override;
     void create();
 
-    // TODO - destroy entities
+    /**
+     * \brief Destroys and removes an entity from play
+     * \param entityToDestroy The entity to destroy
+     * \return Whether the destruction was successful
+     */
+    bool destroyEntity(const Entity* entityToDestroy) const;
     
     /**
     * \brief Spawns an entity in the current level. Do not use if you want to create an Entity before a
@@ -73,14 +83,14 @@ public:
     Level* getCurrentLevel() const;
 
     /**
-     * \brief Creates a level object and loads it into the levels vector
+     * \brief Creates a level object and loads it into the level's vector
      * \tparam LevelT The level type to load
      * \return Pointer to the created level object
      */
     template<typename LevelT>
     LevelT* createAndOpenLevel()
     {
-        auto resultLevel = createLevel<LevelT>();
+        auto resultLevel = newObject<LevelT>(this);
         openLevel(resultLevel);
 
         return dynamic_cast<LevelT*>(resultLevel);
@@ -90,27 +100,13 @@ public:
 
     void openLevel(Level* levelToOpen);
 
-    /**
-     * \brief Should favour createAndOpenLevel unless you need to setup things beforehand. createAndOpenLevel
-     * stores the created pointer into a smart pointer immediately. This uses no smart pointer. It is your
-     * responsibility to prevent leaks
-     * \tparam LevelT The level type to create
-     * \return Pointer to the created level object
-     */
-    template<typename LevelT>
-    LevelT* createLevel()
-    {
-        Level* resultLevel { newObject<LevelT>(this) };
-
-        return dynamic_cast<LevelT*>(resultLevel);
-    }
-
 protected:
     /**
      * \brief Called every frame
      * \param deltaTime Time since last frame
      */
     virtual void update(float deltaTime);
+    virtual void processInput(sf::Event& e);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     /**

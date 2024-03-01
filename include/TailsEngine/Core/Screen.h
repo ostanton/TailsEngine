@@ -6,12 +6,7 @@
 
 namespace tails
 {
-class InputManager;
-}
-
-namespace tails
-{
-class ResourceManager;
+class TextWidget;
 class Viewport;
 }
 
@@ -26,7 +21,10 @@ namespace tails
  * \brief Acts like the Level class, but for widgets instead.
  *
  * If you are going to createWidget() as soon as possible, create() and display() are both viable. However, as
- * mentioned in their descriptions, create() requires "this" as the screen input, whereas display() does not
+ * mentioned in their descriptions, create() requires "this" as the screen input, whereas display() does not.
+ *
+ * The Screen manages all of its "widgets". Instead of a widget being like an Entity and having its own functionality,
+ * a widget is just controlled by the screen, with the screen telling what each widget should do
  */
 class Screen : public Object, public sf::Drawable
 {
@@ -50,6 +48,13 @@ protected:
     virtual void display();
     virtual void update(float deltaTime);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    /**
+     * \brief Called when this screen is being removed/destroyed. All members are still initialised however.
+     * This is the first thing called in the destroy process
+     */
+    virtual void remove();
+
+    void destroy() const;
     
     Viewport& getViewport() const;
 };

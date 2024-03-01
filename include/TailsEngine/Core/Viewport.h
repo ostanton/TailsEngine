@@ -5,6 +5,7 @@
 
 #include "Obj.h"
 #include "Screen.h"
+#include "TailsEngine/Debug/Debug.h"
 
 namespace tails
 {
@@ -53,13 +54,7 @@ public:
     unique_ptr<sf::View> widgetView;
 
     // TODO - Abstract this into WidgetTree class?
-
-    template<typename WidgetT>
-    WidgetT* createWidget()
-    {
-        return createWidget<WidgetT>(getTopMostScreen());
-    }
-
+    
     /**
      * \brief Creates a widget in the desired screen for use and drawing
      * \tparam WidgetT Widget type to create
@@ -85,7 +80,11 @@ public:
     ScreenT* createAndDisplayScreen()
     {
         auto resultScreen = createScreen<ScreenT>();
-        displayScreen(resultScreen);
+        
+        if (resultScreen)
+            displayScreen(resultScreen);
+        else
+            Debug::log("resultScreen is invalid!");
 
         return dynamic_cast<ScreenT*>(resultScreen);
     }
@@ -106,7 +105,7 @@ public:
     template<typename ScreenT>
     ScreenT* createScreen()
     {
-        Screen* resultScreen { newObject<Screen>(this) };
+        Screen* resultScreen { newObject<ScreenT>(this) };
 
         resultScreen->create();
         
@@ -121,8 +120,6 @@ public:
     bool destroyScreen(const Screen* screenToDestroy);
     
     std::vector<unique_ptr<Screen>> screens;
-
-    std::vector<Screen*> getScreensRaw() const;
 
     Screen* getTopMostScreen() const;
 };

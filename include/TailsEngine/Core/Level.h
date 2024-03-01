@@ -4,6 +4,11 @@
 
 #include "Obj.h"
 
+namespace sf
+{
+class Event;
+}
+
 namespace tails
 {
 class Entity;
@@ -14,8 +19,12 @@ namespace tails
 {
 /**
  * \brief A class that holds a vector of entities, and generally shouldn't have specialised subclasses.
- * Each level can either be a subclass of this class, with its own rules, etc., or an object of this class
- * with whatever members set from the World's load level method (TODO whatever that'll be)
+ * A Level's visuals are represented via its tile map, which will probably be set upon its creation or load from
+ * the resource manager. Something like
+ *
+ * getResourceManager().tileMapManager.getAsset("level1")
+ *
+ * to be used as an input into World's openLevel() and createAndOpenLevel() methods
  */
 class Level : public Object, public sf::Drawable
 {
@@ -48,6 +57,7 @@ protected:
      * \param deltaTime Time since last frame
      */
     virtual void update(float deltaTime);
+    virtual void processInput(sf::Event& e);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 

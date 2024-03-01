@@ -5,6 +5,7 @@
 #include <SFML/System/Clock.hpp>
 
 #include "TailsEngine/Core/ApplicationWindow.h"
+#include "TailsEngine/Core/TestScreen.h"
 #include "TailsEngine/Managers/ResourceManager.h"
 
 tails::Viewport::Viewport()
@@ -15,16 +16,18 @@ tails::Viewport::Viewport()
 
 void tails::Viewport::create()
 {
-    createAndDisplayScreen<Screen>();
+    createAndDisplayScreen<TestScreen>();
 }
 
 void tails::Viewport::update()
 {
     frameTime = clock->restart();
 
+    // TODO - Might need to remake so it can account for destroyed screens
     for (const auto& screen : screens)
     {
-        screen->update(frameTime.asSeconds());
+        if (screen)
+            screen->update(frameTime.asSeconds());
     }
 }
 
@@ -44,35 +47,18 @@ void tails::Viewport::displayScreen(Screen* screenToDisplay)
 
 bool tails::Viewport::destroyScreen(const Screen* screenToDestroy)
 {
-    auto screensVec = getScreensRaw();
-    
-    if (std::find(screensVec.begin(), screensVec.end(), screenToDestroy) == screensVec.end())
-        return false;
-
-    screensVec.erase(std::find(screensVec.begin(), screensVec.end(), screenToDestroy));
-
-    screens.clear();
-    
-    for (auto screen : screensVec)
-    {
-        screens.emplace_back(screen);
-    }
-    
-    return true;
-}
-
-std::vector<tails::Screen*> tails::Viewport::getScreensRaw() const
-{
-    std::vector<Screen*> resultVector;
-    // Pre-allocate size so it doesn't need to in the for loop
-    resultVector.reserve(screens.size());
-    
     for (auto& screen : screens)
     {
-        resultVector.emplace_back(screen.get());
+        if (screen.get() == screenToDestroy)
+        {
+            screen->remove();
+            screen.reset();
+            screens.erase(std::find(screens.begin(), screens.end(), screen));
+            return true;
+        }
     }
 
-    return resultVector;
+    return false;
 }
 
 tails::Screen* tails::Viewport::getTopMostScreen() const

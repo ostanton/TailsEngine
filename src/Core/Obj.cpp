@@ -44,3 +44,10 @@ tails::ResourceManager& tails::Object::getResourceManager() const
         Debug::log("Object::getResourceManager - getApplicationWindow returned nullptr");
     return *getApplicationWindow()->m_resourceManager;
 }
+
+float tails::Object::getGlobalDeltaTime() const
+{
+    if (!getApplicationWindow())
+        Debug::log("Object::getGlobalDeltaTime - getApplicationWindow returned nullptr");
+    return getApplicationWindow()->globalTime.asSeconds();
+}

@@ -23,16 +23,34 @@ void tails::GameInstance::construct()
     world.reset(newObject<World>(this));
 }
 
+void tails::GameInstance::pauseGame(bool pause)
+{
+    m_gamePaused = pause;
+}
+
+bool tails::GameInstance::isGamePaused() const
+{
+    return m_gamePaused;
+}
+
 void tails::GameInstance::create()
 {
     world->create();
 }
 
+void tails::GameInstance::processInput(sf::Event& e)
+{
+    world->processInput(e);
+}
+
 void tails::GameInstance::update()
 {
     const sf::Time gameTimer {clock->restart()};
-    
-    world->update(gameTimer.asSeconds());
+
+    if (!m_gamePaused)
+    {
+        world->update(gameTimer.asSeconds());
+    }
 }
 
 void tails::GameInstance::draw(sf::RenderTarget& target, sf::RenderStates states) const

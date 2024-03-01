@@ -44,9 +44,19 @@ void tails::Entity::update(float deltaTime)
     }
 }
 
+void tails::Entity::processInput(sf::Event& e)
+{
+    
+}
+
 void tails::Entity::despawn()
 {
     
+}
+
+void tails::Entity::destroy() const
+{
+    getWorld()->destroyEntity(this);
 }
 
 tails::Level* tails::Entity::getLevel() const

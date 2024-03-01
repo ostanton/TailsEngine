@@ -1,6 +1,7 @@
 ﻿#include "TailsEngine/Core/ApplicationWindow.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Event.hpp>
 #include <TailsEngine/Core/GameInstance.h>
 
@@ -11,8 +12,9 @@
 tails::ApplicationWindow::ApplicationWindow()
 {
     videoMode.reset(new sf::VideoMode(windowResolution.x, windowResolution.y));
-    renderWindow.reset(new sf::RenderWindow(*videoMode, "Tails Engine"));
+    renderWindow.reset(new sf::RenderWindow(*videoMode, windowTitle));
     windowEvent.reset(new sf::Event);
+    globalClock.reset(new sf::Clock);
 }
 
 void tails::ApplicationWindow::construct()
@@ -33,7 +35,17 @@ void tails::ApplicationWindow::postInitSfml()
     viewport.reset(newObject<Viewport>(this));
     viewport->widgetView->setSize(viewResolution);
 
+    initWindowSettings();
+
     postInitialise();
+}
+
+void tails::ApplicationWindow::initWindowSettings()
+{
+    renderWindow->setFramerateLimit(60);
+
+    m_resourceManager->loadTexture("icon", "Assets/Textures/Tails.png");
+    renderWindow->setIcon(64, 64, m_resourceManager->textureManager.getAssetRef("icon").copyToImage().getPixelsPtr());
 }
 
 void tails::ApplicationWindow::postInitialise()
@@ -61,6 +73,8 @@ void tails::ApplicationWindow::mainLoop()
 {
     while (renderWindow->isOpen())
     {
+        globalTime = globalClock->restart();
+        
         // Events
         if (renderWindow->pollEvent(*windowEvent))
         {
@@ -75,10 +89,14 @@ void tails::ApplicationWindow::mainLoop()
 
             m_inputManager->preUpdate(*windowEvent);
         }
+
+        // Call outside poll event but still send through the event itself
+        gameInstance->processInput(*windowEvent);
         
         renderWindow->clear();
 
         gameInstance->update();
+        viewport->update();
 
         // TODO - get these views working
         //renderWindow->setView(*gameInstance->gameView);

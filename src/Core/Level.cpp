@@ -11,6 +11,8 @@ void tails::Level::construct()
     Object::construct();
 
     // loop entities in .json and create them ready for create() to spawn them
+    getWorld()->spawnEntity<TailsEntity>(this);
+    getWorld()->spawnEntity<CollisionTest>(this);
 }
 
 tails::World* tails::Level::getWorld() const
@@ -20,13 +22,11 @@ tails::World* tails::Level::getWorld() const
 
 void tails::Level::create()
 {
-    getWorld()->spawnEntity<TailsEntity>();
-    getWorld()->spawnEntity<CollisionTest>();
     // "spawn" every entity
-    //for (size_t i {0}; i < entities.size(); i++)
-    //{
-    //    entities[i]->spawn();
-    //}
+    for (size_t i {0}; i < entities.size(); i++)
+    {
+        entities[i]->spawn();
+    }
 }
 
 void tails::Level::update(float deltaTime)
@@ -34,6 +34,15 @@ void tails::Level::update(float deltaTime)
     for (size_t i {0}; i < entities.size(); i++)
     {
         entities[i]->update(deltaTime);
+    }
+}
+
+void tails::Level::processInput(sf::Event& e)
+{
+    for (size_t i {0}; i < entities.size(); i++)
+    {
+        if (entities[i])
+            entities[i]->processInput(e);
     }
 }
 
