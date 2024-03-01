@@ -1,3 +1,5 @@
+<img align="right" src="src/Assets/Textures/Tails.png">
+
 # Tails Engine
 The Tails Engine is a simple 2D, SFML-based game engine I'm developing in my free time. Its purpose is to both teach me more about C++ programming, but also to serve as a kind of retro games engine, mainly the GBA.
 The idea came about when I got the idea to make a Sonic fangame. I looked around for code-focused 2D C++ game engines, and it seems everyone just points to SFML and doing it yourself. So I did.
