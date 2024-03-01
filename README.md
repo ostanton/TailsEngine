@@ -1,4 +1,4 @@
-<img align="right" src="src/Assets/Textures/Tails.png">
+<img align="right" src="Assets/Textures/Tails.png">
 
 # Tails Engine
 The Tails Engine is a simple 2D, SFML-based game engine I'm developing in my free time. Its purpose is to both teach me more about C++ programming, but also to serve as a kind of retro games engine, mainly the GBA.
@@ -20,3 +20,4 @@ Setup instructions to come.
 - Getting sf::Views working
 - Full (if simple) GUI layer
 - More complex collision handling
+- LDTK map format for levels
