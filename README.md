@@ -11,7 +11,7 @@ I've designed this engine with the SFML standards in mind, or what I could tell 
 Setup instructions to come.
 
 # Features:
-- Resource Manager (load an asset once and reuse it)
+- Asset Caches (load an asset once and reuse it, caches are local to their context)
 - Input Manager (set up action and key bindings)
 - Basic Entity collision
 - Entities (limited, they are derived from sf::Sprite currently)
@@ -20,5 +20,4 @@ Setup instructions to come.
 # Future Additions:
 - Level loading and destroying object bugs fixed (see comments in `TailsEntity::processInput()` for what I mean)
 - Getting sf::Views working
-- More complex collision handling
 - LDTK map format for levels
