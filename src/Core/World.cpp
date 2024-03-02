@@ -3,7 +3,6 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "TailsEngine/Core/GameInstance.h"
-#include "TailsEngine/Debug/Debug.h"
 
 void tails::World::construct()
 {
@@ -17,70 +16,15 @@ void tails::World::create()
     currentLevel->create();
 }
 
-bool tails::World::destroyEntity(Entity* entityToDestroy) const
-{
-    /*
-    for (auto& entity : currentLevel->entities)
-    {
-        if (entity.get() == entityToDestroy)
-        {
-            entity->despawn();
-            // Do not need to reset() entity, as it is a unique pointer, and it is deleted with erase() anyway
-            currentLevel->entities.erase(std::find(
-                currentLevel->entities.begin(), currentLevel->entities.end(), entity));
-            return true;
-        }
-    }*/
-
-    entityToDestroy->despawn();
-
-    const auto iter = std::find_if(
-        currentLevel->entities.begin(), currentLevel->entities.end(),
-        [entityToDestroy] (const unique_ptr<Entity>& entity)
-    {
-        return entity.get() == entityToDestroy;
-    });
-
-    currentLevel->entities.erase(iter);
-
-    return false;
-}
-
 void tails::World::openLevel(Level* levelToOpen)
 {
-    if (!currentLevel)
+    if (currentLevel)
     {
-        currentLevel.reset(levelToOpen);
-        currentLevel->create();
-        return;
+        for (auto& createdEntity : currentLevel->m_createdEntities)
+        {
+            currentLevel->destroyEntity(createdEntity.get());
+        }
     }
-    
-    if (currentLevel->entities.empty())
-    {
-        Debug::log("No entities to destroy");
-        currentLevel.reset(levelToOpen);
-        currentLevel->create();
-        return;
-    }
-
-    // Not incrementing i because we want to stay at our current position after erasing. Right?
-    for (size_t i {0}; i < currentLevel->entities.size();)
-    {
-        currentLevel->entities[i]->despawn();
-        currentLevel->entities.erase(std::find(
-            currentLevel->entities.begin(), currentLevel->entities.end(),
-            currentLevel->entities[i]));
-    }
-
-    // Call any methods on entities, etc. before erasing them
-    /*
-    for (auto& entity : currentLevel->entities)
-    {
-        // Despawn all the entities before loading new level
-        entity->despawn();
-        currentLevel->entities.erase(std::find(
-            currentLevel->entities.begin(), currentLevel->entities.end(), entity));
-    }*/
 
     currentLevel.reset(levelToOpen);
     currentLevel->create();

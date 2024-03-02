@@ -13,6 +13,7 @@ F:\Libraries\TailsEngine\src\Level\TailsEntity.cpp;F:\Libraries\TailsEngine\x64\
 F:\Libraries\TailsEngine\src\main.cpp;F:\Libraries\TailsEngine\x64\Debug\main.obj
 F:\Libraries\TailsEngine\src\Managers\Assets\AssetCache.cpp;F:\Libraries\TailsEngine\x64\Debug\AssetCache.obj
 F:\Libraries\TailsEngine\src\Managers\Assets\AssetInfo.cpp;F:\Libraries\TailsEngine\x64\Debug\AssetInfo.obj
+F:\Libraries\TailsEngine\src\Managers\CollisionManager.cpp;F:\Libraries\TailsEngine\x64\Debug\CollisionManager.obj
 F:\Libraries\TailsEngine\src\Managers\InputManager.cpp;F:\Libraries\TailsEngine\x64\Debug\InputManager.obj
 F:\Libraries\TailsEngine\src\Managers\MusicManager.cpp;F:\Libraries\TailsEngine\x64\Debug\MusicManager.obj
 F:\Libraries\TailsEngine\src\Managers\ResourceManager.cpp;F:\Libraries\TailsEngine\x64\Debug\ResourceManager.obj

@@ -1,20 +1,23 @@
 ﻿#include "TailsEngine/Level/Entity.h"
 
+#include <iostream>
+
 #include "TailsEngine/Core/Level.h"
 #include "TailsEngine/Core/World.h"
 #include "TailsEngine/Debug/Debug.h"
 
 void tails::Entity::spawn()
 {
-    
+    m_spawned = true;
 }
 
 void tails::Entity::update(float deltaTime)
 {
+    /*
     // Could check if we want to collide for optimisation
-    for (auto& entity : getLevel().entities)
+    for (auto& entity : getLevel().getSpawnedEntities())
     {
-        if (entity.get() == this)
+        if (entity == this)
             continue;
 
         // The actual collision check
@@ -26,13 +29,13 @@ void tails::Entity::update(float deltaTime)
             if (!m_colliding)
             {
                 m_colliding = true;
-                m_lastCollidingEntity = entity.get();
-                onStartCollision(entity.get(), entity->getGlobalBounds());
+                m_lastCollidingEntity = entity;
+                onStartCollision(entity, entity->getGlobalBounds());
             }
         }
         else
         {
-            if (entity.get() == m_lastCollidingEntity)
+            if (entity == m_lastCollidingEntity)
             {
                 if (m_colliding)
                 {
@@ -41,7 +44,7 @@ void tails::Entity::update(float deltaTime)
                 }
             }
         }
-    }
+    }*/
 }
 
 void tails::Entity::processInput(sf::Event& e)
@@ -51,12 +54,17 @@ void tails::Entity::processInput(sf::Event& e)
 
 void tails::Entity::despawn()
 {
-    
+    m_spawned = false;
 }
 
 void tails::Entity::destroy()
 {
-    getWorld()->destroyEntity(this);
+    getLevel().destroyEntity(this);
+}
+
+void tails::Entity::create()
+{
+    
 }
 
 tails::Level& tails::Entity::getLevel() const
@@ -79,9 +87,24 @@ tails::MusicManager& tails::Entity::getLevelMusicManager() const
     return getLevel().getMusicManager();
 }
 
-void tails::Entity::onCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
+void tails::Entity::onCollision(const std::vector<Entity*>& otherEntities)
 {
-    
+    if (!otherEntities.empty())
+    {
+        std::cout << "Colliding with: ";
+        
+        for (const auto otherEntity : otherEntities)
+        {
+            // TODO - part of the larger problem with update being processed when it should return immediately
+            // It gets the class name of an invalid object, or the object is valid but its outer and members are not
+            if (!isObjectValid(otherEntity))
+                continue;
+            
+            std::cout << getObjectClassName(otherEntity) << ", ";
+        }
+
+        std::cout << "\n";
+    }
 }
 
 void tails::Entity::onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
@@ -89,7 +112,17 @@ void tails::Entity::onStartCollision(Entity* otherEntity, const sf::FloatRect& o
     Debug::log("Start collision");
 }
 
-void tails::Entity::onEndCollision()
+void tails::Entity::onEndCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
 {
     Debug::log("End collision");
+}
+
+bool tails::Entity::isSpawned() const
+{
+    return m_spawned;
+}
+
+const std::vector<tails::Entity*>& tails::Entity::getCollidingEntities() const
+{
+    return m_collidingEntities;
 }

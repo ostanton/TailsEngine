@@ -3,6 +3,11 @@
 #include "TailsEngine/Core/ApplicationWindow.h"
 #include "TailsEngine/Debug/Debug.h"
 
+const char* tails::Object::getClassName()
+{
+    return typeid(*this).name();
+}
+
 void tails::Object::construct()
 {
     

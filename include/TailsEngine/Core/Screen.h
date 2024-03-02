@@ -29,6 +29,10 @@ namespace tails
  *
  * The Screen manages all of its "widgets". Instead of a widget being like an Entity and having its own functionality,
  * a widget is just controlled by the screen, with the screen telling what each widget should do
+ *
+ * Read the comment on Level class. This acts similarly. Loads a .json holding the UI layout, etc., and creates the
+ * necessary widgets where and how on create() or display(). For each .json we want to load a UI layout for, we need
+ * a new Screen class object. Maybe the Level could behave like this. But we only really want one level at a time. Hmm
  */
 class Screen : public Object, public sf::Drawable
 {

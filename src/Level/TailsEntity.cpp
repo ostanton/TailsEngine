@@ -1,8 +1,10 @@
 ﻿#include "TailsEngine/Level/TailsEntity.h"
 
+#include <iostream>
 #include <SFML/Audio/Music.hpp>
 
 #include "TailsEngine/Core/World.h"
+#include "TailsEngine/Debug/Debug.h"
 #include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
@@ -18,9 +20,7 @@ void tails::TailsEntity::spawn()
     
     setTexture(getLevelAssetCache()["tails"].getAssetData<sf::Texture>());
     
-    //setTexture(getResourceManager().textureManager.getAssetRef("tails"));
     setOrigin(32.f, 32.f);
-    setPosition(480.f, 320.f);
 
     currentSpeed = baseSpeed * walkSpeedMultiplier;
 
@@ -67,19 +67,16 @@ void tails::TailsEntity::processInput(sf::Event& e)
     if (getInputManager().onActionRelease("b"))
         currentSpeed = baseSpeed * walkSpeedMultiplier;
 
-    /**
-     * TODO
-     * After destroying this entity, the update continues, so it reaches the next getInputManager, and because this
-     * entity should be destroyed, it has no outer, so it fails and crashes. I THINK
-     *
-     * It crashes when there is more than one entity alive. It works fine with only 1 entity
-     *
-     * Both these methods (destroy() and createAndOpenLevel() work, just not like this because the input manager
-     * is expected to be called for some reason
+    /** TODO
+     * Without a return, processInput() finishes executing, failing to get InputManager because this object is
+     * technically destroyed. How to fix? Maybe buffer destruction until after this has finished? Not sure
      */
 
     if (getInputManager().onActionPress("l"))
+    {
         destroy();
+        return;
+    }
 
     if (getInputManager().onActionPress("r"))
         getWorld()->createAndOpenLevel<Level>();
@@ -96,5 +93,9 @@ void tails::TailsEntity::onStartCollision(Entity* otherEntity, const sf::FloatRe
 {
     Entity::onStartCollision(otherEntity, otherBounds);
 
-    otherEntity->destroy();
+    /** TODO
+     * Temporarily commented out as it causes a crash with onCollision in base Entity where it prints the class name
+     * but the entity it gets the class name from is not fully valid
+     */
+    //otherEntity->destroy();
 }

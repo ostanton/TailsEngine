@@ -29,6 +29,8 @@ public:
     Object() = default;
     virtual ~Object() = default;
 
+    const char* getClassName();
+
     /**
      * \brief The object this object resides in. Can be null
      */
@@ -70,6 +72,8 @@ public:
 template<typename ObjT>
 ObjT* newObject(Object* outer = nullptr)
 {
+    static_assert(std::is_base_of_v<Object, ObjT>, "Cannot create non-Object class");
+    
     Object* resultObj { new ObjT };
 
     resultObj->outer = outer;
@@ -94,6 +98,22 @@ inline bool deleteObject(Object* object)
     }
 
     return false;
+}
+
+inline const char* getObjectClassName(Object* object)
+{
+    return object->getClassName();
+}
+
+inline bool isObjectValid(const Object* object)
+{
+    if (!object)
+        return false;
+
+    if (!object->outer)
+        return false;
+    
+    return true;
 }
 
 }
