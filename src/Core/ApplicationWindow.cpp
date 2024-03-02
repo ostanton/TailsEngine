@@ -22,6 +22,9 @@ void tails::ApplicationWindow::construct()
     Object::construct();
 
     postInitSfml();
+    initWindowSettings();
+    postInitialise();
+    mainLoop();
 }
 
 void tails::ApplicationWindow::postInitSfml()
@@ -34,10 +37,6 @@ void tails::ApplicationWindow::postInitSfml()
     
     viewport.reset(newObject<Viewport>(this));
     viewport->widgetView->setSize(viewResolution);
-
-    initWindowSettings();
-
-    postInitialise();
 }
 
 void tails::ApplicationWindow::initWindowSettings()
@@ -65,8 +64,6 @@ void tails::ApplicationWindow::postInitialise()
      */
     viewport->create();
     gameInstance->create();
-    
-    mainLoop();
 }
 
 void tails::ApplicationWindow::mainLoop()

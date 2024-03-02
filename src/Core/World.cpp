@@ -39,9 +39,10 @@ void tails::World::openLevel(Level* levelToOpen)
     if (currentLevel)
     {
         // Call any methods on entities, etc. before resetting the pointer
-        for (const auto& entity : currentLevel->entities)
+        for (auto& entity : currentLevel->entities)
         {
             entity->despawn();
+            entity.reset();
         }
     }
     

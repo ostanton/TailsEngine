@@ -68,14 +68,24 @@ void tails::TailsEntity::processInput(sf::Event& e)
     if (getInputManager().onActionPress("a"))
         sound.play();
 
-    // TODO - Inputs executing while lifetime methods are being called cause crashes, because outer is invalid?
-    /*
+    /**
+     * TODO
+     * After destroying this entity, the update continues, so it reaches the next getInputManager, and because this
+     * entity should be destroyed, it has no outer, so it fails and crashes. I THINK
+     *
+     * It crashes when there is more than one entity alive. It works fine with only 1 entity
+     */
+
+    // This does not work even if there is only one, because of the aforementioned TODO
     if (getInputManager().onActionPress("l"))
         destroy();
 
-    if (getInputManager().onActionPress("start"))
+    /**
+     * This doesn't work with more than one entity because we are still processing input (the next frame maybe?)
+     * on entities that should be destroyed, causing a crash. Only one entity means that's the only one destroyed?
+     */
+    if (getInputManager().onActionPress("r"))
         getWorld()->createAndOpenLevel<Level>();
-    */
 }
 
 void tails::TailsEntity::despawn()

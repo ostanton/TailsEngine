@@ -39,10 +39,18 @@ void tails::Level::update(float deltaTime)
 
 void tails::Level::processInput(sf::Event& e)
 {
-    for (size_t i {0}; i < entities.size(); i++)
+    if (entities.empty())
+        return;
+    
+    //for (size_t i {0}; i < entities.size(); i++)
+    //{
+    //    if (entities[i])
+    //        entities[i]->processInput(e);
+    //}
+
+    for (const auto& entity : entities)
     {
-        if (entities[i])
-            entities[i]->processInput(e);
+        entity->processInput(e);
     }
 }
 
