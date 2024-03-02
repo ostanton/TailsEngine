@@ -10,6 +10,8 @@ I've designed this engine with the SFML standards in mind, or what I could tell 
 
 Setup instructions to come.
 
+And don't worry about the rider stuff, .sln file, etc. I'll clean up the repo later when it's more polished.
+
 # Features:
 - Asset Caches (load an asset once and reuse it, caches are local to their context)
 - Input Manager (set up action and key bindings)
