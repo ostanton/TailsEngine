@@ -41,7 +41,7 @@ public:
     /**
      * \brief Destroys this entity (deletes memory, etc.)
      */
-    void destroy() const;
+    void destroy();
 
 protected:
     /**

@@ -37,7 +37,7 @@ public:
      * \param entityToDestroy The entity to destroy
      * \return Whether the destruction was successful
      */
-    bool destroyEntity(const Entity* entityToDestroy) const;
+    bool destroyEntity(Entity* entityToDestroy) const;
     
     /**
     * \brief Spawns an entity in the current level. Do not use if you want to create an Entity before a

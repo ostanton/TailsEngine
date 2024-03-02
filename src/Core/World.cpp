@@ -17,8 +17,9 @@ void tails::World::create()
     currentLevel->create();
 }
 
-bool tails::World::destroyEntity(const Entity* entityToDestroy) const
+bool tails::World::destroyEntity(Entity* entityToDestroy) const
 {
+    /*
     for (auto& entity : currentLevel->entities)
     {
         if (entity.get() == entityToDestroy)
@@ -29,7 +30,18 @@ bool tails::World::destroyEntity(const Entity* entityToDestroy) const
                 currentLevel->entities.begin(), currentLevel->entities.end(), entity));
             return true;
         }
-    }
+    }*/
+
+    entityToDestroy->despawn();
+
+    const auto iter = std::find_if(
+        currentLevel->entities.begin(), currentLevel->entities.end(),
+        [entityToDestroy] (const unique_ptr<Entity>& entity)
+    {
+        return entity.get() == entityToDestroy;
+    });
+
+    currentLevel->entities.erase(iter);
 
     return false;
 }

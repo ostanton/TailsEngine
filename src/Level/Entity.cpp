@@ -54,7 +54,7 @@ void tails::Entity::despawn()
     
 }
 
-void tails::Entity::destroy() const
+void tails::Entity::destroy()
 {
     getWorld()->destroyEntity(this);
 }

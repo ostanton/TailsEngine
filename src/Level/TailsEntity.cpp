@@ -73,16 +73,14 @@ void tails::TailsEntity::processInput(sf::Event& e)
      * entity should be destroyed, it has no outer, so it fails and crashes. I THINK
      *
      * It crashes when there is more than one entity alive. It works fine with only 1 entity
+     *
+     * Both these methods (destroy() and createAndOpenLevel() work, just not like this because the input manager
+     * is expected to be called for some reason
      */
 
-    // This used to work even with multiple entities. Now only works with one!
     if (getInputManager().onActionPress("l"))
         destroy();
 
-    /**
-     * This doesn't work with more than one entity because we are still processing input (the next frame maybe?)
-     * on entities that should be destroyed, causing a crash. Only one entity means that's the only one destroyed?
-     */
     if (getInputManager().onActionPress("r"))
         getWorld()->createAndOpenLevel<Level>();
 }

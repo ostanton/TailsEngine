@@ -90,8 +90,7 @@ void tails::Level::processInput(sf::Event& e)
     // TODO - this seems to work but crashed once. Can't replicate
     for (size_t i {0}; i < entities.size(); i++)
     {
-        if (entities[i])
-            entities[i]->processInput(e);
+        entities[i]->processInput(e);
     }
 
     //for (const auto& entity : entities)
