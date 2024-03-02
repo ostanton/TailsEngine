@@ -17,5 +17,7 @@ int main()
 		tails::newObject<tails::ApplicationWindow>(nullptr)
 	};
 
+    applicationWindow->mainLoop();
+
 	return 0;
 }

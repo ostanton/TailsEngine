@@ -24,7 +24,6 @@ void tails::ApplicationWindow::construct()
     postInitSfml();
     initWindowSettings();
     postInitialise();
-    mainLoop();
 }
 
 void tails::ApplicationWindow::postInitSfml()
