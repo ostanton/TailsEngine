@@ -4,7 +4,6 @@
 
 #include "TailsEngine/Core/World.h"
 #include "TailsEngine/Managers/InputManager.h"
-#include "TailsEngine/Managers/ResourceManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
 
@@ -27,10 +26,6 @@ void tails::TailsEntity::spawn()
 
     getLevelMusicManager().loadAndPlayMusic("Assets/Music/TailsLab.ogg");
     getLevelMusicManager().getMusic().setVolume(50.f);
-
-    // Load a sound for use on user input
-    getLevelAssetCache().loadSound("audio_jungle", "Assets/Sounds/AudioJungle.ogg");
-    sound.setBuffer(getLevelAssetCache()["audio_jungle"].getAssetData<sf::SoundBuffer>());
 }
 
 void tails::TailsEntity::update(float deltaTime)
@@ -71,9 +66,6 @@ void tails::TailsEntity::processInput(sf::Event& e)
         currentSpeed = baseSpeed * runSpeedMultiplier;
     if (getInputManager().onActionRelease("b"))
         currentSpeed = baseSpeed * walkSpeedMultiplier;
-
-    if (getInputManager().onActionPress("a"))
-        sound.play();
 
     /**
      * TODO

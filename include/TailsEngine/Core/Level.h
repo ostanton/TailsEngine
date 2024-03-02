@@ -57,6 +57,13 @@ public:
 
     AssetCache& getAssetCache() const;
     MusicManager& getMusicManager();
+
+    /**
+     * \brief Gets whether this level can be updated and drawn, whether it is "ready" for that or still needs
+     * some members initialised and set
+     * \return Ready or not
+     */
+    bool isReady() const;
     
 protected:
     /**
@@ -78,6 +85,10 @@ protected:
 private:
     unique_ptr<AssetCache> m_assetCache;
     MusicManager m_musicManager;
+
+    // TODO - BOTCHED! THIS FEELS VERY BOTCHED AND LIKE IT SHOULDN'T BE THE WAY TO MAKE THINGS WORK HELP
+    bool m_constructed {false};
+    bool m_entitiesSpawned {false};
 };
 
 }

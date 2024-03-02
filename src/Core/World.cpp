@@ -24,7 +24,7 @@ bool tails::World::destroyEntity(const Entity* entityToDestroy) const
         if (entity.get() == entityToDestroy)
         {
             entity->despawn();
-            entity.reset();
+            // Do not need to reset() entity, as it is a unique pointer, and it is deleted with erase() anyway
             currentLevel->entities.erase(std::find(
                 currentLevel->entities.begin(), currentLevel->entities.end(), entity));
             return true;
@@ -36,33 +36,61 @@ bool tails::World::destroyEntity(const Entity* entityToDestroy) const
 
 void tails::World::openLevel(Level* levelToOpen)
 {
-    if (currentLevel)
+    if (!currentLevel)
     {
-        // Call any methods on entities, etc. before resetting the pointer
-        for (auto& entity : currentLevel->entities)
-        {
-            entity->despawn();
-            entity.reset();
-        }
+        currentLevel.reset(levelToOpen);
+        currentLevel->create();
+        return;
     }
     
+    if (currentLevel->entities.empty())
+    {
+        Debug::log("No entities to destroy");
+        currentLevel.reset(levelToOpen);
+        currentLevel->create();
+        return;
+    }
+    
+    size_t index {0};
+
+    for (index = 0; index < currentLevel->entities.size(); index++)
+    {
+        currentLevel->entities[index]->despawn();
+        currentLevel->entities.erase(std::find(
+            currentLevel->entities.begin(), currentLevel->entities.end(),
+            currentLevel->entities[index]));
+        index--;
+    }
+
+    // Call any methods on entities, etc. before erasing them
+    /*
+    for (auto& entity : currentLevel->entities)
+    {
+        // Despawn all the entities before loading new level
+        entity->despawn();
+        currentLevel->entities.erase(std::find(
+            currentLevel->entities.begin(), currentLevel->entities.end(), entity));
+    }*/
+
     currentLevel.reset(levelToOpen);
     currentLevel->create();
 }
 
 void tails::World::update(float deltaTime)
 {
-    currentLevel->update(deltaTime);
+    if (currentLevel->isReady())
+        currentLevel->update(deltaTime);
 }
 
 void tails::World::processInput(sf::Event& e)
 {
-    currentLevel->processInput(e);
+    if (currentLevel->isReady())
+        currentLevel->processInput(e);
 }
 
 void tails::World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    if (getCurrentLevel())
+    if (getCurrentLevel() && currentLevel->isReady())
         target.draw(*getCurrentLevel());
 }
 

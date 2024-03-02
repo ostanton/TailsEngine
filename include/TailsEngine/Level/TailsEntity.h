@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <SFML/Audio/Sound.hpp>
 
 #include "Entity.h"
 
@@ -33,8 +32,6 @@ public:
 
     float timer {0.f};
     bool setOtherMusic {false};
-
-    sf::Sound sound;
 };
 
 }

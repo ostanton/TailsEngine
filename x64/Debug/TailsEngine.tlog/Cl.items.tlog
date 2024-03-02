@@ -1,4 +1,3 @@
-F:\Libraries\TailsEngine\include\TailsEngine\Managers\MusicManager.cpp;F:\Libraries\TailsEngine\x64\Debug\MusicManager.obj
 F:\Libraries\TailsEngine\src\Core\ApplicationWindow.cpp;F:\Libraries\TailsEngine\x64\Debug\ApplicationWindow.obj
 F:\Libraries\TailsEngine\src\Core\GameInstance.cpp;F:\Libraries\TailsEngine\x64\Debug\GameInstance.obj
 F:\Libraries\TailsEngine\src\Core\Level.cpp;F:\Libraries\TailsEngine\x64\Debug\Level.obj
@@ -15,6 +14,7 @@ F:\Libraries\TailsEngine\src\main.cpp;F:\Libraries\TailsEngine\x64\Debug\main.ob
 F:\Libraries\TailsEngine\src\Managers\Assets\AssetCache.cpp;F:\Libraries\TailsEngine\x64\Debug\AssetCache.obj
 F:\Libraries\TailsEngine\src\Managers\Assets\AssetInfo.cpp;F:\Libraries\TailsEngine\x64\Debug\AssetInfo.obj
 F:\Libraries\TailsEngine\src\Managers\InputManager.cpp;F:\Libraries\TailsEngine\x64\Debug\InputManager.obj
+F:\Libraries\TailsEngine\src\Managers\MusicManager.cpp;F:\Libraries\TailsEngine\x64\Debug\MusicManager.obj
 F:\Libraries\TailsEngine\src\Managers\ResourceManager.cpp;F:\Libraries\TailsEngine\x64\Debug\ResourceManager.obj
 F:\Libraries\TailsEngine\src\Widgets\RectWidget.cpp;F:\Libraries\TailsEngine\x64\Debug\RectWidget.obj
 F:\Libraries\TailsEngine\src\Widgets\TextWidget.cpp;F:\Libraries\TailsEngine\x64\Debug\TextWidget.obj
