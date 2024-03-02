@@ -4,10 +4,11 @@
 
 #include "TailsEngine/Core/ApplicationWindow.h"
 #include "TailsEngine/Core/Viewport.h"
+#include "TailsEngine/Managers/Assets/AssetCache.h"
 
 void tails::Screen::create()
 {
-    
+    m_assetCache.reset(new AssetCache);
 }
 
 void tails::Screen::display()
@@ -41,4 +42,9 @@ void tails::Screen::destroy() const
 tails::Viewport& tails::Screen::getViewport() const
 {
     return *dynamic_cast<Viewport*>(outer);
+}
+
+tails::AssetCache& tails::Screen::getAssetCache() const
+{
+    return *m_assetCache;
 }

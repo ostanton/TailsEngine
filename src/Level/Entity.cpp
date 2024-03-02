@@ -12,7 +12,7 @@ void tails::Entity::spawn()
 void tails::Entity::update(float deltaTime)
 {
     // Could check if we want to collide for optimisation
-    for (auto& entity : getLevel()->entities)
+    for (auto& entity : getLevel().entities)
     {
         if (entity.get() == this)
             continue;
@@ -59,14 +59,24 @@ void tails::Entity::destroy() const
     getWorld()->destroyEntity(this);
 }
 
-tails::Level* tails::Entity::getLevel() const
+tails::Level& tails::Entity::getLevel() const
 {
-    return dynamic_cast<Level*>(outer);
+    return *dynamic_cast<Level*>(outer);
 }
 
 tails::World* tails::Entity::getWorld() const
 {
-    return getLevel()->getWorld();
+    return getLevel().getWorld();
+}
+
+tails::AssetCache& tails::Entity::getLevelAssetCache() const
+{
+    return getLevel().getAssetCache();
+}
+
+tails::MusicManager& tails::Entity::getLevelMusicManager() const
+{
+    return getLevel().getMusicManager();
 }
 
 void tails::Entity::onCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)

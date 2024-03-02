@@ -2,6 +2,16 @@
 #include "TailsEngine/Core/Obj.h"
 #include <SFML/Graphics/Sprite.hpp>
 
+namespace tails
+{
+class MusicManager;
+}
+
+namespace tails
+{
+class AssetCache;
+}
+
 namespace sf
 {
 class Event;
@@ -57,13 +67,16 @@ protected:
      * \brief Gets the level this entity is contained within
      * \return Pointer to the level
      */
-    Level* getLevel() const;
+    Level& getLevel() const;
 
     /**
      * \brief Gets the world this entity and its level are contained within
      * \return Pointer to the world
      */
     World* getWorld() const;
+
+    AssetCache& getLevelAssetCache() const;
+    MusicManager& getLevelMusicManager() const;
 
     virtual void onCollision(Entity* otherEntity, const sf::FloatRect& otherBounds);
     virtual void onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds);

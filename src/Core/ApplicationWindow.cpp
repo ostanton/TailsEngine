@@ -7,7 +7,6 @@
 
 #include "TailsEngine/Core/Viewport.h"
 #include "TailsEngine/Managers/InputManager.h"
-#include "TailsEngine/Managers/ResourceManager.h"
 
 tails::ApplicationWindow::ApplicationWindow()
 {
@@ -29,7 +28,7 @@ void tails::ApplicationWindow::construct()
 void tails::ApplicationWindow::postInitSfml()
 {
     m_inputManager.reset(new InputManager);
-    m_resourceManager.reset(new ResourceManager);
+    m_assetCache.reset(new AssetCache);
     
     gameInstance.reset(newObject<GameInstance>(this));
     gameInstance->gameView->setViewport(sf::FloatRect(sf::Vector2f(0.f, 0.f), viewResolution));
@@ -42,8 +41,9 @@ void tails::ApplicationWindow::initWindowSettings()
 {
     renderWindow->setFramerateLimit(60);
 
-    m_resourceManager->loadTexture("icon", "Assets/Textures/Tails.png");
-    renderWindow->setIcon(64, 64, m_resourceManager->textureManager.getAssetRef("icon").copyToImage().getPixelsPtr());
+    getAssetCache().loadTexture("icon", "Assets/Textures/Tails.png");
+    renderWindow->setIcon(64, 64,
+        getAssetCache()["icon"].getAssetData<sf::Texture>().copyToImage().getPixelsPtr());
 }
 
 void tails::ApplicationWindow::postInitialise()
@@ -105,4 +105,9 @@ void tails::ApplicationWindow::mainLoop()
 
         m_inputManager->postUpdate();
     }
+}
+
+tails::AssetCache& tails::ApplicationWindow::getAssetCache() const
+{
+    return *m_assetCache;
 }

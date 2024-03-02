@@ -3,6 +3,11 @@
 
 namespace tails
 {
+class AssetCache;
+}
+
+namespace tails
+{
 class ResourceManager;
 class ApplicationWindow;
 class InputManager;
@@ -45,7 +50,7 @@ public:
 
     ApplicationWindow* getApplicationWindow() const;
     InputManager& getInputManager() const;
-    ResourceManager& getResourceManager() const;
+    AssetCache& getGlobalAssetCache() const;
     /**
      * \brief Gets the global delta time from ApplicationWindow. This is not the same as the delta time in the
      * GameInstance and Viewport, however should return the same value (or negligibly similar)

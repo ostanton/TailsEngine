@@ -5,25 +5,32 @@
 #include "TailsEngine/Core/World.h"
 #include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/ResourceManager.h"
+#include "TailsEngine/Managers/Assets/AssetCache.h"
+#include "TailsEngine/Managers/Assets/AssetInfo.h"
+
+tails::TailsEntity::TailsEntity()
+{
+    currentSpeed = baseSpeed * walkSpeedMultiplier;
+}
 
 void tails::TailsEntity::spawn()
 {
     Entity::spawn();
-
-    getResourceManager().loadTexture("tails", "Assets/Textures/Tails.png");
-    setTexture(getResourceManager().textureManager.getAssetRef("tails"));
+    
+    setTexture(getLevelAssetCache()["tails"].getAssetData<sf::Texture>());
+    
+    //setTexture(getResourceManager().textureManager.getAssetRef("tails"));
     setOrigin(32.f, 32.f);
     setPosition(480.f, 320.f);
 
     currentSpeed = baseSpeed * walkSpeedMultiplier;
 
-    getResourceManager().loadMusic("Assets/Music/TailsLab.ogg");
-    getResourceManager().music.setVolume(50.f);
-    getResourceManager().music.play();
+    getLevelMusicManager().loadAndPlayMusic("Assets/Music/TailsLab.ogg");
+    getLevelMusicManager().getMusic().setVolume(50.f);
 
     // Load a sound for use on user input
-    getResourceManager().loadSound("audio_jungle", "Assets/Sounds/AudioJungle.ogg");
-    sound.setBuffer(getResourceManager().soundManager.getAssetRef("audio_jungle"));
+    getLevelAssetCache().loadSound("audio_jungle", "Assets/Sounds/AudioJungle.ogg");
+    sound.setBuffer(getLevelAssetCache()["audio_jungle"].getAssetData<sf::SoundBuffer>());
 }
 
 void tails::TailsEntity::update(float deltaTime)
@@ -42,7 +49,7 @@ void tails::TailsEntity::update(float deltaTime)
         {
             setOtherMusic = true;
             // play some other music
-            getResourceManager().loadAndPlayMusic("Assets/Music/EmeraldCity.ogg");
+            getLevelMusicManager().loadAndPlayMusic("Assets/Music/EmeraldCity.ogg");
         }
     }
 }
@@ -76,7 +83,7 @@ void tails::TailsEntity::processInput(sf::Event& e)
      * It crashes when there is more than one entity alive. It works fine with only 1 entity
      */
 
-    // This does not work even if there is only one, because of the aforementioned TODO
+    // This used to work even with multiple entities. Now only works with one!
     if (getInputManager().onActionPress("l"))
         destroy();
 
@@ -92,7 +99,7 @@ void tails::TailsEntity::despawn()
 {
     Entity::despawn();
 
-    getResourceManager().music.stop();
+    getLevelMusicManager().stop();
 }
 
 void tails::TailsEntity::onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)

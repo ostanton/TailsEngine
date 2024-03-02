@@ -8,6 +8,7 @@
 
 namespace tails
 {
+class AssetCache;
 class ResourceManager;
 class InputManager;
 class Viewport;
@@ -21,8 +22,6 @@ class VideoMode;
 class RenderWindow;
 class Clock;
 }
-
-using std::unique_ptr;
 
 namespace tails
 {
@@ -73,9 +72,11 @@ public:
      */
     virtual void mainLoop();
 
+    AssetCache& getAssetCache() const;
+
 private:
     unique_ptr<InputManager> m_inputManager;
-    unique_ptr<ResourceManager> m_resourceManager;
+    unique_ptr<AssetCache> m_assetCache;
 };
 
 }

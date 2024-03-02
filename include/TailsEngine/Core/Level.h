@@ -1,8 +1,15 @@
 ﻿#pragma once
 #include <vector>
 #include <SFML/Graphics/Drawable.hpp>
+// TODO - need these includes for it to compile for some reason??
+// use of undefined type "tails::AssetCache"
+// static_assert failed: "can't delete an incomplete type"
+// deletion of pointer to incomplete type "tails::AssetCache"; no destructor called
+#include "TailsEngine/Managers/Assets/AssetCache.h"
+#include "TailsEngine/Managers/Assets/AssetInfo.h"
 
 #include "Obj.h"
+#include "TailsEngine/Managers/MusicManager.h"
 
 namespace sf
 {
@@ -13,6 +20,7 @@ namespace tails
 {
 class Entity;
 class World;
+class AssetCache;
 }
 
 namespace tails
@@ -46,6 +54,9 @@ public:
      * \brief The entities contained within this level to draw, update, etc.
      */
     std::vector<unique_ptr<Entity>> entities;
+
+    AssetCache& getAssetCache() const;
+    MusicManager& getMusicManager();
     
 protected:
     /**
@@ -53,12 +64,20 @@ protected:
      */
     virtual void create();
     /**
+     * \brief Called once all entities have been spawned
+     */
+    virtual void postSpawn();
+    /**
      * \brief Called every frame this level is alive
      * \param deltaTime Time since last frame
      */
     virtual void update(float deltaTime);
     virtual void processInput(sf::Event& e);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+private:
+    unique_ptr<AssetCache> m_assetCache;
+    MusicManager m_musicManager;
 };
 
 }

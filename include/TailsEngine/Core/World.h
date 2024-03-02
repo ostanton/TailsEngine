@@ -26,6 +26,7 @@ namespace tails
 class World : public Object, public sf::Drawable
 {
     friend GameInstance;
+    friend Level;
     
 public:
     void construct() override;

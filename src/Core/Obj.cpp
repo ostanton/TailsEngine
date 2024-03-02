@@ -38,11 +38,11 @@ tails::InputManager& tails::Object::getInputManager() const
     return *getApplicationWindow()->m_inputManager;
 }
 
-tails::ResourceManager& tails::Object::getResourceManager() const
+tails::AssetCache& tails::Object::getGlobalAssetCache() const
 {
     if (!getApplicationWindow())
-        Debug::log("Object::getResourceManager - getApplicationWindow returned nullptr");
-    return *getApplicationWindow()->m_resourceManager;
+        Debug::log("Object::getGlobalAssetCache - getApplicationWindow returned nullptr");
+    return getApplicationWindow()->getAssetCache();
 }
 
 float tails::Object::getGlobalDeltaTime() const

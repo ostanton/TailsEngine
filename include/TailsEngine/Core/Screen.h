@@ -1,11 +1,15 @@
 ﻿#pragma once
 #include <vector>
 #include <SFML/Graphics/Drawable.hpp>
+// TODO - need these includes for it to compile for some reason??
+#include "TailsEngine/Managers/Assets/AssetCache.h"
+#include "TailsEngine/Managers/Assets/AssetInfo.h"
 
 #include "Obj.h"
 
 namespace tails
 {
+class AssetCache;
 class TextWidget;
 class Viewport;
 }
@@ -57,6 +61,11 @@ protected:
     void destroy() const;
     
     Viewport& getViewport() const;
+
+    AssetCache& getAssetCache() const;
+    
+private:
+    unique_ptr<AssetCache> m_assetCache;
 };
 
 }

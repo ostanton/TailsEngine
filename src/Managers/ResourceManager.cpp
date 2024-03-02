@@ -1,6 +1,5 @@
 ﻿#include "TailsEngine/Managers/ResourceManager.h"
 
-#include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>

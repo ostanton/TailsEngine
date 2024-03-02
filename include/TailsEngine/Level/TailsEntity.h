@@ -5,6 +5,11 @@
 
 namespace tails
 {
+class AssetCache;
+}
+
+namespace tails
+{
 /**
  * \brief A simple example class displaying a texture in the sprite that we are deriving, using the
  * resource manager class to load and contain a texture of Tails
@@ -12,6 +17,8 @@ namespace tails
 class TailsEntity : public Entity
 {
 public:
+    TailsEntity();
+    
     void spawn() override;
     void update(float deltaTime) override;
     void processInput(sf::Event& e) override;
