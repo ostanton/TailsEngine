@@ -62,16 +62,14 @@ void tails::World::openLevel(Level* levelToOpen)
         currentLevel->create();
         return;
     }
-    
-    size_t index {0};
 
-    for (index = 0; index < currentLevel->entities.size(); index++)
+    // Not incrementing i because we want to stay at our current position after erasing. Right?
+    for (size_t i {0}; i < currentLevel->entities.size();)
     {
-        currentLevel->entities[index]->despawn();
+        currentLevel->entities[i]->despawn();
         currentLevel->entities.erase(std::find(
             currentLevel->entities.begin(), currentLevel->entities.end(),
-            currentLevel->entities[index]));
-        index--;
+            currentLevel->entities[i]));
     }
 
     // Call any methods on entities, etc. before erasing them
