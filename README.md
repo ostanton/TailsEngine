@@ -18,6 +18,7 @@ Setup instructions to come.
 - Simple GUI layer (`Screen`s composed of `sf::Drawable`s)
 
 # Future Additions:
+- Level loading and destroying object bugs fixed (see comments in `TailsEntity::processInput()` for what I mean)
 - Getting sf::Views working
 - More complex collision handling
 - LDTK map format for levels
