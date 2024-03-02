@@ -13,11 +13,11 @@
 
 int main()
 {
-	const unique_ptr<tails::ApplicationWindow> applicationWindow {
-		tails::newObject<tails::ApplicationWindow>(nullptr)
-	};
+    const unique_ptr<tails::ApplicationWindow> applicationWindow {
+        tails::newObject<tails::ApplicationWindow>(nullptr)
+    };
 
     applicationWindow->mainLoop();
 
-	return 0;
+    return 0;
 }
