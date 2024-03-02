@@ -66,7 +66,7 @@ sf::Music& tails::ResourceManager::loadMusic(const std::string& path)
 
 void tails::ResourceManager::loadAndPlayMusic(const std::string& path, bool loop)
 {
-    sf::Music* resultMusic = &loadMusic(path);
-    resultMusic->play();
-    resultMusic->setLoop(loop);
+    loadMusic(path);
+    music.play();
+    music.setLoop(loop);
 }
