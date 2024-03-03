@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <memory>
+#include <string>
 
 namespace tails
 {
@@ -102,11 +103,6 @@ inline bool deleteObject(Object* object)
     return false;
 }
 
-inline const char* getObjectClassName(Object* object)
-{
-    return typeid(*object).name();
-}
-
 inline bool isObjectValid(const Object* object)
 {
     if (!object)
@@ -116,6 +112,14 @@ inline bool isObjectValid(const Object* object)
         return false;
     
     return true;
+}
+
+inline const char* getObjectClassName(Object* object)
+{
+    if (!isObjectValid(object))
+        return nullptr;
+
+    return typeid(*object).name();
 }
 
 }
