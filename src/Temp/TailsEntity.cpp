@@ -89,6 +89,7 @@ void tails::TailsEntity::despawn()
     Entity::despawn();
 
     getLevelMusicManager().stop();
+    getViewport().destroyScreen(m_testScreen);
 }
 
 void tails::TailsEntity::onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
