@@ -43,6 +43,7 @@ struct AnimationInfo
     loop(inLoop) {}
 
     void setupFrames();
+    void stopAnimation();
 };
 
 class AnimationPlayer
@@ -70,7 +71,7 @@ public:
      * \param loop Should this animation play from start when it reaches the end
      */
     void addAnimation(const std::string& name, sf::Texture* spriteSheet, const sf::Vector2i cellSize,
-                      const sf::Vector2u startingCellPosition = {0, 0}, const bool loop = false);
+        const bool loop = true, const sf::Vector2u startingCellPosition = {0, 0});
     
     /**
      * \brief Adds an animation with the specified settings to the AnimationPlayer's m_animations vector ready to be

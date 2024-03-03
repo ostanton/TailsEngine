@@ -17,6 +17,8 @@ void tails::Level::construct()
      * I suppose if only the player was using this texture, then it could load it instead
      */
     getAssetCache().loadTexture("tails", "Assets/Textures/Tails.png");
+    getAssetCache().loadTexture("pointer", "Assets/Textures/Pointer.png");
+    getAssetCache().loadTexture("tails_running", "Assets/Textures/TailsRunning.png");
 
     // loop entities in .json and create them ready for create() to spawn them
     //getWorld()->createEntity<TailsEntity>(this);

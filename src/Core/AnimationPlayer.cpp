@@ -13,7 +13,7 @@ void tails::AnimationInfo::setupFrames()
         spriteSheet->getSize().x / cellSize.x,
         spriteSheet->getSize().y / cellSize.y
     };
-
+    
     for (unsigned i {0}; i < cellsInSheet.x; i++)
     {
         FrameInfo frameInfo;
@@ -29,6 +29,12 @@ void tails::AnimationInfo::setupFrames()
     }
 }
 
+void tails::AnimationInfo::stopAnimation()
+{
+    playing = false;
+    currentFrame = 0;
+}
+
 void tails::AnimationPlayer::update(float deltaTime)
 {
     if (!m_sprite)
@@ -37,9 +43,18 @@ void tails::AnimationPlayer::update(float deltaTime)
         return;
     }
     
-    if (!m_animations.contains(m_currentAnimation))
+    if (m_animations.empty() || !m_animations.contains(m_currentAnimation))
+    {
+        Debug::log("Either no animations or we do not contain the requested animation");
         return;
+    }
 
+    /**
+     * We don't need setup or cleanup methods, because even if playAnimation is called mid-frame, it is either called
+     * before this next line, or after it. And if it's before, then that's fine, we aren't doing anything specific
+     * before aside from one check. If it's after, then that's fine, as we aren't using m_currentAnimation anymore,
+     * we set a reference variable with whatever its value is, so all good there
+     */
     AnimationInfo& animation = m_animations.at(m_currentAnimation);
     
     if (!animation.playing)
@@ -76,7 +91,7 @@ void tails::AnimationPlayer::setTargetSprite(sf::Sprite* sprite)
 }
 
 void tails::AnimationPlayer::addAnimation(const std::string& name, sf::Texture* spriteSheet,
-    const sf::Vector2i cellSize, const sf::Vector2u startingCellPosition, const bool loop)
+    const sf::Vector2i cellSize, const bool loop, const sf::Vector2u startingCellPosition)
 {
     AnimationInfo animationInfo(spriteSheet, cellSize, startingCellPosition, loop);
     addAnimation(name, animationInfo);
@@ -85,7 +100,10 @@ void tails::AnimationPlayer::addAnimation(const std::string& name, sf::Texture* 
 void tails::AnimationPlayer::addAnimation(const std::string& name, AnimationInfo& animation)
 {
     if (m_animations.contains(name))
+    {
+        Debug::log("Animation with that name already exists");
         return;
+    }
     
     animation.setupFrames();
     m_animations.emplace(name, animation);
@@ -102,8 +120,18 @@ void tails::AnimationPlayer::removeAnimation(const std::string& name)
 void tails::AnimationPlayer::playAnimation(const std::string& name, bool playFromStart)
 {
     if (!m_animations.contains(name))
+    {
+        Debug::log("Failed to play animation - no animation with that name exists");
         return;
+    }
 
+    // Stop other animations that are playing
+    for (auto& animation : std::ranges::views::values(m_animations))
+    {
+        if (animation.playing)
+            animation.stopAnimation();
+    }
+    
     m_currentAnimation = name;
     m_animations.at(name).playing = true;
 
@@ -133,8 +161,7 @@ void tails::AnimationPlayer::stopAllAnimations()
 
     for (auto& animation : std::ranges::views::values(m_animations))
     {
-        animation.playing = false;
-        animation.currentFrame = 0;
+        animation.stopAnimation();
     }
 }
 

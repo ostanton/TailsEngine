@@ -18,9 +18,21 @@ tails::TailsEntity::TailsEntity()
 void tails::TailsEntity::spawn()
 {
     Entity::spawn();
-
+    
     m_sprite = createComponent<sf::Sprite>();
-    m_sprite->setTexture(getLevelAssetCache()["tails"].getAssetData<sf::Texture>());
+    m_sprite->setScale(2.f, 2.f);
+
+    m_animationPlayer.setTargetSprite(m_sprite);
+    m_animationPlayer.addAnimation(
+        "pointer",
+        &getLevelAssetCache()["pointer"].getAssetData<sf::Texture>(),
+        sf::Vector2i(33, 33), true);
+    m_animationPlayer.playAnimation("pointer");
+
+    m_animationPlayer.addAnimation(
+        "tails_running",
+        &getLevelAssetCache()["tails_running"].getAssetData<sf::Texture>(),
+        sf::Vector2i(45, 41), true);
 
     // setting global origin for this entity
     setOrigin(32.f, 32.f);
@@ -37,7 +49,7 @@ void tails::TailsEntity::update(float deltaTime)
 {
     Entity::update(deltaTime);
 
-    rotate(deltaTime * 25.f);
+    m_animationPlayer.update(deltaTime);
 
     if (timer < 2.f)
     {
@@ -68,9 +80,20 @@ void tails::TailsEntity::processInput(sf::Event& e)
         move(getGlobalDeltaTime() * currentSpeed, 0.f);
 
     if (getInputManager().onActionPress("b"))
+    {
         currentSpeed = baseSpeed * runSpeedMultiplier;
+        m_animationPlayer.setPlayRate(4.f);
+    }
     if (getInputManager().onActionRelease("b"))
+    {
         currentSpeed = baseSpeed * walkSpeedMultiplier;
+        m_animationPlayer.setPlayRate(1.f);
+    }
+
+    if (getInputManager().onActionPress("a"))
+        m_animationPlayer.playAnimation("tails_running");
+    if (getInputManager().onActionRelease("a"))
+        m_animationPlayer.playAnimation("pointer");
 
     if (getInputManager().onActionPress("l"))
         destroy();

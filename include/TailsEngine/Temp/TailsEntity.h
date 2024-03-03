@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "TailsEngine/Core/AnimationPlayer.h"
 #include "TailsEngine/Core/Entity.h"
 
 namespace sf
@@ -10,11 +11,6 @@ class Sprite;
 namespace tails
 {
 class Screen;
-}
-
-namespace tails
-{
-class AssetCache;
 }
 
 namespace tails
@@ -46,6 +42,7 @@ public:
 private:
     sf::Sprite* m_sprite {nullptr};
     Screen* m_testScreen {nullptr};
+    AnimationPlayer m_animationPlayer;
 };
 
 }
