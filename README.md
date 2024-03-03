@@ -19,7 +19,7 @@ Lots of the classes do use pointers (smart pointers) when they don't need to, li
 - Asset Caches (load an asset once and reuse it, caches are local to their context)
 - Input Manager (set up action and key bindings)
 - Basic Entity collision
-- Entities (limited, they are derived from sf::Sprite currently)
+- Entity Component System
 - Simple GUI layer (`Screen`s composed of `sf::Drawable`s)
 
 # Future Additions:
