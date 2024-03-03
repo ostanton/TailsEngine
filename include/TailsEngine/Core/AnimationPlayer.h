@@ -12,11 +12,19 @@ class Texture;
 
 namespace tails
 {
+/**
+ * \brief Provides information for a single frame. Currently only the cell information, but could be whatever.
+ * Could in the future have individual frame lengths
+ */
 struct FrameInfo
 {
     sf::IntRect cell;
 };
 
+/**
+ * \brief Provides information for a single animation, like its frames, cell size, if it loops, etc.
+ * Could in the future have individual animation play rates
+ */
 struct AnimationInfo
 {
     std::vector<FrameInfo> frames;
@@ -46,6 +54,12 @@ struct AnimationInfo
     void stopAnimation();
 };
 
+/**
+ * \brief A class that plays through sprite sheets and draws them to an sf::Sprite.
+ *
+ * It only works with rows. You can specify a position in the sprite sheet to start (should be at the left edge),
+ * and it iterates through each cell, drawing it to the sprite every second * playRate.
+ */
 class AnimationPlayer
 {
 public:
@@ -160,8 +174,22 @@ private:
      * is managed there
      */
     sf::Sprite* m_sprite {nullptr};
+
+    /**
+     * \brief The animation we are currently playing (can be ""/null)
+     */
     std::string m_currentAnimation;
-    float m_playRate {1.f}; // TODO could have different animations have different play rates?
+
+    /**
+     * \brief The play rate (speed multiplier) for all animations
+     *
+     * TODO could have different animations have different play rates?
+     */
+    float m_playRate {1.f};
+
+    /**
+     * \brief The current time in the current we are. Used to check when we should move to the next frame
+     */
     float m_animTimer {0.f};
 };
 
