@@ -8,12 +8,19 @@ class AssetCache;
 
 namespace tails
 {
+/**
+ * \brief The type of the asset. Used because we are storing the data as void*, so without this we would have
+ * no idea what type the data is unless we cast and check, which would be a bit annoying. Not to mention
+ * static_cast does not care about that stuff really so...
+ */
 enum class AssetType
 {
-    None,
-    Texture, // sf::Texture
-    Sound, // sf::SoundBuffer
-    Font // sf::Font
+    None,     // Invalid/void
+    Texture,  // sf::Texture
+    Sound,    // sf::SoundBuffer
+    Font,     // sf::Font
+    Level,    // JSON (.ldtk)
+    Screen    // JSON (.screen)
 };
 
 /**
@@ -61,7 +68,10 @@ struct AssetInfo
     path(std::move(assetPath)),
     m_data(assetData) {}
 
-    // Deleting void* is undefined. Any way to make this better?
+    /**
+     * \brief Deleting void* is undefined. Any way to make this better? Doesn't matter much as m_data should always be
+     * pointing to a valid type no?
+     */
     ~AssetInfo() { delete m_data; }
 
     template<typename T>
@@ -81,8 +91,11 @@ struct AssetInfo
     }
 
 private:
-    // Might want to replace void* with a container class like AssetData or something,
-    // because void* might produce undefined behaviour
+    /**
+     * \brief Might want to replace void* with a container class like AssetData or something,
+     * because void* might produce undefined behaviour. It should be fine however, as m_data should always
+     * point to a valid type/value
+     */
     void* m_data;
 
     /**
