@@ -76,12 +76,19 @@ public:
     void postInitialise();
 
     /**
+     * \brief General function called at the start of each frame to let any objects or data that should be setup
+     * be setup. Mainly for dynamically spawning entities and creating widgets. This should not be used for
+     * initialisation in any circumstance. The data being setup should already be initialised and valid here
+     */
+    void setupData();
+
+    /**
      * \brief Contains the core loop of this window. Calls the game's update method, etc.
      */
     void mainLoop();
 
     /**
-     * \brief General function called at the end of the main loop to let any objects or data that should be destroyed
+     * \brief General function called at the end of each frame to let any objects or data that should be destroyed
      * get destroyed and deleted (mainly for entities in the level)
      */
     void cleanupData();

@@ -26,9 +26,9 @@ void tails::Level::construct()
     //getWorld()->createEntity<TailsEntity>(this);
     //getWorld()->createEntity<CollisionTest>(this);
 
-    createEntity<TailsEntity>({480.f, 320.f});
-    createEntity<CollisionTest>({400.f, 400.f});
-    createEntity<CollisionTest>({300.f, 300.f});
+    spawnEntity<TailsEntity>({480.f, 320.f});
+    spawnEntity<CollisionTest>({400.f, 400.f});
+    spawnEntity<CollisionTest>({300.f, 300.f});
 }
 
 tails::World* tails::Level::getWorld() const
@@ -48,7 +48,7 @@ tails::MusicManager& tails::Level::getMusicManager()
 
 void tails::Level::spawnEntity(Entity* entityToSpawn)
 {
-    entityToSpawn->spawn();
+    m_entitiesPendingSpawn.emplace_back(entityToSpawn);
 }
 
 void tails::Level::destroyEntity(Entity* entityToDestroy)
@@ -69,17 +69,21 @@ void tails::Level::destroyEntity(Entity* entityToDestroy)
 
 void tails::Level::create()
 {
-    spawnEntities();
-
-    postSpawn();
+    
 }
 
 void tails::Level::spawnEntities()
 {
-    for (auto& createdEntity : m_entities)
+    if (m_entitiesPendingSpawn.empty())
+        return;
+    
+    for (auto& createdEntity : m_entitiesPendingSpawn)
     {
-        spawnEntity(createdEntity.get());
+        createdEntity->spawn();
+        m_entities.emplace_back(std::move(createdEntity));
     }
+
+    m_entitiesPendingSpawn.clear();
 }
 
 void tails::Level::postSpawn()
@@ -118,6 +122,17 @@ void tails::Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         target.draw(*m_entities[i]);
     }
+}
+
+void tails::Level::setupData()
+{
+    spawnEntities();
+    postSpawn();
+}
+
+void tails::Level::cleanupData()
+{
+    cleanupEntities();
 }
 
 void tails::Level::cleanupEntities()

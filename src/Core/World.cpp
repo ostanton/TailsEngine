@@ -49,9 +49,14 @@ void tails::World::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(*getCurrentLevel());
 }
 
+void tails::World::setupData()
+{
+    currentLevel->setupData();
+}
+
 void tails::World::cleanupData()
 {
-    currentLevel->cleanupEntities();
+    currentLevel->cleanupData();
 
     openTargetLevel();
 }

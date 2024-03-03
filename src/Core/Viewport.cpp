@@ -5,7 +5,6 @@
 #include <SFML/System/Clock.hpp>
 
 #include "TailsEngine/Core/ApplicationWindow.h"
-#include "TailsEngine/Core/TestScreen.h"
 
 tails::Viewport::Viewport()
 {
@@ -15,14 +14,13 @@ tails::Viewport::Viewport()
 
 void tails::Viewport::create()
 {
-    createAndDisplayScreen<TestScreen>();
+    createAndDisplayScreen<Screen>();
 }
 
 void tails::Viewport::update()
 {
     frameTime = clock->restart();
 
-    // TODO - Might need to remake so it can account for destroyed screens
     for (const auto& screen : screens)
     {
         if (screen)
@@ -38,19 +36,39 @@ void tails::Viewport::draw(sf::RenderTarget& target, sf::RenderStates states) co
     }
 }
 
+void tails::Viewport::setupData()
+{
+    for (auto& display : m_screensPendingDisplay)
+    {
+        display->display();
+        screens.emplace_back(std::move(display));
+    }
+
+    m_screensPendingDisplay.clear();
+    
+    for (auto& screen : screens)
+    {
+        if (screen)
+            screen->setupData();
+    }
+}
+
 void tails::Viewport::cleanupData()
 {
     for (auto& screen : screens)
     {
         if (screen)
+        {
             screen->cleanupData();
+            if (screen->m_pendingRemoval)
+                destroyScreen(screen.get());
+        }
     }
 }
 
 void tails::Viewport::displayScreen(Screen* screenToDisplay)
 {
-    screens.emplace_back(screenToDisplay);
-    screenToDisplay->display();
+    m_screensPendingDisplay.emplace_back(screenToDisplay);
 }
 
 bool tails::Viewport::destroyScreen(const Screen* screenToDestroy)

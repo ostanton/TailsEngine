@@ -73,6 +73,7 @@ protected:
     void processInput(sf::Event& e);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+    void setupData();
     void cleanupData();
 };
 

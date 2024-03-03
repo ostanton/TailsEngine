@@ -65,10 +65,18 @@ void tails::ApplicationWindow::postInitialise()
     gameInstance->create();
 }
 
+void tails::ApplicationWindow::setupData()
+{
+    viewport->setupData();
+    gameInstance->setupData();
+}
+
 void tails::ApplicationWindow::mainLoop()
 {
     while (renderWindow->isOpen())
     {
+        setupData();
+        
         globalTime = globalClock->restart();
         
         // Events

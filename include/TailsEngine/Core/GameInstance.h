@@ -44,6 +44,7 @@ protected:
 
     bool m_gamePaused {false};
 
+    void setupData();
     void cleanupData();
 
 public:

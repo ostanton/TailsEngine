@@ -15,7 +15,9 @@ class Viewport;
 
 namespace sf
 {
+class Transformable;
 class Drawable;
+class Text;
 }
 
 namespace tails
@@ -40,6 +42,44 @@ class Screen : public Object, public sf::Drawable
 public:
     std::vector<unique_ptr<sf::Drawable>> widgets;
 
+    /**
+     * \brief Creates a widget derived from sf::Drawable AND sf::Transformable. DOES NOT stored in a smart pointer.
+     * Use createAndDisplayWidget() for that
+     * \tparam WidgetT Must derive sf::Drawable AND sf::Transformable
+     * \return Pointer to created widget
+     */
+    template<typename WidgetT>
+    WidgetT* createWidget()
+    {
+        static_assert(std::is_base_of_v<sf::Drawable, WidgetT>, "Could not instantiate non-sf::Drawable widget");
+        static_assert(std::is_base_of_v<sf::Transformable, WidgetT>, "Could not instantiate non-sf::Transformable widget");
+
+        sf::Drawable* resultDrawable {new WidgetT};
+
+        return dynamic_cast<WidgetT*>(resultDrawable);
+    }
+
+    /**
+     * \brief Adds the input widget to the pending display widget vector, ready for it to start being drawn
+     * and updated next frame
+     * \param widgetToDisplay The widget to display and start being drawn
+     */
+    void displayWidget(sf::Drawable* widgetToDisplay);
+
+    /**
+     * \brief Creates AND displays a widget for next frame. Combination of both createWidget() and displayWidget().
+     * This is the preferred way of displaying widgets unless you need to do stuff in between
+     * \tparam WidgetT Must derive sf::Drawable AND sf::Transformable
+     * \return Pointer to created widget
+     */
+    template<typename WidgetT>
+    WidgetT* createAndDisplayWidget()
+    {
+        sf::Drawable* resultDrawable {createWidget<WidgetT>()};
+        displayWidget(resultDrawable);
+        return dynamic_cast<WidgetT*>(resultDrawable);
+    }
+
 protected:
     /**
      * \brief It is unsafe to call createWidget() without this as the input, as this screen is not yet added
@@ -63,6 +103,7 @@ protected:
 
     void destroy() const;
 
+    void setupData();
     void cleanupData();
     
     Viewport& getViewport() const;
@@ -71,6 +112,12 @@ protected:
     
 private:
     unique_ptr<AssetCache> m_assetCache;
+
+    std::vector<unique_ptr<sf::Drawable>> m_widgetsPendingDisplay;
+
+    sf::Text* m_fpsCounter;
+
+    bool m_pendingRemoval {false};
 };
 
 }

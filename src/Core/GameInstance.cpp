@@ -57,6 +57,11 @@ void tails::GameInstance::draw(sf::RenderTarget& target, sf::RenderStates states
     target.draw(*world);
 }
 
+void tails::GameInstance::setupData()
+{
+    world->setupData();
+}
+
 void tails::GameInstance::cleanupData()
 {
     world->cleanupData();

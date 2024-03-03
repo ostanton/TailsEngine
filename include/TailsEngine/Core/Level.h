@@ -78,7 +78,7 @@ public:
 
     /**
      * \brief Spawns an entity at the specified position, angle and scale, and adds it to the entities vector.
-     * This entity is now in the level and updates and draws as expected
+     * This entity is now in the level and updates and draws as expected starting next frame
      * \tparam EntT Entity type
      * \param position Position in level
      * \param angle Entity rotation [Default = 0.f]
@@ -94,14 +94,16 @@ public:
     }
 
     void spawnEntity(Entity* entityToSpawn);
-
+    
+protected:
     /**
-     * \brief Completely removes the specified entity from the Level if it is spawned, and deletes its memory
+     * \brief Completely removes the specified entity from the Level if it is spawned, and deletes its memory.
+     * Should not be called manually, instead mark the entity for destruction with its own destroy() method.
+     * This method acts as a kind of garbage collection for those entities marked for destruction
      * \param entityToDestroy The entity to destroy
      */
     void destroyEntity(Entity* entityToDestroy);
     
-protected:
     /**
      * \brief Called when this level is created and its members should all be initialised
      */
@@ -120,8 +122,8 @@ protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     /**
-     * \brief Creates an Entity object at specified position, angle and scale, and adds it to the m_createdEntities
-     * vector. It does not spawn the entity
+     * \brief Creates an Entity object at specified position, angle and scale. Does not add to a smart pointer.
+     * Prefer to use templated spawnEntity() instead
      * \tparam EntT Entity type
      * \param position Position in level
      * \param angle Entity rotation [Default = 0.f]
@@ -138,8 +140,6 @@ protected:
         resultEntity->setPosition(position);
         resultEntity->setRotation(angle);
         resultEntity->setScale(scale);
-        
-        m_entities.emplace_back(resultEntity);
 
         resultEntity->create();
 
@@ -156,6 +156,17 @@ private:
      */
     std::vector<unique_ptr<Entity>> m_entities;
 
+    /**
+     * \brief A vector of entities that are waiting till the next frame to spawn
+     */
+    std::vector<unique_ptr<Entity>> m_entitiesPendingSpawn;
+
+    /**
+     * \brief Spawn any created entities that are pending spawn from m_entitiesPendingSpawn
+     */
+    void setupData();
+    void cleanupData();
+    
     /**
      * \brief Destroys any entities that are marked for destruction
      */

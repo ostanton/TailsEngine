@@ -49,29 +49,11 @@ protected:
     void update();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+    void setupData();
     void cleanupData();
 
 public:
     unique_ptr<sf::View> widgetView;
-
-    /**
-     * \brief Creates a widget in the desired screen for use and drawing
-     * \tparam WidgetT Widget type to create
-     * \param targetScreen Screen to create the widget in
-     * \return Pointer to the created widget object
-     */
-    template<typename WidgetT>
-    WidgetT* createWidget(Screen* targetScreen)
-    {
-        static_assert(std::is_base_of_v<sf::Drawable, WidgetT>, "Could not instantiate non-sf::Drawable widget");
-        static_assert(std::is_base_of_v<sf::Transformable, WidgetT>, "Could not instantiate non-sf::Transformable widget");
-        
-        sf::Drawable* resultDrawable { new WidgetT };
-
-        targetScreen->widgets.emplace_back(resultDrawable);
-
-        return dynamic_cast<WidgetT*>(resultDrawable);
-    }
 
     /**
      * \brief Creates and loads a screen. It will be drawn on the next frame
@@ -81,13 +63,8 @@ public:
     template<typename ScreenT>
     ScreenT* createAndDisplayScreen()
     {
-        auto resultScreen = createScreen<ScreenT>();
-        
-        if (resultScreen)
-            displayScreen(resultScreen);
-        else
-            Debug::log("resultScreen is invalid!");
-
+        Screen* resultScreen {createScreen<ScreenT>()};
+        displayScreen(resultScreen);
         return dynamic_cast<ScreenT*>(resultScreen);
     }
 
@@ -107,6 +84,8 @@ public:
     template<typename ScreenT>
     ScreenT* createScreen()
     {
+        static_assert(std::is_base_of_v<Screen, ScreenT>, "Cannot instantiate non-Screen derived screen object");
+        
         Screen* resultScreen { newObject<ScreenT>(this) };
 
         resultScreen->create();
@@ -124,6 +103,9 @@ public:
     std::vector<unique_ptr<Screen>> screens;
 
     Screen* getTopMostScreen() const;
+
+private:
+    std::vector<unique_ptr<Screen>> m_screensPendingDisplay;
 };
 
 }
