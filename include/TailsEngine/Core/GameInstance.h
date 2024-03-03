@@ -44,8 +44,8 @@ protected:
 
     bool m_gamePaused {false};
 
-    void setupData();
-    void cleanupData();
+    void setupData() override;
+    void cleanupData() override;
 
 public:
     unique_ptr<sf::View> gameView;

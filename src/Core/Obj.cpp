@@ -13,6 +13,16 @@ void tails::Object::construct()
     
 }
 
+void tails::Object::setupData()
+{
+    
+}
+
+void tails::Object::cleanupData()
+{
+    
+}
+
 void tails::Object::destruct()
 {
     

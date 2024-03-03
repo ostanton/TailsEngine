@@ -103,8 +103,8 @@ protected:
 
     void destroy() const;
 
-    void setupData();
-    void cleanupData();
+    void setupData() override;
+    void cleanupData() override;
     
     Viewport& getViewport() const;
 

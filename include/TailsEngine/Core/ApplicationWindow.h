@@ -80,7 +80,7 @@ public:
      * be setup. Mainly for dynamically spawning entities and creating widgets. This should not be used for
      * initialisation in any circumstance. The data being setup should already be initialised and valid here
      */
-    void setupData();
+    void setupData() override;
 
     /**
      * \brief Contains the core loop of this window. Calls the game's update method, etc.
@@ -91,7 +91,7 @@ public:
      * \brief General function called at the end of each frame to let any objects or data that should be destroyed
      * get destroyed and deleted (mainly for entities in the level)
      */
-    void cleanupData();
+    void cleanupData() override;
 
     AssetCache& getAssetCache() const;
 

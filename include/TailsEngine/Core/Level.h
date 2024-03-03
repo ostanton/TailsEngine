@@ -164,8 +164,8 @@ private:
     /**
      * \brief Spawn any created entities that are pending spawn from m_entitiesPendingSpawn
      */
-    void setupData();
-    void cleanupData();
+    void setupData() override;
+    void cleanupData() override;
     
     /**
      * \brief Destroys any entities that are marked for destruction

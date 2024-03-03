@@ -49,8 +49,8 @@ protected:
     void update();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    void setupData();
-    void cleanupData();
+    void setupData() override;
+    void cleanupData() override;
 
 public:
     unique_ptr<sf::View> widgetView;

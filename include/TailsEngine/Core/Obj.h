@@ -41,6 +41,9 @@ public:
      */
     virtual void construct();
 
+    virtual void setupData();
+    virtual void cleanupData();
+
     /**
      * \brief Called just before this object's base members are going to be deleted (they are still safe to use)
      * \note This is only called with manual deleteObject(). When an object is deleted from a smart pointer,
