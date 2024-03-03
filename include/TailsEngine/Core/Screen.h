@@ -10,7 +10,6 @@
 namespace tails
 {
 class AssetCache;
-class TextWidget;
 class Viewport;
 }
 

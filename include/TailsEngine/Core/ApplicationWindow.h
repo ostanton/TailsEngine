@@ -9,7 +9,6 @@
 namespace tails
 {
 class AssetCache;
-class ResourceManager;
 class InputManager;
 class Viewport;
 class GameInstance;
@@ -45,8 +44,17 @@ public:
     unique_ptr<tails::GameInstance> gameInstance;
     unique_ptr<tails::Viewport> viewport;
 
+    /**
+     * \brief Window's initial resolution. The actual size of the RenderWindow
+     */
     sf::Vector2u windowResolution {960, 640};
+    /**
+     * \brief The internal resolution used by the Views. This is stretched to fit the window size
+     */
     sf::Vector2f viewResolution {240.f, 160.f};
+    /**
+     * \brief The title of the window
+     */
     sf::String windowTitle {"Tails Engine"};
     
     void construct() override;
@@ -54,7 +62,7 @@ public:
     /**
      * \brief Called after SFML members are initialised. This is where TailsEngine members are initialised.
      */
-    virtual void postInitSfml();
+    void postInitSfml();
 
     /**
      * \brief Where the default window settings are set. This is called after tails:: classes are initialised,
@@ -65,12 +73,12 @@ public:
     /**
      * \brief Called once all base members are initialised and ready to use.
      */
-    virtual void postInitialise();
+    void postInitialise();
 
     /**
      * \brief Contains the core loop of this window. Calls the game's update method, etc.
      */
-    virtual void mainLoop();
+    void mainLoop();
 
     AssetCache& getAssetCache() const;
 

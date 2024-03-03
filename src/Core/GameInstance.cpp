@@ -8,7 +8,6 @@
 #include <TailsEngine/Core/World.h>
 
 #include "TailsEngine/Core/ApplicationWindow.h"
-#include "TailsEngine/Managers/ResourceManager.h"
 
 tails::GameInstance::GameInstance()
 {

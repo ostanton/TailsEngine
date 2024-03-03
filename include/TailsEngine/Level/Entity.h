@@ -12,7 +12,6 @@ class Event;
 namespace tails
 {
 class InputManager;
-class ResourceManager;
 class World;
 class Level;
 class CollisionManager;

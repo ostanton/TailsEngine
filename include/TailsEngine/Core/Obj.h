@@ -8,7 +8,6 @@ class AssetCache;
 
 namespace tails
 {
-class ResourceManager;
 class ApplicationWindow;
 class InputManager;
 }

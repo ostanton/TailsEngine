@@ -6,7 +6,6 @@
 
 #include "TailsEngine/Core/ApplicationWindow.h"
 #include "TailsEngine/Core/TestScreen.h"
-#include "TailsEngine/Managers/ResourceManager.h"
 
 tails::Viewport::Viewport()
 {

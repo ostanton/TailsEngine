@@ -17,6 +17,3 @@ F:\Libraries\TailsEngine\src\Managers\CollisionManager.cpp;F:\Libraries\TailsEng
 F:\Libraries\TailsEngine\src\Managers\InputManager.cpp;F:\Libraries\TailsEngine\x64\Debug\InputManager.obj
 F:\Libraries\TailsEngine\src\Managers\MusicManager.cpp;F:\Libraries\TailsEngine\x64\Debug\MusicManager.obj
 F:\Libraries\TailsEngine\src\Managers\ResourceManager.cpp;F:\Libraries\TailsEngine\x64\Debug\ResourceManager.obj
-F:\Libraries\TailsEngine\src\Widgets\RectWidget.cpp;F:\Libraries\TailsEngine\x64\Debug\RectWidget.obj
-F:\Libraries\TailsEngine\src\Widgets\TextWidget.cpp;F:\Libraries\TailsEngine\x64\Debug\TextWidget.obj
-F:\Libraries\TailsEngine\src\Widgets\Widget.cpp;F:\Libraries\TailsEngine\x64\Debug\Widget.obj

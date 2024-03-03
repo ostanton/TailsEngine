@@ -95,8 +95,9 @@ void tails::ApplicationWindow::mainLoop()
         viewport->update();
 
         // TODO - get these views working
-        //renderWindow->setView(*gameInstance->gameView);
+        renderWindow->setView(*gameInstance->gameView);
         renderWindow->draw(*gameInstance);
+        renderWindow->setView(renderWindow->getDefaultView());
         
         //renderWindow->setView(*viewport->widgetView);
         renderWindow->draw(*viewport);

@@ -10,15 +10,14 @@
 namespace tails
 {
 class InputManager;
-class ResourceManager;
 class ApplicationWindow;
-class Widget;
 }
 
 namespace sf
 {
 class Clock;
 class View;
+class Transformable;
 }
 
 namespace tails
@@ -64,7 +63,10 @@ public:
     template<typename WidgetT>
     WidgetT* createWidget(Screen* targetScreen)
     {
-        sf::Drawable* resultDrawable { newObject<WidgetT>(this) };
+        static_assert(std::is_base_of_v<sf::Drawable, WidgetT>, "Could not instantiate non-sf::Drawable widget");
+        static_assert(std::is_base_of_v<sf::Transformable, WidgetT>, "Could not instantiate non-sf::Transformable widget");
+        
+        sf::Drawable* resultDrawable { new WidgetT };
 
         targetScreen->widgets.emplace_back(resultDrawable);
 

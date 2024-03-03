@@ -1,6 +1,16 @@
 ﻿#pragma once
 #include "Screen.h"
 
+namespace sf
+{
+class RectangleShape;
+}
+
+namespace sf
+{
+class Text;
+}
+
 namespace tails
 {
 /**
@@ -13,7 +23,8 @@ public:
     void update(float deltaTime) override;
 
 protected:
-    TextWidget* m_textWidget {nullptr};
+    sf::Text* m_textWidget {nullptr};
+    sf::RectangleShape* m_rectangleShape {nullptr};
 };
 
 }

@@ -5,7 +5,6 @@
 namespace tails
 {
 class InputManager;
-class ResourceManager;
 class World;
 class ApplicationWindow;
 }
