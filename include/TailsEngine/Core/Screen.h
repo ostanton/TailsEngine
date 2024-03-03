@@ -1,13 +1,10 @@
 ﻿#pragma once
 #include <vector>
 #include <SFML/Graphics/Drawable.hpp>
-// TODO - need these includes for it to compile for some reason??
 #include <SFML/Graphics/Transformable.hpp>
 
-#include "TailsEngine/Managers/Assets/AssetCache.h"
-#include "TailsEngine/Managers/Assets/AssetInfo.h"
-
 #include "Obj.h"
+#include "TailsEngine/Managers/Assets/AssetCache.h"
 
 namespace tails
 {
@@ -110,10 +107,10 @@ protected:
     
     Viewport& getViewport() const;
 
-    AssetCache& getAssetCache() const;
+    AssetCache& getAssetCache();
     
 private:
-    unique_ptr<AssetCache> m_assetCache;
+    AssetCache m_assetCache;
 
     std::vector<unique_ptr<sf::Drawable>> m_widgetsPendingDisplay;
 

@@ -1,14 +1,9 @@
 ﻿#pragma once
 #include <vector>
-// TODO - need these includes for it to compile for some reason??
-// use of undefined type "tails::AssetCache"
-// static_assert failed: "can't delete an incomplete type"
-// deletion of pointer to incomplete type "tails::AssetCache"; no destructor called
-#include "TailsEngine/Managers/Assets/AssetCache.h"
-#include "TailsEngine/Managers/Assets/AssetInfo.h"
 
 #include "Obj.h"
 #include "TailsEngine/Core/Entity.h"
+#include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/MusicManager.h"
 
 namespace sf
@@ -49,6 +44,12 @@ namespace tails
  * which effectively resets everything, starting fresh (like openLevel in Unreal), OR you can just load another .json
  * level, which keeps the state of this Level object intact, it just looks like you're loading a new level from the
  * player's view.
+ *
+ * TODO:
+ * Here's the thing. We can't createEntity() with its template being from the json, as templates are done at
+ * compile-time, not run-time. So how do we fix this? Macros? Some kind of forcing it to accept it or something?
+ * Somehow we need to make entities of a specific type that derives from Entity. We can't make a new Entity from
+ * a "json object" or something can we? How would this work? Help!
  */
 class Level final : public Object, public sf::Drawable, public sf::Transformable
 {
@@ -66,7 +67,7 @@ public:
      */
     World& getWorld() const;
 
-    AssetCache& getAssetCache() const;
+    AssetCache& getAssetCache();
     MusicManager& getMusicManager();
 
     Viewport& getViewport() const;
@@ -149,7 +150,7 @@ protected:
     }
 
 private:
-    unique_ptr<AssetCache> m_assetCache;
+    AssetCache m_assetCache;
     MusicManager m_musicManager;
 
     /**

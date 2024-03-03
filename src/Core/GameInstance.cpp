@@ -1,18 +1,14 @@
 ﻿#include "TailsEngine/Core/GameInstance.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/View.hpp>
-#include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
 
 #include <TailsEngine/Core/World.h>
-
 #include "TailsEngine/Core/ApplicationWindow.h"
 
 tails::GameInstance::GameInstance()
 {
-    gameView.reset(new sf::View);
-    clock.reset(new sf::Clock);
+    
 }
 
 void tails::GameInstance::construct()
@@ -49,7 +45,7 @@ void tails::GameInstance::processInput(sf::Event& e)
 
 void tails::GameInstance::update()
 {
-    const sf::Time gameTimer {clock->restart()};
+    const sf::Time gameTimer {clock.restart()};
 
     if (!m_gamePaused)
     {

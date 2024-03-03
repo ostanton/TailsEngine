@@ -1,10 +1,14 @@
 ﻿#pragma once
 #include <memory>
+#include <SFML/System/Clock.hpp>
 #include <SFML/System/String.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include "Obj.h"
+#include "TailsEngine/Managers/InputManager.h"
+#include "TailsEngine/Managers/Assets/AssetCache.h"
 
 namespace tails
 {
@@ -37,12 +41,12 @@ public:
     
     unique_ptr<sf::VideoMode> videoMode;
     unique_ptr<sf::RenderWindow> renderWindow;
-    unique_ptr<sf::Event> windowEvent;
-    unique_ptr<sf::Clock> globalClock;
+    sf::Event windowEvent;
+    sf::Clock globalClock;
     sf::Time globalTime;
  
-    unique_ptr<tails::GameInstance> gameInstance;
-    unique_ptr<tails::Viewport> viewport;
+    unique_ptr<GameInstance> gameInstance;
+    unique_ptr<Viewport> viewport;
 
     /**
      * \brief Window's initial resolution. The actual size of the RenderWindow
@@ -93,11 +97,9 @@ public:
      */
     void cleanupData() override;
 
-    AssetCache& getAssetCache() const;
-
 private:
-    unique_ptr<InputManager> m_inputManager;
-    unique_ptr<AssetCache> m_assetCache;
+    InputManager m_inputManager;
+    AssetCache m_assetCache;
 };
 
 }

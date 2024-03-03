@@ -22,6 +22,8 @@ namespace tails
  * The member initialisation should be as follows:
  * - SFML in constructor
  * - TailsEngine in construct()
+ *
+ * Any derived class of Object must be a pointer, and must be allocated via the templated newObject() method
  */
 class Object
 {
@@ -67,7 +69,7 @@ public:
 /**
  * \brief Creates a new object, optionally with an outer
  * \tparam ObjT Object type to create
- * \param outer Object that contains this new object
+ * \param outer Object that contains this new object, does not own it
  * \return Pointer to the created object
  * \note Without an outer, global methods and variables like getGlobalDeltaTime() and various managers
  * cannot be accessed
@@ -83,6 +85,20 @@ ObjT* newObject(Object* outer = nullptr)
     resultObj->construct();
 
     return dynamic_cast<ObjT*>(resultObj);
+}
+
+/**
+ * \brief Creates a new unique_ptr Object, optionally with an outer
+ * \tparam ObjT Object type to create
+ * \param outer Object that contains this new object, does not own it
+ * \return unique_ptr to the created object
+ */
+template<typename ObjT>
+unique_ptr<ObjT> newObjectUnique(Object* outer = nullptr)
+{
+    unique_ptr<ObjT> resultObject {dynamic_cast<ObjT*>(newObject<ObjT>(outer))};
+
+    return std::move(resultObject);
 }
 
 /**

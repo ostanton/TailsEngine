@@ -7,6 +7,16 @@
 #include "TailsEngine/Debug/Debug.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
 
+tails::AssetCache::AssetCache()
+{
+    
+}
+
+tails::AssetCache::~AssetCache()
+{
+    
+}
+
 bool tails::AssetCache::loadTexture(const std::string& id, const std::string& path)
 {
     auto texture {new sf::Texture};
@@ -47,6 +57,17 @@ bool tails::AssetCache::loadFont(const std::string& id, const std::string& path)
 
     m_assets.emplace(id, std::make_unique<AssetInfo>(font, AssetType::Font, AssetState::Loaded, path));
     return true;
+}
+
+bool tails::AssetCache::unloadAsset(const std::string& id)
+{
+    if (m_assets.contains(id))
+    {
+        m_assets.erase(id);
+        return true;
+    }
+
+    return false;
 }
 
 tails::AssetInfo& tails::AssetCache::getAssetInfo(const std::string& id) const

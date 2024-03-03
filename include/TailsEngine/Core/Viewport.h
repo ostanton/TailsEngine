@@ -1,11 +1,12 @@
 ﻿#pragma once
 #include <vector>
 #include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/View.hpp>
+#include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
 
 #include "Obj.h"
 #include "Screen.h"
-#include "TailsEngine/Debug/Debug.h"
 
 namespace tails
 {
@@ -38,7 +39,7 @@ class Viewport : public Object, public sf::Drawable
 public:
     Viewport();
 
-    unique_ptr<sf::Clock> clock;
+    sf::Clock clock;
     sf::Time frameTime;
 
 protected:
@@ -53,7 +54,7 @@ protected:
     void cleanupData() override;
 
 public:
-    unique_ptr<sf::View> widgetView;
+    sf::View widgetView;
 
     /**
      * \brief Creates and loads a screen. It will be drawn on the next frame

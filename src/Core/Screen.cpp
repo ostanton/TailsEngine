@@ -6,6 +6,7 @@
 #include "TailsEngine/Core/ApplicationWindow.h"
 #include "TailsEngine/Core/Viewport.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
+#include "TailsEngine/Managers/Assets/AssetInfo.h"
 
 void tails::Screen::displayWidget(sf::Drawable* widgetToDisplay)
 {
@@ -14,8 +15,6 @@ void tails::Screen::displayWidget(sf::Drawable* widgetToDisplay)
 
 void tails::Screen::create()
 {
-    m_assetCache.reset(new AssetCache);
-
     getAssetCache().loadFont("main_font", "Assets/Fonts/PixelOperatorMono.ttf");
     
     m_fpsCounter = createAndDisplayWidget<sf::Text>();
@@ -89,7 +88,7 @@ tails::Viewport& tails::Screen::getViewport() const
     return *dynamic_cast<Viewport*>(outer);
 }
 
-tails::AssetCache& tails::Screen::getAssetCache() const
+tails::AssetCache& tails::Screen::getAssetCache()
 {
-    return *m_assetCache;
+    return m_assetCache;
 }

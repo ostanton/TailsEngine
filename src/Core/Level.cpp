@@ -7,14 +7,10 @@
 #include "TailsEngine/Temp/CollisionTest.h"
 #include "TailsEngine/Temp/TailsEntity.h"
 #include "TailsEngine/Managers/CollisionManager.h"
-#include "TailsEngine/Managers/Assets/AssetCache.h"
-#include "TailsEngine/Managers/Assets/AssetInfo.h"
 
 void tails::Level::construct()
 {
     Object::construct();
-
-    m_assetCache.reset(new AssetCache);
 
     /*
      * Load texture for both entities to use
@@ -36,9 +32,9 @@ tails::World& tails::Level::getWorld() const
     return *dynamic_cast<World*>(outer);
 }
 
-tails::AssetCache& tails::Level::getAssetCache() const
+tails::AssetCache& tails::Level::getAssetCache()
 {
-    return *m_assetCache;
+    return m_assetCache;
 }
 
 tails::MusicManager& tails::Level::getMusicManager()

@@ -1,14 +1,12 @@
 ﻿#pragma once
 #include "Obj.h"
 #include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/View.hpp>
+#include <SFML/System/Clock.hpp>
 
 namespace tails
 {
 class Viewport;
-}
-
-namespace tails
-{
 class InputManager;
 class World;
 class ApplicationWindow;
@@ -16,8 +14,6 @@ class ApplicationWindow;
 
 namespace sf
 {
-class Clock;
-class View;
 class Event;
 }
 
@@ -55,8 +51,8 @@ protected:
     void cleanupData() override;
 
 public:
-    unique_ptr<sf::View> gameView;
-    unique_ptr<sf::Clock> clock;
+    sf::View gameView;
+    sf::Clock clock;
     unique_ptr<World> world;
 };
 

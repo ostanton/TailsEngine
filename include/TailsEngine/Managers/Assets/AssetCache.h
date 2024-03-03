@@ -20,6 +20,9 @@ struct AssetInfo;
 class AssetCache
 {
 public:
+    AssetCache();
+    ~AssetCache();
+    
     /*
      * Attempt to make a non-type specific load method. Compiler does not like assigning non-typename objects to
      * typename objects, like assigning the sound (sf::SoundBuffer) variable to newAsset when newAsset's T is of
@@ -96,6 +99,8 @@ public:
     bool loadTexture(const std::string& id, const std::string& path);
     bool loadSound(const std::string& id, const std::string& path);
     bool loadFont(const std::string& id, const std::string& path);
+
+    bool unloadAsset(const std::string& id);
 
     AssetInfo& getAssetInfo(const std::string& id) const;
 

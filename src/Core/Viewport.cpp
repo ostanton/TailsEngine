@@ -1,15 +1,12 @@
 ﻿#include "TailsEngine/Core/Viewport.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/View.hpp>
-#include <SFML/System/Clock.hpp>
 
 #include "TailsEngine/Core/ApplicationWindow.h"
 
 tails::Viewport::Viewport()
 {
-    widgetView.reset(new sf::View);
-    clock.reset(new sf::Clock);
+    
 }
 
 void tails::Viewport::create()
@@ -19,7 +16,7 @@ void tails::Viewport::create()
 
 void tails::Viewport::update()
 {
-    frameTime = clock->restart();
+    frameTime = clock.restart();
 
     for (const auto& screen : screens)
     {

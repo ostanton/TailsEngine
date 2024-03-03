@@ -50,14 +50,14 @@ tails::InputManager& tails::Object::getInputManager() const
 {
     if (!getApplicationWindow())
         Debug::log("Object::getInputManager - getApplicationWindow returned nullptr");
-    return *getApplicationWindow()->m_inputManager;
+    return getApplicationWindow()->m_inputManager;
 }
 
 tails::AssetCache& tails::Object::getGlobalAssetCache() const
 {
     if (!getApplicationWindow())
         Debug::log("Object::getGlobalAssetCache - getApplicationWindow returned nullptr");
-    return getApplicationWindow()->getAssetCache();
+    return getApplicationWindow()->m_assetCache;
 }
 
 float tails::Object::getGlobalDeltaTime() const
