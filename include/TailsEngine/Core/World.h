@@ -55,14 +55,16 @@ public:
         static_assert(std::is_base_of_v<Level, LevelT>, "Cannot create non-Level class");
         
         auto resultLevel = newObject<LevelT>(this);
-        openLevel(resultLevel);
+        m_levelToOpen.reset(resultLevel);
 
         return dynamic_cast<LevelT*>(resultLevel);
     }
 
-    void openLevel(Level* levelToOpen);
+    void openTargetLevel();
 
 protected:
+    unique_ptr<Level> m_levelToOpen;
+    
     /**
      * \brief Called every frame
      * \param deltaTime Time since last frame
@@ -70,6 +72,8 @@ protected:
     void update(float deltaTime);
     void processInput(sf::Event& e);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+    void cleanupData();
 };
 
 }

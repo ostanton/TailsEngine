@@ -73,10 +73,7 @@ void tails::TailsEntity::processInput(sf::Event& e)
      */
 
     if (getInputManager().onActionPress("l"))
-    {
         destroy();
-        return;
-    }
 
     if (getInputManager().onActionPress("r"))
         getWorld()->createAndOpenLevel<Level>();
@@ -97,5 +94,5 @@ void tails::TailsEntity::onStartCollision(Entity* otherEntity, const sf::FloatRe
      * Temporarily commented out as it causes a crash with onCollision in base Entity where it prints the class name
      * but the entity it gets the class name from is not fully valid
      */
-    //otherEntity->destroy();
+    otherEntity->destroy();
 }

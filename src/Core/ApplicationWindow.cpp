@@ -95,9 +95,8 @@ void tails::ApplicationWindow::mainLoop()
         viewport->update();
 
         // TODO - get these views working
-        renderWindow->setView(*gameInstance->gameView);
+        //renderWindow->setView(*gameInstance->gameView);
         renderWindow->draw(*gameInstance);
-        renderWindow->setView(renderWindow->getDefaultView());
         
         //renderWindow->setView(*viewport->widgetView);
         renderWindow->draw(*viewport);
@@ -105,7 +104,14 @@ void tails::ApplicationWindow::mainLoop()
         renderWindow->display();
 
         m_inputManager->postUpdate();
+
+        cleanupData();
     }
+}
+
+void tails::ApplicationWindow::cleanupData()
+{
+    gameInstance->cleanupData();
 }
 
 tails::AssetCache& tails::ApplicationWindow::getAssetCache() const

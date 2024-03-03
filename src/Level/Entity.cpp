@@ -3,12 +3,11 @@
 #include <iostream>
 
 #include "TailsEngine/Core/Level.h"
-#include "TailsEngine/Core/World.h"
 #include "TailsEngine/Debug/Debug.h"
 
 void tails::Entity::spawn()
 {
-    m_spawned = true;
+    
 }
 
 void tails::Entity::update(float deltaTime)
@@ -54,12 +53,12 @@ void tails::Entity::processInput(sf::Event& e)
 
 void tails::Entity::despawn()
 {
-    m_spawned = false;
+    
 }
 
 void tails::Entity::destroy()
 {
-    getLevel().destroyEntity(this);
+    m_pendingDestroy = true;
 }
 
 void tails::Entity::create()
@@ -115,11 +114,6 @@ void tails::Entity::onStartCollision(Entity* otherEntity, const sf::FloatRect& o
 void tails::Entity::onEndCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
 {
     Debug::log("End collision");
-}
-
-bool tails::Entity::isSpawned() const
-{
-    return m_spawned;
 }
 
 const std::vector<tails::Entity*>& tails::Entity::getCollidingEntities() const

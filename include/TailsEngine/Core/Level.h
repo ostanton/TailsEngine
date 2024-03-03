@@ -70,13 +70,6 @@ public:
     AssetCache& getAssetCache() const;
     MusicManager& getMusicManager();
 
-    /**
-     * \brief Gets whether this level can be updated and drawn, whether it is "ready" for that or still needs
-     * some members initialised and set
-     * \return Ready or not
-     */
-    bool isReady() const;
-
     template<typename EntT>
     EntT* spawnEntity()
     {
@@ -103,19 +96,10 @@ public:
     void spawnEntity(Entity* entityToSpawn);
 
     /**
-     * \brief Despawns an entity. This means it is removed from the m_spawnedEntities vector but remains valid
-     * memory in the m_createdEntities vector
-     * \param entityToDespawn The entity to despawn
-     */
-    void despawnEntity(Entity* entityToDespawn);
-
-    /**
      * \brief Completely removes the specified entity from the Level if it is spawned, and deletes its memory
      * \param entityToDestroy The entity to destroy
      */
     void destroyEntity(Entity* entityToDestroy);
-
-    const std::vector<Entity*>& getSpawnedEntities() const;
     
 protected:
     /**
@@ -155,7 +139,7 @@ protected:
         resultEntity->setRotation(angle);
         resultEntity->setScale(scale);
         
-        m_createdEntities.emplace_back(resultEntity);
+        m_entities.emplace_back(resultEntity);
 
         resultEntity->create();
 
@@ -167,20 +151,15 @@ private:
     MusicManager m_musicManager;
 
     /**
-     * \brief The vector of all spawned entities. It contains all spawned entities, but not any entities that
-     * have not been spawned or are currently in the level updating
-     */
-    std::vector<Entity*> m_spawnedEntities;
-
-    /**
      * \brief The vector of all the entities created in this level. Not all of these entities could be spawned,
      * so use "entities" for all the spawned entities instead
      */
-    std::vector<unique_ptr<Entity>> m_createdEntities;
+    std::vector<unique_ptr<Entity>> m_entities;
 
-    // TODO - BOTCHED! THIS FEELS VERY BOTCHED AND LIKE IT SHOULDN'T BE THE WAY TO MAKE THINGS WORK HELP
-    bool m_constructed {false};
-    bool m_entitiesSpawned {false};
+    /**
+     * \brief Destroys any entities that are marked for destruction
+     */
+    void cleanupEntities();
 };
 
 }

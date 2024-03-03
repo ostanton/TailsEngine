@@ -102,8 +102,6 @@ protected:
     bool m_colliding {false};
     Entity* m_lastCollidingEntity {nullptr};
 
-    bool isSpawned() const;
-
     /**
      * \brief Gets all the entities this entity is currently colliding with
      * \return Vector of entities this entity is colliding with
@@ -112,14 +110,14 @@ protected:
 
 private:
     /**
-     * \brief Whether this entity is spawned in the level or just exists
-     */
-    bool m_spawned {false};
-
-    /**
      * \brief Vector of entities we are currently colliding with
      */
     std::vector<Entity*> m_collidingEntities;
+
+    /**
+     * \brief Whether this entity is awaiting destruction at the end of this frame
+     */
+    bool m_pendingDestroy {false};
 };
 
 }

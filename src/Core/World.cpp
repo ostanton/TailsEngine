@@ -16,36 +16,44 @@ void tails::World::create()
     currentLevel->create();
 }
 
-void tails::World::openLevel(Level* levelToOpen)
+void tails::World::openTargetLevel()
 {
+    if (!m_levelToOpen)
+        return;
+    
     if (currentLevel)
     {
-        for (auto& createdEntity : currentLevel->m_createdEntities)
+        for (auto& createdEntity : currentLevel->m_entities)
         {
             currentLevel->destroyEntity(createdEntity.get());
         }
     }
 
-    currentLevel.reset(levelToOpen);
+    currentLevel = std::move(m_levelToOpen);
+    m_levelToOpen.reset();
     currentLevel->create();
 }
 
 void tails::World::update(float deltaTime)
 {
-    if (currentLevel->isReady())
-        currentLevel->update(deltaTime);
+    currentLevel->update(deltaTime);
 }
 
 void tails::World::processInput(sf::Event& e)
 {
-    if (currentLevel->isReady())
-        currentLevel->processInput(e);
+    currentLevel->processInput(e);
 }
 
 void tails::World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    if (getCurrentLevel() && currentLevel->isReady())
-        target.draw(*getCurrentLevel());
+    target.draw(*getCurrentLevel());
+}
+
+void tails::World::cleanupData()
+{
+    currentLevel->cleanupEntities();
+
+    openTargetLevel();
 }
 
 tails::Level* tails::World::getCurrentLevel() const

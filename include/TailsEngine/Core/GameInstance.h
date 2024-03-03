@@ -44,6 +44,8 @@ protected:
 
     bool m_gamePaused {false};
 
+    void cleanupData();
+
 public:
     unique_ptr<sf::View> gameView;
     unique_ptr<sf::Clock> clock;

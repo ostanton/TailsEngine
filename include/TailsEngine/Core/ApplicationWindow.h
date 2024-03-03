@@ -80,6 +80,12 @@ public:
      */
     void mainLoop();
 
+    /**
+     * \brief General function called at the end of the main loop to let any objects or data that should be destroyed
+     * get destroyed and deleted (mainly for entities in the level)
+     */
+    void cleanupData();
+
     AssetCache& getAssetCache() const;
 
 private:
