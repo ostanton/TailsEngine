@@ -24,3 +24,6 @@ And don't worry about the rider stuff, .sln file, etc. I'll clean up the repo la
 - LDTK map format for levels
 - Load UI layouts from JSON
 - More robust collision system
+
+# Dependencies
+- SFML
