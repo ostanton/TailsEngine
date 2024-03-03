@@ -46,6 +46,7 @@ protected:
      * SFML settings should be set, but it will not be in the Level's entities vector
      */
     virtual void create();
+    
     /**
      * \brief Called once this entity has completely spawned in a level. All its members should be initialised
      */
@@ -57,6 +58,11 @@ protected:
      */
     virtual void update(float deltaTime);
 
+    /**
+     * \brief Called before update(). Generally where inputs should go (not a hard rule). Can access sf::RenderWindow's
+     * sf::Event events from e
+     * \param e Window event from ApplicationWindow
+     */
     virtual void processInput(sf::Event& e);
     
     /**
@@ -86,12 +92,14 @@ protected:
      * m_collidingEntities, which can be got with getCollidingEntities()
      */
     virtual void onCollision(std::vector<Entity*>& otherEntities);
+    
     /**
      * \brief Called the frame we start colliding with another entity
      * \param otherEntity The entity we have just started colliding with
      * \param otherBounds otherEntity's global bounds
      */
     virtual void onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds);
+    
     /**
      * \brief Called the frame we stop colliding with another entity
      * \param otherEntity The entity we have just stopped colliding with

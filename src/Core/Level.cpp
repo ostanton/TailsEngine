@@ -48,6 +48,7 @@ tails::MusicManager& tails::Level::getMusicManager()
 
 void tails::Level::spawnEntity(Entity* entityToSpawn)
 {
+    // This only temporarily adds the entity to spawn into the pending spawn vector for use start of next frame
     m_entitiesPendingSpawn.emplace_back(entityToSpawn);
 }
 
@@ -76,7 +77,11 @@ void tails::Level::spawnEntities()
 {
     if (m_entitiesPendingSpawn.empty())
         return;
-    
+
+    /**
+     * Where the "actual" spawning happens. At the start of the frame, move the pending spawn entities into the main
+     * entities vector. This entities vector is what updates and draws the entities, hence them being "spawned"
+     */
     for (auto& createdEntity : m_entitiesPendingSpawn)
     {
         createdEntity->spawn();
@@ -88,7 +93,7 @@ void tails::Level::spawnEntities()
 
 void tails::Level::postSpawn()
 {
-    
+    // Could make and put entity's own setupData() method here? Does it need one?
 }
 
 void tails::Level::update(float deltaTime)
@@ -97,6 +102,7 @@ void tails::Level::update(float deltaTime)
     {
         m_entities[i]->update(deltaTime);
 
+        // Loop within a loop to check collision between entities. Is there a better way?
         for (size_t e {0}; e < m_entities.size(); e++)
         {
             if (m_entities[i] != m_entities[e])
@@ -132,6 +138,7 @@ void tails::Level::setupData()
 
 void tails::Level::cleanupData()
 {
+    // Could put entity's own cleanupData() method here? Does it need one? Or put it in cleanupEntities() actually
     cleanupEntities();
 }
 

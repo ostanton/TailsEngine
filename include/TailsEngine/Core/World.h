@@ -47,7 +47,7 @@ public:
      * \brief Creates a level object and loads it into the level's vector
      * \tparam LevelT The level type to load
      * \return Pointer to the created level object
-     * TODO - have .json file as input for Level object to load
+     * \remarks TODO - have .json file as input for Level object to load
      */
     template<typename LevelT>
     LevelT* createAndOpenLevel()
