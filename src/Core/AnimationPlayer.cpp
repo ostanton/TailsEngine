@@ -76,9 +76,9 @@ void tails::AnimationPlayer::setTargetSprite(sf::Sprite* sprite)
 }
 
 void tails::AnimationPlayer::addAnimation(const std::string& name, sf::Texture* spriteSheet,
-    const sf::Vector2i cellSize, const sf::Vector2u startingCellPosition)
+    const sf::Vector2i cellSize, const sf::Vector2u startingCellPosition, const bool loop)
 {
-    AnimationInfo animationInfo(spriteSheet, cellSize, startingCellPosition);
+    AnimationInfo animationInfo(spriteSheet, cellSize, startingCellPosition, loop);
     addAnimation(name, animationInfo);
 }
 
@@ -149,7 +149,30 @@ bool tails::AnimationPlayer::isAnimationPlaying()
     return false;
 }
 
-std::string& tails::AnimationPlayer::getCurrentAnimation()
+const std::string& tails::AnimationPlayer::getCurrentAnimation()
 {
     return m_currentAnimation;
+}
+
+const tails::AnimationInfo& tails::AnimationPlayer::getAnimationInfo(const std::string& name)
+{
+    if (!m_animations.contains(name))
+        Debug::log("Cannot get animation info, animation with that name does not exist");
+    
+    return m_animations.at(name);
+}
+
+const tails::AnimationInfo& tails::AnimationPlayer::getCurrentAnimationInfo()
+{
+    return getAnimationInfo(getCurrentAnimation());
+}
+
+void tails::AnimationPlayer::setPlayRate(float playRate)
+{
+    m_playRate = playRate;
+}
+
+float tails::AnimationPlayer::getPlayRate() const
+{
+    return m_playRate;
 }
