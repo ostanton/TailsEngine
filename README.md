@@ -30,3 +30,6 @@ Lots of the classes do use pointers (smart pointers) when they don't need to, li
 
 # Dependencies
 - [SFML](https://www.sfml-dev.org/ "SFML Homepage")
+
+# Using it as a library
+I'd love to have this compile to static and dynamic libraries. But I have no idea how, so for now it's just a little project that is self contained. You need to have the full source to use it in a new game project, not just the headers. It'll come in time, when it's more mature and when I know what I'm doing more.
