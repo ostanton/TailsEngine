@@ -20,6 +20,7 @@ bool tails::CollisionManager::checkCollision(Entity* entity1, Entity* entity2)
             entity1->onStartCollision(entity2, entity2->getGlobalBounds());
         }
 
+        // TODO - outer gets lots in translation somehow
         entity1->onCollision(entity1->m_collidingEntities);
         
         return true;
@@ -29,11 +30,12 @@ bool tails::CollisionManager::checkCollision(Entity* entity1, Entity* entity2)
     
     if (entity1->m_colliding)
     {
-        // remove entity2 from colliding entities vector
+        // Remove entity2 from colliding entities vector
         entity1->m_lastCollidingEntity = nullptr;
         entity1->m_colliding = false;
-        entity1->m_collidingEntities.erase(std::ranges::find(
-            entity1->m_collidingEntities.begin(), entity1->m_collidingEntities.end(), entity2));
+        // TODO - Iterator out of range when colliding with second CollisionTest object?
+        //entity1->m_collidingEntities.erase(std::ranges::find(
+        //    entity1->m_collidingEntities.begin(), entity1->m_collidingEntities.end(), entity2));
         entity1->onEndCollision(entity2, entity2->getGlobalBounds());
     }
 

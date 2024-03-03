@@ -49,11 +49,11 @@ protected:
     void update();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+    void cleanupData();
+
 public:
     unique_ptr<sf::View> widgetView;
 
-    // TODO - Abstract this into WidgetTree class?
-    
     /**
      * \brief Creates a widget in the desired screen for use and drawing
      * \tparam WidgetT Widget type to create

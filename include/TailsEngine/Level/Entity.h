@@ -85,7 +85,7 @@ protected:
      * \param otherEntities The vector of entities this entity is colliding with. This is the same as
      * m_collidingEntities, which can be got with getCollidingEntities()
      */
-    virtual void onCollision(const std::vector<Entity*>& otherEntities);
+    virtual void onCollision(std::vector<Entity*>& otherEntities);
     /**
      * \brief Called the frame we start colliding with another entity
      * \param otherEntity The entity we have just started colliding with

@@ -111,6 +111,7 @@ void tails::ApplicationWindow::mainLoop()
 
 void tails::ApplicationWindow::cleanupData()
 {
+    viewport->cleanupData();
     gameInstance->cleanupData();
 }
 

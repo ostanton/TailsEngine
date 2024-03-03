@@ -62,6 +62,8 @@ protected:
     virtual void remove();
 
     void destroy() const;
+
+    void cleanupData();
     
     Viewport& getViewport() const;
 

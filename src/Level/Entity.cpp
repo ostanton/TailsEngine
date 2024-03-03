@@ -86,16 +86,16 @@ tails::MusicManager& tails::Entity::getLevelMusicManager() const
     return getLevel().getMusicManager();
 }
 
-void tails::Entity::onCollision(const std::vector<Entity*>& otherEntities)
+void tails::Entity::onCollision(std::vector<Entity*>& otherEntities)
 {
+    // TODO - outer is lost in translation, read CollisionManager for info
+    /*
     if (!otherEntities.empty())
     {
         std::cout << "Colliding with: ";
         
         for (const auto otherEntity : otherEntities)
         {
-            // TODO - part of the larger problem with update being processed when it should return immediately
-            // It gets the class name of an invalid object, or the object is valid but its outer and members are not
             if (!isObjectValid(otherEntity))
                 continue;
             
@@ -103,7 +103,7 @@ void tails::Entity::onCollision(const std::vector<Entity*>& otherEntities)
         }
 
         std::cout << "\n";
-    }
+    }*/
 }
 
 void tails::Entity::onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)

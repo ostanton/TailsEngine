@@ -28,6 +28,7 @@ void tails::Level::construct()
 
     createEntity<TailsEntity>({480.f, 320.f});
     createEntity<CollisionTest>({400.f, 400.f});
+    createEntity<CollisionTest>({300.f, 300.f});
 }
 
 tails::World* tails::Level::getWorld() const
@@ -105,7 +106,6 @@ void tails::Level::processInput(sf::Event& e)
     if (m_entities.empty())
         return;
 
-    // TODO - this seems to work but crashed once. Can't replicate
     for (size_t i {0}; i < m_entities.size(); i++)
     {
         m_entities[i]->processInput(e);

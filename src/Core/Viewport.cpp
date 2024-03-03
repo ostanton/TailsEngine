@@ -38,6 +38,15 @@ void tails::Viewport::draw(sf::RenderTarget& target, sf::RenderStates states) co
     }
 }
 
+void tails::Viewport::cleanupData()
+{
+    for (auto& screen : screens)
+    {
+        if (screen)
+            screen->cleanupData();
+    }
+}
+
 void tails::Viewport::displayScreen(Screen* screenToDisplay)
 {
     screens.emplace_back(screenToDisplay);

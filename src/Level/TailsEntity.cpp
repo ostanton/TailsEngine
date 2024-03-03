@@ -67,11 +67,6 @@ void tails::TailsEntity::processInput(sf::Event& e)
     if (getInputManager().onActionRelease("b"))
         currentSpeed = baseSpeed * walkSpeedMultiplier;
 
-    /** TODO
-     * Without a return, processInput() finishes executing, failing to get InputManager because this object is
-     * technically destroyed. How to fix? Maybe buffer destruction until after this has finished? Not sure
-     */
-
     if (getInputManager().onActionPress("l"))
         destroy();
 
@@ -90,9 +85,5 @@ void tails::TailsEntity::onStartCollision(Entity* otherEntity, const sf::FloatRe
 {
     Entity::onStartCollision(otherEntity, otherBounds);
 
-    /** TODO
-     * Temporarily commented out as it causes a crash with onCollision in base Entity where it prints the class name
-     * but the entity it gets the class name from is not fully valid
-     */
     otherEntity->destroy();
 }
