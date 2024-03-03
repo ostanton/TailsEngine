@@ -7,7 +7,7 @@ I looked at [Tilengine](https://www.tilengine.org/ "Tilengine Homepage") for a w
 I also looked at [butano](https://github.com/GValiente/butano "butano's GitHub") and just developing straight for the GBA. It's a really cool environment to work in, but I don't think I'm quite there yet in terms of skill level. That and the fact there's like 2 tutorials. The documentation can only get so far when wanting to see how the library actually works and what the best practices are, etc.
 
 I've designed this engine with the SFML standards in mind, or what I could tell are their standards anyway. Most things are commented so should be easy to know what method does what, etc.
-The architecture is kind of similar to [Unreal Engine](https://www.unrealengine.com/en-US "Unreal Engine Homepage"), which is mainly due to the fact I look at its source code a lot and am super used to it. Lots of decisions about the architecture were made because I wanted it to be simple though, so there's no "components", etc. in Actors and such. Just plain entities which can hold whatever you want.
+The architecture is kind of similar to [Unreal Engine](https://www.unrealengine.com/en-US "Unreal Engine Homepage"), which is mainly due to the fact I look at its source code a lot and am super used to it. Lots of decisions about the architecture were made because I wanted it to be simple though, however there is an ECS, but one that does not encourage logic in those components. Logic still goes in the Entity subclasses themselves, as the components only draw, they don't update or have any other custom lifetime methods. Each component is supposed to be an SFML class, or a derived one that doesn't need anything other than draw().
 
 Setup instructions to come.
 
