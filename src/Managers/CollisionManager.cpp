@@ -1,9 +1,9 @@
 ﻿#include "TailsEngine/Managers/CollisionManager.h"
 
-#include "TailsEngine/Level/Entity.h"
+#include "TailsEngine/Core/Entity.h"
 
 bool tails::CollisionManager::checkCollision(Entity* entity1, Entity* entity2)
-{
+{/*
     // Do nothing if either entities are invalid
     if (!isObjectValid(entity1) || !isObjectValid(entity2))
         return false;
@@ -38,6 +38,6 @@ bool tails::CollisionManager::checkCollision(Entity* entity1, Entity* entity2)
         //    entity1->m_collidingEntities.begin(), entity1->m_collidingEntities.end(), entity2));
         entity1->onEndCollision(entity2, entity2->getGlobalBounds());
     }
-
+    */
     return false;
 }

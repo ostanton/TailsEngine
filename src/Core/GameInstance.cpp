@@ -32,6 +32,11 @@ bool tails::GameInstance::isGamePaused() const
     return m_gamePaused;
 }
 
+tails::Viewport& tails::GameInstance::getViewport() const
+{
+    return *getApplicationWindow()->viewport;
+}
+
 void tails::GameInstance::create()
 {
     world->create();

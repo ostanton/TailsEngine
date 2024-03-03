@@ -1,4 +1,5 @@
 F:\Libraries\TailsEngine\src\Core\ApplicationWindow.cpp;F:\Libraries\TailsEngine\x64\Debug\ApplicationWindow.obj
+F:\Libraries\TailsEngine\src\Core\Entity.cpp;F:\Libraries\TailsEngine\x64\Debug\Entity.obj
 F:\Libraries\TailsEngine\src\Core\GameInstance.cpp;F:\Libraries\TailsEngine\x64\Debug\GameInstance.obj
 F:\Libraries\TailsEngine\src\Core\Level.cpp;F:\Libraries\TailsEngine\x64\Debug\Level.obj
 F:\Libraries\TailsEngine\src\Core\Obj.cpp;F:\Libraries\TailsEngine\x64\Debug\Obj.obj
@@ -6,9 +7,8 @@ F:\Libraries\TailsEngine\src\Core\Screen.cpp;F:\Libraries\TailsEngine\x64\Debug\
 F:\Libraries\TailsEngine\src\Core\Viewport.cpp;F:\Libraries\TailsEngine\x64\Debug\Viewport.obj
 F:\Libraries\TailsEngine\src\Core\World.cpp;F:\Libraries\TailsEngine\x64\Debug\World.obj
 F:\Libraries\TailsEngine\src\Debug\Debug.cpp;F:\Libraries\TailsEngine\x64\Debug\Debug.obj
-F:\Libraries\TailsEngine\src\Level\CollisionTest.cpp;F:\Libraries\TailsEngine\x64\Debug\CollisionTest.obj
-F:\Libraries\TailsEngine\src\Level\Entity.cpp;F:\Libraries\TailsEngine\x64\Debug\Entity.obj
-F:\Libraries\TailsEngine\src\Level\TailsEntity.cpp;F:\Libraries\TailsEngine\x64\Debug\TailsEntity.obj
+F:\Libraries\TailsEngine\src\Temp\CollisionTest.cpp;F:\Libraries\TailsEngine\x64\Debug\CollisionTest.obj
+F:\Libraries\TailsEngine\src\Temp\TailsEntity.cpp;F:\Libraries\TailsEngine\x64\Debug\TailsEntity.obj
 F:\Libraries\TailsEngine\src\main.cpp;F:\Libraries\TailsEngine\x64\Debug\main.obj
 F:\Libraries\TailsEngine\src\Managers\Assets\AssetCache.cpp;F:\Libraries\TailsEngine\x64\Debug\AssetCache.obj
 F:\Libraries\TailsEngine\src\Managers\Assets\AssetInfo.cpp;F:\Libraries\TailsEngine\x64\Debug\AssetInfo.obj

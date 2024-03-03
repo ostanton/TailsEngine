@@ -4,7 +4,7 @@
 
 #include "Level.h"
 #include "Obj.h"
-#include "TailsEngine/Level/Entity.h"
+#include "TailsEngine/Core/Entity.h"
 
 namespace sf
 {
@@ -42,6 +42,9 @@ public:
      * \return Pointer to the level
      */
     Level* getCurrentLevel() const;
+
+    GameInstance& getGameInstance() const;
+    Viewport& getViewport() const;
 
     /**
      * \brief Creates a level object and loads it into the level's vector

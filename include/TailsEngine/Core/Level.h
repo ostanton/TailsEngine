@@ -9,7 +9,7 @@
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
 
 #include "Obj.h"
-#include "TailsEngine/Level/Entity.h"
+#include "TailsEngine/Core/Entity.h"
 #include "TailsEngine/Managers/MusicManager.h"
 
 namespace sf
@@ -65,10 +65,12 @@ public:
      * \brief Gets the world that holds this level
      * \return Pointer to the world
      */
-    World* getWorld() const;
+    World& getWorld() const;
 
     AssetCache& getAssetCache() const;
     MusicManager& getMusicManager();
+
+    Viewport& getViewport() const;
 
     template<typename EntT>
     EntT* spawnEntity()
@@ -99,7 +101,8 @@ protected:
     /**
      * \brief Completely removes the specified entity from the Level if it is spawned, and deletes its memory.
      * Should not be called manually, instead mark the entity for destruction with its own destroy() method.
-     * This method acts as a kind of garbage collection for those entities marked for destruction
+     * This method acts as a kind of garbage collection for those entities marked for destruction. It is called
+     * at the end of each frame for any Entity marked for destruction
      * \param entityToDestroy The entity to destroy
      */
     void destroyEntity(Entity* entityToDestroy);

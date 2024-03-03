@@ -4,8 +4,8 @@
 
 #include "TailsEngine/Core/World.h"
 #include "TailsEngine/Debug/Debug.h"
-#include "TailsEngine/Level/CollisionTest.h"
-#include "TailsEngine/Level/TailsEntity.h"
+#include "TailsEngine/Temp/CollisionTest.h"
+#include "TailsEngine/Temp/TailsEntity.h"
 #include "TailsEngine/Managers/CollisionManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
@@ -31,9 +31,9 @@ void tails::Level::construct()
     spawnEntity<CollisionTest>({300.f, 300.f});
 }
 
-tails::World* tails::Level::getWorld() const
+tails::World& tails::Level::getWorld() const
 {
-    return dynamic_cast<World*>(outer);
+    return *dynamic_cast<World*>(outer);
 }
 
 tails::AssetCache& tails::Level::getAssetCache() const
@@ -44,6 +44,11 @@ tails::AssetCache& tails::Level::getAssetCache() const
 tails::MusicManager& tails::Level::getMusicManager()
 {
     return m_musicManager;
+}
+
+tails::Viewport& tails::Level::getViewport() const
+{
+    return getWorld().getViewport();
 }
 
 void tails::Level::spawnEntity(Entity* entityToSpawn)

@@ -14,7 +14,7 @@ tails::Viewport::Viewport()
 
 void tails::Viewport::create()
 {
-    createAndDisplayScreen<Screen>();
+    
 }
 
 void tails::Viewport::update()

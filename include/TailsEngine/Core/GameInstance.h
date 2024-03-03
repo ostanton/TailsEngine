@@ -4,6 +4,11 @@
 
 namespace tails
 {
+class Viewport;
+}
+
+namespace tails
+{
 class InputManager;
 class World;
 class ApplicationWindow;
@@ -32,6 +37,8 @@ public:
 
     void pauseGame(bool pause);
     bool isGamePaused() const;
+
+    Viewport& getViewport() const;
     
 protected:
     /**

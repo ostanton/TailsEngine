@@ -2,6 +2,8 @@
 #include <vector>
 #include <SFML/Graphics/Drawable.hpp>
 // TODO - need these includes for it to compile for some reason??
+#include <SFML/Graphics/Transformable.hpp>
+
 #include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
 
@@ -35,7 +37,7 @@ namespace tails
  * necessary widgets where and how on create() or display(). For each .json we want to load a UI layout for, we need
  * a new Screen class object. Maybe the Level could behave like this. But we only really want one level at a time. Hmm
  */
-class Screen : public Object, public sf::Drawable
+class Screen : public Object, public sf::Drawable, public sf::Transformable
 {
     friend Viewport;
     
@@ -43,7 +45,7 @@ public:
     std::vector<unique_ptr<sf::Drawable>> widgets;
 
     /**
-     * \brief Creates a widget derived from sf::Drawable AND sf::Transformable. DOES NOT stored in a smart pointer.
+     * \brief Creates a widget derived from sf::Drawable AND sf::Transformable. DOES NOT get stored in a smart pointer.
      * Use createAndDisplayWidget() for that
      * \tparam WidgetT Must derive sf::Drawable AND sf::Transformable
      * \return Pointer to created widget

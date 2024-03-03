@@ -65,3 +65,13 @@ tails::Level* tails::World::getCurrentLevel() const
 {
     return currentLevel.get();
 }
+
+tails::GameInstance& tails::World::getGameInstance() const
+{
+    return *dynamic_cast<GameInstance*>(outer);
+}
+
+tails::Viewport& tails::World::getViewport() const
+{
+    return getGameInstance().getViewport();
+}

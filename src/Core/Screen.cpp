@@ -37,7 +37,9 @@ void tails::Screen::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 {
     for (size_t i {0}; i < widgets.size(); i++)
     {
-        target.draw(*widgets[i]);
+        // Add this screen's transform to the RenderStates' transform to update the "widgets"
+        states.transform *= getTransform();
+        target.draw(*widgets[i], states);
     }
 }
 
