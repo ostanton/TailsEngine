@@ -5,7 +5,7 @@
 
 const char* tails::Object::getClassName()
 {
-    return typeid(*this).name();
+    return getObjectClassName(this);
 }
 
 void tails::Object::construct()

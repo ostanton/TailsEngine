@@ -104,7 +104,7 @@ inline bool deleteObject(Object* object)
 
 inline const char* getObjectClassName(Object* object)
 {
-    return object->getClassName();
+    return typeid(*object).name();
 }
 
 inline bool isObjectValid(const Object* object)
