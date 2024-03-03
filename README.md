@@ -20,6 +20,7 @@ And don't worry about the rider stuff, .sln file, etc. I'll clean up the repo la
 - Simple GUI layer (`Screen`s composed of `sf::Drawable`s)
 
 # Future Additions:
-- Level loading and destroying object bugs fixed (see comments in `TailsEntity::processInput()` for what I mean)
 - Getting sf::Views working
 - LDTK map format for levels
+- Load UI layouts from JSON
+- More robust collision system
