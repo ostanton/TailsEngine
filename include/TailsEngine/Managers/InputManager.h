@@ -24,7 +24,9 @@ struct Key
  * Since this engine is intended for Game Boy Advance-style games, this really isn't necessary. However it will
  * probably be super useful with generic inputs, like "A" being mapped to sf::Keyboard::X, AND a controller button, etc.
  *
- * This needs to tick so it can compare current and previous action states
+ * This needs to update so it can compare current and previous action states.
+ *
+ * Base implementation and idea from: https://github.com/WerenskjoldH/SFML-Input-Manager
  */
 class InputManager
 {
