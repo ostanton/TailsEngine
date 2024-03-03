@@ -27,6 +27,7 @@ Lots of the classes do use pointers (smart pointers) when they don't need to, li
 - LDTK map format for levels
 - Load UI layouts from JSON
 - More robust collision system
+- Animations (frames and stuff)
 
 # Dependencies
 - [SFML](https://www.sfml-dev.org/ "SFML Homepage")
