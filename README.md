@@ -12,6 +12,7 @@ The architecture is kind of similar to [Unreal Engine](https://www.unrealengine.
 Setup instructions to come.
 
 And don't worry about the rider stuff, .sln file, etc. I'll clean up the repo later when it's more polished.
+Lots of the classes do use pointers (smart pointers) when they don't need to, like ApplicationWindow with most of its members. Dunno why I did that, but I'll probably make them normal, stack-allocated variables later. Who knows?
 
 # Features:
 - Asset Caches (load an asset once and reuse it, caches are local to their context)
