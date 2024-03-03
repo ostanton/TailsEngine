@@ -10,6 +10,20 @@ void tails::Entity::spawn()
     
 }
 
+void tails::Entity::setupData()
+{
+    Object::setupData();
+
+    if (m_componentsMap.empty())
+        return;
+
+    for (auto& component : m_componentsMap)
+    {
+        if (component.second.pendingSetup)
+            component.second.pendingSetup = false;
+    }
+}
+
 void tails::Entity::update(float deltaTime)
 {
     
@@ -22,13 +36,31 @@ void tails::Entity::processInput(sf::Event& e)
 
 void tails::Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    if (m_components.empty())
+    if (m_componentsMap.empty())
         return;
-    
-    for (auto& component : m_components)
+
+    for (auto& component : m_componentsMap)
     {
-        states.transform *= getTransform();
-        target.draw(*component, states);
+        // Only draw if we are not pending setup
+        if (!component.second.pendingSetup)
+        {
+            states.transform *= getTransform();
+            target.draw(*component.first, states);
+        }
+    }
+}
+
+void tails::Entity::cleanupData()
+{
+    Object::cleanupData();
+    
+    if (m_componentsMap.empty())
+        return;
+
+    for (auto& component : m_componentsMap)
+    {
+        if (component.second.pendingCleanup)
+            m_componentsMap.erase(component.first);
     }
 }
 
@@ -105,4 +137,17 @@ void tails::Entity::onEndCollision(Entity* otherEntity, const sf::FloatRect& oth
 const std::vector<tails::Entity*>& tails::Entity::getCollidingEntities() const
 {
     return m_collidingEntities;
+}
+
+bool tails::Entity::destroyComponent(Drawable* componentToDestroy)
+{
+    const auto compIter = std::find_if(m_componentsMap.begin(), m_componentsMap.end(),
+        [componentToDestroy] (const auto& component)
+        {
+            return component.first.get() == componentToDestroy;
+        });
+
+    m_componentsMap.at(compIter->first).pendingCleanup = true;
+
+    return false;
 }

@@ -98,7 +98,13 @@ void tails::Level::spawnEntities()
 
 void tails::Level::postSpawn()
 {
-    // Could make and put entity's own setupData() method here? Does it need one?
+    if (m_entities.empty())
+        return;
+    
+    for (const auto& entity : m_entities)
+    {
+        entity->setupData();
+    }
 }
 
 void tails::Level::update(float deltaTime)
@@ -131,7 +137,8 @@ void tails::Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     for (size_t i {0}; i < m_entities.size(); i++)
     {
-        target.draw(*m_entities[i]);
+        states.transform *= getTransform();
+        target.draw(*m_entities[i], states);
     }
 }
 
@@ -153,6 +160,8 @@ void tails::Level::cleanupEntities()
     {
         if (!createdEntity)
             continue;
+
+        createdEntity->cleanupData();
         
         if (createdEntity->m_pendingDestroy)
         {

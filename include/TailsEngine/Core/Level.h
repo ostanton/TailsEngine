@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <vector>
-#include <SFML/Graphics/Drawable.hpp>
 // TODO - need these includes for it to compile for some reason??
 // use of undefined type "tails::AssetCache"
 // static_assert failed: "can't delete an incomplete type"
@@ -51,7 +50,7 @@ namespace tails
  * level, which keeps the state of this Level object intact, it just looks like you're loading a new level from the
  * player's view.
  */
-class Level final : public Object, public sf::Drawable
+class Level final : public Object, public sf::Drawable, public sf::Transformable
 {
     friend World;
 

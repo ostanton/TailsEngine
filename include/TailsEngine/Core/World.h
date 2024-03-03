@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <vector>
 #include <SFML/Graphics/Drawable.hpp>
 
 #include "Level.h"

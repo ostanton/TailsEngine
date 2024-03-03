@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <unordered_map>
 #include <vector>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -23,6 +24,12 @@ class Viewport;
 
 namespace tails
 {
+struct ComponentInfo
+{
+    bool pendingSetup {false};
+    bool pendingCleanup {false};
+};
+
 /**
  * \brief Base class for all entities. Every entity is a sprite. You do not need to do sprite things however,
  * or have any appearance at all. This might be changed for a more lax sf::Drawable instead of sf::Sprite,
@@ -53,6 +60,8 @@ protected:
      * \brief Called once this entity has completely spawned in a level. All its members should be initialised
      */
     virtual void spawn();
+
+    void setupData() override;
     
     /**
      * \brief Called every frame that this entity is alive
@@ -75,6 +84,8 @@ protected:
      * \param states RenderStates dictating how components should be drawn
      */
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+    void cleanupData() override;
     
     /**
      * \brief Called before destruct() when this entity is being removed from a level. Should probably delete
@@ -148,7 +159,10 @@ protected:
         
         Drawable* resultComponent { new CompT };
 
-        m_components.emplace_back(resultComponent);
+        ComponentInfo componentInfo;
+        componentInfo.pendingSetup = true;
+        
+        m_componentsMap.emplace(resultComponent, componentInfo);
 
         return dynamic_cast<CompT*>(resultComponent);
     }
@@ -158,23 +172,7 @@ protected:
      * \param componentToDestroy Component object to destroy
      * \return Whether destruction was successful
      */
-    bool destroyComponent(Drawable* componentToDestroy)
-    {
-        const auto iter = std::find_if(
-            m_components.begin(), m_components.end(),
-            [componentToDestroy] (const unique_ptr<Drawable>& component)
-            {
-                return component.get() == componentToDestroy;
-            });
-        
-        if (iter != m_components.end())
-        {
-            m_components.erase(iter);
-            return true;
-        }
-
-        return false;
-    }
+    bool destroyComponent(Drawable* componentToDestroy);
 
     /**
      * \brief Finds a component of specified type in the m_components vector. Returns nullptr if none were found
@@ -185,12 +183,15 @@ protected:
     CompT* findComponent() const
     {
         static_assert(std::is_base_of_v<Drawable, CompT>, "Cannot find component not of type sf::Drawable");
-        
-        for (auto& component : m_components)
+
+        if (m_componentsMap.empty())
+            return nullptr;
+
+        for (auto& value : m_componentsMap)
         {
-            if (std::is_same_v<decltype(component.get()), CompT>)
+            if (std::is_same_v<decltype(value.first.get()), CompT>)
             {
-                return dynamic_cast<CompT*>(component.get());
+                return dynamic_cast<CompT*>(value.first.get());
             }
         }
 
@@ -204,9 +205,10 @@ private:
     std::vector<Entity*> m_collidingEntities;
 
     /**
-     * \brief Testing components system
+     * \brief Map of the components, storing if they are pending setup and/or cleanup.
+     * A similar system should very well be implemented with Screens
      */
-    std::vector<unique_ptr<Drawable>> m_components;
+    std::unordered_map<unique_ptr<Drawable>, ComponentInfo> m_componentsMap;
 
     /**
      * \brief Whether this entity is awaiting destruction at the end of this frame
