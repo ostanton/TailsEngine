@@ -25,7 +25,7 @@ void tails::World::openTargetLevel()
     {
         for (auto& createdEntity : currentLevel->m_entities)
         {
-            currentLevel->destroyEntity(createdEntity.get());
+            currentLevel->destroyEntity(createdEntity);
         }
     }
 
