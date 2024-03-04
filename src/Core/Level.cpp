@@ -21,12 +21,15 @@ void tails::Level::construct()
     getAssetCache().loadTexture("tails_running", "Assets/Textures/TailsRunning.png");
 
     // loop entities in .json and create them ready for create() to spawn them
-    //getWorld()->createEntity<TailsEntity>(this);
-    //getWorld()->createEntity<CollisionTest>(this);
 
     spawnEntity<TailsEntity>({480.f, 320.f});
     spawnEntity<CollisionTest>({400.f, 400.f});
     spawnEntity<CollisionTest>({300.f, 300.f});
+
+    // TODO - use decltype() to spawn entities??? Someone how make classes from the json, then use stack objects in
+    // decltype for the template to spawn them in the level
+    TailsEntity tailsEntity;
+    spawnEntity<decltype(tailsEntity)>({0.f, 0.f});
 }
 
 tails::World& tails::Level::getWorld() const
