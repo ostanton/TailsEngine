@@ -105,7 +105,7 @@ protected:
      * at the end of each frame for any Entity marked for destruction
      * \param entityToDestroy The entity to destroy
      */
-    void destroyEntity(Entity* entityToDestroy);
+    void destroyEntity(const unique_ptr<Entity>& entityToDestroy);
     
     /**
      * \brief Called when this level is created and its members should all be initialised

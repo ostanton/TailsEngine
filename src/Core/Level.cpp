@@ -58,15 +58,11 @@ void tails::Level::spawnEntity(Entity* entityToSpawn)
     m_entitiesPendingSpawn.emplace_back(entityToSpawn);
 }
 
-void tails::Level::destroyEntity(Entity* entityToDestroy)
+void tails::Level::destroyEntity(const unique_ptr<Entity>& entityToDestroy)
 {
-    const auto iter = std::find_if(
-        m_entities.begin(), m_entities.end(),
-        [entityToDestroy] (const unique_ptr<Entity>& entity)
-    {
-        return entity.get() == entityToDestroy;
-    });
-
+    const auto iter =
+        std::find(m_entities.begin(), m_entities.end(), entityToDestroy);
+    
     if (iter != m_entities.end())
     {
         entityToDestroy->despawn();
@@ -166,7 +162,7 @@ void tails::Level::cleanupEntities()
         
         if (createdEntity->m_pendingDestroy)
         {
-            destroyEntity(createdEntity.get());
+            destroyEntity(createdEntity);
         }
     }
 }
