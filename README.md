@@ -21,13 +21,13 @@ Lots of the classes do use pointers (smart pointers) when they don't need to, li
 - Basic Entity collision
 - Unreal's Actors-inspired Entities, with simple components
 - Simple GUI layer (`Screen`s composed of `sf::Drawable`s)
+- Animation Player for Sprites using sprite sheets
 
 # Future Additions:
 - Getting sf::Views working
 - LDTK map format for levels
 - Load UI layouts from JSON
 - More robust collision system
-- Animations (frames and stuff)
 
 # Dependencies
 - [SFML](https://www.sfml-dev.org/ "SFML Homepage")
