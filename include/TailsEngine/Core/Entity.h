@@ -198,6 +198,8 @@ protected:
         return nullptr;
     }
 
+    sf::FloatRect getGlobalEntityBounds();
+
 private:
     /**
      * \brief Vector of entities we are currently colliding with

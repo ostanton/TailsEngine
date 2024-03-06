@@ -1,6 +1,7 @@
 ﻿#include "TailsEngine/Core/Entity.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include "TailsEngine/Core/Level.h"
 #include "TailsEngine/Debug/Debug.h"
@@ -150,4 +151,16 @@ bool tails::Entity::destroyComponent(Drawable* componentToDestroy)
     m_componentsMap.at(compIter->first).pendingCleanup = true;
 
     return false;
+}
+
+sf::FloatRect tails::Entity::getGlobalEntityBounds()
+{
+    sf::FloatRect resultRect;
+    for (auto& component : m_componentsMap)
+    {
+        if (const auto sprite = dynamic_cast<sf::Sprite*>(component.first.get()))
+            resultRect = getTransform().transformRect(sprite->getLocalBounds());
+    }
+
+    return resultRect;
 }

@@ -25,11 +25,6 @@ void tails::Level::construct()
     spawnEntity<TailsEntity>({480.f, 320.f});
     spawnEntity<CollisionTest>({400.f, 400.f});
     spawnEntity<CollisionTest>({300.f, 300.f});
-
-    // TODO - use decltype() to spawn entities??? Someone how make classes from the json, then use stack objects in
-    // decltype for the template to spawn them in the level
-    TailsEntity tailsEntity;
-    spawnEntity<decltype(tailsEntity)>({0.f, 0.f});
 }
 
 tails::World& tails::Level::getWorld() const
@@ -147,7 +142,6 @@ void tails::Level::setupData()
 
 void tails::Level::cleanupData()
 {
-    // Could put entity's own cleanupData() method here? Does it need one? Or put it in cleanupEntities() actually
     cleanupEntities();
 }
 
