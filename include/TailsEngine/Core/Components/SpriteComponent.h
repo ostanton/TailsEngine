@@ -8,12 +8,13 @@ namespace tails
 class SpriteComponent : public PrimitiveComponent
 {
 public:
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
     sf::FloatRect getLocalBounds() override;
     sf::FloatRect getGlobalBounds() override;
 
     sf::Sprite& getSprite();
+
+protected:
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
     sf::Sprite m_sprite;
