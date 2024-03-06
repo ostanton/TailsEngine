@@ -6,6 +6,7 @@
 
 #include "TailsEngine/Core/Viewport.h"
 #include "TailsEngine/Core/World.h"
+#include "TailsEngine/Core/Components/AnimatedSpriteComponent.h"
 #include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
@@ -19,20 +20,19 @@ void tails::TailsEntity::spawn()
 {
     Entity::spawn();
     
-    m_sprite = createComponent<sf::Sprite>();
-    m_sprite->setScale(2.f, 2.f);
+    m_animatedSpriteComponent = createComponent<AnimatedSpriteComponent>();
+    m_animatedSpriteComponent->getSprite().setScale(2.f, 2.f);
 
-    m_animationPlayer.setTargetSprite(m_sprite);
-    m_animationPlayer.addAnimation(
+    m_animatedSpriteComponent->getAnimationPlayer().addAnimation(
         "pointer",
         &getLevelAssetCache()["pointer"].getAssetData<sf::Texture>(),
         sf::Vector2i(33, 33), true);
-    m_animationPlayer.playAnimation("pointer");
-
-    m_animationPlayer.addAnimation(
+    m_animatedSpriteComponent->getAnimationPlayer().addAnimation(
         "tails_running",
         &getLevelAssetCache()["tails_running"].getAssetData<sf::Texture>(),
         sf::Vector2i(45, 41), true);
+
+    m_animatedSpriteComponent->getAnimationPlayer().playAnimation("pointer");
 
     // setting global origin for this entity
     setOrigin(32.f, 32.f);
@@ -48,8 +48,6 @@ void tails::TailsEntity::spawn()
 void tails::TailsEntity::update(float deltaTime)
 {
     Entity::update(deltaTime);
-
-    m_animationPlayer.update(deltaTime);
 
     if (timer < 2.f)
     {
@@ -82,18 +80,18 @@ void tails::TailsEntity::processInput(sf::Event& e)
     if (getInputManager().onActionPress("b"))
     {
         currentSpeed = baseSpeed * runSpeedMultiplier;
-        m_animationPlayer.setPlayRate(4.f);
+        m_animatedSpriteComponent->getAnimationPlayer().setPlayRate(4.f);
     }
     if (getInputManager().onActionRelease("b"))
     {
         currentSpeed = baseSpeed * walkSpeedMultiplier;
-        m_animationPlayer.setPlayRate(1.f);
+        m_animatedSpriteComponent->getAnimationPlayer().setPlayRate(1.f);
     }
 
     if (getInputManager().onActionPress("a"))
-        m_animationPlayer.playAnimation("tails_running");
+        m_animatedSpriteComponent->getAnimationPlayer().playAnimation("tails_running");
     if (getInputManager().onActionRelease("a"))
-        m_animationPlayer.playAnimation("pointer");
+        m_animatedSpriteComponent->getAnimationPlayer().playAnimation("pointer");
 
     if (getInputManager().onActionPress("l"))
         destroy();

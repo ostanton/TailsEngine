@@ -4,7 +4,13 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
+#include "Component.h"
 #include "TailsEngine/Core/Obj.h"
+
+namespace tails
+{
+class Component;
+}
 
 namespace sf
 {
@@ -149,20 +155,22 @@ protected:
 
     /**
      * \brief Creates a component and adds it to the m_components vector
-     * \tparam CompT Component type to create (must inherit sf::Drawable)
+     * \tparam CompT Component type to create (must inherit tails::Component)
      * \return Pointer to created component
      */
     template<typename CompT>
     CompT* createComponent()
     {
-        static_assert(std::is_base_of_v<Drawable, CompT>, "Cannot create component not of type sf::Drawable");
+        static_assert(std::is_base_of_v<Component, CompT>, "Cannot create component not deriving from tails::Component");
         
-        Drawable* resultComponent { new CompT };
+        Component* resultComponent { new CompT };
 
         ComponentInfo componentInfo;
         componentInfo.pendingSetup = true;
         
         m_componentsMap.emplace(resultComponent, componentInfo);
+        
+        resultComponent->create();
 
         return dynamic_cast<CompT*>(resultComponent);
     }
@@ -172,7 +180,7 @@ protected:
      * \param componentToDestroy Component object to destroy
      * \return Whether destruction was successful
      */
-    bool destroyComponent(Drawable* componentToDestroy);
+    bool destroyComponent(Component* componentToDestroy);
 
     /**
      * \brief Finds a component of specified type in the m_components vector. Returns nullptr if none were found
@@ -182,7 +190,7 @@ protected:
     template<typename CompT>
     CompT* findComponent() const
     {
-        static_assert(std::is_base_of_v<Drawable, CompT>, "Cannot find component not of type sf::Drawable");
+        static_assert(std::is_base_of_v<Component, CompT>, "Cannot find component not deriving from tails::Component");
 
         if (m_componentsMap.empty())
             return nullptr;
@@ -210,7 +218,7 @@ private:
      * \brief Map of the components, storing if they are pending setup and/or cleanup.
      * A similar system should very well be implemented with Screens
      */
-    std::unordered_map<unique_ptr<Drawable>, ComponentInfo> m_componentsMap;
+    std::unordered_map<unique_ptr<Component>, ComponentInfo> m_componentsMap;
 
     /**
      * \brief Whether this entity is awaiting destruction at the end of this frame

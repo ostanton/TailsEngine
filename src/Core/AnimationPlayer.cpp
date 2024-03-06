@@ -43,9 +43,15 @@ void tails::AnimationPlayer::update(float deltaTime)
         return;
     }
     
-    if (m_animations.empty() || !m_animations.contains(m_currentAnimation))
+    if (m_animations.empty())
     {
-        Debug::log("Either no animations or we do not contain the requested animation");
+        Debug::log("AnimationPlayer contains no animations");
+        return;
+    }
+
+    if (!m_animations.contains(m_currentAnimation))
+    {
+        Debug::log("AnimationPlayer does not contain the requested animation");
         return;
     }
 

@@ -3,6 +3,11 @@
 #include "TailsEngine/Core/AnimationPlayer.h"
 #include "TailsEngine/Core/Entity.h"
 
+namespace tails
+{
+class AnimatedSpriteComponent;
+}
+
 namespace sf
 {
 class Sprite;
@@ -40,9 +45,8 @@ public:
     bool setOtherMusic {false};
 
 private:
-    sf::Sprite* m_sprite {nullptr};
+    AnimatedSpriteComponent* m_animatedSpriteComponent {nullptr};
     Screen* m_testScreen {nullptr};
-    AnimationPlayer m_animationPlayer;
 };
 
 }

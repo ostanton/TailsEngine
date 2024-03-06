@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include "TailsEngine/Core/Level.h"
+#include "TailsEngine/Core/Components/PrimitiveComponent.h"
 #include "TailsEngine/Debug/Debug.h"
 
 void tails::Entity::spawn()
@@ -27,7 +28,14 @@ void tails::Entity::setupData()
 
 void tails::Entity::update(float deltaTime)
 {
+    if (m_componentsMap.empty())
+        return;
     
+    for (const auto& component : m_componentsMap)
+    {
+        if (!component.second.pendingSetup)
+            component.first->update(deltaTime);
+    }
 }
 
 void tails::Entity::processInput(sf::Event& e)
@@ -45,8 +53,11 @@ void tails::Entity::draw(sf::RenderTarget& target, sf::RenderStates states) cons
         // Only draw if we are not pending setup
         if (!component.second.pendingSetup)
         {
-            states.transform *= getTransform();
-            target.draw(*component.first, states);
+            if (const auto drawable = dynamic_cast<Drawable*>(component.first.get()))
+            {
+                states.transform *= getTransform();
+                target.draw(*drawable, states);
+            }
         }
     }
 }
@@ -67,7 +78,13 @@ void tails::Entity::cleanupData()
 
 void tails::Entity::despawn()
 {
+    if (m_componentsMap.empty())
+        return;
     
+    for (auto& component : m_componentsMap)
+    {
+        component.first->destroy();
+    }
 }
 
 void tails::Entity::destroy()
@@ -77,7 +94,13 @@ void tails::Entity::destroy()
 
 void tails::Entity::create()
 {
+    if (m_componentsMap.empty())
+        return;
     
+    for (auto& component : m_componentsMap)
+    {
+        component.first->create();
+    }
 }
 
 tails::Level& tails::Entity::getLevel() const
@@ -140,7 +163,7 @@ const std::vector<tails::Entity*>& tails::Entity::getCollidingEntities() const
     return m_collidingEntities;
 }
 
-bool tails::Entity::destroyComponent(Drawable* componentToDestroy)
+bool tails::Entity::destroyComponent(Component* componentToDestroy)
 {
     const auto compIter = std::find_if(m_componentsMap.begin(), m_componentsMap.end(),
         [componentToDestroy] (const auto& component)
@@ -158,8 +181,8 @@ sf::FloatRect tails::Entity::getGlobalEntityBounds()
     sf::FloatRect resultRect;
     for (auto& component : m_componentsMap)
     {
-        if (const auto sprite = dynamic_cast<sf::Sprite*>(component.first.get()))
-            resultRect = getTransform().transformRect(sprite->getLocalBounds());
+        if (const auto comp = dynamic_cast<PrimitiveComponent*>(component.first.get()))
+            resultRect = getTransform().transformRect(comp->getGlobalBounds());
     }
 
     return resultRect;

@@ -1,5 +1,9 @@
 F:\Libraries\TailsEngine\src\Core\AnimationPlayer.cpp;F:\Libraries\TailsEngine\x64\Debug\AnimationPlayer.obj
 F:\Libraries\TailsEngine\src\Core\ApplicationWindow.cpp;F:\Libraries\TailsEngine\x64\Debug\ApplicationWindow.obj
+F:\Libraries\TailsEngine\src\Core\Component.cpp;F:\Libraries\TailsEngine\x64\Debug\Component.obj
+F:\Libraries\TailsEngine\src\Core\Components\AnimatedSpriteComponent.cpp;F:\Libraries\TailsEngine\x64\Debug\AnimatedSpriteComponent.obj
+F:\Libraries\TailsEngine\src\Core\Components\PrimitiveComponent.cpp;F:\Libraries\TailsEngine\x64\Debug\PrimitiveComponent.obj
+F:\Libraries\TailsEngine\src\Core\Components\SpriteComponent.cpp;F:\Libraries\TailsEngine\x64\Debug\SpriteComponent.obj
 F:\Libraries\TailsEngine\src\Core\Entity.cpp;F:\Libraries\TailsEngine\x64\Debug\Entity.obj
 F:\Libraries\TailsEngine\src\Core\GameInstance.cpp;F:\Libraries\TailsEngine\x64\Debug\GameInstance.obj
 F:\Libraries\TailsEngine\src\Core\Level.cpp;F:\Libraries\TailsEngine\x64\Debug\Level.obj
