@@ -7,11 +7,6 @@
 #include "Component.h"
 #include "TailsEngine/Core/Obj.h"
 
-namespace tails
-{
-class Component;
-}
-
 namespace sf
 {
 class Event;
@@ -26,6 +21,7 @@ class CollisionManager;
 class MusicManager;
 class AssetCache;
 class Viewport;
+class Component;
 }
 
 namespace tails
@@ -163,7 +159,7 @@ protected:
     {
         static_assert(std::is_base_of_v<Component, CompT>, "Cannot create component not deriving from tails::Component");
         
-        Component* resultComponent { new CompT };
+        Component* resultComponent { newObject<CompT>(this) };
 
         ComponentInfo componentInfo;
         componentInfo.pendingSetup = true;
