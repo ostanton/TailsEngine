@@ -22,9 +22,9 @@ Lots of the classes do use pointers (smart pointers) when they don't need to, li
 - Unreal's Actors-inspired Entities, with simple components
 - Simple GUI layer (`Screen`s composed of `sf::Drawable`s)
 - Animation Player for Sprites using sprite sheets
+- `sf::View`s for the UI layer and Game layer that retain their aspect ratio
 
 # Future Additions:
-- Getting sf::Views working
 - LDTK map format for levels
 - Load UI layouts from JSON
 - More robust collision system
