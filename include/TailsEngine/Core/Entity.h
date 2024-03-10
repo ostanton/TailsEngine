@@ -7,6 +7,11 @@
 #include "Component.h"
 #include "TailsEngine/Core/Obj.h"
 
+namespace tails
+{
+enum class InputMode;
+}
+
 namespace sf
 {
 class Event;
@@ -203,6 +208,8 @@ protected:
     }
 
     sf::FloatRect getGlobalEntityBounds();
+
+    void setInputMode(InputMode inputMode);
 
 private:
     /**

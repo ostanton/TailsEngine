@@ -4,6 +4,7 @@
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
+#include "TailsEngine/Core/InputTypes.h"
 #include "TailsEngine/Core/Viewport.h"
 #include "TailsEngine/Core/World.h"
 #include "TailsEngine/Core/Components/AnimatedSpriteComponent.h"
@@ -100,9 +101,7 @@ void tails::TailsEntity::processInput(sf::Event& e)
         getWorld().createAndOpenLevel<Level>();
 
     if (getInputManager().isActionDown("start"))
-        m_testScreen->move(getGlobalDeltaTime() * 50.f, 0.f);
-    if (getInputManager().isActionDown("select"))
-        m_testScreen->move(getGlobalDeltaTime() * -50.f, 0.f);
+        setInputMode(InputMode::Viewport);
 }
 
 void tails::TailsEntity::despawn()

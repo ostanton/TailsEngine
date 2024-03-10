@@ -27,6 +27,11 @@ void tails::Screen::display()
     
 }
 
+void tails::Screen::processInput(sf::Event& e)
+{
+    
+}
+
 void tails::Screen::update(float deltaTime)
 {
     m_fpsCounter->setString("FPS: " + std::to_string(static_cast<unsigned long long>(1.f / deltaTime)));

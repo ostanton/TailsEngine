@@ -14,6 +14,14 @@ void tails::Viewport::create()
     
 }
 
+void tails::Viewport::processInput(sf::Event& e)
+{
+    for (const auto& screen : screens)
+    {
+        screen->processInput(e);
+    }
+}
+
 void tails::Viewport::update()
 {
     frameTime = clock.restart();

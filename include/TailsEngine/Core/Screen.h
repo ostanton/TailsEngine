@@ -14,6 +14,7 @@ class Viewport;
 
 namespace sf
 {
+class Event;
 class Transformable;
 class Drawable;
 class Text;
@@ -92,6 +93,7 @@ protected:
      * It is safe to assume this object is now in that vector, so createWidget() doesn't need this as an input.
      */
     virtual void display();
+    virtual void processInput(sf::Event& e);
     virtual void update(float deltaTime);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     /**

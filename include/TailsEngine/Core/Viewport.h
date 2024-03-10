@@ -16,6 +16,7 @@ class ApplicationWindow;
 
 namespace sf
 {
+class Event;
 class Clock;
 class View;
 class Transformable;
@@ -47,6 +48,7 @@ protected:
      * \brief Called in postInitialise of ApplicationWindow
      */
     void create();
+    void processInput(sf::Event& e);
     void update();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

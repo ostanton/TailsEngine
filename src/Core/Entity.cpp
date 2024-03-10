@@ -187,3 +187,8 @@ sf::FloatRect tails::Entity::getGlobalEntityBounds()
 
     return resultRect;
 }
+
+void tails::Entity::setInputMode(InputMode inputMode)
+{
+    getLevel().setInputMode(inputMode);
+}

@@ -16,6 +16,7 @@ namespace tails
 class Entity;
 class World;
 class AssetCache;
+enum class InputMode;
 }
 
 namespace tails
@@ -96,6 +97,8 @@ public:
     }
 
     void spawnEntity(Entity* entityToSpawn);
+
+    void setInputMode(InputMode inputMode);
     
 protected:
     /**

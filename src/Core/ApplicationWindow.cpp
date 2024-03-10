@@ -80,8 +80,8 @@ void tails::ApplicationWindow::mainLoop()
         {
             switch (windowEvent.type)
             {
-                default:
-                    break;
+            default:
+                break;
             case sf::Event::Closed:
                 renderWindow->close();
                 break;
@@ -91,7 +91,19 @@ void tails::ApplicationWindow::mainLoop()
         }
 
         // Call outside poll event but still send through the event itself
-        gameInstance->processInput(windowEvent);
+        switch (inputMode)
+        {
+        case InputMode::Game:
+            gameInstance->processInput(windowEvent);
+            break;
+        case InputMode::Viewport:
+            viewport->processInput(windowEvent);
+            break;
+        case InputMode::GameAndViewport:
+            gameInstance->processInput(windowEvent);
+            viewport->processInput(windowEvent);
+            break;
+        }
         
         renderWindow->clear();
 

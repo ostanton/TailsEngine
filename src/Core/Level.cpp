@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include "TailsEngine/Core/ApplicationWindow.h"
 #include "TailsEngine/Core/World.h"
 #include "TailsEngine/Debug/Debug.h"
 #include "TailsEngine/Temp/CollisionTest.h"
@@ -51,6 +52,11 @@ void tails::Level::spawnEntity(Entity* entityToSpawn)
 {
     // This only temporarily adds the entity to spawn into the pending spawn vector for use start of next frame
     m_entitiesPendingSpawn.emplace_back(entityToSpawn);
+}
+
+void tails::Level::setInputMode(InputMode inputMode)
+{
+    getApplicationWindow()->inputMode = inputMode;
 }
 
 void tails::Level::destroyEntity(const unique_ptr<Entity>& entityToDestroy)

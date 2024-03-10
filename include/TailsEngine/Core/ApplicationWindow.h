@@ -6,6 +6,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include "InputTypes.h"
 #include "Obj.h"
 #include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
@@ -47,6 +48,11 @@ public:
  
     unique_ptr<GameInstance> gameInstance;
     unique_ptr<Viewport> viewport;
+
+    /**
+     * \brief Current input mode to dictate where input should be routed
+     */
+    InputMode inputMode {InputMode::GameAndViewport};
 
     /**
      * \brief Window's initial resolution. The actual size of the RenderWindow

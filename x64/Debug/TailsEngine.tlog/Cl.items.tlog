@@ -6,6 +6,7 @@ F:\Libraries\TailsEngine\src\Core\Components\PrimitiveComponent.cpp;F:\Libraries
 F:\Libraries\TailsEngine\src\Core\Components\SpriteComponent.cpp;F:\Libraries\TailsEngine\x64\Debug\SpriteComponent.obj
 F:\Libraries\TailsEngine\src\Core\Entity.cpp;F:\Libraries\TailsEngine\x64\Debug\Entity.obj
 F:\Libraries\TailsEngine\src\Core\GameInstance.cpp;F:\Libraries\TailsEngine\x64\Debug\GameInstance.obj
+F:\Libraries\TailsEngine\src\Core\InputTypes.cpp;F:\Libraries\TailsEngine\x64\Debug\InputTypes.obj
 F:\Libraries\TailsEngine\src\Core\Level.cpp;F:\Libraries\TailsEngine\x64\Debug\Level.obj
 F:\Libraries\TailsEngine\src\Core\Obj.cpp;F:\Libraries\TailsEngine\x64\Debug\Obj.obj
 F:\Libraries\TailsEngine\src\Core\Screen.cpp;F:\Libraries\TailsEngine\x64\Debug\Screen.obj
