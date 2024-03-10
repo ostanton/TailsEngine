@@ -13,6 +13,10 @@ F:\Libraries\TailsEngine\src\Core\Screen.cpp;F:\Libraries\TailsEngine\x64\Debug\
 F:\Libraries\TailsEngine\src\Core\Viewport.cpp;F:\Libraries\TailsEngine\x64\Debug\Viewport.obj
 F:\Libraries\TailsEngine\src\Core\World.cpp;F:\Libraries\TailsEngine\x64\Debug\World.obj
 F:\Libraries\TailsEngine\src\Debug\Debug.cpp;F:\Libraries\TailsEngine\x64\Debug\Debug.obj
+F:\Libraries\TailsEngine\src\Managers\Input\ActionModifiers\DeadZoneModifier.cpp;F:\Libraries\TailsEngine\x64\Debug\DeadZoneModifier.obj
+F:\Libraries\TailsEngine\src\Managers\Input\InputAction.cpp;F:\Libraries\TailsEngine\x64\Debug\InputAction.obj
+F:\Libraries\TailsEngine\src\Managers\Input\InputActionModifier.cpp;F:\Libraries\TailsEngine\x64\Debug\InputActionModifier.obj
+F:\Libraries\TailsEngine\src\Managers\Input\InputMappingContext.cpp;F:\Libraries\TailsEngine\x64\Debug\InputMappingContext.obj
 F:\Libraries\TailsEngine\src\Temp\CollisionTest.cpp;F:\Libraries\TailsEngine\x64\Debug\CollisionTest.obj
 F:\Libraries\TailsEngine\src\Temp\TailsEntity.cpp;F:\Libraries\TailsEngine\x64\Debug\TailsEntity.obj
 F:\Libraries\TailsEngine\src\main.cpp;F:\Libraries\TailsEngine\x64\Debug\main.obj
