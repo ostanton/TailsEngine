@@ -27,6 +27,8 @@ bool tails::AssetCache::loadTexture(const std::string& id, const std::string& pa
         return false;
     }
 
+    texture->setSmooth(false);
+    
     m_assets.emplace(id, std::make_unique<AssetInfo>(texture, AssetType::Texture, AssetState::Loaded, path));
     return true;
 }
@@ -54,6 +56,8 @@ bool tails::AssetCache::loadFont(const std::string& id, const std::string& path)
         delete font;
         return false;
     }
+
+    font->setSmooth(false);
 
     m_assets.emplace(id, std::make_unique<AssetInfo>(font, AssetType::Font, AssetState::Loaded, path));
     return true;

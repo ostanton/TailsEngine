@@ -23,9 +23,9 @@ void tails::Level::construct()
 
     // loop entities in .json and create them ready for create() to spawn them
 
-    spawnEntity<TailsEntity>({480.f, 320.f});
-    spawnEntity<CollisionTest>({400.f, 400.f});
-    spawnEntity<CollisionTest>({300.f, 300.f});
+    spawnEntity<TailsEntity>({140.f, 30.f});
+    spawnEntity<CollisionTest>({50.f, 50.f});
+    spawnEntity<CollisionTest>({80.f, 60.f});
 }
 
 tails::World& tails::Level::getWorld() const

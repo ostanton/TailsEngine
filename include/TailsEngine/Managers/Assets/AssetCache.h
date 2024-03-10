@@ -16,6 +16,8 @@ struct AssetInfo;
  * - Global
  * - Viewport
  * - Screen
+ *
+ * Could have some kind of global singleton for asset settings, like smooth, etc.
  */
 class AssetCache
 {

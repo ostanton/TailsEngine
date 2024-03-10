@@ -106,6 +106,18 @@ public:
 private:
     InputManager m_inputManager;
     AssetCache m_assetCache;
+
+    /**
+     * \brief Calculate the internal viewport size to match its intended aspect ratio
+     * \param width Window width
+     * \param height Window height
+     */
+    void calculateAspectRatio(unsigned width, unsigned height);
+    /**
+     * \brief Calculate the internal viewport size to match its intended aspect ratio
+     * \param size Window size
+     */
+    void calculateAspectRatio(const sf::Vector2u& size);
 };
 
 }

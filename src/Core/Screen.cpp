@@ -19,7 +19,7 @@ void tails::Screen::create()
     
     m_fpsCounter = createAndDisplayWidget<sf::Text>();
     m_fpsCounter->setFont(getAssetCache()["main_font"].getAssetData<sf::Font>());
-    m_fpsCounter->setCharacterSize(32);
+    m_fpsCounter->setCharacterSize(16);
 }
 
 void tails::Screen::display()

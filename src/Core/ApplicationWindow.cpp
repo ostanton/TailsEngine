@@ -27,10 +27,12 @@ void tails::ApplicationWindow::construct()
 void tails::ApplicationWindow::postInitSfml()
 {
     gameInstance = newObjectUnique<GameInstance>(this);
-    gameInstance->gameView.setViewport(sf::FloatRect(sf::Vector2f(0.f, 0.f), viewResolution));
+    gameInstance->gameView.reset({0.f, 0.f, viewResolution.x, viewResolution.y});
     
     viewport = newObjectUnique<Viewport>(this);
-    viewport->widgetView.setSize(viewResolution);
+    viewport->widgetView.reset({0.f, 0.f, viewResolution.x, viewResolution.y});
+
+    calculateAspectRatio(renderWindow->getSize());
 }
 
 void tails::ApplicationWindow::initWindowSettings()
@@ -85,6 +87,9 @@ void tails::ApplicationWindow::mainLoop()
             case sf::Event::Closed:
                 renderWindow->close();
                 break;
+            case sf::Event::Resized:
+                calculateAspectRatio(windowEvent.size.width, windowEvent.size.height);
+                break;
             }
 
             m_inputManager.preUpdate(windowEvent);
@@ -110,12 +115,13 @@ void tails::ApplicationWindow::mainLoop()
         gameInstance->update();
         viewport->update();
 
-        // TODO - get these views working
-        //renderWindow->setView(*gameInstance->gameView);
+        renderWindow->setView(gameInstance->gameView);
         renderWindow->draw(*gameInstance);
         
-        //renderWindow->setView(*viewport->widgetView);
+        renderWindow->setView(viewport->widgetView);
         renderWindow->draw(*viewport);
+
+        renderWindow->setView(renderWindow->getDefaultView());
 
         renderWindow->display();
 
@@ -129,4 +135,34 @@ void tails::ApplicationWindow::cleanupData()
 {
     viewport->cleanupData();
     gameInstance->cleanupData();
+}
+
+void tails::ApplicationWindow::calculateAspectRatio(unsigned width, unsigned height)
+{
+    sf::FloatRect viewportRect {0.f, 0.f, 1.f, 1.f};
+    
+    const float winWidth {static_cast<float>(width)};
+    const float winHeight {static_cast<float>(height)};
+
+    const float ratioX {winWidth / viewResolution.x};
+    const float ratioY {winHeight / viewResolution.y};
+
+    if (ratioX > ratioY)
+    {
+        viewportRect.width = ratioY / ratioX;
+        viewportRect.left = (1.f - viewportRect.width) / 2.f;
+    }
+    else if (ratioX < ratioY)
+    {
+        viewportRect.height = ratioX / ratioY;
+        viewportRect.top = (1.f - viewportRect.height) / 2.f;
+    }
+
+    gameInstance->gameView.setViewport(viewportRect);
+    viewport->widgetView.setViewport(viewportRect);
+}
+
+void tails::ApplicationWindow::calculateAspectRatio(const sf::Vector2u& size)
+{
+    calculateAspectRatio(size.x, size.y);
 }
