@@ -45,6 +45,8 @@ public:
     GameInstance& getGameInstance() const;
     Viewport& getViewport() const;
 
+    void setViewCameraPosition(const sf::Vector2f& position) const;
+
     /**
      * \brief Creates a level object and loads it into the level's vector
      * \tparam LevelT The level type to load

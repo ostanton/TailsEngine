@@ -6,15 +6,15 @@
 
 #include "TailsEngine/Debug/Debug.h"
 
-void tails::AnimationInfo::setupFrames()
+void tails::AnimationInfo::setupFrames(unsigned frameAmount)
 {
     // Create the frames of the animation from the sprite sheet and cell size
-    const sf::Vector2u cellsInSheet {
-        spriteSheet->getSize().x / cellSize.x,
-        spriteSheet->getSize().y / cellSize.y
-    };
+    //const sf::Vector2u cellsInSheet {
+    //    owningPlayer->getTargetSprite().getTexture()->getSize().x / cellSize.x,
+    //    owningPlayer->getTargetSprite().getTexture()->getSize().y / cellSize.y
+    //};
     
-    for (unsigned i {0}; i < cellsInSheet.x; i++)
+    for (unsigned i {0}; i < frameAmount; i++)
     {
         FrameInfo frameInfo;
         // Set cell size. If i != 0 (>), we add our cell size and multiple by i to get the left position
@@ -35,6 +35,11 @@ void tails::AnimationInfo::stopAnimation()
     currentFrame = 0;
 }
 
+tails::FrameInfo& tails::AnimationInfo::getCurrentFrame()
+{
+    return frames[currentFrame];
+}
+
 void tails::AnimationPlayer::update(float deltaTime)
 {
     if (!m_sprite)
@@ -42,7 +47,7 @@ void tails::AnimationPlayer::update(float deltaTime)
         Debug::log("AnimationPlayer sprite is not set");
         return;
     }
-    
+
     if (m_animations.empty())
     {
         Debug::log("AnimationPlayer contains no animations");
@@ -66,12 +71,14 @@ void tails::AnimationPlayer::update(float deltaTime)
     if (!animation.playing)
         return;
 
-    m_sprite->setTextureRect(animation.frames[animation.currentFrame].cell);
+    m_sprite->setTextureRect(animation.getCurrentFrame().cell);
 
-    m_animTimer += deltaTime * m_playRate;
+    const float overallPlayRate {m_playRate * (animation.playRate * animation.getCurrentFrame().length)};
+    
+    m_animTimer += deltaTime * overallPlayRate;
 
     // Return if we haven't reached the next frame yet
-    if (m_animTimer < 1.f / m_playRate)
+    if (m_animTimer < 1.f / overallPlayRate)
         return;
     
     animation.currentFrame++;
@@ -96,23 +103,33 @@ void tails::AnimationPlayer::setTargetSprite(sf::Sprite* sprite)
     m_sprite = sprite;
 }
 
-void tails::AnimationPlayer::addAnimation(const std::string& name, sf::Texture* spriteSheet,
-    const sf::Vector2i cellSize, const bool loop, const sf::Vector2u startingCellPosition)
+sf::Sprite& tails::AnimationPlayer::getTargetSprite() const
 {
-    AnimationInfo animationInfo(spriteSheet, cellSize, startingCellPosition, loop);
-    addAnimation(name, animationInfo);
+    return *m_sprite;
 }
 
-void tails::AnimationPlayer::addAnimation(const std::string& name, AnimationInfo& animation)
+tails::AnimationPlayer& tails::AnimationPlayer::addAnimation(const std::string& name, const sf::Vector2i cellSize,
+    unsigned frames, const bool loop, const sf::Vector2u startingCellPosition, const float playRate)
+{
+    AnimationInfo animationInfo(this, cellSize, startingCellPosition, loop, playRate);
+    addAnimation(name, animationInfo, frames);
+
+    return *this;
+}
+
+tails::AnimationPlayer& tails::AnimationPlayer::addAnimation(const std::string& name, AnimationInfo& animation,
+    unsigned frames)
 {
     if (m_animations.contains(name))
     {
         Debug::log("Animation with that name already exists");
-        return;
+        return *this;
     }
     
-    animation.setupFrames();
+    animation.setupFrames(frames);
     m_animations.emplace(name, animation);
+
+    return *this;
 }
 
 void tails::AnimationPlayer::removeAnimation(const std::string& name)
@@ -140,9 +157,6 @@ void tails::AnimationPlayer::playAnimation(const std::string& name, bool playFro
     
     m_currentAnimation = name;
     m_animations.at(name).playing = true;
-
-    if (m_sprite->getTexture() != m_animations.at(name).spriteSheet)
-        m_sprite->setTexture(*m_animations.at(name).spriteSheet);
 
     if (playFromStart)
         m_animations.at(name).currentFrame = 0;

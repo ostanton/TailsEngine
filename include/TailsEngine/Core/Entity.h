@@ -4,17 +4,13 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
-#include "Component.h"
+#include "AnimatedSprite.h"
 #include "TailsEngine/Core/Obj.h"
-
-namespace tails
-{
-enum class InputMode;
-}
 
 namespace sf
 {
 class Event;
+class RectangleShape;
 }
 
 namespace tails
@@ -27,6 +23,7 @@ class MusicManager;
 class AssetCache;
 class Viewport;
 class Component;
+enum class InputMode;
 }
 
 namespace tails
@@ -41,8 +38,6 @@ struct ComponentInfo
  * \brief Base class for all entities. Every entity is a sprite. You do not need to do sprite things however,
  * or have any appearance at all. This might be changed for a more lax sf::Drawable instead of sf::Sprite,
  * like how the widgets work (if they do actually work that is, they might not). For now it is a sprite
- *
- * Entities stay in their Level from its creation. Destroying an entity only despawns it. It still exists in memory
  */
 class Entity : public Object, public sf::Drawable, public sf::Transformable
 {
@@ -55,6 +50,11 @@ public:
      * \brief Destroys this entity. Deletes its memory, removes it from Level, etc.
      */
     void destroy();
+
+    Entity();
+    ~Entity() override;
+
+    const sf::Vector2i& getPixelPosition();
 
 protected:
     /**
@@ -129,14 +129,14 @@ protected:
      * \param otherEntity The entity we have just started colliding with
      * \param otherBounds otherEntity's global bounds
      */
-    virtual void onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds);
+    virtual void onStartCollision(Entity* otherEntity);
     
     /**
      * \brief Called the frame we stop colliding with another entity
      * \param otherEntity The entity we have just stopped colliding with
      * \param otherBounds otherEntity's global bounds
      */
-    virtual void onEndCollision(Entity* otherEntity, const sf::FloatRect& otherBounds);
+    virtual void onEndCollision(Entity* otherEntity);
 
     bool m_colliding {false};
     Entity* m_lastCollidingEntity {nullptr};
@@ -147,69 +147,20 @@ protected:
      */
     const std::vector<Entity*>& getCollidingEntities() const;
 
-    ///// TESTING COMPONENT SYSTEM /////
-    /*
-     * This would be used instead of the Entity inheriting directly from sf::Sprite. The idea here is to use
-     * SFML's classes as components, like the primitive components in Unreal's Actors (Static Mesh Component, etc.).
-     * They have no logic, their purpose is to provide visuals or bounding boxes for the Entity
-     */
-
-    /**
-     * \brief Creates a component and adds it to the m_components vector
-     * \tparam CompT Component type to create (must inherit tails::Component)
-     * \return Pointer to created component
-     */
-    template<typename CompT>
-    CompT* createComponent()
-    {
-        static_assert(std::is_base_of_v<Component, CompT>, "Cannot create component not deriving from tails::Component");
-        
-        Component* resultComponent { newObject<CompT>(this) };
-
-        ComponentInfo componentInfo;
-        componentInfo.pendingSetup = true;
-        
-        m_componentsMap.emplace(resultComponent, componentInfo);
-        
-        resultComponent->create();
-
-        return dynamic_cast<CompT*>(resultComponent);
-    }
-
-    /**
-     * \brief Destroys a component and removes it from the m_components vector. Any pointer to this now is invalid
-     * \param componentToDestroy Component object to destroy
-     * \return Whether destruction was successful
-     */
-    bool destroyComponent(Component* componentToDestroy);
-
-    /**
-     * \brief Finds a component of specified type in the m_components vector. Returns nullptr if none were found
-     * \tparam CompT Component type to find
-     * \return Pointer to found component, or nullptr if one couldn't be found
-     */
-    template<typename CompT>
-    CompT* findComponent() const
-    {
-        static_assert(std::is_base_of_v<Component, CompT>, "Cannot find component not deriving from tails::Component");
-
-        if (m_componentsMap.empty())
-            return nullptr;
-
-        for (auto& value : m_componentsMap)
-        {
-            if (std::is_same_v<decltype(value.first.get()), CompT>)
-            {
-                return dynamic_cast<CompT*>(value.first.get());
-            }
-        }
-
-        return nullptr;
-    }
-
-    sf::FloatRect getGlobalEntityBounds();
-
     void setInputMode(InputMode inputMode);
+
+    sf::RectangleShape* createHitBox(const sf::Vector2f& size = {32.f, 32.f},
+        const sf::Vector2f& position = {0.f, 0.f}, const sf::Color& colour = {sf::Color::Red});
+    void destroyHitBox(sf::RectangleShape* hitBox);
+
+    AnimatedSprite* createSprite();
+    AnimatedSprite* createSprite(const sf::Texture& spriteSheet);
+    void destroySprite(const AnimatedSprite* sprite);
+
+    void drawHitBoxes(bool inDraw);
+    bool getDrawHitBoxes() const;
+
+    void setViewCameraPosition(const sf::Vector2f& position) const;
 
 private:
     /**
@@ -217,16 +168,21 @@ private:
      */
     std::vector<Entity*> m_collidingEntities;
 
-    /**
-     * \brief Map of the components, storing if they are pending setup and/or cleanup.
-     * A similar system should very well be implemented with Screens
-     */
-    std::unordered_map<unique_ptr<Component>, ComponentInfo> m_componentsMap;
+    std::unordered_map<unique_ptr<AnimatedSprite>, ComponentInfo> m_sprites;
+    std::unordered_map<unique_ptr<sf::RectangleShape>, ComponentInfo> m_hitBoxes;
 
     /**
      * \brief Whether this entity is awaiting destruction at the end of this frame
      */
     bool m_pendingDestroy {false};
+
+    bool m_drawHitBoxes {false};
+
+    /**
+     * \brief Position of this entity rounded to the nearest pixel (will be used to draw the entity at the
+     * rounded position eventually)
+     */
+    sf::Vector2i m_pixelPosition;
 };
 
 }

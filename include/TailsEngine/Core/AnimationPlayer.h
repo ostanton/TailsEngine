@@ -19,7 +19,10 @@ namespace tails
 struct FrameInfo
 {
     sf::IntRect cell;
+    float length {1.f};
 };
+
+class AnimationPlayer;
 
 /**
  * \brief Provides information for a single animation, like its frames, cell size, if it loops, etc.
@@ -27,31 +30,31 @@ struct FrameInfo
  */
 struct AnimationInfo
 {
+    AnimationPlayer* owningPlayer;
     std::vector<FrameInfo> frames;
-    /**
-     * \brief The sprite sheet where the animation is located. This comes from an asset cache, so its memory
-     * is managed there
-     */
-    sf::Texture* spriteSheet;
     sf::Vector2u cellSize;
     sf::Vector2u startingCellPosition;
     bool loop {true};
     bool playing {false};
     size_t currentFrame {0};
+    float playRate {1.f};
 
     AnimationInfo(
-        sf::Texture* inSpriteSheet,
+        AnimationPlayer* owner,
         const sf::Vector2i inCellSize,
         const sf::Vector2u inStartingCellPosition,
-        const bool inLoop)
+        const bool inLoop,
+        const float inPlayRate)
         :
-    spriteSheet(inSpriteSheet),
+    owningPlayer(owner),
     cellSize(inCellSize),
     startingCellPosition(inStartingCellPosition),
-    loop(inLoop) {}
+    loop(inLoop),
+    playRate(inPlayRate) {}
 
-    void setupFrames();
+    void setupFrames(unsigned frameAmount);
     void stopAnimation();
+    FrameInfo& getCurrentFrame();
 };
 
 /**
@@ -59,6 +62,8 @@ struct AnimationInfo
  *
  * It only works with rows. You can specify a position in the sprite sheet to start (should be at the left edge),
  * and it iterates through each cell, drawing it to the sprite every second * playRate.
+ *
+ * It assumes the target sprite always has a texture set
  */
 class AnimationPlayer
 {
@@ -74,26 +79,34 @@ public:
      * \param sprite Sprite to apply the animation to
      */
     void setTargetSprite(sf::Sprite* sprite);
+
+    /**
+     * \brief Gets the target sprite that the animation is being applied to
+     * \return Sprite the animation is applied to
+     */
+    sf::Sprite& getTargetSprite() const;
     
     /**
      * \brief Adds an animation with the specified settings to the AnimationPlayer's m_animations vector ready to be
      * played
      * \param name Name of the animation
-     * \param spriteSheet Texture used for the animation
      * \param cellSize Size of each cell in the sprite sheet
+     * \param frames How many frames this animation has
      * \param startingCellPosition Where the animation starts in the sprite sheet
      * \param loop Should this animation play from start when it reaches the end
+     * \param playRate The speed of this animation
      */
-    void addAnimation(const std::string& name, sf::Texture* spriteSheet, const sf::Vector2i cellSize,
-        const bool loop = true, const sf::Vector2u startingCellPosition = {0, 0});
+    AnimationPlayer& addAnimation(const std::string& name, const sf::Vector2i cellSize, unsigned frames,
+        const bool loop = true, const sf::Vector2u startingCellPosition = {0, 0}, const float playRate = 1.f);
     
     /**
      * \brief Adds an animation with the specified settings to the AnimationPlayer's m_animations vector ready to be
      * played
      * \param name Name of the animation
      * \param animation Settings for the animation
+     * \param frames How many frames this animation has
      */
-    void addAnimation(const std::string& name, AnimationInfo& animation);
+    AnimationPlayer& addAnimation(const std::string& name, AnimationInfo& animation, unsigned frames);
     
     /**
      * \brief Removes an animation from the AnimationPlayer's m_animations vector. This animation can no longer be

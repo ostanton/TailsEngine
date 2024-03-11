@@ -99,6 +99,8 @@ public:
     void spawnEntity(Entity* entityToSpawn);
 
     void setInputMode(InputMode inputMode);
+
+    void setViewCameraPosition(const sf::Vector2f& position) const;
     
 protected:
     /**

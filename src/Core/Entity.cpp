@@ -1,10 +1,9 @@
 ﻿#include "TailsEngine/Core/Entity.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "TailsEngine/Core/Level.h"
-#include "TailsEngine/Core/Components/PrimitiveComponent.h"
 #include "TailsEngine/Debug/Debug.h"
 
 void tails::Entity::spawn()
@@ -16,25 +15,35 @@ void tails::Entity::setupData()
 {
     Object::setupData();
 
-    if (m_componentsMap.empty())
+    if (!m_hitBoxes.empty())
+    {
+        for (auto& hitBox : m_hitBoxes)
+        {
+            if (hitBox.second.pendingSetup)
+                hitBox.second.pendingSetup = false;
+        }
+    }
+
+    if (m_sprites.empty())
         return;
 
-    for (auto& component : m_componentsMap)
+    for (auto& sprite : m_sprites)
     {
-        if (component.second.pendingSetup)
-            component.second.pendingSetup = false;
+        if (sprite.second.pendingSetup)
+            sprite.second.pendingSetup = false;
     }
 }
 
 void tails::Entity::update(float deltaTime)
 {
-    if (m_componentsMap.empty())
+    if (m_sprites.empty())
         return;
-    
-    for (const auto& component : m_componentsMap)
+
+    for (const auto& sprite : m_sprites)
     {
-        if (!component.second.pendingSetup)
-            component.first->update(deltaTime);
+        // Only update if we aren't pending setup or cleanup
+        if (!sprite.second.pendingSetup && !sprite.second.pendingCleanup && sprite.first->isAnimated)
+            sprite.first->getAnimationPlayer().update(deltaTime);
     }
 }
 
@@ -45,19 +54,31 @@ void tails::Entity::processInput(sf::Event& e)
 
 void tails::Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    if (m_componentsMap.empty())
+    states.transform *= getTransform();
+    
+    if (m_drawHitBoxes)
+    {
+        if (m_hitBoxes.empty())
+            return;
+
+        for (auto& hitBox : m_hitBoxes)
+        {
+            if (!hitBox.second.pendingSetup && !hitBox.second.pendingCleanup)
+            {
+                target.draw(*hitBox.first, states);
+            }
+        }
+    }
+    
+    if (m_sprites.empty())
         return;
 
-    for (auto& component : m_componentsMap)
+    for (auto& sprite : m_sprites)
     {
-        // Only draw if we are not pending setup
-        if (!component.second.pendingSetup)
+        // Only draw if we are not pending setup or cleanup
+        if (!sprite.second.pendingSetup && !sprite.second.pendingCleanup)
         {
-            if (const auto drawable = dynamic_cast<Drawable*>(component.first.get()))
-            {
-                states.transform *= getTransform();
-                target.draw(*drawable, states);
-            }
+            target.draw(*sprite.first, states);
         }
     }
 }
@@ -66,25 +87,28 @@ void tails::Entity::cleanupData()
 {
     Object::cleanupData();
     
-    if (m_componentsMap.empty())
+    if (m_hitBoxes.empty())
         return;
 
-    for (auto& component : m_componentsMap)
+    for (auto& hitBox : m_hitBoxes)
     {
-        if (component.second.pendingCleanup)
-            m_componentsMap.erase(component.first);
+        if (hitBox.second.pendingCleanup)
+            m_hitBoxes.erase(hitBox.first);
+    }
+
+    if (m_sprites.empty())
+        return;
+
+    for (auto& sprite : m_sprites)
+    {
+        if (sprite.second.pendingCleanup)
+            m_sprites.erase(sprite.first);
     }
 }
 
 void tails::Entity::despawn()
 {
-    if (m_componentsMap.empty())
-        return;
     
-    for (auto& component : m_componentsMap)
-    {
-        component.first->destroy();
-    }
 }
 
 void tails::Entity::destroy()
@@ -92,15 +116,24 @@ void tails::Entity::destroy()
     m_pendingDestroy = true;
 }
 
+tails::Entity::Entity()
+{
+    
+}
+
+tails::Entity::~Entity()
+{
+    
+}
+
+const sf::Vector2i& tails::Entity::getPixelPosition()
+{
+    return m_pixelPosition;
+}
+
 void tails::Entity::create()
 {
-    if (m_componentsMap.empty())
-        return;
     
-    for (auto& component : m_componentsMap)
-    {
-        component.first->create();
-    }
 }
 
 tails::Level& tails::Entity::getLevel() const
@@ -148,12 +181,12 @@ void tails::Entity::onCollision(std::vector<Entity*>& otherEntities)
     }*/
 }
 
-void tails::Entity::onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
+void tails::Entity::onStartCollision(Entity* otherEntity)
 {
     Debug::log("Start collision");
 }
 
-void tails::Entity::onEndCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
+void tails::Entity::onEndCollision(Entity* otherEntity)
 {
     Debug::log("End collision");
 }
@@ -163,32 +196,82 @@ const std::vector<tails::Entity*>& tails::Entity::getCollidingEntities() const
     return m_collidingEntities;
 }
 
-bool tails::Entity::destroyComponent(Component* componentToDestroy)
-{
-    const auto compIter = std::find_if(m_componentsMap.begin(), m_componentsMap.end(),
-        [componentToDestroy] (const auto& component)
-        {
-            return component.first.get() == componentToDestroy;
-        });
-
-    m_componentsMap.at(compIter->first).pendingCleanup = true;
-
-    return false;
-}
-
-sf::FloatRect tails::Entity::getGlobalEntityBounds()
-{
-    sf::FloatRect resultRect;
-    for (auto& component : m_componentsMap)
-    {
-        if (const auto comp = dynamic_cast<PrimitiveComponent*>(component.first.get()))
-            resultRect = getTransform().transformRect(comp->getGlobalBounds());
-    }
-
-    return resultRect;
-}
-
 void tails::Entity::setInputMode(InputMode inputMode)
 {
     getLevel().setInputMode(inputMode);
+}
+
+sf::RectangleShape* tails::Entity::createHitBox(const sf::Vector2f& size,
+    const sf::Vector2f& position, const sf::Color& colour)
+{
+    auto resultShape {new sf::RectangleShape};
+    resultShape->setSize(size);
+    resultShape->setPosition(position);
+    resultShape->setFillColor(colour);
+    ComponentInfo shapeInfo;
+    shapeInfo.pendingSetup = true;
+    m_hitBoxes.emplace(resultShape, shapeInfo);
+    return resultShape;
+}
+
+void tails::Entity::destroyHitBox(sf::RectangleShape* hitBox)
+{
+    const auto mapIter = std::find_if(m_hitBoxes.begin(), m_hitBoxes.end(),
+        [&](auto& hitBoxIter)
+        {
+            return hitBoxIter.first.get() == hitBox;
+        });
+
+    m_hitBoxes.at(mapIter->first).pendingCleanup = true;
+}
+
+tails::AnimatedSprite* tails::Entity::createSprite()
+{
+    auto resultSprite {new AnimatedSprite};
+
+    ComponentInfo spriteInfo;
+    spriteInfo.pendingSetup = true;
+    
+    m_sprites.emplace(resultSprite, spriteInfo);
+    
+    return resultSprite;
+}
+
+tails::AnimatedSprite* tails::Entity::createSprite(const sf::Texture& spriteSheet)
+{
+    auto resultSprite {new AnimatedSprite};
+    resultSprite->setTexture(spriteSheet);
+    
+    ComponentInfo spriteInfo;
+    spriteInfo.pendingSetup = true;
+    
+    m_sprites.emplace(resultSprite, spriteInfo);
+    
+    return resultSprite;
+}
+
+void tails::Entity::destroySprite(const AnimatedSprite* sprite)
+{
+    const auto mapIter = std::find_if(m_sprites.begin(), m_sprites.end(),
+        [&](auto& spriteIter)
+        {
+            return spriteIter.first.get() == sprite;
+        });
+
+    m_sprites.at(mapIter->first).pendingCleanup = true;
+}
+
+void tails::Entity::drawHitBoxes(bool inDraw)
+{
+    m_drawHitBoxes = inDraw;
+}
+
+bool tails::Entity::getDrawHitBoxes() const
+{
+    return m_drawHitBoxes;
+}
+
+void tails::Entity::setViewCameraPosition(const sf::Vector2f& position) const
+{
+    getLevel().setViewCameraPosition(position);
 }

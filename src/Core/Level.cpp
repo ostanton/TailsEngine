@@ -4,7 +4,6 @@
 
 #include "TailsEngine/Core/ApplicationWindow.h"
 #include "TailsEngine/Core/World.h"
-#include "TailsEngine/Debug/Debug.h"
 #include "TailsEngine/Temp/CollisionTest.h"
 #include "TailsEngine/Temp/TailsEntity.h"
 #include "TailsEngine/Managers/CollisionManager.h"
@@ -59,6 +58,11 @@ void tails::Level::setInputMode(InputMode inputMode)
     getApplicationWindow()->inputMode = inputMode;
 }
 
+void tails::Level::setViewCameraPosition(const sf::Vector2f& position) const
+{
+    getWorld().setViewCameraPosition(position);
+}
+
 void tails::Level::destroyEntity(const unique_ptr<Entity>& entityToDestroy)
 {
     const auto iter =
@@ -109,6 +113,12 @@ void tails::Level::update(float deltaTime)
 {
     for (size_t i {0}; i < m_entities.size(); i++)
     {
+        m_entities[i]->m_pixelPosition =
+        {
+            static_cast<int>(std::round(m_entities[i]->getPosition().x)),
+            static_cast<int>(std::round(m_entities[i]->getPosition().y))
+        };
+        
         m_entities[i]->update(deltaTime);
 
         // Loop within a loop to check collision between entities. Is there a better way?

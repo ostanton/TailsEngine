@@ -75,3 +75,8 @@ tails::Viewport& tails::World::getViewport() const
 {
     return getGameInstance().getViewport();
 }
+
+void tails::World::setViewCameraPosition(const sf::Vector2f& position) const
+{
+    getGameInstance().gameView.setCenter(position);
+}

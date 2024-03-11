@@ -2,12 +2,10 @@
 
 #include <iostream>
 #include <SFML/Audio/Music.hpp>
-#include <SFML/Graphics/Sprite.hpp>
 
 #include "TailsEngine/Core/InputTypes.h"
 #include "TailsEngine/Core/Viewport.h"
 #include "TailsEngine/Core/World.h"
-#include "TailsEngine/Core/Components/AnimatedSpriteComponent.h"
 #include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
@@ -21,19 +19,12 @@ void tails::TailsEntity::spawn()
 {
     Entity::spawn();
     
-    m_animatedSpriteComponent = createComponent<AnimatedSpriteComponent>();
-    m_animatedSpriteComponent->getSprite().setScale(2.f, 2.f);
+    m_animatedSprite = createSprite(getLevelAssetCache()["tails_running"].getAssetData<sf::Texture>());
+    m_animatedSprite->getAnimationPlayer().addAnimation("tails_running", sf::Vector2i(45, 41), 8);
+    m_animatedSprite->getAnimationPlayer().playAnimation("tails_running");
 
-    m_animatedSpriteComponent->getAnimationPlayer().addAnimation(
-        "pointer",
-        &getLevelAssetCache()["pointer"].getAssetData<sf::Texture>(),
-        sf::Vector2i(33, 33), true);
-    m_animatedSpriteComponent->getAnimationPlayer().addAnimation(
-        "tails_running",
-        &getLevelAssetCache()["tails_running"].getAssetData<sf::Texture>(),
-        sf::Vector2i(45, 41), true);
-
-    m_animatedSpriteComponent->getAnimationPlayer().playAnimation("pointer");
+    createHitBox();
+    drawHitBoxes(true);
 
     // setting global origin for this entity
     setOrigin(32.f, 32.f);
@@ -63,6 +54,8 @@ void tails::TailsEntity::update(float deltaTime)
             getLevelMusicManager().loadAndPlayMusic("Assets/Music/EmeraldCity.ogg");
         }
     }
+
+    setViewCameraPosition(getPosition());
 }
 
 void tails::TailsEntity::processInput(sf::Event& e)
@@ -81,18 +74,13 @@ void tails::TailsEntity::processInput(sf::Event& e)
     if (getInputManager().onActionPress("b"))
     {
         currentSpeed = baseSpeed * runSpeedMultiplier;
-        m_animatedSpriteComponent->getAnimationPlayer().setPlayRate(4.f);
+        m_animatedSprite->getAnimationPlayer().setPlayRate(4.f);
     }
     if (getInputManager().onActionRelease("b"))
     {
         currentSpeed = baseSpeed * walkSpeedMultiplier;
-        m_animatedSpriteComponent->getAnimationPlayer().setPlayRate(1.f);
+        m_animatedSprite->getAnimationPlayer().setPlayRate(1.f);
     }
-
-    if (getInputManager().onActionPress("a"))
-        m_animatedSpriteComponent->getAnimationPlayer().playAnimation("tails_running");
-    if (getInputManager().onActionRelease("a"))
-        m_animatedSpriteComponent->getAnimationPlayer().playAnimation("pointer");
 
     if (getInputManager().onActionPress("l"))
         destroy();
@@ -112,9 +100,9 @@ void tails::TailsEntity::despawn()
     getViewport().destroyScreen(m_testScreen);
 }
 
-void tails::TailsEntity::onStartCollision(Entity* otherEntity, const sf::FloatRect& otherBounds)
+void tails::TailsEntity::onStartCollision(Entity* otherEntity)
 {
-    Entity::onStartCollision(otherEntity, otherBounds);
+    Entity::onStartCollision(otherEntity);
 
     otherEntity->destroy();
 }
