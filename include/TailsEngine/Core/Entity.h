@@ -127,14 +127,12 @@ protected:
     /**
      * \brief Called the frame we start colliding with another entity
      * \param otherEntity The entity we have just started colliding with
-     * \param otherBounds otherEntity's global bounds
      */
     virtual void onStartCollision(Entity* otherEntity);
     
     /**
      * \brief Called the frame we stop colliding with another entity
      * \param otherEntity The entity we have just stopped colliding with
-     * \param otherBounds otherEntity's global bounds
      */
     virtual void onEndCollision(Entity* otherEntity);
 
