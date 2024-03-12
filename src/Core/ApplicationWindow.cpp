@@ -13,6 +13,13 @@ tails::ApplicationWindow::ApplicationWindow()
 {
     videoMode = std::make_unique<sf::VideoMode>(windowResolution.x, windowResolution.y);
     renderWindow = std::make_unique<sf::RenderWindow>(*videoMode, windowTitle);
+    windowView.reset(sf::FloatRect(0.f, 0.f,
+        static_cast<float>(viewResolution.x),
+        static_cast<float>(viewResolution.y)));
+    
+    renderTexture.create(viewResolution.x + 1, viewResolution.y + 1);
+    renderTexture.setSmooth(false);
+    renderSprite.setTexture(renderTexture.getTexture());
 }
 
 void tails::ApplicationWindow::construct()
@@ -27,12 +34,18 @@ void tails::ApplicationWindow::construct()
 void tails::ApplicationWindow::postInitSfml()
 {
     gameInstance = newObjectUnique<GameInstance>(this);
-    gameInstance->gameView.reset({0.f, 0.f, viewResolution.x, viewResolution.y});
+    gameInstance->gameView.reset({0.f, 0.f,
+        static_cast<float>(viewResolution.x),
+        static_cast<float>(viewResolution.y)
+    });
     
     viewport = newObjectUnique<Viewport>(this);
-    viewport->widgetView.reset({0.f, 0.f, viewResolution.x, viewResolution.y});
+    viewport->widgetView.reset({0.f, 0.f,
+        static_cast<float>(viewResolution.x),
+        static_cast<float>(viewResolution.y)
+    });
 
-    calculateAspectRatio(renderWindow->getSize());
+    //calculateAspectRatio(renderTexture.getSize());
 }
 
 void tails::ApplicationWindow::initWindowSettings()
@@ -110,19 +123,26 @@ void tails::ApplicationWindow::mainLoop()
             break;
         }
         
-        renderWindow->clear();
+        renderTexture.clear();
 
         gameInstance->update();
         viewport->update();
 
-        renderWindow->setView(gameInstance->gameView);
-        renderWindow->draw(*gameInstance);
+        renderTexture.setView(gameInstance->gameView);
+        renderTexture.draw(*gameInstance);
         
-        renderWindow->setView(viewport->widgetView);
-        renderWindow->draw(*viewport);
+        renderTexture.setView(viewport->widgetView);
+        renderTexture.draw(*viewport);
 
+        renderTexture.setView(renderTexture.getDefaultView());
+
+        renderTexture.display();
+        renderSprite.setTexture(renderTexture.getTexture());
+
+        renderWindow->clear();
+        renderWindow->setView(windowView);
+        renderWindow->draw(renderSprite);
         renderWindow->setView(renderWindow->getDefaultView());
-
         renderWindow->display();
 
         m_inputManager.postUpdate();
@@ -144,8 +164,8 @@ void tails::ApplicationWindow::calculateAspectRatio(unsigned width, unsigned hei
     const float winWidth {static_cast<float>(width)};
     const float winHeight {static_cast<float>(height)};
 
-    const float ratioX {winWidth / viewResolution.x};
-    const float ratioY {winHeight / viewResolution.y};
+    const float ratioX {winWidth / static_cast<float>(viewResolution.x)};
+    const float ratioY {winHeight / static_cast<float>(viewResolution.y)};
 
     if (ratioX > ratioY)
     {
@@ -157,9 +177,10 @@ void tails::ApplicationWindow::calculateAspectRatio(unsigned width, unsigned hei
         viewportRect.height = ratioX / ratioY;
         viewportRect.top = (1.f - viewportRect.height) / 2.f;
     }
-
-    gameInstance->gameView.setViewport(viewportRect);
-    viewport->widgetView.setViewport(viewportRect);
+    
+    //gameInstance->gameView.setViewport(viewportRect);
+    //viewport->widgetView.setViewport(viewportRect);
+    windowView.setViewport(viewportRect);
 }
 
 void tails::ApplicationWindow::calculateAspectRatio(const sf::Vector2u& size)

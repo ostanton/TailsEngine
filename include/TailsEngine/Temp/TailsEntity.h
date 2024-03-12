@@ -32,7 +32,7 @@ public:
 
     float walkSpeedMultiplier {1.f};
     float runSpeedMultiplier{3.f};
-    float baseSpeed {50.f};
+    float baseSpeed {100.f};
     float currentSpeed;
 
     float timer {0.f};

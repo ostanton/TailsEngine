@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include <memory>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/String.hpp>
 #include <SFML/System/Time.hpp>
@@ -10,6 +12,16 @@
 #include "Obj.h"
 #include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
+
+namespace sf
+{
+class Sprite;
+}
+
+namespace sf
+{
+class RenderTexture;
+}
 
 namespace tails
 {
@@ -42,9 +54,12 @@ public:
     
     unique_ptr<sf::VideoMode> videoMode;
     unique_ptr<sf::RenderWindow> renderWindow;
+    sf::RenderTexture renderTexture;
+    sf::Sprite renderSprite;
     sf::Event windowEvent;
     sf::Clock globalClock;
     sf::Time globalTime;
+    sf::View windowView;
  
     unique_ptr<GameInstance> gameInstance;
     unique_ptr<Viewport> viewport;
@@ -61,7 +76,7 @@ public:
     /**
      * \brief The internal resolution used by the Views. This is stretched to fit the window size
      */
-    sf::Vector2f viewResolution {240.f, 160.f};
+    sf::Vector2u viewResolution {240, 160};
     /**
      * \brief The title of the window
      */
