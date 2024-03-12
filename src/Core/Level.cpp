@@ -18,7 +18,7 @@ void tails::Level::construct()
      */
     getAssetCache().loadTexture("tails", "Assets/Textures/Tails.png");
     getAssetCache().loadTexture("pointer", "Assets/Textures/Pointer.png");
-    getAssetCache().loadTexture("tails_running", "Assets/Textures/TailsRunning.png");
+    getAssetCache().loadAsset("tails_running", "Assets/Textures/TailsRunning.png");
 
     // loop entities in .json and create them ready for create() to spawn them
 

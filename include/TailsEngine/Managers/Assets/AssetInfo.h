@@ -9,37 +9,37 @@ class AssetCache;
 namespace tails
 {
 /**
- * \brief The type of the asset. Used because we are storing the data as void*, so without this we would have
- * no idea what type the data is unless we cast and check, which would be a bit annoying. Not to mention
- * static_cast does not care about that stuff really so...
- */
-enum class AssetType
-{
-    None,     // Invalid/void
-    Texture,  // sf::Texture
-    Sound,    // sf::SoundBuffer
-    Font,     // sf::Font
-    Level,    // JSON (.ldtk)
-    Screen    // JSON (.screen)
-};
-
-/**
- * \brief This is going unused at the moment, might come in handy later down the line
- */
-enum class AssetState
-{
-    None,
-    Unloaded,
-    Loaded
-};
-
-/**
  * \brief A structure that contains information for a certain asset. To get its data, call the templated method
  * getAssetData() with the type you want the data to be (sf::Texture, sf::SoundBuffer, etc.)
  */
 struct AssetInfo
 {
     friend AssetCache;
+
+    /**
+     * \brief The type of the asset. Used because we are storing the data as void*, so without this we would have
+     * no idea what type the data is unless we cast and check, which would be a bit annoying. Not to mention
+     * static_cast does not care about that stuff really so...
+     */
+    enum AssetType
+    {
+        None,     // Invalid/void
+        Texture,  // sf::Texture
+        Sound,    // sf::SoundBuffer
+        Font,     // sf::Font
+        Level,    // JSON (.ldtk)
+        Screen    // JSON (.screen)
+    };
+
+    /**
+     * \brief This is going unused at the moment, might come in handy later down the line
+     */
+    enum AssetState
+    {
+        Invalid,
+        Unloaded,
+        Loaded
+    };
     
     AssetType type;
     AssetState state;

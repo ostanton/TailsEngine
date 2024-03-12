@@ -102,6 +102,13 @@ public:
     bool loadSound(const std::string& id, const std::string& path);
     bool loadFont(const std::string& id, const std::string& path);
 
+    /**
+     * \brief A generalised load method
+     * \param id Unique identifier for this asset
+     * \param path Local directory to this asset
+     * \return Whether this asset was successfully loaded
+     */
+    bool loadAsset(const std::string& id, const std::string& path);
     bool unloadAsset(const std::string& id);
 
     AssetInfo& getAssetInfo(const std::string& id) const;

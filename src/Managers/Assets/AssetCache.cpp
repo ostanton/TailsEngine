@@ -29,7 +29,7 @@ bool tails::AssetCache::loadTexture(const std::string& id, const std::string& pa
 
     texture->setSmooth(false);
     
-    m_assets.emplace(id, std::make_unique<AssetInfo>(texture, AssetType::Texture, AssetState::Loaded, path));
+    m_assets.emplace(id, std::make_unique<AssetInfo>(texture, AssetInfo::Texture, AssetInfo::Loaded, path));
     return true;
 }
 
@@ -43,7 +43,7 @@ bool tails::AssetCache::loadSound(const std::string& id, const std::string& path
         return false;
     }
 
-    m_assets.emplace(id, std::make_unique<AssetInfo>(sound, AssetType::Sound, AssetState::Loaded, path));
+    m_assets.emplace(id, std::make_unique<AssetInfo>(sound, AssetInfo::Sound, AssetInfo::Loaded, path));
     return true;
 }
 
@@ -59,8 +59,22 @@ bool tails::AssetCache::loadFont(const std::string& id, const std::string& path)
 
     font->setSmooth(false);
 
-    m_assets.emplace(id, std::make_unique<AssetInfo>(font, AssetType::Font, AssetState::Loaded, path));
+    m_assets.emplace(id, std::make_unique<AssetInfo>(font, AssetInfo::Font, AssetInfo::Loaded, path));
     return true;
+}
+
+bool tails::AssetCache::loadAsset(const std::string& id, const std::string& path)
+{
+    if (loadTexture(id, path))
+        return true;
+
+    if (loadSound(id, path))
+        return true;
+
+    if (loadFont(id, path))
+        return true;
+
+    return false;
 }
 
 bool tails::AssetCache::unloadAsset(const std::string& id)
