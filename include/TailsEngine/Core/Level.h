@@ -57,6 +57,8 @@ class Level final : public Object, public sf::Drawable, public sf::Transformable
     friend World;
 
 public:
+    void loadJson();
+    
     // TODO - tileMap or whatever members
     // specific .json ldtk level file
 

@@ -1,0 +1,7 @@
+{
+	"hello_world" : {
+		"the_string" : "hello",
+		"the_number" : 18
+	},
+	"goodbye_world" : 64
+}

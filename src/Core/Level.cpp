@@ -1,5 +1,8 @@
 ﻿#include "TailsEngine/Core/Level.h"
 
+#include <fstream>
+#include <iostream>
+#include <nlohmann_json/json.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "TailsEngine/Core/ApplicationWindow.h"
@@ -7,6 +10,16 @@
 #include "TailsEngine/Temp/CollisionTest.h"
 #include "TailsEngine/Temp/TailsEntity.h"
 #include "TailsEngine/Managers/CollisionManager.h"
+
+void tails::Level::loadJson()
+{
+    std::ifstream jsonFileStream {"Assets/JSON/Test.json"};
+    nlohmann::json resultJson = nlohmann::json::parse(jsonFileStream);
+
+    std::cout << resultJson["hello_world"]["the_string"].get<std::string>() << std::endl;
+
+    // How to spawn entity???
+}
 
 void tails::Level::construct()
 {
@@ -19,6 +32,8 @@ void tails::Level::construct()
     getAssetCache().loadTexture("tails", "Assets/Textures/Tails.png");
     getAssetCache().loadTexture("pointer", "Assets/Textures/Pointer.png");
     getAssetCache().loadAsset("tails_running", "Assets/Textures/TailsRunning.png");
+
+    loadJson();
 
     // loop entities in .json and create them ready for create() to spawn them
 
