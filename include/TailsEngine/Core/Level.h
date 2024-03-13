@@ -100,7 +100,7 @@ public:
 
     void spawnEntity(Entity* entityToSpawn);
 
-    void setInputMode(InputMode inputMode);
+    void setInputMode(InputMode inputMode) const;
 
     void setViewCameraPosition(const sf::Vector2f& position) const;
     

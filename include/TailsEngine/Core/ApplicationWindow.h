@@ -67,7 +67,7 @@ public:
     /**
      * \brief Current input mode to dictate where input should be routed
      */
-    InputMode inputMode {InputMode::GameAndViewport};
+    InputMode targetInputMode {InputMode::GameAndViewport};
 
     /**
      * \brief Window's initial resolution. The actual size of the RenderWindow
@@ -121,6 +121,7 @@ public:
 private:
     InputManager m_inputManager;
     AssetCache m_assetCache;
+    InputMode m_inputMode;
 
     /**
      * \brief Calculate the internal viewport size to match its intended aspect ratio

@@ -145,7 +145,7 @@ protected:
      */
     const std::vector<Entity*>& getCollidingEntities() const;
 
-    void setInputMode(InputMode inputMode);
+    void setInputMode(InputMode inputMode) const;
 
     sf::RectangleShape* createHitBox(const sf::Vector2f& size = {32.f, 32.f},
         const sf::Vector2f& position = {0.f, 0.f}, const sf::Color& colour = {sf::Color::Red});

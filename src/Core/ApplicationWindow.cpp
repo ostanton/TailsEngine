@@ -109,7 +109,7 @@ void tails::ApplicationWindow::mainLoop()
         }
 
         // Call outside poll event but still send through the event itself
-        switch (inputMode)
+        switch (m_inputMode)
         {
         case InputMode::Game:
             gameInstance->processInput(windowEvent);
@@ -155,6 +155,8 @@ void tails::ApplicationWindow::cleanupData()
 {
     viewport->cleanupData();
     gameInstance->cleanupData();
+
+    m_inputMode = targetInputMode;
 }
 
 void tails::ApplicationWindow::calculateAspectRatio(unsigned width, unsigned height)

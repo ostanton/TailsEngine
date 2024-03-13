@@ -8,6 +8,11 @@
 
 namespace tails
 {
+enum class InputMode;
+}
+
+namespace tails
+{
 class AssetCache;
 class Viewport;
 }
@@ -110,6 +115,8 @@ protected:
     Viewport& getViewport() const;
 
     AssetCache& getAssetCache();
+
+    void setInputMode(InputMode inputMode) const;
     
 private:
     AssetCache m_assetCache;
@@ -117,6 +124,9 @@ private:
     std::vector<unique_ptr<sf::Drawable>> m_widgetsPendingDisplay;
 
     sf::Text* m_fpsCounter;
+
+    sf::Text* m_button1;
+    sf::Text* m_button2;
 
     bool m_pendingRemoval {false};
 };

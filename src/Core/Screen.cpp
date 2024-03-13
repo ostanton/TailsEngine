@@ -3,8 +3,9 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-#include "TailsEngine/Core/ApplicationWindow.h"
+#include "TailsEngine/Core/InputTypes.h"
 #include "TailsEngine/Core/Viewport.h"
+#include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
 
@@ -20,6 +21,18 @@ void tails::Screen::create()
     m_fpsCounter = createAndDisplayWidget<sf::Text>();
     m_fpsCounter->setFont(getAssetCache()["main_font"].getAssetData<sf::Font>());
     m_fpsCounter->setCharacterSize(16);
+
+    m_button1 = createAndDisplayWidget<sf::Text>();
+    m_button1->setFont(getAssetCache()["main_font"].getAssetData<sf::Font>());
+    m_button1->setCharacterSize(24);
+    m_button1->setPosition(0.f, 32.f);
+    m_button1->setString("Button 1");
+
+    m_button2 = createAndDisplayWidget<sf::Text>();
+    m_button2->setFont(getAssetCache()["main_font"].getAssetData<sf::Font>());
+    m_button2->setCharacterSize(16);
+    m_button2->setPosition(0.f, 64.f);
+    m_button2->setString("Button 2");
 }
 
 void tails::Screen::display()
@@ -29,7 +42,21 @@ void tails::Screen::display()
 
 void tails::Screen::processInput(sf::Event& e)
 {
-    
+    if (getInputManager().onActionPress("down"))
+    {
+        m_button1->setCharacterSize(16);
+        m_button2->setCharacterSize(24);
+    }
+    if (getInputManager().onActionPress("up"))
+    {
+        m_button1->setCharacterSize(24);
+        m_button2->setCharacterSize(16);
+    }
+    if (getInputManager().onActionPress("start"))
+    {
+        setInputMode(InputMode::Game);
+        destroy();
+    }
 }
 
 void tails::Screen::update(float deltaTime)
@@ -96,4 +123,9 @@ tails::Viewport& tails::Screen::getViewport() const
 tails::AssetCache& tails::Screen::getAssetCache()
 {
     return m_assetCache;
+}
+
+void tails::Screen::setInputMode(InputMode inputMode) const
+{
+    getViewport().setInputMode(inputMode);
 }

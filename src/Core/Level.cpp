@@ -68,9 +68,9 @@ void tails::Level::spawnEntity(Entity* entityToSpawn)
     m_entitiesPendingSpawn.emplace_back(entityToSpawn);
 }
 
-void tails::Level::setInputMode(InputMode inputMode)
+void tails::Level::setInputMode(InputMode inputMode) const
 {
-    getApplicationWindow()->inputMode = inputMode;
+    getApplicationWindow()->targetInputMode = inputMode;
 }
 
 void tails::Level::setViewCameraPosition(const sf::Vector2f& position) const

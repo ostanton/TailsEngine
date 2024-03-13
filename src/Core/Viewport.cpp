@@ -99,3 +99,8 @@ tails::Screen* tails::Viewport::getTopMostScreen() const
     
     return screens[0].get();
 }
+
+void tails::Viewport::setInputMode(InputMode inputMode) const
+{
+    getApplicationWindow()->targetInputMode = inputMode;
+}

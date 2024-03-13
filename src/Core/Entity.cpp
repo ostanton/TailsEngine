@@ -196,7 +196,7 @@ const std::vector<tails::Entity*>& tails::Entity::getCollidingEntities() const
     return m_collidingEntities;
 }
 
-void tails::Entity::setInputMode(InputMode inputMode)
+void tails::Entity::setInputMode(InputMode inputMode) const
 {
     getLevel().setInputMode(inputMode);
 }

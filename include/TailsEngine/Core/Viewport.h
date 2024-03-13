@@ -10,6 +10,11 @@
 
 namespace tails
 {
+enum class InputMode;
+}
+
+namespace tails
+{
 class InputManager;
 class ApplicationWindow;
 }
@@ -106,6 +111,8 @@ public:
     std::vector<unique_ptr<Screen>> screens;
 
     Screen* getTopMostScreen() const;
+
+    void setInputMode(InputMode inputMode) const;
 
 private:
     std::vector<unique_ptr<Screen>> m_screensPendingDisplay;

@@ -6,6 +6,7 @@
 #include "TailsEngine/Core/InputTypes.h"
 #include "TailsEngine/Core/Viewport.h"
 #include "TailsEngine/Core/World.h"
+#include "TailsEngine/Debug/Debug.h"
 #include "TailsEngine/Managers/InputManager.h"
 #include "TailsEngine/Managers/Assets/AssetCache.h"
 #include "TailsEngine/Managers/Assets/AssetInfo.h"
@@ -33,8 +34,6 @@ void tails::TailsEntity::spawn()
 
     getLevelMusicManager().loadAndPlayMusic("Assets/Music/TailsLab.ogg");
     getLevelMusicManager().getMusic().setVolume(50.f);
-
-    m_testScreen = getViewport().createAndDisplayScreen<Screen>();
 }
 
 void tails::TailsEntity::update(float deltaTime)
@@ -88,8 +87,11 @@ void tails::TailsEntity::processInput(sf::Event& e)
     if (getInputManager().onActionPress("r"))
         getWorld().createAndOpenLevel<Level>();
 
-    if (getInputManager().isActionDown("start"))
+    if (getInputManager().onActionPress("start"))
+    {
         setInputMode(InputMode::Viewport);
+        m_testScreen = getViewport().createAndDisplayScreen<Screen>();
+    }
 }
 
 void tails::TailsEntity::despawn()
