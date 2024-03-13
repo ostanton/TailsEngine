@@ -117,6 +117,7 @@ protected:
     AssetCache& getAssetCache();
 
     void setInputMode(InputMode inputMode) const;
+    void pauseGame(bool pause) const;
     
 private:
     AssetCache m_assetCache;

@@ -3,6 +3,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "TailsEngine/Core/ApplicationWindow.h"
+#include "TailsEngine/Core/GameInstance.h"
 
 tails::Viewport::Viewport()
 {
@@ -103,4 +104,9 @@ tails::Screen* tails::Viewport::getTopMostScreen() const
 void tails::Viewport::setInputMode(InputMode inputMode) const
 {
     getApplicationWindow()->targetInputMode = inputMode;
+}
+
+void tails::Viewport::pauseGame(bool pause) const
+{
+    getApplicationWindow()->gameInstance->pauseGame(pause);
 }

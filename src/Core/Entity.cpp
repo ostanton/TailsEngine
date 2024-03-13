@@ -275,3 +275,8 @@ void tails::Entity::setViewCameraPosition(const sf::Vector2f& position) const
 {
     getLevel().setViewCameraPosition(position);
 }
+
+void tails::Entity::pauseGame(bool pause) const
+{
+    getLevel().pauseGame(pause);
+}

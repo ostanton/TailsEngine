@@ -55,6 +55,7 @@ void tails::Screen::processInput(sf::Event& e)
     if (getInputManager().onActionPress("start"))
     {
         setInputMode(InputMode::Game);
+        pauseGame(false);
         destroy();
     }
 }
@@ -128,4 +129,9 @@ tails::AssetCache& tails::Screen::getAssetCache()
 void tails::Screen::setInputMode(InputMode inputMode) const
 {
     getViewport().setInputMode(inputMode);
+}
+
+void tails::Screen::pauseGame(bool pause) const
+{
+    getViewport().pauseGame(pause);
 }

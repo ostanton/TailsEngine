@@ -103,6 +103,8 @@ public:
     void setInputMode(InputMode inputMode) const;
 
     void setViewCameraPosition(const sf::Vector2f& position) const;
+
+    void pauseGame(bool pause) const;
     
 protected:
     /**

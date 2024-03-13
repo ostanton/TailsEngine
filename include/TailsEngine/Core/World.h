@@ -79,6 +79,8 @@ protected:
 
     void setupData() override;
     void cleanupData() override;
+
+    void pauseGame(bool pause) const;
 };
 
 }

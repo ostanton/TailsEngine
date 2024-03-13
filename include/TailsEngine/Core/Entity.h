@@ -160,6 +160,8 @@ protected:
 
     void setViewCameraPosition(const sf::Vector2f& position) const;
 
+    void pauseGame(bool pause) const;
+
 private:
     /**
      * \brief Vector of entities we are currently colliding with

@@ -61,6 +61,11 @@ void tails::World::cleanupData()
     openTargetLevel();
 }
 
+void tails::World::pauseGame(bool pause) const
+{
+    getGameInstance().pauseGame(pause);
+}
+
 tails::Level* tails::World::getCurrentLevel() const
 {
     return currentLevel.get();

@@ -78,6 +78,11 @@ void tails::Level::setViewCameraPosition(const sf::Vector2f& position) const
     getWorld().setViewCameraPosition(position);
 }
 
+void tails::Level::pauseGame(bool pause) const
+{
+    getWorld().pauseGame(pause);
+}
+
 void tails::Level::destroyEntity(const unique_ptr<Entity>& entityToDestroy)
 {
     const auto iter =

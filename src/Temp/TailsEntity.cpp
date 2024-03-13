@@ -91,6 +91,7 @@ void tails::TailsEntity::processInput(sf::Event& e)
     {
         setInputMode(InputMode::Viewport);
         m_testScreen = getViewport().createAndDisplayScreen<Screen>();
+        pauseGame(true);
     }
 }
 

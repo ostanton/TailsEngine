@@ -114,6 +114,8 @@ public:
 
     void setInputMode(InputMode inputMode) const;
 
+    void pauseGame(bool pause) const;
+
 private:
     std::vector<unique_ptr<Screen>> m_screensPendingDisplay;
 };
