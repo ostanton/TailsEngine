@@ -15,7 +15,7 @@ And don't worry about the rider stuff, .sln file, etc. I'll clean up the repo la
 
 Lots of the classes do use pointers (smart pointers) when they don't need to, like ApplicationWindow with most of its members. Dunno why I did that, but I'll probably make them normal, stack-allocated variables later. Who knows?
 
-# Features:
+# Features
 - Asset Caches (load an asset once and reuse it, caches are local to their context)
 - Input Manager (set up action and key bindings)
 - Basic Entity collision
@@ -24,7 +24,7 @@ Lots of the classes do use pointers (smart pointers) when they don't need to, li
 - Animation Player for Sprites using sprite sheets
 - `sf::View`s for the UI layer and Game layer that retain their aspect ratio
 
-# Future Additions:
+# Future Additions
 - LDTK map format for levels
 - Load UI layouts from JSON
 - More robust collision system
