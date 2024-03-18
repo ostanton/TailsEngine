@@ -31,13 +31,13 @@ void tails::Level::construct()
      */
     getAssetCache().loadTexture("tails", "Assets/Textures/Tails.png");
     getAssetCache().loadTexture("pointer", "Assets/Textures/Pointer.png");
-    getAssetCache().loadAsset("tails_running", "Assets/Textures/TailsRunning.png");
+    getAssetCache().loadAsset("TailsSheet", "Assets/Textures/TailsSheet.png");
 
     loadJson();
 
     // loop entities in .json and create them ready for create() to spawn them
 
-    spawnEntity<TailsEntity>({140.f, 30.f});
+    spawnEntity<TailsEntity>({140.f, 0.f});
     spawnEntity<CollisionTest>({50.f, 50.f});
     spawnEntity<CollisionTest>({80.f, 60.f});
 }

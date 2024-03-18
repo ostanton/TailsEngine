@@ -36,6 +36,9 @@ void tails::Entity::setupData()
 
 void tails::Entity::update(float deltaTime)
 {
+    velocity = velocity * 0.75f;
+    move(velocity * deltaTime);
+    
     if (m_sprites.empty())
         return;
 

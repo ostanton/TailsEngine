@@ -72,7 +72,7 @@ public:
     /**
      * \brief Window's initial resolution. The actual size of the RenderWindow
      */
-    sf::Vector2u windowResolution {960, 640};
+    sf::Vector2u windowResolution {1920, 1280};
     /**
      * \brief The internal resolution used by the Views. This is stretched to fit the window size
      */

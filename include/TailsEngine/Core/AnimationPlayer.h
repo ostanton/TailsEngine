@@ -34,6 +34,7 @@ struct AnimationInfo
     std::vector<FrameInfo> frames;
     sf::Vector2u cellSize;
     sf::Vector2u startingCellPosition;
+    sf::Vector2u cellSpacing;
     bool loop {true};
     bool playing {false};
     size_t currentFrame {0};
@@ -41,14 +42,16 @@ struct AnimationInfo
 
     AnimationInfo(
         AnimationPlayer* owner,
-        const sf::Vector2i inCellSize,
+        const sf::Vector2u inCellSize,
         const sf::Vector2u inStartingCellPosition,
+        const sf::Vector2u inCellSpacing,
         const bool inLoop,
         const float inPlayRate)
         :
     owningPlayer(owner),
     cellSize(inCellSize),
     startingCellPosition(inStartingCellPosition),
+    cellSpacing(inCellSpacing),
     loop(inLoop),
     playRate(inPlayRate) {}
 
@@ -92,12 +95,14 @@ public:
      * \param name Name of the animation
      * \param cellSize Size of each cell in the sprite sheet
      * \param frames How many frames this animation has
-     * \param startingCellPosition Where the animation starts in the sprite sheet
+     * \param cellSpacing The space between each cell/frame of the animation
      * \param loop Should this animation play from start when it reaches the end
+     * \param startingCellPosition Where the animation starts in the sprite sheet
      * \param playRate The speed of this animation
      */
-    AnimationPlayer& addAnimation(const std::string& name, const sf::Vector2i cellSize, unsigned frames,
-        const bool loop = true, const sf::Vector2u startingCellPosition = {0, 0}, const float playRate = 1.f);
+    AnimationPlayer& addAnimation(const std::string& name, const sf::Vector2u cellSize, unsigned frames,
+        const sf::Vector2u cellSpacing = {0, 0}, const bool loop = true,
+        const sf::Vector2u startingCellPosition = {0, 0}, const float playRate = 1.f);
     
     /**
      * \brief Adds an animation with the specified settings to the AnimationPlayer's m_animations vector ready to be

@@ -56,6 +56,11 @@ public:
 
     const sf::Vector2i& getPixelPosition();
 
+    /**
+     * \brief This entity's current velocity
+     */
+    sf::Vector2f velocity;
+
 protected:
     /**
      * \brief Called when this entity has been created in the level, but not yet spawned. Its position and general

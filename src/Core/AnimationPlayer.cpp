@@ -19,8 +19,8 @@ void tails::AnimationInfo::setupFrames(unsigned frameAmount)
         FrameInfo frameInfo;
         // Set cell size. If i != 0 (>), we add our cell size and multiple by i to get the left position
         const sf::IntRect frameCell {
-            static_cast<int>(i == 0 ? startingCellPosition.x : (startingCellPosition.x + cellSize.x) * i),
-            static_cast<int>(startingCellPosition.y),
+            static_cast<int>((i == 0 ? startingCellPosition.x : (startingCellPosition.x + cellSize.x + cellSpacing.x) * i)),
+            static_cast<int>(startingCellPosition.y + cellSpacing.y),
             static_cast<int>(cellSize.x),
             static_cast<int>(cellSize.y)
         };
@@ -108,13 +108,12 @@ sf::Sprite& tails::AnimationPlayer::getTargetSprite() const
     return *m_sprite;
 }
 
-tails::AnimationPlayer& tails::AnimationPlayer::addAnimation(const std::string& name, const sf::Vector2i cellSize,
-    unsigned frames, const bool loop, const sf::Vector2u startingCellPosition, const float playRate)
+tails::AnimationPlayer& tails::AnimationPlayer::addAnimation(const std::string& name, const sf::Vector2u cellSize,
+    unsigned frames, const sf::Vector2u cellSpacing, const bool loop, const sf::Vector2u startingCellPosition,
+    const float playRate)
 {
-    AnimationInfo animationInfo(this, cellSize, startingCellPosition, loop, playRate);
-    addAnimation(name, animationInfo, frames);
-
-    return *this;
+    AnimationInfo animationInfo(this, cellSize, startingCellPosition, cellSpacing, loop, playRate);
+    return addAnimation(name, animationInfo, frames);
 }
 
 tails::AnimationPlayer& tails::AnimationPlayer::addAnimation(const std::string& name, AnimationInfo& animation,
