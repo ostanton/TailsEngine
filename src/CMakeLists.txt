@@ -1,0 +1,22 @@
+project(Pokemon)
+
+add_library(
+    TailsEngine
+    main.cpp
+    State.cpp
+    StateStack.cpp
+    LevelState.cpp
+    Engine.cpp
+    Entity.cpp
+    RectEntity.cpp
+    SpriteEntity.cpp
+    Input/Action.cpp
+    Input/Context.cpp
+    Managers/Input.cpp
+    Managers/Audio.cpp
+    Managers/Asset.cpp
+    Assets/Info.cpp
+    UI/Widget.cpp
+    UI/Slot.cpp
+    Subsystems/Manager.cpp
+)
