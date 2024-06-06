@@ -87,7 +87,12 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
 - Whenever modules are fully supported (could be never lol!) move to that C++ version and move to them. Much faster compilations!
 
 ## How to compile
-Run `cmake ..` in the build directory, then `make` or build the solution.
+```
+mkdir build
+cd build
+cmake ..
+make
+```
 
 ## Dependencies
 ### Fetched with CMake
