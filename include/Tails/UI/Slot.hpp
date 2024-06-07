@@ -5,6 +5,8 @@
 
 #include <SFML/Graphics/Drawable.hpp>
 
+#include <memory>
+
 namespace tails
 {
     class Widget;
@@ -13,7 +15,7 @@ namespace tails
     {
     public:
         Widget* parent {nullptr};
-        Widget* content {nullptr};
+        std::unique_ptr<Widget> content;
 
     protected:
         virtual void tick(float deltaTime);
