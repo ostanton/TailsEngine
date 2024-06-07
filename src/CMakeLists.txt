@@ -17,5 +17,6 @@ add_library(
     Assets/Info.cpp
     UI/Widget.cpp
     UI/Slot.cpp
+    Subsystems/EngineSubsystem.cpp
     Subsystems/Manager.cpp
 )
