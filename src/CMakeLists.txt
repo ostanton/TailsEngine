@@ -2,7 +2,6 @@ project(Pokemon)
 
 add_library(
     TailsEngine
-    main.cpp
     State.cpp
     StateStack.cpp
     LevelState.cpp
@@ -18,5 +17,6 @@ add_library(
     Assets/Info.cpp
     UI/Widget.cpp
     UI/Slot.cpp
+    Subsystems/EngineSubsystem.cpp
     Subsystems/Manager.cpp
 )
