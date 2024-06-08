@@ -88,6 +88,7 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
     - settings file for game-specific settings, like audio volume, maybe resolution/window size?, fullscreen, etc.
 - Whenever modules are fully supported (could be never lol!) move to that C++ version and move to them. Much faster compilations!
 - Specialised SubsystemManager class so it's easy for any class to have subsystems (problems I have so far is Tickable class and virtual inheritance stuff!)
+- Better CMake support so it's easy to include or fetch it in another CMake project
 
 ## How to compile
 ```
