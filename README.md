@@ -81,6 +81,7 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
 - Engine default settings struct
     - User either subclasses or creates an object from it, sets the object types via template parameters (class template so they can both derive and/or instance it?) and pass that into the engine init method?
     - Would require a base Settings struct, so the templated class one derives it and the engine just has a pointer to the base one!
+    - Would be used to set default registries, maybe GameMode or something if going down the Unreal-style path, etc.
 - Screenshot ability?
     - RenderWindow::capture() - returns an sf::Image, save it to file in save/captures/? SFML docs says it's deprecated and instead to update a texture with the window as input!
 - GameSettings.ini
