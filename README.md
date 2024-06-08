@@ -105,49 +105,88 @@ These libraries are automatically downloaded and added and built when running CM
 These libraries are not downloaded with CMake, but are found in their respective folders in `include/`.
 - [LeksysINI](https://github.com/Lek-sys/LeksysINI)
 
-# Classes (alphabetical order)
+## Binary folder
+The game expects an `engine.ini` file next to the executable. This is where paths to textures, sounds, etc. are set, in addition to window settings and render settings. Some of these might move to a separate `user_settings.ini` file in the future. For now though, it's all in the `engine.ini` file.
+The structure by default is as follows:
+- Root
+- res
+    - data
+        - input
+            - actions.json, contexts.json, etc. (describe the input actions and the keys they are mapped to)
+        - items.json, etc. (game-specific general data, weapons.json for example)
+    - font
+    - level
+    - sound
+    - tex
+- save
+    - where all the saves are stored
+- engine.ini
+
+The `engine.ini` contents by default is as follows (you can copy and paste for a game using this library to work properly):
+```
+[paths]
+data = res/data
+textures = res/tex
+sounds = res/sound
+fonts = res/font
+levels = res/level
+input = res/data/input
+saves = save
+
+[render]
+resolution = 640, 480
+
+[window]
+title = Tails Engine
+size = 640, 480
+fullscreen = false
+```
+
+Without this file, the engine cannot initialise or really do anything, as it relies on those paths being set, and the render and window sections have valid fields and values (for the window to be initialised).
+
+## Classes (alphabetical order)
 - Debug
 - Engine
 - Object
 - Tickable
-## Assets:
+### Assets:
 - Asset Handle
 - Asset Info
 - Resource
     - Font Resource
     - Sound Resource
     - Texture Resource
-## Entities
+### Entities
 - Entity
     - Rect Entity
     - Sprite Entity
-## Events
+### Events
 - Delegate
     - Method Delegate
 - Event
-## Input
+### Input
 - Input Action
 - Input Context
 - Input Modifier
 - Input Value
-## Layers
+### Layers
 - Layer
-## Registries
+### Registries
 - Registry
-## States
+### States
 - State
-## Subsystems
+### Subsystems
 - Subsystem
     - Engine Subsystem
         - Asset Subsystem
         - Audio Subsystem
         - Input Subsystem
         - State Subsystem
-## UI
+### UI
 - Slot
 - Widget
 
-# Input pseudocode
+## Input pseudocode
 ```
 struct InputValue final
 {
@@ -388,11 +427,11 @@ public:
 }
 ```
 
-# Input mapping data
+## Input mapping data
 View `actions.json` and `contexts.json`.
 
-# Asset Metadata
-## Asset types
+## Asset Metadata
+### Asset types
 - sprite
 - spritesheet
 - tilemap (requires tile width & height, not necessarily columns and rows, as those can be worked out via the tile size and texture size)
