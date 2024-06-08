@@ -39,6 +39,12 @@ namespace tails
             m_delegate = std::make_unique<MemberDelegate<C, Args...>>(object, function);
         }
 
+        template<typename C>
+        void bind(C* object, void(C::*function)(const Args&...))
+        {
+            m_delegate = std::make_unique<MemberDelegate<C, Args...>>(object, function);
+        }
+
         void unbind() {m_delegate.reset();}
 
         void execute(Args&&... args)
