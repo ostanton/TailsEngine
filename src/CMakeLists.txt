@@ -9,7 +9,6 @@ add_library(
     Input/Action.cpp
     Input/Context.cpp
     States/State.cpp
-    Subsystems/EngineSubsystem.cpp
     Subsystems/AssetSubsystem.cpp
     Subsystems/AudioSubsystem.cpp
     Subsystems/InputSubsystem.cpp

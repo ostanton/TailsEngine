@@ -1,7 +1,7 @@
 #ifndef TAILS_INPUTSUBSYSTEM_HPP
 #define TAILS_INPUTSUBSYSTEM_HPP
 
-#include <Tails/Subsystems/EngineSubsystem.hpp>
+#include <Tails/Subsystems/Subsystem.hpp>
 #include <Tails/Input/Context.hpp>
 
 #include <unordered_map>
@@ -9,10 +9,10 @@
 
 namespace tails
 {
-    class InputSubsystem final : public EngineSubsystem
+    class InputSubsystem final : public Subsystem
     {
     private:
-        void init() override;
+        void init(Engine& engine) override;
         void tick(float deltaTime) override;
 
         std::unordered_map<std::string, InputContext> m_contexts; // use unique_ptr instead?

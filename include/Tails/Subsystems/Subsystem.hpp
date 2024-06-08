@@ -11,10 +11,16 @@ namespace sf
 
 namespace tails
 {
+    class Engine;
+
+    // subsystems of Engine. A way for the engine to categorise and
+    // branch off different tasks it does
     class Subsystem : public Object, public Tickable
     {
+        friend Engine;
+
     protected:
-        virtual void init() = 0;
+        virtual void init(Engine& engine) = 0;
         virtual void draw(sf::RenderTarget& target) {}
         virtual void deinit() {}
     };

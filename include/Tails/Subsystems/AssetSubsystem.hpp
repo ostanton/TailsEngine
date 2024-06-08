@@ -1,7 +1,7 @@
 #ifndef TAILS_ASSETSUBSYSTEM_HPP
 #define TAILS_ASSETSUBSYSTEM_HPP
 
-#include <Tails/Subsystems/EngineSubsystem.hpp>
+#include <Tails/Subsystems/Subsystem.hpp>
 #include <Tails/Assets/AssetInfo.hpp>
 #include <Tails/Assets/AssetHandle.hpp>
 
@@ -9,7 +9,7 @@
 
 namespace tails
 {
-    class AssetSubsystem : public EngineSubsystem
+    class AssetSubsystem : public Subsystem
     {
     public:
         uint32_t createAsset(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, const std::string& path);
@@ -18,7 +18,7 @@ namespace tails
         void destroyAsset(uint32_t id);
 
     private:
-        void init() override {}
+        void init(Engine& engine) override {}
         void tick(float deltaTime) override {}
 
         std::unordered_map<uint32_t, AssetInfo> m_assets;

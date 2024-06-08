@@ -1,14 +1,14 @@
 #ifndef TAILS_AUDIOSUBSYSTEM_HPP
 #define TAILS_AUDIOSUBSYSTEM_HPP
 
-#include <Tails/Subsystems/EngineSubsystem.hpp>
+#include <Tails/Subsystems/Subsystem.hpp>
 
 namespace tails
 {
-    class AudioSubsystem : public EngineSubsystem
+    class AudioSubsystem : public Subsystem
     {
     protected:
-        void init() override {}
+        void init(Engine& engine) override {}
         void tick(float deltaTime) override;
 
     private:

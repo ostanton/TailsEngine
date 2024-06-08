@@ -40,7 +40,7 @@ namespace tails
         return state == getActiveState();
     }
 
-    void StateSubsystem::init()
+    void StateSubsystem::init(Engine& engine)
     {
 
     }

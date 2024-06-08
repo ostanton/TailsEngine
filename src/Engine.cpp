@@ -105,7 +105,7 @@ namespace tails
         return *m_window;
     }
 
-    EngineSubsystem* Engine::getSubsystem(const std::string& name)
+    Subsystem* Engine::getSubsystem(const std::string& name)
     {
         if (!m_subsystems.contains(name)) return nullptr;
 
@@ -213,12 +213,12 @@ namespace tails
         Debug::print("Subsystems destroyed.\n");
     }
 
-    void Engine::addSubsystem(const std::string& name, std::unique_ptr<EngineSubsystem> subsystem)
+    void Engine::addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem)
     {
         Debug::print("  Initialising " + name + " subsystem...");
         m_subsystems[name] = std::move(subsystem);
         m_subsystems[name]->outer = this;
-        m_subsystems[name]->init();
+        m_subsystems[name]->init(*this);
         Debug::print("  " + name + " subsystem initialised.");
     }
 

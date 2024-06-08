@@ -2,7 +2,7 @@
 
 namespace tails
 {
-    void InputSubsystem::init()
+    void InputSubsystem::init(Engine& engine)
     {
         // load inputs from json via engine's paths variables
     }

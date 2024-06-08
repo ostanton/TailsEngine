@@ -17,7 +17,7 @@ namespace sf
 
 namespace tails
 {
-    class EngineSubsystem;
+    class Subsystem;
     class AssetSubsystem;
     class AudioSubsystem;
     class InputSubsystem;
@@ -71,11 +71,11 @@ namespace tails
         template<typename T>
         T* getSubsystem(const std::string& name)
         {
-            static_assert(std::is_base_of_v<EngineSubsystem, T>, "Failed to get typed engine subsystem. Template parameter does not derive EngineSubsystem.");
+            static_assert(std::is_base_of_v<Subsystem, T>, "Failed to get typed engine subsystem. Template parameter does not derive Subsystem.");
             return static_cast<T*>(getSubsystem(name));
         }
 
-        EngineSubsystem* getSubsystem(const std::string& name);
+        Subsystem* getSubsystem(const std::string& name);
         AssetSubsystem& getAssetSubsystem();
         AudioSubsystem& getAudioSubsystem();
         InputSubsystem& getInputSubsystem();
@@ -91,11 +91,11 @@ namespace tails
         template<typename T>
         void createSubsystem(const std::string& name)
         {
-            static_assert(std::is_base_of_v<EngineSubsystem, T>, "Failed to create engine subsystem. It does not derive EngineSubsystem.");
+            static_assert(std::is_base_of_v<Subsystem, T>, "Failed to create engine subsystem. It does not derive Subsystem.");
             addSubsystem(name, std::make_unique<T>());
         }
 
-        void addSubsystem(const std::string& name, std::unique_ptr<EngineSubsystem> subsystem);
+        void addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem);
         void destroySubsystem(const std::string& name);
 
     private:
@@ -111,7 +111,7 @@ namespace tails
         std::unique_ptr<sf::RenderWindow> m_window; // ptr because we want to initialise it after contructor
         float m_lifetime {0.f}; // how long the engine has been alive/ticking/running, etc.
 
-        std::unordered_map<std::string, std::unique_ptr<EngineSubsystem>> m_subsystems;
+        std::unordered_map<std::string, std::unique_ptr<Subsystem>> m_subsystems;
 
         Paths m_paths;
         RenderSettings m_renderSettings;

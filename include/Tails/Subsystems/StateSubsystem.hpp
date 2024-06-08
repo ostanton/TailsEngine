@@ -1,7 +1,7 @@
 #ifndef TAILS_STATESUBSYSTEM_HPP
 #define TAILS_STATESUBSYSTEM_HPP
 
-#include <Tails/Subsystems/EngineSubsystem.hpp>
+#include <Tails/Subsystems/Subsystem.hpp>
 
 #include <SFML/System/Vector2.hpp>
 
@@ -14,7 +14,7 @@ namespace tails
 
     // engine subsystem that manages game states
     // TODO - setup a way for a default state class to be initialised
-    class StateSubsystem final : public EngineSubsystem
+    class StateSubsystem final : public Subsystem
     {
     public:
         StateSubsystem();
@@ -35,7 +35,7 @@ namespace tails
         bool isStateActive(State* state) const;
 
     private:
-        void init() override;
+        void init(Engine& engine) override;
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target) override;
