@@ -66,10 +66,10 @@ namespace tails
         m_activeState->tick(deltaTime);
     }
 
-    void StateSubsystem::draw(sf::RenderTarget& target)
+    void StateSubsystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // add options for non-active states to draw
-        target.draw(*m_activeState);
+        target.draw(*m_activeState, states);
     }
 
     void StateSubsystem::postTick()

@@ -20,6 +20,7 @@ namespace tails
     private:
         void init(Engine& engine) override {}
         void tick(float deltaTime) override {}
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
         std::unordered_map<uint32_t, AssetInfo> m_assets;
         uint32_t m_currentID {0};

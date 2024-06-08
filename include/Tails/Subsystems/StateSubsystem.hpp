@@ -38,7 +38,7 @@ namespace tails
         void init(Engine& engine) override;
         void preTick() override;
         void tick(float deltaTime) override;
-        void draw(sf::RenderTarget& target) override;
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
 
         void setupState(State* state, bool callCreate);

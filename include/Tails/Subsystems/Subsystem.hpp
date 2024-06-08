@@ -4,10 +4,7 @@
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 
-namespace sf
-{
-    class RenderTarget;
-}
+#include <SFML/Graphics/Drawable.hpp>
 
 namespace tails
 {
@@ -15,13 +12,12 @@ namespace tails
 
     // subsystems of Engine. A way for the engine to categorise and
     // branch off different tasks it does
-    class Subsystem : public Object, public Tickable
+    class Subsystem : public Object, public Tickable, public sf::Drawable
     {
         friend Engine;
 
     protected:
-        virtual void init(Engine& engine) = 0;
-        virtual void draw(sf::RenderTarget& target) {}
+        virtual void init(Engine& engine) {}
         virtual void deinit() {}
     };
 }

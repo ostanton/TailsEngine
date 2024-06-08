@@ -14,6 +14,7 @@ namespace tails
     private:
         void init(Engine& engine) override;
         void tick(float deltaTime) override;
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
         std::unordered_map<std::string, InputContext> m_contexts; // use unique_ptr instead?
     };

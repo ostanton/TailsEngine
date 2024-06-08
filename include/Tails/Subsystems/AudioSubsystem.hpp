@@ -10,6 +10,7 @@ namespace tails
     protected:
         void init(Engine& engine) override {}
         void tick(float deltaTime) override;
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
     private:
         // vector of Bus class or something? how will audio be managed?

@@ -270,7 +270,7 @@ namespace tails
         {
             // collate views into one here? window does that be default anyway? hmm?
             if (!subsystemPair.second->pendingCreate)
-                subsystemPair.second->draw(*m_window);
+                m_window->draw(*subsystemPair.second);
         }
 
         m_window->display();
