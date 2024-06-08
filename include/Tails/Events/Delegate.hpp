@@ -5,8 +5,6 @@
 
 namespace tails
 {
-    class MultiEvent;
-
     /*
      * A delegate is a wrapper for any kind of function. It has
      * specialised children for member functions, etc. and acts
@@ -36,70 +34,64 @@ namespace tails
     template<typename... Args>
     struct FunctorDelegate : Delegate<Args...>
     {
-        friend MultiEvent;
+        FunctorDelegate(void(*inFunctor)(Args&&...))
+            : functor(inFunctor) {}
 
-        FunctorDelegate(void(*functor)(Args&&...))
-            : m_functor(functor) {}
-
-        FunctorDelegate(void(*functor)(const Args&...))
-            : m_functor(functor) {}
+        FunctorDelegate(void(*inFunctor)(const Args&...))
+            : functor(inFunctor) {}
 
         void execute(Args&&... args) override
         {
-            (*m_functor)(std::forward<Args>(args)...);
+            (*functor)(std::forward<Args>(args)...);
         }
 
         void execute(const Args&... args) override
         {
-            (*m_functor)(args...);
+            (*functor)(args...);
         }
 
         FunctorDelegate& operator=(FunctorDelegate& other) override
         {
-            m_functor = other.m_functor;
+            functor = other.functor;
             return *this;
         }
 
-    private:
         std::variant<
             void(*)(Args&&...),
-            void(*)(const Args&...)> m_functor;
+            void(*)(const Args&...)> functor;
     };
 
     // specialised delegate that holds class methods along with their class context as an object
     template<typename C, typename... Args>
     struct MemberDelegate : Delegate<Args...>
     {
-        friend MultiEvent;
+        MemberDelegate(C* inObject, void(C::*inFunction)(Args&&...))
+            : object(inObject), function(inFunction) {}
 
-        MemberDelegate(C* object, void(C::*function)(Args&&...))
-            : m_object(object), m_function(function) {}
-
-        MemberDelegate(C* object, void(C::*function)(const Args&...))
-            : m_object(object), m_function(function) {}
+        MemberDelegate(C* inObject, void(C::*inFunction)(const Args&...))
+            : object(inObject), function(inFunction) {}
 
         void execute(Args&&... args) override
         {
-            (m_object->*std::get<void(C::*)(Args&&...)>(m_function))(std::forward<Args>(args)...);
+            (object->*std::get<void(C::*)(Args&&...)>(function))(std::forward<Args>(args)...);
         }
 
         void execute(const Args&... args) override
         {
-            (m_object->*std::get<void(C::*)(const Args&...)>(m_function))(args...);
+            (object->*std::get<void(C::*)(const Args&...)>(function))(args...);
         }
 
         MemberDelegate& operator=(MemberDelegate& other) override
         {
-            m_object = other.m_object;
-            m_function = other.m_function;
+            object = other.object;
+            function = other.function;
             return *this;
         }
 
-    private:
-        C* m_object;
+        C* object;
         std::variant<
             void(C::*)(Args&&...),
-            void(C::*)(const Args&...)> m_function;
+            void(C::*)(const Args&...)> function;
     };
 }
 
