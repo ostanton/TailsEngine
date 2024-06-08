@@ -34,6 +34,8 @@ namespace tails
     template<typename... Args>
     struct FunctorDelegate : Delegate<Args...>
     {
+        friend class MultiEvent;
+
         FunctorDelegate(void(*functor)(Args&&...))
             : m_functor(functor) {}
 
@@ -66,6 +68,8 @@ namespace tails
     template<typename C, typename... Args>
     struct MemberDelegate : Delegate<Args...>
     {
+        friend class MultiEvent;
+
         MemberDelegate(C* object, void(C::*function)(Args&&...))
             : m_object(object), m_function(function) {}
 
