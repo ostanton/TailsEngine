@@ -1,8 +1,10 @@
 #ifndef TAILS_ENGINE_HPP
 #define TAILS_ENGINE_HPP
 
-#include <Tails/StateStack.hpp>
 #include <Tails/Object.hpp>
+
+#include <SFML/Config.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -16,7 +18,10 @@ namespace sf
 namespace tails
 {
     class EngineSubsystem;
-    class ManagerSubsystem;
+    class AssetSubsystem;
+    class AudioSubsystem;
+    class InputSubsystem;
+    class StateSubsystem;
 
     class Engine : public Object
     {
@@ -37,6 +42,13 @@ namespace tails
             void printPaths();
         };
 
+        struct RenderSettings
+        {
+            sf::Vector2f size {640, 480};
+
+            void printSettings();
+        };
+
         struct WindowSettings
         {
             std::string title;
@@ -47,8 +59,9 @@ namespace tails
             sf::Uint32 getWindowStyle();
         };
 
-        StateStack& getStateStack() {return m_stateStack;}
         const Paths& getFilePaths() {return m_paths;}
+        const RenderSettings& getRenderSettings() {return m_renderSettings;}
+        const WindowSettings& getWindowSettings() {return m_windowSettings;}
 
         void initialise();
         void run();
@@ -63,7 +76,10 @@ namespace tails
         }
 
         EngineSubsystem* getSubsystem(const std::string& name);
-        ManagerSubsystem& getManagerSubsystem();
+        AssetSubsystem& getAssetSubsystem();
+        AudioSubsystem& getAudioSubsystem();
+        InputSubsystem& getInputSubsystem();
+        StateSubsystem& getStateSubsystem();
 
     protected:
         virtual void loadIni();
@@ -86,21 +102,20 @@ namespace tails
         void initWindow();
         void setupStates();
 
-        void preTick() override;
+        void preTick();
         void tick(sf::Time& time);
         void draw();
-        void postTick() override;
+        void postTick();
         void deinitialise();
 
         std::unique_ptr<sf::RenderWindow> m_window; // ptr because we want to initialise it after contructor
-        float m_lifetime {0.f};
+        float m_lifetime {0.f}; // how long the engine has been alive/ticking/running, etc.
 
-        StateStack m_stateStack;
         std::unordered_map<std::string, std::unique_ptr<EngineSubsystem>> m_subsystems;
 
         Paths m_paths;
+        RenderSettings m_renderSettings;
         WindowSettings m_windowSettings;
-        sf::Vector2f m_internalRes {640.f, 480.f};
     };
 }
 

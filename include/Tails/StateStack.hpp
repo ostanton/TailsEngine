@@ -2,6 +2,7 @@
 #define TAILS_STATESTACK_HPP
 
 #include <Tails/Object.hpp>
+#include <Tails/Tickable.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -14,7 +15,7 @@ namespace tails
     class State;
     class Engine;
 
-    class StateStack final : public Object, public sf::Drawable
+    class StateStack final : public Object, public sf::Drawable, public Tickable
     {
         using StatePtr = std::unique_ptr<State>;
         friend class Engine;
@@ -42,7 +43,7 @@ namespace tails
 
     private:
         void preTick() override;
-        void tick(float deltaTime);
+        void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
 

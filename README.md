@@ -22,6 +22,7 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
 - Event class that can hold delegates to class methods
 
 ## What is needed still
+- Decide whether create/destroy/spawn/despawn, etc. methods should be deferred to end of frame/start of next frame, or called immediately.
 - Create default folders and files in same directory as executable if they do not already exist
     - engine.ini
     - save
@@ -102,6 +103,48 @@ These libraries are automatically downloaded and added and built when running CM
 ### Manually included
 These libraries are not downloaded with CMake, but are found in their respective folders in `include/`.
 - [LeksysINI](https://github.com/Lek-sys/LeksysINI)
+
+# Classes (alphabetical order)
+- Debug
+- Engine
+- Object
+- Tickable
+## Assets:
+- Asset Handle
+- Asset Info
+- Resource
+    - Font Resource
+    - Sound Resource
+    - Texture Resource
+## Entities
+- Entity
+    - Rect Entity
+    - Sprite Entity
+## Events
+- Delegate
+    - Method Delegate
+- Event
+## Input
+- Input Action
+- Input Context
+- Input Modifier
+- Input Value
+## Layers
+- Layer
+## Registries
+- Registry
+## States
+- State
+## Subsystems
+- Subsystem
+    - Engine Subsystem
+        - Asset Subsystem
+        - Audio Subsystem
+        - Input Subsystem
+        - State Subsystem
+## UI
+- Slot
+- Widget
 
 # Input pseudocode
 ```

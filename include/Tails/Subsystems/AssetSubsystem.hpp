@@ -1,15 +1,15 @@
-#ifndef TAILS_ASSETMANAGER_HPP
-#define TAILS_ASSETMANAGER_HPP
+#ifndef TAILS_ASSETSUBSYSTEM_HPP
+#define TAILS_ASSETSUBSYSTEM_HPP
 
-#include <Tails/Managers/Manager.hpp>
-#include <Tails/Assets/Info.hpp>
-#include <Tails/Assets/Handle.hpp>
+#include <Tails/Subsystems/EngineSubsystem.hpp>
+#include <Tails/Assets/AssetInfo.hpp>
+#include <Tails/Assets/AssetHandle.hpp>
 
 #include <unordered_map>
 
 namespace tails
 {
-    class AssetManager : public Manager
+    class AssetSubsystem : public EngineSubsystem
     {
     public:
         uint32_t createAsset(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, const std::string& path);
@@ -18,11 +18,12 @@ namespace tails
         void destroyAsset(uint32_t id);
 
     private:
-        void tick(float deltaTime) {}
+        void init() override {}
+        void tick(float deltaTime) override {}
 
         std::unordered_map<uint32_t, AssetInfo> m_assets;
         uint32_t m_currentID {0};
     };
 }
 
-#endif // TAILS_ASSETMANAGER_HPP
+#endif // TAILS_ASSETSUBSYSTEM_HPP

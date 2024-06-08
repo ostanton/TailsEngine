@@ -1,9 +1,9 @@
 #include <Tails/Engine.hpp>
-#include <Tails/LevelState.hpp>
-#include <Tails/RectEntity.hpp>
 #include <Tails/Debug.hpp>
-#include <Tails/Subsystems/Manager.hpp>
-#include <Tails/Managers/Manager.hpp>
+#include <Tails/Subsystems/AssetSubsystem.hpp>
+#include <Tails/Subsystems/AudioSubsystem.hpp>
+#include <Tails/Subsystems/InputSubsystem.hpp>
+#include <Tails/Subsystems/StateSubsystem.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
@@ -38,6 +38,12 @@ namespace tails
             << "  Saves = " << saves << "\n";
     }
 
+    void Engine::RenderSettings::printSettings()
+    {
+        std::cout << "\nRender:\n"
+            << "  Resolution = " << size.x << "x" << size.y << "\n";
+    }
+
     void Engine::WindowSettings::printSettings()
     {
         std::cout << "\nWindow:\n"
@@ -55,9 +61,11 @@ namespace tails
     {
         Debug::print("Initialising engine...\n");
         loadIni();
+        Debug::print("engine.ini loaded!\n");
         initSubsystems();
+        Debug::print("Engine subsystems initialised.\n");
         initWindow();
-        setupStates();
+        Debug::print("Window initialised!\n");
         Debug::print("Engine initialised!\n");
     }
 
@@ -104,9 +112,24 @@ namespace tails
         return m_subsystems[name].get();
     }
 
-    ManagerSubsystem& Engine::getManagerSubsystem()
+    AssetSubsystem& Engine::getAssetSubsystem()
     {
-        return *getSubsystem<ManagerSubsystem>("manager");
+        return *getSubsystem<AssetSubsystem>("asset");
+    }
+
+    AudioSubsystem& Engine::getAudioSubsystem()
+    {
+        return *getSubsystem<AudioSubsystem>("audio");
+    }
+
+    InputSubsystem& Engine::getInputSubsystem()
+    {
+        return *getSubsystem<InputSubsystem>("input");
+    }
+
+    StateSubsystem& Engine::getStateSubsystem()
+    {
+        return *getSubsystem<StateSubsystem>("state");
     }
 
     void Engine::loadIni()
@@ -145,10 +168,10 @@ namespace tails
             return;
         }
 
-        m_internalRes.x = renderSect->GetValue("resolution").AsArray()[0].AsDouble();
-        m_internalRes.y = renderSect->GetValue("resolution").AsArray()[1].AsDouble();
+        m_renderSettings.size.x = renderSect->GetValue("resolution").AsArray()[0].AsDouble();
+        m_renderSettings.size.y = renderSect->GetValue("resolution").AsArray()[1].AsDouble();
 
-        std::cout << "Render resolution = " << m_internalRes.x << "x" << m_internalRes.y << "\n";
+        m_renderSettings.printSettings();
 
         auto windowSect = engineIni.GetSection("window");
         if (!windowSect)
@@ -162,15 +185,15 @@ namespace tails
         m_windowSettings.fullscreen = windowSect->GetValue("fullscreen").AsBool();
 
         m_windowSettings.printSettings();
-
-        Debug::print("engine.ini loaded!\n");
     }
 
     void Engine::initSubsystems()
     {
         Debug::print("Initialising engine subsystems:");
-        createSubsystem<ManagerSubsystem>("manager");
-        Debug::print("Engine subsystems initialised.\n");
+        createSubsystem<AssetSubsystem>("asset");
+        createSubsystem<AudioSubsystem>("audio");
+        createSubsystem<InputSubsystem>("input");
+        createSubsystem<StateSubsystem>("state");
     }
 
     void Engine::deinitSubsystems()
@@ -215,23 +238,10 @@ namespace tails
                 m_windowSettings.size.y),
             m_windowSettings.title,
             m_windowSettings.getWindowStyle());
-        Debug::print("Window initialised!\n");
-    }
-
-    void Engine::setupStates()
-    {
-        Debug::print("Setting up states:");
-        m_stateStack.m_defaultCameraRes = m_internalRes;
-        // TODO: work out how initial/default state is setup!
-        auto levelState = m_stateStack.emplaceState<LevelState>();
-        levelState->spawnEntity<RectEntity>();
-        Debug::print("States setup!\n");
     }
 
     void Engine::preTick()
     {
-        m_stateStack.preTick();
-
         for (auto& subsystemPair : m_subsystems)
         {
             subsystemPair.second->preTick();
@@ -243,8 +253,6 @@ namespace tails
 
     void Engine::tick(sf::Time& time)
     {
-        m_stateStack.tick(time.asSeconds());
-
         m_lifetime += time.asSeconds();
 
         for (auto& subsystemPair : m_subsystems)
@@ -257,14 +265,19 @@ namespace tails
     void Engine::draw()
     {
         m_window->clear();
-        m_window->draw(m_stateStack);
+
+        for (auto& subsystemPair : m_subsystems)
+        {
+            // collate views into one here? window does that be default anyway? hmm?
+            if (!subsystemPair.second->pendingCreate)
+                subsystemPair.second->draw(*m_window);
+        }
+
         m_window->display();
     }
 
     void Engine::postTick()
     {
-        m_stateStack.postTick();
-
         for (auto it {m_subsystems.begin()}; it != m_subsystems.end();)
         {
             (*it).second->postTick();
@@ -283,7 +296,6 @@ namespace tails
     void Engine::deinitialise()
     {
         Debug::print("\nDeinitialising engine...\n");
-        m_stateStack.removeStates();
         deinitSubsystems();
         Debug::print("Engine deinitialised. Exiting...");
     }

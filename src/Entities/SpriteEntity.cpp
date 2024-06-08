@@ -1,4 +1,4 @@
-#include <Tails/SpriteEntity.hpp>
+#include <Tails/Entities/SpriteEntity.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

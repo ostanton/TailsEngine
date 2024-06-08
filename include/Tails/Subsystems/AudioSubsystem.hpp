@@ -1,13 +1,14 @@
-#ifndef TAILS_AUDIOMANAGER_HPP
-#define TAILS_AUDIOMANAGER_HPP
+#ifndef TAILS_AUDIOSUBSYSTEM_HPP
+#define TAILS_AUDIOSUBSYSTEM_HPP
 
-#include <Tails/Managers/Manager.hpp>
+#include <Tails/Subsystems/EngineSubsystem.hpp>
 
 namespace tails
 {
-    class AudioManager : public Manager
+    class AudioSubsystem : public EngineSubsystem
     {
     protected:
+        void init() override {}
         void tick(float deltaTime) override;
 
     private:
@@ -30,4 +31,4 @@ namespace tails
     };
 }
 
-#endif // TAILS_AUDIOMANAGER_HPP
+#endif // TAILS_AUDIOSUBSYSTEM_HPP

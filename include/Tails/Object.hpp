@@ -27,8 +27,6 @@ namespace tails
 
     protected:
         virtual void create() {}
-        virtual void preTick() {}
-        virtual void postTick() {}
 
         bool pendingCreate {true};
         bool pendingDestroy {false};

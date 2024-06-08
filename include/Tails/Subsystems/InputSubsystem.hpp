@@ -1,7 +1,7 @@
-#ifndef TAILS_INPUTMANAGER_HPP
-#define TAILS_INPUTMANAGER_HPP
+#ifndef TAILS_INPUTSUBSYSTEM_HPP
+#define TAILS_INPUTSUBSYSTEM_HPP
 
-#include <Tails/Managers/Manager.hpp>
+#include <Tails/Subsystems/EngineSubsystem.hpp>
 #include <Tails/Input/Context.hpp>
 
 #include <unordered_map>
@@ -9,14 +9,14 @@
 
 namespace tails
 {
-    class InputManager final : public Manager
+    class InputSubsystem final : public EngineSubsystem
     {
     private:
-        void added(EngineSubsystem& engineSubsystem) override;
+        void init() override;
         void tick(float deltaTime) override;
 
         std::unordered_map<std::string, InputContext> m_contexts; // use unique_ptr instead?
     };
 }
 
-#endif // TAILS_INPUTMANAGER_HPP
+#endif // TAILS_INPUTSUBSYSTEM_HPP

@@ -1,7 +1,7 @@
-#include <Tails/Assets/Info.hpp>
-#include <Tails/Assets/Texture.hpp>
-#include <Tails/Assets/Sound.hpp>
-#include <Tails/Assets/Font.hpp>
+#include <Tails/Assets/AssetInfo.hpp>
+#include <Tails/Assets/TextureResource.hpp>
+#include <Tails/Assets/SoundResource.hpp>
+#include <Tails/Assets/FontResource.hpp>
 
 namespace tails
 {

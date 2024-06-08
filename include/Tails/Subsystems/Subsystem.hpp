@@ -2,16 +2,20 @@
 #define TAILS_SUBSYSTEM_HPP
 
 #include <Tails/Object.hpp>
+#include <Tails/Tickable.hpp>
+
+namespace sf
+{
+    class RenderTarget;
+}
 
 namespace tails
 {
-    class Subsystem : public Object
+    class Subsystem : public Object, public Tickable
     {
     protected:
         virtual void init() = 0;
-        virtual void preTick() {}
-        virtual void tick(float deltaTime) {}
-        virtual void postTick() {}
+        virtual void draw(sf::RenderTarget& target) {}
         virtual void deinit() {}
     };
 }

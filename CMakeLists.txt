@@ -3,9 +3,19 @@ cmake_minimum_required(VERSION 3.25.1)
 project(TailsEngine LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+option(BUILD_EXAMPLES "Build the included examples" ON)
 
 add_subdirectory(include)
 add_subdirectory(src)
+
+# dunno how to specify specific directories for each example,
+# so unfortunately they'll all be dumped in the same build/bin!
+if (BUILD_EXAMPLES)
+    message(STATUS "Building examples...")
+    add_subdirectory(examples)
+endif(BUILD_EXAMPLES)
 
 include(FetchContent)
 
@@ -18,13 +28,14 @@ FetchContent_MakeAvailable(SFML)
 
 FetchContent_Declare(
     json
-    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+)
 FetchContent_MakeAvailable(json)
 
 target_include_directories(
     TailsEngine
     PUBLIC
-        include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_link_libraries(
     TailsEngine
