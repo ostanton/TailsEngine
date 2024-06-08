@@ -151,7 +151,7 @@ Without this file, the engine cannot initialise or really do anything, as it rel
 - Engine
 - Object
 - Tickable
-### Assets:
+### Assets
 - Asset Handle
 - Asset Info
 - Resource
@@ -166,6 +166,7 @@ Without this file, the engine cannot initialise or really do anything, as it rel
 - Delegate
     - Method Delegate
 - Event
+- Multi Event
 ### Input
 - Input Action
 - Input Context
@@ -179,11 +180,10 @@ Without this file, the engine cannot initialise or really do anything, as it rel
 - State
 ### Subsystems
 - Subsystem
-    - Engine Subsystem
-        - Asset Subsystem
-        - Audio Subsystem
-        - Input Subsystem
-        - State Subsystem
+    - Asset Subsystem
+    - Audio Subsystem
+    - Input Subsystem
+    - State Subsystem
 ### UI
 - Slot
 - Widget
