@@ -4,9 +4,6 @@ namespace tails
 {
     void InputAction::execute(ActionTrigger trigger, InputValue value)
     {
-        for (auto& event : funcMap[trigger])
-        {
-            event.execute(value);
-        }
+        funcMap[trigger].broadcast(value);
     }
 }

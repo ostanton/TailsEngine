@@ -154,7 +154,7 @@ namespace tails
         }
 
     private:
-        std::vector<std::unique_ptr<Delegate<Args...>> m_delegates;
+        std::vector<std::unique_ptr<Delegate<Args...>>> m_delegates;
     };
 }
 

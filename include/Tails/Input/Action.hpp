@@ -1,12 +1,11 @@
 #ifndef TAILS_INPUTACTION_HPP
 #define TAILS_INPUTACTION_HPP
 
+#include <Tails/Events/MultiEvent.hpp>
 #include <Tails/Input/Value.hpp>
-#include <Tails/Events/Event.hpp>
 
 #include <string>
 #include <unordered_map>
-#include <vector>
 #include <memory>
 
 namespace tails
@@ -23,14 +22,12 @@ namespace tails
         InputAction() = default;
 
         std::string name;
-        std::unordered_map<ActionTrigger, std::vector<Event<InputValue>>> funcMap;
+        std::unordered_map<ActionTrigger, MultiEvent<InputValue>> funcMap;
 
         template<typename C>
         void addFunction(ActionTrigger trigger, C* object, void(C::*function)(InputValue))
         {
-            Event<InputValue> event;
-            event.bind(object, function);
-            funcMap[trigger].push_back(std::move(event));
+            funcMap[trigger].add(object, function);
         }
 
         void execute(ActionTrigger trigger, InputValue value);

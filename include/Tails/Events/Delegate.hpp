@@ -5,6 +5,8 @@
 
 namespace tails
 {
+    class MultiEvent;
+
     /*
      * A delegate is a wrapper for any kind of function. It has
      * specialised children for member functions, etc. and acts
@@ -34,7 +36,7 @@ namespace tails
     template<typename... Args>
     struct FunctorDelegate : Delegate<Args...>
     {
-        friend class MultiEvent;
+        friend MultiEvent;
 
         FunctorDelegate(void(*functor)(Args&&...))
             : m_functor(functor) {}
@@ -68,7 +70,7 @@ namespace tails
     template<typename C, typename... Args>
     struct MemberDelegate : Delegate<Args...>
     {
-        friend class MultiEvent;
+        friend MultiEvent;
 
         MemberDelegate(C* object, void(C::*function)(Args&&...))
             : m_object(object), m_function(function) {}
