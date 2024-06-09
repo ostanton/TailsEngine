@@ -28,10 +28,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SFML)
 
 FetchContent_Declare(
-    json
-    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+    simpleson
+    GIT_REPOSITORY https://github.com/gregjesl/simpleson
+    GIT_TAG master
 )
-FetchContent_MakeAvailable(json)
+FetchContent_MakeAvailable(simpleson)
 
 target_include_directories(
     TailsEngine
@@ -43,6 +44,6 @@ target_link_libraries(
     PUBLIC
         sfml-graphics
         sfml-audio
-        nlohmann_json::nlohmann_json
+        simpleson
 )
 target_compile_features(TailsEngine PRIVATE cxx_std_20)
