@@ -53,6 +53,7 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
 - Additional States
     - Widgets
         - Buttons
+            - Some form of brush struct? Like the texture, rect to draw the texture in, 9-slice, etc.?
             - Focus support (keyboard & gamepad navigation)
                 - NavigationConfig class/struct? Defines which input mappings call each navigation, each navigation being an enum like in Unreal?
             - Mouse support

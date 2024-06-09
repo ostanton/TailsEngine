@@ -61,7 +61,28 @@ namespace tails
         if (!m_animPlaying) return;
         if (!m_currentAnim) return;
 
-        // play anim!
+        m_sprite.setTextureRect(m_currentAnim->getCurrentFrame().rect);
+
+        m_animTimer += deltaTime * m_currentAnim->speed;
+
+        // return if we have not reached the next frame
+        if (m_animTimer < 1.f / m_currentAnim->speed)
+            return;
+
+        m_currentAnim->currentFrameIndex++;
+
+        // either loop to first frame or stop playing once we reach the last frame
+        if (m_currentAnim->currentFrameIndex >= m_currentAnim->frames.size())
+        {
+            if (m_currentAnim->loop)
+            {
+                m_currentAnim->currentFrameIndex = 0;
+            }
+            else
+            {
+                m_animPlaying = false;
+            }
+        }
     }
 
     void SpriteEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const

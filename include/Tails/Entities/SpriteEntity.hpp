@@ -20,14 +20,15 @@ namespace tails
     struct Animation
     {
         Animation() = default;
-        Animation(std::vector<Frame> inFrames, int initialFrame, float inSpeed)
-            : frames(inFrames), currentFrame(initialFrame), speed(inSpeed) {}
+        Animation(std::vector<Frame> inFrames, int initialFrameIndex, float inSpeed)
+            : frames(inFrames), currentFrameIndex(initialFrameIndex), speed(inSpeed) {}
 
         std::vector<Frame> frames; // the frames to play through
-        int currentFrame; // current frame index
+        int currentFrameIndex; // current frame index
         float speed {1.f}; // multiplier
+        bool loop {true};
 
-        const Frame& getCurrentFrame() {return frames[currentFrame];}
+        const Frame& getCurrentFrame() {return frames[currentFrameIndex];}
     };
 
     // wrapper for SFML sprite that can be animated
@@ -53,8 +54,9 @@ namespace tails
 
         bool m_animPlaying; // is the selected animation playing?
         std::unordered_map<std::string, Animation> m_anims; // list of available animations mapped to an ID
-        Animation* m_currentAnim; // pointer to currently selected animation
+        Animation* m_currentAnim; // pointer to currently selected animation. use iterator instead?
         sf::Sprite m_sprite; // sprite to draw and apply animation to
+        float m_animTimer {0.f};
     };
 }
 
