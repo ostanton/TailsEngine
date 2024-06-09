@@ -5,6 +5,8 @@
 
 namespace tails
 {
+    class StackBox;
+
     struct Margin
     {
         float left, top, right, bottom;
@@ -34,6 +36,11 @@ namespace tails
         Margin padding;
         HorizontalAlignment horizontalAlignment;
         VerticalAlignment verticalAlignment;
+
+        StackBox* getParentStackBox();
+
+    protected:
+        void tick(float deltaTime);
     };
 }
 

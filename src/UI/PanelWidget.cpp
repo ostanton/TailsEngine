@@ -59,6 +59,11 @@ namespace tails
         return -1;
     }
 
+    size_t PanelWidget::getChildrenCount()
+    {
+        return m_slots.size();
+    }
+
     std::vector<std::unique_ptr<PanelSlot>>::iterator PanelWidget::getChildIterator(Widget* content)
     {
         return std::find_if(m_slots.begin(), m_slots.end(),

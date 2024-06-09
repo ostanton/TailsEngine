@@ -27,6 +27,7 @@ namespace tails
         bool removeChildAt(size_t index);
         Widget* getChildAt(size_t index);
         size_t getChildIndex(Widget* content);
+        size_t getChildrenCount();
 
     protected:
         template<typename S>

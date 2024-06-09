@@ -20,6 +20,7 @@ add_library(
     UI/PanelSlot.cpp
     UI/StackBox.cpp
     UI/StackBoxSlot.cpp
+    UI/RectangleWidget.cpp
     Debug.cpp
     Engine.cpp
 )

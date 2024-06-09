@@ -13,7 +13,7 @@ namespace tails
     class PanelWidget;
 
     // the outer of a widget is the Screen that owns it
-    class Widget : public Object, public sf::Drawable, sf::Transformable, public Tickable
+    class Widget : public Object, public sf::Drawable, public sf::Transformable, public Tickable
     {
         friend Slot;
 
@@ -22,6 +22,14 @@ namespace tails
 
         void removeFromParent();
         PanelWidget* getParent();
+
+        // size-setting methods for child widgets that wrap SFML classes (shapes, sprite, etc.) to override and provide specific functionality for layouts
+        void setSize(float w, float h) {m_size.x = w; m_size.y = h; setSize(m_size);}
+        virtual void setSize(const sf::Vector2f& size) {m_size = size;}
+        virtual const sf::Vector2f& getSize() {return m_size;}
+
+    protected:
+        sf::Vector2f m_size;
     };
 }
 
