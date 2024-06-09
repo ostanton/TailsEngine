@@ -19,6 +19,8 @@ namespace tails
     protected:
         virtual void init(Engine& engine) {}
         virtual void deinit() {}
+
+        Engine& getEngine();
     };
 }
 

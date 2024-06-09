@@ -17,6 +17,8 @@ namespace tails
     protected:
         virtual void added(State& state) {}
         virtual void removed() {}
+
+        State& getState();
     };
 }
 

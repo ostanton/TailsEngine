@@ -8,6 +8,8 @@ add_library(
     Entities/SpriteEntity.cpp
     Input/Action.cpp
     Input/Context.cpp
+    Layers/Layer.cpp
+    Layers/LevelLayer.cpp
     States/State.cpp
     Subsystems/AssetSubsystem.cpp
     Subsystems/AudioSubsystem.cpp
