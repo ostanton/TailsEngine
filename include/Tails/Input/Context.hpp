@@ -3,6 +3,7 @@
 
 #include <Tails/Input/Action.hpp>
 #include <Tails/Input/Modifier.hpp>
+#include <Tails/Input/Keys.hpp>
 
 #include <unordered_map>
 #include <string>
@@ -10,11 +11,10 @@
 
 namespace tails
 {
+    // structure that "maps" a Key with other data like a vector of modifiers
     struct MappingData
     {
-        // key - struct with SFML enums or my own enum that links to SFML's?? struct probably. variant or just list of members?
-        // modifiers
-        // etc
+        Key key;
         std::vector<std::unique_ptr<InputModifier>> modifiers;
 
         // add loading from json, allowing optional properties, etc.
