@@ -48,8 +48,6 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
         - JsonLoader* load(Json& obj) - covariant return
         - maybe std::string getName()
         - load is called when the object is being spawned or cloned. There is no clone method. When overriding load(), classes should allocate a new object of said class on the heap, set their default members from the json object, then return the pointer to it.
-    - Pokemon
-    - Moves
     - Levels?
     - Input actions & contexts
 - Additional States

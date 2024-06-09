@@ -3,6 +3,7 @@
 
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
+#include <Tails/JSON/JSONReader.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -11,7 +12,12 @@ namespace tails
 {
     class Engine;
 
-    class Entity : public Object, public sf::Drawable, public sf::Transformable, public Tickable
+    class Entity :
+        public Object,
+        public sf::Drawable,
+        public sf::Transformable,
+        public Tickable,
+        public JSONReader
     {
     public:
         void destroy(); // destroys self

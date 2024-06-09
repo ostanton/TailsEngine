@@ -2,6 +2,8 @@
 #include <Tails/Debug.hpp>
 #include <Tails/Subsystems/AssetSubsystem.hpp>
 #include <Tails/Subsystems/AudioSubsystem.hpp>
+#include <Tails/Subsystems/RegistrySubsystem.hpp>
+#include <Tails/Registries/Registry.hpp>
 #include <Tails/Subsystems/InputSubsystem.hpp>
 #include <Tails/Subsystems/StateSubsystem.hpp>
 
@@ -192,6 +194,7 @@ namespace tails
         Debug::print("Initialising engine subsystems:");
         createSubsystem<AssetSubsystem>("asset");
         createSubsystem<AudioSubsystem>("audio");
+        createSubsystem<RegistrySubsystem>("registry");
         createSubsystem<InputSubsystem>("input");
         createSubsystem<StateSubsystem>("state");
     }

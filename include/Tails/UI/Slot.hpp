@@ -2,6 +2,7 @@
 #define TAILS_WIDGETSLOT_HPP
 
 #include <Tails/Object.hpp>
+#include <Tails/Tickable.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 
@@ -10,15 +11,23 @@
 namespace tails
 {
     class Widget;
+    class PanelWidget;
 
-    class Slot : public Object, public sf::Drawable
+    class Slot : public Object, public sf::Drawable, public Tickable
     {
     public:
-        Widget* parent {nullptr};
-        std::unique_ptr<Widget> content;
+        Slot() = default;
+        Slot(PanelWidget* parent, std::unique_ptr<Widget> content);
+
+        Widget* getContent();
+        PanelWidget* getParent();
 
     protected:
-        virtual void tick(float deltaTime);
+        PanelWidget* m_parent {nullptr};
+        std::unique_ptr<Widget> m_content;
+
+        void tick(float deltaTime) override;
+        // TODO - specialised "layout" method that takes a PanelWidget as input?
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     };
 }

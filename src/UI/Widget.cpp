@@ -1,9 +1,16 @@
 #include <Tails/UI/Widget.hpp>
+#include <Tails/UI/Slot.hpp>
+#include <Tails/UI/PanelWidget.hpp>
 
 namespace tails
 {
-    void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void Widget::removeFromParent()
     {
+        getParent()->removeChild(this);
+    }
 
+    PanelWidget* Widget::getParent()
+    {
+        return slot->getParent();
     }
 }

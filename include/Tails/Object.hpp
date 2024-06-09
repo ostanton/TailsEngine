@@ -23,13 +23,15 @@ namespace tails
             return static_cast<T*>(outer);
         }
 
+        void markForDestroy() {pendingDestroy = true;}
+
         Object* outer {nullptr};
+        bool pendingCreate {true};
+        bool pendingDestroy {false};
+        // TODO - maybe hide these members and provide clear helper functions like markForDestroy()
 
     protected:
         virtual void create() {}
-
-        bool pendingCreate {true};
-        bool pendingDestroy {false};
     };
 
     // prefer std::make_unique over this if possible

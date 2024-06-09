@@ -11,10 +11,15 @@ add_library(
     States/State.cpp
     Subsystems/AssetSubsystem.cpp
     Subsystems/AudioSubsystem.cpp
+    Subsystems/RegistrySubsystem.cpp
     Subsystems/InputSubsystem.cpp
     Subsystems/StateSubsystem.cpp
     UI/Slot.cpp
     UI/Widget.cpp
+    UI/PanelWidget.cpp
+    UI/PanelSlot.cpp
+    UI/StackBox.cpp
+    UI/StackBoxSlot.cpp
     Debug.cpp
     Engine.cpp
 )
