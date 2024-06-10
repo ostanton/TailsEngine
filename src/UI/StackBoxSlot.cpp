@@ -35,7 +35,7 @@ namespace tails
                 break;
             case Orientation::Vertical:
                 getContent()->setSize(stackSize.x, contentSize.y);
-                getContent()->setPosition(stackSize.x, contentSize.y);
+                getContent()->setPosition(stackPos.x, contentOffset.y);
                 break;
         }
     }
