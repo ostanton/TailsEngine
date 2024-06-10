@@ -47,13 +47,14 @@ namespace tails
     {
         for (auto& entity : m_entities)
         {
-            entity->preTick();
-
             if (entity->pendingCreate)
             {
                 entity->pendingCreate = false;
                 entity->spawn();
+                Debug::print("Spawned entity.");
             }
+
+            entity->preTick();
         }
     }
 

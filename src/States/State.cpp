@@ -132,13 +132,14 @@ namespace tails
     {
         for (auto& layer : m_layers)
         {
-            layer->preTick();
-
             if (layer->pendingCreate)
             {
                 layer->pendingCreate = false;
                 layer->added();
+                Debug::print("Added layer.");
             }
+
+            layer->preTick();
         }
     }
 

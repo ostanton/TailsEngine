@@ -1,4 +1,5 @@
 #include <Tails/Entities/RectEntity.hpp>
+#include <Tails/Debug.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
