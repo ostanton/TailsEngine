@@ -17,9 +17,15 @@ namespace tails
             m_rect.setFillColor(sf::Color(255, 255, 255));
         }
 
+        RectEntity* read(const nlohmann::json& json) override
+        {
+            return new RectEntity;
+        }
+
         sf::RectangleShape& getRect() {return m_rect;}
 
     private:
+        void tick(float deltaTime) override {}
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
         sf::RectangleShape m_rect;

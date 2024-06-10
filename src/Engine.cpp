@@ -78,6 +78,8 @@ namespace tails
 
         while (m_window->isOpen())
         {
+            preTick();
+
             sf::Event ev;
             auto time = clock.restart();
 
@@ -90,7 +92,6 @@ namespace tails
                 }
             }
 
-            preTick();
             tick(time);
             draw();
             postTick();
@@ -122,6 +123,11 @@ namespace tails
     AudioSubsystem& Engine::getAudioSubsystem()
     {
         return *getSubsystem<AudioSubsystem>("audio");
+    }
+
+    RegistrySubsystem& Engine::getRegistrySubsystem()
+    {
+        return *getSubsystem<RegistrySubsystem>("registry");
     }
 
     InputSubsystem& Engine::getInputSubsystem()
@@ -195,8 +201,10 @@ namespace tails
         createSubsystem<AssetSubsystem>("asset");
         createSubsystem<AudioSubsystem>("audio");
         createSubsystem<RegistrySubsystem>("registry");
+        // load registries here??
         createSubsystem<InputSubsystem>("input");
         createSubsystem<StateSubsystem>("state");
+        // get state subsystem -> setInitialState<MyState>();??
     }
 
     void Engine::deinitSubsystems()
@@ -216,13 +224,14 @@ namespace tails
         Debug::print("Subsystems destroyed.\n");
     }
 
-    void Engine::addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem)
+    Subsystem* Engine::addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem)
     {
         Debug::print("  Initialising " + name + " subsystem...");
         m_subsystems[name] = std::move(subsystem);
         m_subsystems[name]->outer = this;
         m_subsystems[name]->init(*this);
         Debug::print("  " + name + " subsystem initialised.");
+        return m_subsystems[name].get();
     }
 
     void Engine::destroySubsystem(const std::string& name)
@@ -250,7 +259,10 @@ namespace tails
             subsystemPair.second->preTick();
 
             if (subsystemPair.second->pendingCreate)
+            {
                 subsystemPair.second->pendingCreate = true;
+                //subsystemPair.second->init(*this);
+            }
         }
     }
 

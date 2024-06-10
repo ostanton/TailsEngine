@@ -20,8 +20,16 @@ namespace tails
     class Subsystem;
     class AssetSubsystem;
     class AudioSubsystem;
+    class RegistrySubsystem;
     class InputSubsystem;
     class StateSubsystem;
+
+    struct EngineSettings
+    {
+        // initial state to load
+        // everything else can be handled from there?
+        // registries to use?
+    };
 
     class Engine : public Object
     {
@@ -78,6 +86,7 @@ namespace tails
         Subsystem* getSubsystem(const std::string& name);
         AssetSubsystem& getAssetSubsystem();
         AudioSubsystem& getAudioSubsystem();
+        RegistrySubsystem& getRegistrySubsystem();
         InputSubsystem& getInputSubsystem();
         StateSubsystem& getStateSubsystem();
 
@@ -89,13 +98,13 @@ namespace tails
         virtual void deinitSubsystems();
 
         template<typename T>
-        void createSubsystem(const std::string& name)
+        T* createSubsystem(const std::string& name)
         {
             static_assert(std::is_base_of_v<Subsystem, T>, "Failed to create engine subsystem. It does not derive Subsystem.");
-            addSubsystem(name, std::make_unique<T>());
+            return static_cast<T*>(addSubsystem(name, std::make_unique<T>()));
         }
 
-        void addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem);
+        Subsystem* addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem);
         void destroySubsystem(const std::string& name);
 
     private:

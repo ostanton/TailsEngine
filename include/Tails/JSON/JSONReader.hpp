@@ -1,17 +1,14 @@
 #ifndef TAILS_JSONREADER_HPP
 #define TAILS_JSONREADER_HPP
 
-namespace nlohmann
-{
-    class json;
-}
+#include <nlohmann/json_fwd.hpp>
 
 namespace tails
 {
     class JSONReader
     {
     public:
-        virtual JSONReader* read(nlohmann::json&) = 0;
+        virtual JSONReader* read(const nlohmann::json&) = 0;
     };
 }
 

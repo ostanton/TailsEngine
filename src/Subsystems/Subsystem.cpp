@@ -1,9 +1,9 @@
-#include <Tails/Subsystems/Subsystem.cpp>
+#include <Tails/Subsystems/Subsystem.hpp>
 #include <Tails/Engine.hpp>
 
 namespace tails
 {
-    Engine& getEngine()
+    Engine& Subsystem::getEngine()
     {
         return *getTypedOuter<Engine>();
     }

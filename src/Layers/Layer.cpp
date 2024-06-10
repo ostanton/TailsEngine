@@ -7,4 +7,9 @@ namespace tails
     {
         return *getTypedOuter<State>();
     }
+
+    Engine& Layer::getEngine()
+    {
+        return getState().getEngine();
+    }
 }

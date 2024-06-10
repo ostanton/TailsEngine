@@ -2,6 +2,7 @@
 #define TAILS_STATESUBSYSTEM_HPP
 
 #include <Tails/Subsystems/Subsystem.hpp>
+#include <Tails/Debug.hpp>
 
 #include <SFML/System/Vector2.hpp>
 
@@ -24,8 +25,10 @@ namespace tails
         T* emplaceState()
         {
             static_assert(std::is_base_of_v<State, T>, "Failed to emplace state, type does not derive State.");
+            Debug::print("Emplacing state...");
             m_states.emplace_back(std::make_unique<T>());
             setupState(getActiveState(), true);
+            Debug::print("Emplaced state!");
             return static_cast<T*>(getActiveState());
         }
 
@@ -45,7 +48,6 @@ namespace tails
 
         bool m_popState {false};
         sf::Vector2f m_cameraSize;
-        State* m_activeState {nullptr};
         std::vector<std::unique_ptr<State>> m_states;
     };
 }

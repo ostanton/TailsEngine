@@ -3,6 +3,7 @@
 
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
+#include <Tails/Debug.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -14,6 +15,7 @@ namespace tails
 {
     class Layer;
     class StateSubsystem;
+    class Engine;
 
     class State : public Object, public sf::Drawable, public Tickable
     {
@@ -24,6 +26,7 @@ namespace tails
         ~State();
 
         StateSubsystem& getStateSubsystem();
+        Engine& getEngine();
 
         void setCameraPosition(const sf::Vector2f& position);
         void setCameraPosition(float x, float y);
@@ -37,6 +40,7 @@ namespace tails
         size_t createLayer()
         {
             static_assert(std::is_base_of_v<Layer, T>, "Failed to create layer. Template parameter does not derive Layer.");
+            Debug::print("Creating layer...");
             return addLayer(std::make_unique<T>());
         }
 
@@ -57,6 +61,7 @@ namespace tails
         bool tickWhileInactive {false};
         bool drawWhileInactive {true};
 
+        virtual void init(StateSubsystem& subsystem);
         virtual void added() {} // called when added to the stack
         virtual void removed() {} // called when removed from the stack
 

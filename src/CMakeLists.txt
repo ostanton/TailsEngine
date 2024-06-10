@@ -11,6 +11,7 @@ add_library(
     Layers/Layer.cpp
     Layers/LevelLayer.cpp
     States/State.cpp
+    Subsystems/Subsystem.cpp
     Subsystems/AssetSubsystem.cpp
     Subsystems/AudioSubsystem.cpp
     Subsystems/RegistrySubsystem.cpp

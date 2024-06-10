@@ -10,7 +10,7 @@
 
 namespace tails
 {
-    class Engine;
+    class LevelLayer;
 
     class Entity :
         public Object,
@@ -19,6 +19,8 @@ namespace tails
         public Tickable,
         public JSONReader
     {
+        friend LevelLayer;
+
     public:
         void destroy(); // destroys self
 

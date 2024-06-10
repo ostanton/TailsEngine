@@ -7,11 +7,6 @@
 #include <memory>
 #include <string>
 
-namespace nlohmann
-{
-    class json;
-}
-
 namespace tails
 {
     class RegistrySubsystem;

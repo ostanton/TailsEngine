@@ -16,11 +16,12 @@ namespace tails
     {
         friend Engine;
 
+    public:
+        Engine& getEngine();
+
     protected:
         virtual void init(Engine& engine) {}
         virtual void deinit() {}
-
-        Engine& getEngine();
     };
 }
 

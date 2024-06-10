@@ -13,6 +13,16 @@ namespace tails
 
     class RegistrySubsystem : public Subsystem
     {
+    public:
+        template<typename T>
+        T* getRegistry(const std::string& name)
+        {
+            static_assert(std::is_base_of_v<RegistryBase, T>, "Failed to get registry, type does not derive RegistryBase.");
+            return static_cast<T*>(getRegistry(name));
+        }
+
+        RegistryBase* getRegistry(const std::string& name);
+
     protected:
         void init(Engine& engine) override {}
 
@@ -26,15 +36,6 @@ namespace tails
             m_registries.emplace(std::pair(name, std::make_unique<T>()));
             initRegistry(name, m_registries[name].get());
         }
-
-        template<typename T>
-        T* getRegistry(const std::string& name)
-        {
-            static_assert(std::is_base_of_v<RegistryBase, T>, "Failed to get registry, type does not derive RegistryBase.");
-            return static_cast<T*>(getRegistry(name));
-        }
-
-        RegistryBase* getRegistry(const std::string& name);
 
     private:
         void initRegistry(const std::string& name, RegistryBase* registry);

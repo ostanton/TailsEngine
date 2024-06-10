@@ -18,6 +18,7 @@ namespace tails
 
     void StateSubsystem::pushState(std::unique_ptr<State> state)
     {
+        state->pendingCreate = true;
         m_states.push_back(std::move(state));
         setupState(getActiveState(), false);
     }
@@ -32,7 +33,7 @@ namespace tails
 
     State* StateSubsystem::getActiveState() const
     {
-        return m_activeState;
+        return m_states.back().get();
     }
 
     bool StateSubsystem::isStateActive(State* state) const
@@ -42,7 +43,8 @@ namespace tails
 
     void StateSubsystem::init(Engine& engine)
     {
-
+        emplaceState<State>();
+        Debug::print("Finished init of StateSubsystem.");
     }
 
     void StateSubsystem::preTick()
@@ -55,7 +57,6 @@ namespace tails
             {
                 state->pendingCreate = false;
                 state->added();
-                m_activeState = state.get();
             }
         }
     }
@@ -63,13 +64,13 @@ namespace tails
     void StateSubsystem::tick(float deltaTime)
     {
         // add options for non-active states to tick
-        m_activeState->tick(deltaTime);
+        getActiveState()->tick(deltaTime);
     }
 
     void StateSubsystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // add options for non-active states to draw
-        target.draw(*m_activeState, states);
+        target.draw(*getActiveState(), states);
     }
 
     void StateSubsystem::postTick()
@@ -82,17 +83,22 @@ namespace tails
         if (m_popState)
         {
             m_states.pop_back();
-            m_activeState = m_states.back().get();
         }
     }
 
     void StateSubsystem::setupState(State* state, bool callCreate)
     {
+        Debug::print("Setting up state...");
+        if (!state)
+        {
+            Debug::print("State is invalid.");
+            return;
+        }
         state->outer = this;
+        state->init(*this);
         if (callCreate) state->create();
         // TODO - state camera things
         //state->setCameraResolution();
         //state->setCameraPosition();
-        state->added();
     }
 }

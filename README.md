@@ -20,9 +20,9 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
 - Extendable Managers
 - State-specific camera/sf::View
 - Event class that can hold delegates to class methods
+- All deferred actions like adding or removing items from vector during a tick will be "finalised" at the end of that same frame, or at the start of the next frame, depending on what it is. By finalised I mean adding an item, that item will only start ticking and drawing, etc. after the start of the next frame. When removing an item, it gets erased at the end of that same frame. Start and end lifetime methods (like added, removed, spawn, despawn, etc.) are called at the start and end of the frame respectively once the item has been finalised.
 
 ## What is needed still
-- Decide whether create/destroy/spawn/despawn, etc. methods should be deferred to end of frame/start of next frame, or called immediately.
 - Create default folders and files in same directory as executable if they do not already exist
     - engine.ini
     - save

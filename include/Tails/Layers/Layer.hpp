@@ -9,16 +9,19 @@
 namespace tails
 {
     class State;
+    class Engine;
 
     class Layer : public Object, public sf::Drawable, public Tickable
     {
         friend State;
 
     protected:
-        virtual void added(State& state) {}
+        virtual void init(State& state) {}
+        virtual void added() {}
         virtual void removed() {}
 
         State& getState();
+        Engine& getEngine();
     };
 }
 

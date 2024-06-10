@@ -1,6 +1,7 @@
 #include <Tails/States/State.hpp>
-#include <Tails/Layers/Layer.hpp>
+#include <Tails/Layers/LevelLayer.hpp>
 #include <Tails/Subsystems/StateSubsystem.hpp>
+#include <Tails/Entities/Entity.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -19,6 +20,11 @@ namespace tails
     StateSubsystem& State::getStateSubsystem()
     {
         return *getTypedOuter<StateSubsystem>();
+    }
+
+    Engine& State::getEngine()
+    {
+        return getStateSubsystem().getEngine();
     }
 
     void State::setCameraPosition(const sf::Vector2f& position)
@@ -66,7 +72,18 @@ namespace tails
 
     size_t State::addLayer(std::unique_ptr<Layer> layer)
     {
+        Debug::print("Adding layer...");
+        if (!layer)
+        {
+            Debug::print("Layer is invalid!");
+            return 0;
+        }
+        layer->pendingCreate = true;
+        Debug::print("Layer is pending create, about to initialise...");
+        layer->init(*this);
+        Debug::print("Layer setup!");
         m_layers.push_back(std::move(layer));
+        Debug::print("Layer added!");
         return m_layers.size() - 1;
     }
 
@@ -104,6 +121,12 @@ namespace tails
         return false;
     }
 
+    void State::init(StateSubsystem& subsystem)
+    {
+        createLayer<LevelLayer>();
+        Debug::print("Created LevelLayer!");
+    }
+
     void State::preTick()
     {
         for (auto& layer : m_layers)
@@ -113,7 +136,7 @@ namespace tails
             if (layer->pendingCreate)
             {
                 layer->pendingCreate = false;
-                layer->added(*this);
+                layer->added();
             }
         }
     }
