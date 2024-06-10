@@ -2,11 +2,11 @@
 #include <Tails/Engine.hpp>
 
 #include <fstream>
-#include <json.h>
+#include <nlohmann/json.hpp>
 
 namespace tails
 {
-    void LevelLayer::spawnEntity(const std::string& name)
+    void LevelLayer::spawnEntity(const std::string& name, const nlohmann::json& json)
     {
         // get entity registry and clone it into the entity vector
         // entityRegistry->loadRegistrar(name, inJson);

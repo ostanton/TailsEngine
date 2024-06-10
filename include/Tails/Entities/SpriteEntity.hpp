@@ -13,7 +13,7 @@ namespace tails
 {
     struct Frame
     {
-        sf::FloatRect rect; // rect of the frame on the sprite sheet
+        sf::IntRect rect; // rect of the frame on the sprite sheet
         float speed {1.f}; // multiplier, e.g. 0.5x = twice as long
     };
 

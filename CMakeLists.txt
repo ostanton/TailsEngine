@@ -20,19 +20,22 @@ endif(BUILD_EXAMPLES)
 
 include(FetchContent)
 
+message(STATUS "Fetching SFML...")
 FetchContent_Declare(
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG 2.6.1
 )
+message(STATUS "Fetched SFML!")
 FetchContent_MakeAvailable(SFML)
 
+message(STATUS "Fetching nlohmann/json")
 FetchContent_Declare(
-    simpleson
-    GIT_REPOSITORY https://github.com/gregjesl/simpleson
-    GIT_TAG master
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
 )
-FetchContent_MakeAvailable(simpleson)
+message(STATUS "Fetched nlohmann/json!")
+FetchContent_MakeAvailable(json)
 
 target_include_directories(
     TailsEngine
@@ -44,6 +47,6 @@ target_link_libraries(
     PUBLIC
         sfml-graphics
         sfml-audio
-        simpleson
+        nlohmann_json::nlohmann_json
 )
 target_compile_features(TailsEngine PRIVATE cxx_std_20)

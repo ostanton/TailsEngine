@@ -101,7 +101,7 @@ make
 ### Fetched with CMake
 These libraries are automatically downloaded and added and built when running CMake.
 - [SFML](https://www.sfml-dev.org/)
-- [simpleson](https://github.com/gregjesl/simpleson)
+- [nlohmann/json](https://github.com/nlohmann/json)
 ### Manually included
 These libraries are not downloaded with CMake, but are found in their respective folders in `include/`.
 - [LeksysINI](https://github.com/Lek-sys/LeksysINI)
