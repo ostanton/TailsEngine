@@ -10,6 +10,7 @@ add_library(
     Input/Context.cpp
     Layers/Layer.cpp
     Layers/LevelLayer.cpp
+    Layers/ScreenLayer.cpp
     States/State.cpp
     Subsystems/Subsystem.cpp
     Subsystems/AssetSubsystem.cpp

@@ -11,11 +11,13 @@ namespace tails
 {
     class Slot;
     class PanelWidget;
+    class ScreenLayer;
 
     // the outer of a widget is the Screen that owns it
     class Widget : public Object, public sf::Drawable, public sf::Transformable, public Tickable
     {
         friend Slot;
+        friend ScreenLayer;
 
     public:
         Slot* slot; // the slot that owns this widget
