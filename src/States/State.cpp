@@ -78,6 +78,7 @@ namespace tails
             Debug::print("Layer is invalid!");
             return 0;
         }
+        layer->outer = this;
         layer->pendingCreate = true;
         Debug::print("Layer is pending create, about to initialise...");
         layer->init(*this);
