@@ -2,6 +2,7 @@ project(Pokemon)
 
 add_library(
     TailsEngine
+    SHARED
     Assets/AssetInfo.cpp
     Entities/Entity.cpp
     Entities/RectEntity.cpp
@@ -11,6 +12,7 @@ add_library(
     Layers/Layer.cpp
     Layers/LevelLayer.cpp
     Layers/ScreenLayer.cpp
+    Registries/EntityRegistry.cpp
     States/State.cpp
     Subsystems/Subsystem.cpp
     Subsystems/AssetSubsystem.cpp

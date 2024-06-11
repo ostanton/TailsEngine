@@ -17,6 +17,8 @@ namespace tails
         Object& operator=(Object&&) = delete; // move assignment
         virtual ~Object() = default;
 
+        virtual void create() {}
+
         template<typename T>
         T* getTypedOuter()
         {
@@ -29,9 +31,6 @@ namespace tails
         bool pendingCreate {true};
         bool pendingDestroy {false};
         // TODO - maybe hide these members and provide clear helper functions like markForDestroy()
-
-    protected:
-        virtual void create() {}
     };
 
     // prefer std::make_unique over this if possible

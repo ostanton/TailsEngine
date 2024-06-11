@@ -17,7 +17,7 @@ namespace tails
         template<typename T>
         T* getRegistry(const std::string& name)
         {
-            static_assert(std::is_base_of_v<RegistryBase, T>, "Failed to get registry, type does not derive RegistryBase.");
+            static_assert(std::is_base_of_v<RegistryBase, T>, "Failed to get m_registry, type does not derive RegistryBase.");
             return static_cast<T*>(getRegistry(name));
         }
 
@@ -32,7 +32,7 @@ namespace tails
         template<typename T>
         void emplaceRegistry(const std::string& name)
         {
-            static_assert(std::is_base_of_v<RegistryBase, T>, "Failed to emplace registry, it does not derive RegistryBase");
+            static_assert(std::is_base_of_v<RegistryBase, T>, "Failed to emplace m_registry, it does not derive RegistryBase");
             m_registries.emplace(std::pair(name, std::make_unique<T>()));
             initRegistry(name, m_registries[name].get());
         }

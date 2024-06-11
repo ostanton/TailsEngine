@@ -11,7 +11,7 @@ namespace tails
 
     StackBox* StackBoxSlot::getParentStackBox()
     {
-        return static_cast<StackBox*>(getParent());
+        return dynamic_cast<StackBox*>(getParent());
     }
 
     void StackBoxSlot::tick(float deltaTime)

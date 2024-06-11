@@ -34,33 +34,20 @@ namespace tails
         };
 
         AssetInfo() = default;
-        AssetInfo(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, const std::string& path)
-            : m_resourceType(resourceType), m_assetType(assetType), m_path(path) {}
+        AssetInfo(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, std::string path)
+            : m_resourceType(resourceType), m_assetType(assetType), m_path(std::move(path)) {}
         // delete copy constructor
         AssetInfo(const AssetInfo&) = delete;
         // move constructor
-        AssetInfo(AssetInfo&& asset) noexcept
-        {
-            // TODO - will this work??
-            *this = std::move(asset);
-        }
+        AssetInfo(AssetInfo&& asset) noexcept;
         // delete copy-assignment operator
         AssetInfo& operator=(const AssetInfo&) = delete;
-        // move assgnment operator
-        AssetInfo& operator=(AssetInfo&& asset)
-        {
-            m_resourceType = asset.m_resourceType;
-            m_assetType = asset.m_assetType;
-            m_path = asset.m_path;
-            m_resource = std::move(asset.m_resource);
-            return *this;
-        }
+        // move assignment operator
+        AssetInfo& operator=(AssetInfo&& asset) noexcept;
+
         ~AssetInfo() = default;
 
-        bool isLoaded()
-        {
-            return m_resource != nullptr;
-        }
+        bool isLoaded() {return m_resource != nullptr;}
 
         // do not return ref, resource could be null. See SFML docs, they return ptr with getters and want const refs for setters.
         template<typename T>
@@ -83,39 +70,20 @@ namespace tails
         AssetType getAssetType() {return m_assetType;}
         const std::string& getResourcePath() {return m_path;}
 
-        void loadAutoSet(const std::string& path)
-        {
-            // auto set data from deciphering what kind of resource the file in path is?
-        }
+        void loadAutoSet(const std::string& path);
 
-        void setData(ResourceType resourceType, AssetType assetType, const std::string& path)
-        {
-            m_resourceType = resourceType;
-            m_assetType = assetType;
-            m_path = path;
-        }
+        void setData(ResourceType resourceType, AssetType assetType, const std::string& path);
 
         // loads the asset's resource
         bool load();
-
-        bool load(ResourceType resourceType, AssetType assetType, const std::string& path)
-        {
-            setData(resourceType, assetType, path);
-            return load();
-        }
+        bool load(ResourceType resourceType, AssetType assetType, const std::string& path);
 
         // unloads the assets' resource
-        void unload()
-        {
-            // do nothing if the resource is already unloaded
-            if (!isLoaded()) return;
-
-            m_resource.reset();
-        }
+        void unload();
 
     private:
-        ResourceType m_resourceType;
-        AssetType m_assetType;
+        ResourceType m_resourceType {ResourceType::Texture};
+        AssetType m_assetType {AssetType::Sprite};
         std::string m_path;
         std::unique_ptr<Resource> m_resource;
     };

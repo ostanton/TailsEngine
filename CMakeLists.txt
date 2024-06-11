@@ -26,16 +26,16 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG 2.6.1
 )
-message(STATUS "Fetched SFML!")
 FetchContent_MakeAvailable(SFML)
+message(STATUS "Fetched SFML!")
 
 message(STATUS "Fetching nlohmann/json")
 FetchContent_Declare(
     json
     URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
 )
-message(STATUS "Fetched nlohmann/json!")
 FetchContent_MakeAvailable(json)
+message(STATUS "Fetched nlohmann/json!")
 
 target_include_directories(
     TailsEngine

@@ -11,4 +11,9 @@ namespace tails
     {
         return m_mappings[id];
     }
+
+    std::unordered_map<std::string, ActionMapping>& InputContext::getMappings()
+    {
+        return m_mappings;
+    }
 }

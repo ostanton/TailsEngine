@@ -13,7 +13,7 @@ namespace tails
     {
         Key() = default;
 
-        constexpr Key(const std::string& inName)
+        explicit constexpr Key(const std::string& inName)
             : name(inName) {}
 
         constexpr Key(const Key& other)
@@ -21,21 +21,22 @@ namespace tails
             name = other.name;
         }
 
-        constexpr Key(Key&& other)
+        constexpr Key(Key&& other) noexcept
         {
             name = std::move(other.name);
         }
 
-        constexpr Key& operator=(const Key& other)
-        {
-            name = other.name;
-            return *this;
-        }
+        constexpr Key& operator=(const Key& other) = default;
 
-        constexpr Key& operator=(Key&& other)
+        constexpr Key& operator=(Key&& other) noexcept
         {
             name = std::move(other.name);
             return *this;
+        }
+
+        [[nodiscard]] bool isPressed() const
+        {
+            return true;
         }
 
         std::string name;

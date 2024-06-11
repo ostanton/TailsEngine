@@ -5,6 +5,38 @@
 
 namespace tails
 {
+    AssetInfo::AssetInfo(AssetInfo &&asset) noexcept
+    {
+        m_resourceType = asset.m_resourceType;
+        m_assetType = asset.m_assetType;
+        m_path = asset.m_path;
+        m_resource = std::move(asset.m_resource);
+    }
+
+    AssetInfo &AssetInfo::operator=(AssetInfo &&asset) noexcept
+    {
+        m_resourceType = asset.m_resourceType;
+        m_assetType = asset.m_assetType;
+        m_path = asset.m_path;
+        m_resource = std::move(asset.m_resource);
+        return *this;
+    }
+
+    void AssetInfo::loadAutoSet(const std::string &path)
+    {
+        // auto set data from deciphering what kind of resource the file in path is?
+    }
+
+    void AssetInfo::setData(
+            AssetInfo::ResourceType resourceType,
+            AssetInfo::AssetType assetType,
+            const std::string &path)
+    {
+        m_resourceType = resourceType;
+        m_assetType = assetType;
+        m_path = path;
+    }
+
     bool AssetInfo::load()
     {
         switch (m_resourceType)
@@ -22,6 +54,22 @@ namespace tails
                 break;
         }
 
+        if (!m_resource) return false;
+
         return m_resource->load(m_path);
+    }
+
+    bool AssetInfo::load(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, const std::string &path)
+    {
+        setData(resourceType, assetType, path);
+        return load();
+    }
+
+    void AssetInfo::unload()
+    {
+        // do nothing if the resource is already unloaded
+        if (!isLoaded()) return;
+
+        m_resource.reset();
     }
 }

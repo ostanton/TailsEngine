@@ -14,10 +14,10 @@ namespace tails
 {
     void LevelLayer::spawnEntity(const std::string& name, const nlohmann::json& json)
     {
-        // get entity registry and clone it into the entity vector
+        // get entity m_registry and clone it into the entity vector
         // entityRegistry->loadRegistrar(name, inJson);
 
-        //m_entities.emplace_back(std::make_unique<Entity>(registry->loadRegistrar(json.key(), json)));
+        //m_entities.emplace_back(std::make_unique<Entity>(m_registry->loadRegistrar(json.key(), json)));
     }
 
     Entity* LevelLayer::spawnEntity(std::unique_ptr<Entity> entity)
@@ -30,7 +30,7 @@ namespace tails
 
     void LevelLayer::init(State& state)
     {
-        registry = getEngine().getRegistrySubsystem().getRegistry<EntityRegistry>("entity");
+        m_registry = getEngine().getRegistrySubsystem().getRegistry<EntityRegistry>("entity");
         spawnEntity<RectEntity>();
         Debug::print("Spawned RectEntity!");
 

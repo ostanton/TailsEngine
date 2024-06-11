@@ -35,7 +35,7 @@ namespace tails
     {
     public:
         Engine();
-        ~Engine();
+        ~Engine() override;
 
         struct Paths
         {
@@ -47,14 +47,14 @@ namespace tails
             std::string input;
             std::string saves;
 
-            void printPaths();
+            void printPaths() const;
         };
 
         struct RenderSettings
         {
             sf::Vector2f size {640, 480};
 
-            void printSettings();
+            void printSettings() const;
         };
 
         struct WindowSettings
@@ -63,8 +63,8 @@ namespace tails
             sf::Vector2u size {640, 480};
             bool fullscreen {false};
 
-            void printSettings();
-            sf::Uint32 getWindowStyle();
+            void printSettings() const;
+            [[nodiscard]] sf::Uint32 getWindowStyle() const;
         };
 
         const Paths& getFilePaths() {return m_paths;}

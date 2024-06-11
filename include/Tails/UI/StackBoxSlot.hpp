@@ -40,7 +40,7 @@ namespace tails
         StackBox* getParentStackBox();
 
     protected:
-        void tick(float deltaTime);
+        void tick(float deltaTime) override;
     };
 }
 

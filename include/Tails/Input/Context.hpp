@@ -23,8 +23,8 @@ namespace tails
     struct ActionMapping final
     {
         ActionMapping() = default;
-        ActionMapping(InputAction action)
-            : inputAction(action) {}
+        explicit ActionMapping(InputAction action)
+            : inputAction(std::move(action)) {}
 
         InputAction inputAction;
         std::vector<MappingData> mappingData;
@@ -40,6 +40,8 @@ namespace tails
 
         void addAction(const std::string& id, InputAction action);
         ActionMapping& getActionMapping(const std::string& id);
+
+        std::unordered_map<std::string, ActionMapping>& getMappings();
 
     private:
         std::unordered_map<std::string, ActionMapping> m_mappings;

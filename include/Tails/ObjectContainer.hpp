@@ -4,6 +4,9 @@
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 
+#include <vector>
+#include <memory>
+
 namespace tails
 {
     // somehow support maps too??
@@ -18,7 +21,7 @@ namespace tails
 
     protected:
         std::vector<std::unique_ptr<T>> m_objects;
-    }
+    };
 }
 
 #endif // TAILS_OBJECTCONTAINER_HPP

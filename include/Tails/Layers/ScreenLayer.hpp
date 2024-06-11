@@ -21,7 +21,7 @@ namespace tails
             return static_cast<T*>(setContent(std::make_unique<T>()));
         }
 
-        Widget* getContent() const;
+        [[nodiscard]] Widget* getContent() const;
 
         // returned content may have failed a cast so could be null!
         template<typename T>

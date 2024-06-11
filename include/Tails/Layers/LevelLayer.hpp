@@ -20,6 +20,11 @@ namespace tails
     public:
         void spawnEntity(const std::string& name, const nlohmann::json& json);
 
+        /**
+         * Spawns an entity of template type
+         * @tparam T Type of entity to spawn
+         * @return Pointer to spawned entity
+         */
         template<typename T>
         T* spawnEntity() // transform or something as input
         {
@@ -30,18 +35,23 @@ namespace tails
             return static_cast<T*>(spawnEntity(std::move(resultEntity)));
         }
 
+        /**
+         * Spawns an existing entity
+         * @param entity Unique Pointer to entity to spawn
+         * @return Pointer to moved entity
+         */
         Entity* spawnEntity(std::unique_ptr<Entity> entity);
 
     protected:
         void init(State& state) override;
         void loadJson(const std::string& path);
-        EntityRegistry* registry {nullptr};
 
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
 
+        EntityRegistry* m_registry {nullptr};
         std::vector<std::unique_ptr<Entity>> m_entities;
     };
 }

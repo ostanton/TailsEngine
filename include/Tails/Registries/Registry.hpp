@@ -29,7 +29,7 @@ namespace tails
         static_assert(std::is_base_of_v<JSONReader, Base>, "Registry type must derive JSONReader.");
 
     public:
-        // creates and adds an "empty" prototype/registrar into the registry, for use later
+        // creates and adds an "empty" prototype/registrar into the m_registry, for use later
         // registrar meaning the class that derives Base and will be mapped to name
         template<typename T>
         void assignRegistrar(const std::string& name)

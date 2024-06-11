@@ -13,7 +13,7 @@ namespace tails
 
     void RegistrySubsystem::initRegistry(const std::string& name, RegistryBase* registry)
     {
-        Debug::print("  Initialising " + name + " registry...");
+        Debug::print("  Initialising " + name + " m_registry...");
         registry->init(*this);
         Debug::print("  " + name + " initialised.");
     }

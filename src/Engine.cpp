@@ -27,7 +27,7 @@ namespace tails
 
     }
 
-    void Engine::Paths::printPaths()
+    void Engine::Paths::printPaths() const
     {
         std::cout
             << "Paths:\n"
@@ -40,13 +40,13 @@ namespace tails
             << "  Saves = " << saves << "\n";
     }
 
-    void Engine::RenderSettings::printSettings()
+    void Engine::RenderSettings::printSettings() const
     {
         std::cout << "\nRender:\n"
             << "  Resolution = " << size.x << "x" << size.y << "\n";
     }
 
-    void Engine::WindowSettings::printSettings()
+    void Engine::WindowSettings::printSettings() const
     {
         std::cout << "\nWindow:\n"
             << "  Title = " << title << "\n"
@@ -54,7 +54,7 @@ namespace tails
             << "  Fullscreen = " << fullscreen << "\n";
     }
 
-    sf::Uint32 Engine::WindowSettings::getWindowStyle()
+    sf::Uint32 Engine::WindowSettings::getWindowStyle() const
     {
         return fullscreen ? sf::Style::Fullscreen : sf::Style::Default;
     }
@@ -63,7 +63,6 @@ namespace tails
     {
         Debug::print("Initialising engine...\n");
         loadIni();
-        Debug::print("engine.ini loaded!\n");
         initSubsystems();
         Debug::print("Engine subsystems initialised.\n");
         initWindow();
@@ -87,6 +86,8 @@ namespace tails
             {
                 switch (ev.type)
                 {
+                    default:
+                        break;
                     case sf::Event::Closed:
                         m_window->close();
                 }
@@ -127,7 +128,7 @@ namespace tails
 
     RegistrySubsystem& Engine::getRegistrySubsystem()
     {
-        return *getSubsystem<RegistrySubsystem>("registry");
+        return *getSubsystem<RegistrySubsystem>("m_registry");
     }
 
     InputSubsystem& Engine::getInputSubsystem()
@@ -176,8 +177,8 @@ namespace tails
             return;
         }
 
-        m_renderSettings.size.x = renderSect->GetValue("resolution").AsArray()[0].AsDouble();
-        m_renderSettings.size.y = renderSect->GetValue("resolution").AsArray()[1].AsDouble();
+        m_renderSettings.size.x = static_cast<float>(renderSect->GetValue("resolution").AsArray()[0].AsDouble());
+        m_renderSettings.size.y = static_cast<float>(renderSect->GetValue("resolution").AsArray()[1].AsDouble());
 
         m_renderSettings.printSettings();
 
@@ -193,6 +194,8 @@ namespace tails
         m_windowSettings.fullscreen = windowSect->GetValue("fullscreen").AsBool();
 
         m_windowSettings.printSettings();
+
+        Debug::print("engine.ini loaded!\n");
     }
 
     void Engine::initSubsystems()
@@ -200,7 +203,7 @@ namespace tails
         Debug::print("Initialising engine subsystems:");
         createSubsystem<AssetSubsystem>("asset");
         createSubsystem<AudioSubsystem>("audio");
-        createSubsystem<RegistrySubsystem>("registry");
+        createSubsystem<RegistrySubsystem>("m_registry");
         // load registries here??
         createSubsystem<InputSubsystem>("input");
         createSubsystem<StateSubsystem>("state");
