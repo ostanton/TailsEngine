@@ -10,12 +10,14 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
 
 ## What it has
 - Clear initialisation/deinitialisation of the engine
-    - Engine subsystems (ManagerSubsystem, soon to have StateSubsystem, etc.)
+    - Engine subsystems (AssetSubsystem, InputSubsystem, StateSubsystem, etc.)
 - States
-    - Level State
-- State Stack
+    - Layers
+        - LevelLayer
+        - ScreenLayer
 - Entities
-    - RectEntity
+    - Rect Entity
+    - Animated Sprite Entity
 - Extendable Engine class
 - Extendable Managers
 - State-specific camera/sf::View
@@ -23,7 +25,7 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
 - All deferred actions like adding or removing items from vector during a tick will be "finalised" at the end of that same frame, or at the start of the next frame, depending on what it is. By finalised I mean adding an item, that item will only start ticking and drawing, etc. after the start of the next frame. When removing an item, it gets erased at the end of that same frame. Start and end lifetime methods (like added, removed, spawn, despawn, etc.) are called at the start and end of the frame respectively once the item has been finalised.
 
 ## What is needed still
-- Create default folders and files in same directory as executable if they do not already exist
+- Create default folders and files in same directory as executable if they do not already exist (doing this at game runtime probably isn't the way to go. Easy to to make those folders, etc. when starting a new project? Template one maybe?)
     - engine.ini
     - save
         - no default data (how should saves be handled??)
@@ -66,23 +68,18 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
         - Gradient effects with vertex colours?
 - Registry base class
     - Child templated class with further children like EntityRegistry, InputModifierRegistry, WidgetRegistry, etc.
-- Animated sprites
 - Entity collision
     - Each entity has a `getGlobalBounds()` method? And/or a bool for `canCollide` or something. Need this optimised, only check collisions with entities near the current entity! CollisionManager??
 - Tilemap stuff
 - Audio manager for global sound + music playing
     - midi support
     - custom soundstream stuff
-- Overlay states
-    - A stack (or just plain vector since they overlay?) that draw over the main stack and tick independently.
-    - Or scrap the whole stack idea and just go with a level class and separate widgets that have no bearing on the level?
-    - If keeping with states, how would a HUD work? The level AND hud tick and draw, but then how do you stop them ticking (and maybe drawing) when opening the pause menu? Overlay states fix this? But how do you draw the pause menu over the HUD overlay? Remove the overlay? It doesn't seem very simple. Unless there's a separate Z ordering of layers??? Each state has layers? HUD and level go into one state, call it the GameState. PauseState is pushed, GameState no longer ticks or draws (maybe), and the PauseState is instead the one on top. So now we have the same state system but now states have a vector of layers. States can then be derived from? So users can create their own PauseState, GameState, etc.? What would the type of the vector be? StateLayer? UI screens and levels would need to derive from that then! Users can then make their own layers by deriving StateLayer!
 - Engine default settings struct
     - User either subclasses or creates an object from it, sets the object types via template parameters (class template so they can both derive and/or instance it?) and pass that into the engine init method?
     - Would require a base Settings struct, so the templated class one derives it and the engine just has a pointer to the base one!
     - Would be used to set default registries, maybe GameMode or something if going down the Unreal-style path, etc.
 - Screenshot ability?
-    - RenderWindow::capture() - returns an sf::Image, save it to file in save/captures/? SFML docs says it's deprecated and instead to update a texture with the window as input!
+    - RenderWindow::capture() - returns an sf::Image, save it to file in `save/captures`? SFML docs says it's deprecated and instead to update a texture with the window as input!
 - GameSettings.ini
     - settings file for game-specific settings, like audio volume, maybe resolution/window size?, fullscreen, etc.
 - Whenever modules are fully supported (could be never lol!) move to that C++ version and move to them. Much faster compilations!
@@ -108,8 +105,7 @@ These libraries are not downloaded with CMake, but are found in their respective
 
 ## Binary folder
 The game expects an `engine.ini` file next to the executable. This is where paths to textures, sounds, etc. are set, in addition to window settings and render settings. Some of these might move to a separate `user_settings.ini` file in the future. For now though, it's all in the `engine.ini` file.
-The structure by default is as follows:
-- Root
+The structure by default is as follows (in the same folder as the built executable):
 - res
     - data
         - input
@@ -122,6 +118,7 @@ The structure by default is as follows:
 - save
     - where all the saves are stored
 - engine.ini
+- Windows DLLs (because they are oh so very annoying!)
 
 The `engine.ini` contents by default is as follows (you can copy and paste for a game using this library to work properly):
 ```
@@ -146,6 +143,7 @@ fullscreen = false
 Without this file, the engine cannot initialise or really do anything, as it relies on those paths being set, and the render and window sections have valid fields and values (for the window to be initialised).
 
 ## Classes (alphabetical order)
+> This isn't really being updated. When the engine is more mature I will add all this to a wiki.
 - Debug
 - Engine
 - Object
@@ -181,6 +179,7 @@ Without this file, the engine cannot initialise or really do anything, as it rel
 - Subsystem
     - Asset Subsystem
     - Audio Subsystem
+    - Registry Subsystem
     - Input Subsystem
     - State Subsystem
 ### UI
