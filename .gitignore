@@ -46,3 +46,4 @@ CMakeUserPresets.json
 
 # Folders
 build/
+.idea/
