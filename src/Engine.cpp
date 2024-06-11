@@ -27,7 +27,7 @@ namespace tails
 
     }
 
-    void Engine::Paths::printPaths() const
+    void Paths::printPaths() const
     {
         std::cout
             << "Paths:\n"
@@ -40,13 +40,13 @@ namespace tails
             << "  Saves = " << saves << "\n";
     }
 
-    void Engine::RenderSettings::printSettings() const
+    void RenderSettings::printSettings() const
     {
         std::cout << "\nRender:\n"
             << "  Resolution = " << size.x << "x" << size.y << "\n";
     }
 
-    void Engine::WindowSettings::printSettings() const
+    void WindowSettings::printSettings() const
     {
         std::cout << "\nWindow:\n"
             << "  Title = " << title << "\n"
@@ -54,7 +54,7 @@ namespace tails
             << "  Fullscreen = " << fullscreen << "\n";
     }
 
-    sf::Uint32 Engine::WindowSettings::getWindowStyle() const
+    sf::Uint32 WindowSettings::getWindowStyle() const
     {
         return fullscreen ? sf::Style::Fullscreen : sf::Style::Default;
     }
@@ -128,7 +128,7 @@ namespace tails
 
     RegistrySubsystem& Engine::getRegistrySubsystem()
     {
-        return *getSubsystem<RegistrySubsystem>("m_registry");
+        return *getSubsystem<RegistrySubsystem>("registry");
     }
 
     InputSubsystem& Engine::getInputSubsystem()
@@ -203,7 +203,7 @@ namespace tails
         Debug::print("Initialising engine subsystems:");
         createSubsystem<AssetSubsystem>("asset");
         createSubsystem<AudioSubsystem>("audio");
-        createSubsystem<RegistrySubsystem>("m_registry");
+        createSubsystem<RegistrySubsystem>("registry");
         // load registries here??
         createSubsystem<InputSubsystem>("input");
         createSubsystem<StateSubsystem>("state");

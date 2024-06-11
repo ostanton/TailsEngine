@@ -36,6 +36,7 @@ namespace tails
         // TODO - rule of five
         explicit InputContext() = default;
         InputContext(const InputContext&) = delete;
+        InputContext(InputContext&&) noexcept;
         InputContext& operator=(const InputContext&) = delete;
 
         void addAction(const std::string& id, InputAction action);

@@ -27,6 +27,9 @@ add_library(
     UI/StackBox.cpp
     UI/StackBoxSlot.cpp
     UI/RectangleWidget.cpp
+    UI/Button.cpp
+    UI/ButtonSlot.cpp
     Debug.cpp
+    EngineStatics.cpp
     Engine.cpp
 )

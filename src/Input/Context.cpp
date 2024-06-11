@@ -2,9 +2,14 @@
 
 namespace tails
 {
+    InputContext::InputContext(InputContext&& other) noexcept
+    {
+        m_mappings = std::move(other.m_mappings);
+    }
+
     void InputContext::addAction(const std::string& id, InputAction action)
     {
-        m_mappings[id] = ActionMapping(action);
+        m_mappings[id] = ActionMapping(std::move(action));
     }
 
     ActionMapping& InputContext::getActionMapping(const std::string& id)

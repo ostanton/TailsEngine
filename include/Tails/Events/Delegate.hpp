@@ -26,8 +26,6 @@ namespace tails
         {
             execute(args...);
         }
-
-        virtual Delegate& operator=(Delegate&) = 0;
     };
 
     // specialised delegate that holds a free-floating function or functor
@@ -50,7 +48,7 @@ namespace tails
             (*functor)(args...);
         }
 
-        FunctorDelegate& operator=(FunctorDelegate& other) override
+        FunctorDelegate& operator=(FunctorDelegate& other)
         {
             functor = other.functor;
             return *this;
@@ -81,7 +79,7 @@ namespace tails
             (object->*std::get<void(C::*)(const Args&...)>(function))(args...);
         }
 
-        MemberDelegate& operator=(MemberDelegate& other) override
+        MemberDelegate& operator=(MemberDelegate& other)
         {
             object = other.object;
             function = other.function;

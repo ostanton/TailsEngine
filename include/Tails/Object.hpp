@@ -20,7 +20,7 @@ namespace tails
         virtual void create() {}
 
         template<typename T>
-        T* getTypedOuter()
+        T* getTypedOuter() const
         {
             return static_cast<T*>(outer);
         }

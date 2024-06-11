@@ -24,6 +24,36 @@ namespace tails
     class InputSubsystem;
     class StateSubsystem;
 
+    struct Paths
+    {
+        std::string data;
+        std::string textures;
+        std::string sounds;
+        std::string fonts;
+        std::string levels;
+        std::string input;
+        std::string saves;
+
+        void printPaths() const;
+    };
+
+    struct RenderSettings
+    {
+        sf::Vector2f size {640, 480};
+
+        void printSettings() const;
+    };
+
+    struct WindowSettings
+    {
+        std::string title;
+        sf::Vector2u size {640, 480};
+        bool fullscreen {false};
+
+        void printSettings() const;
+        [[nodiscard]] sf::Uint32 getWindowStyle() const;
+    };
+
     struct EngineSettings
     {
         // initial state to load
@@ -36,36 +66,6 @@ namespace tails
     public:
         Engine();
         ~Engine() override;
-
-        struct Paths
-        {
-            std::string data;
-            std::string textures;
-            std::string sounds;
-            std::string fonts;
-            std::string levels;
-            std::string input;
-            std::string saves;
-
-            void printPaths() const;
-        };
-
-        struct RenderSettings
-        {
-            sf::Vector2f size {640, 480};
-
-            void printSettings() const;
-        };
-
-        struct WindowSettings
-        {
-            std::string title;
-            sf::Vector2u size {640, 480};
-            bool fullscreen {false};
-
-            void printSettings() const;
-            [[nodiscard]] sf::Uint32 getWindowStyle() const;
-        };
 
         const Paths& getFilePaths() {return m_paths;}
         const RenderSettings& getRenderSettings() {return m_renderSettings;}
@@ -109,7 +109,6 @@ namespace tails
 
     private:
         void initWindow();
-        void setupStates();
 
         void preTick();
         void tick(sf::Time& time);

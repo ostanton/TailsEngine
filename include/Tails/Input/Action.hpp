@@ -25,7 +25,13 @@ namespace tails
         std::unordered_map<ActionTrigger, MultiEvent<InputValue>> funcMap;
 
         template<typename C>
-        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(InputValue))
+        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(InputValue&&))
+        {
+            funcMap[trigger].add(object, function);
+        }
+
+        template<typename C>
+        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(const InputValue&))
         {
             funcMap[trigger].add(object, function);
         }

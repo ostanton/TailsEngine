@@ -10,13 +10,13 @@ namespace tails
         std::variant<bool, float> value;
 
         template<typename T>
-        T getValue()
+        T getValue() const
         {
             return std::get<T>(value);
         }
 
         template<typename T>
-        T isValueType()
+        T isValueType() const
         {
             return std::holds_alternative<T>(value);
         }

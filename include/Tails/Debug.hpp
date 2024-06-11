@@ -20,6 +20,12 @@ namespace tails
         {
             (std::cout << (s << ...)) << "\n";
         }
+
+        template<typename... ArgsT>
+        static void print(ArgsT&&... s)
+        {
+            (std::cout << (s << ...)) << "\n";
+        }
     };
 }
 

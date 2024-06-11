@@ -30,6 +30,12 @@ namespace tails
         size_t getChildrenCount();
 
     protected:
+        /**
+         * Adds a child using template type as slot type (internal use only)
+         * @tparam S Slot type
+         * @param content Content to add
+         * @return Pointer to created slot
+         */
         template<typename S>
         S* addChild(std::unique_ptr<Widget> content)
         {
