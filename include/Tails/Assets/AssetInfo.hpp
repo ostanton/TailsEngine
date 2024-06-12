@@ -1,6 +1,7 @@
 #ifndef TAILS_ASSETINFO_HPP
 #define TAILS_ASSETINFO_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Assets/Resource.hpp>
 
 #include <string>

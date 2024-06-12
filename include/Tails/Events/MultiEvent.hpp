@@ -1,6 +1,7 @@
 #ifndef TAILS_MULTIEVENT_HPP
 #define TAILS_MULTIEVENT_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Events/Delegate.hpp>
 
 #include <vector>

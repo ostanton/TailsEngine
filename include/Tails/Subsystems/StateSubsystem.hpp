@@ -1,6 +1,7 @@
 #ifndef TAILS_STATESUBSYSTEM_HPP
 #define TAILS_STATESUBSYSTEM_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Subsystems/Subsystem.hpp>
 #include <Tails/Debug.hpp>
 

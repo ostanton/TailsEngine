@@ -1,6 +1,7 @@
 #ifndef TAILS_SCREENLAYER_HPP
 #define TAILS_SCREENLAYER_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Layers/Layer.hpp>
 
 namespace tails

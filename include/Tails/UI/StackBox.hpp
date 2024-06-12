@@ -1,6 +1,7 @@
 #ifndef TAILS_STACKBOX_HPP
 #define TAILS_STACKBOX_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/UI/PanelWidget.hpp>
 
 namespace tails

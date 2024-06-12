@@ -1,6 +1,7 @@
 #ifndef TAILS_ENTITY_HPP
 #define TAILS_ENTITY_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 #include <Tails/JSON/JSONReader.hpp>

@@ -1,6 +1,7 @@
 #ifndef TAILS_LEVELLAYER_HPP
 #define TAILS_LEVELLAYER_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Layers/Layer.hpp>
 #include <Tails/Debug.hpp>
 

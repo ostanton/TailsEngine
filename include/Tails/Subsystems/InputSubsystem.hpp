@@ -1,6 +1,7 @@
 #ifndef TAILS_INPUTSUBSYSTEM_HPP
 #define TAILS_INPUTSUBSYSTEM_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Subsystems/Subsystem.hpp>
 #include <Tails/Input/Context.hpp>
 

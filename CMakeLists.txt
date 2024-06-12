@@ -16,6 +16,7 @@ add_subdirectory(src)
 if (BUILD_EXAMPLES)
     message(STATUS "Building examples...")
     add_subdirectory(examples)
+    message(STATUS "Examples built!? Is this where they finish building?? Huh?")
 endif(BUILD_EXAMPLES)
 
 include(FetchContent)
@@ -26,14 +27,18 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG 2.6.1
 )
+message(STATUS "Declared SFML!")
+message(STATUS "Making SFML available...")
 FetchContent_MakeAvailable(SFML)
 message(STATUS "Fetched SFML!")
 
-message(STATUS "Fetching nlohmann/json")
+message(STATUS "Fetching nlohmann/json...")
 FetchContent_Declare(
     json
     URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
 )
+message(STATUS "Declared nlohmann/json!")
+message(STATUS "Making nlohmann/json available...")
 FetchContent_MakeAvailable(json)
 message(STATUS "Fetched nlohmann/json!")
 

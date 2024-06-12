@@ -1,6 +1,7 @@
 #ifndef TAILS_RECTENTITY_HPP
 #define TAILS_RECTENTITY_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Entities/Entity.hpp>
 
 #include <SFML/Graphics/RectangleShape.hpp>

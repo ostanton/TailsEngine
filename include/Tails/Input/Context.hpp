@@ -1,6 +1,7 @@
 #ifndef TAILS_INPUTCONTEXT_HPP
 #define TAILS_INPUTCONTEXT_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Input/Action.hpp>
 #include <Tails/Input/Modifier.hpp>
 #include <Tails/Input/Keys.hpp>

@@ -1,6 +1,7 @@
 #ifndef TAILS_TEXTURERESOURCE_HPP
 #define TAILS_TEXTURERESOURCE_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Assets/Resource.hpp>
 
 #include <SFML/Graphics/Texture.hpp>

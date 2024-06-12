@@ -1,6 +1,7 @@
 #ifndef TAILS_EVENT_HPP
 #define TAILS_EVENT_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Events/Delegate.hpp>
 
 #include <memory>

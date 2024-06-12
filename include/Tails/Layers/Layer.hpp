@@ -1,6 +1,7 @@
 #ifndef TAILS_LAYER_HPP
 #define TAILS_LAYER_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 

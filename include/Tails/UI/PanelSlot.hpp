@@ -1,6 +1,7 @@
 #ifndef TAILS_PANELSLOT_HPP
 #define TAILS_PANELSLOT_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/UI/Slot.hpp>
 
 namespace tails

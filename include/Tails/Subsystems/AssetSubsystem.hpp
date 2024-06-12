@@ -1,6 +1,7 @@
 #ifndef TAILS_ASSETSUBSYSTEM_HPP
 #define TAILS_ASSETSUBSYSTEM_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Subsystems/Subsystem.hpp>
 #include <Tails/Assets/AssetInfo.hpp>
 #include <Tails/Assets/AssetHandle.hpp>

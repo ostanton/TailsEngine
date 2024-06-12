@@ -1,6 +1,7 @@
 #ifndef TAILS_ENGINE_HPP
 #define TAILS_ENGINE_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 
 #include <SFML/Config.hpp>

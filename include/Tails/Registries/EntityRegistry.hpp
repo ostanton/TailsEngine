@@ -1,6 +1,7 @@
 #ifndef TAILS_ENTITYREGISTRY_HPP
 #define TAILS_ENTITYREGISTRY_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Registries/Registry.hpp>
 #include <Tails/Entities/Entity.hpp>
 

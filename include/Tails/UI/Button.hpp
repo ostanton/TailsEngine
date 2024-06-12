@@ -1,6 +1,7 @@
 #ifndef TAILS_BUTTON_HPP
 #define TAILS_BUTTON_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/UI/PanelWidget.hpp>
 #include <Tails/Events/MultiEvent.hpp>
 

@@ -1,6 +1,7 @@
 #ifndef TAILS_FONTRESOURCE_HPP
 #define TAILS_FONTRESOURCE_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Assets/Resource.hpp>
 
 #include <SFML/Graphics/Font.hpp>

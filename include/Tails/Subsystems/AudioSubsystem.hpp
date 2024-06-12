@@ -1,6 +1,7 @@
 #ifndef TAILS_AUDIOSUBSYSTEM_HPP
 #define TAILS_AUDIOSUBSYSTEM_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Subsystems/Subsystem.hpp>
 
 namespace tails

@@ -1,6 +1,7 @@
 #ifndef TAILS_WIDGETSLOT_HPP
 #define TAILS_WIDGETSLOT_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 

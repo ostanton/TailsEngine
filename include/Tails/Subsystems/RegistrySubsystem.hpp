@@ -1,6 +1,7 @@
 #ifndef TAILS_REGISTRYSUBSYSTEM_HPP
 #define TAILS_REGISTRYSUBSYSTEM_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Subsystems/Subsystem.hpp>
 
 #include <unordered_map>

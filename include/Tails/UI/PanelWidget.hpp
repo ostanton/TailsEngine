@@ -1,6 +1,7 @@
 #ifndef TAILS_PANELWIDGET_HPP
 #define TAILS_PANELWIDGET_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/UI/Widget.hpp>
 #include <Tails/UI/PanelSlot.hpp>
 

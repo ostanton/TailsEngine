@@ -1,6 +1,7 @@
 #ifndef TAILS_SOUNDRESOURCE_HPP
 #define TAILS_SOUNDRESOURCE_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Assets/Resource.hpp>
 
 #include <SFML/Audio/SoundBuffer.hpp>

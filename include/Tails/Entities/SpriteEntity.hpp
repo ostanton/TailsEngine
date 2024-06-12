@@ -1,6 +1,7 @@
 #ifndef TAILS_SPRITEENTITY_HPP
 #define TAILS_SPRITEENTITY_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Entities/Entity.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>

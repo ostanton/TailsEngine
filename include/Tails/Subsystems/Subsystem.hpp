@@ -1,6 +1,7 @@
 #ifndef TAILS_SUBSYSTEM_HPP
 #define TAILS_SUBSYSTEM_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 

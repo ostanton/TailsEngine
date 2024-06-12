@@ -1,6 +1,7 @@
 #ifndef TAILS_INPUTACTION_HPP
 #define TAILS_INPUTACTION_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Events/MultiEvent.hpp>
 #include <Tails/Input/Value.hpp>
 

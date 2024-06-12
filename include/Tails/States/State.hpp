@@ -1,6 +1,7 @@
 #ifndef TAILS_STATE_HPP
 #define TAILS_STATE_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 #include <Tails/Debug.hpp>

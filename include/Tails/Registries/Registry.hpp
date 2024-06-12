@@ -1,6 +1,7 @@
 #ifndef TAILS_REGISTRY_HPP
 #define TAILS_REGISTRY_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/JSON/JSONReader.hpp>
 
 #include <unordered_map>
@@ -23,8 +24,9 @@ namespace tails
         virtual void init(RegistrySubsystem& subsystem) = 0;
     };
 
+    // TODO - SFML doesn't use its macros here, why not for templated classes???
     template<typename Base>
-    class TAILS_API Registry : public RegistryBase
+    class Registry : public RegistryBase
     {
         static_assert(std::is_base_of_v<JSONReader, Base>, "Registry type must derive JSONReader.");
 

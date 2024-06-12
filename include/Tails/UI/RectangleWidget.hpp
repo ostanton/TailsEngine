@@ -1,6 +1,7 @@
 #ifndef TAILS_RECTANGLEWIDGET_HPP
 #define TAILS_RECTANGLEWIDGET_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/UI/Widget.hpp>
 
 #include <SFML/Graphics/RectangleShape.hpp>

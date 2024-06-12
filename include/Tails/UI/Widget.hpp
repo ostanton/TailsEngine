@@ -1,6 +1,7 @@
 #ifndef TAILS_WIDGET_HPP
 #define TAILS_WIDGET_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 
