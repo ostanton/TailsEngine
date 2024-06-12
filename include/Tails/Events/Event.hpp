@@ -1,7 +1,6 @@
 #ifndef TAILS_EVENT_HPP
 #define TAILS_EVENT_HPP
 
-#include <Tails/Config.hpp>
 #include <Tails/Events/Delegate.hpp>
 
 #include <memory>
@@ -9,7 +8,7 @@
 namespace tails
 {
     template<typename... Args>
-    class TAILS_API Event final
+    class Event final
     {
     public:
         // TODO -  fix these so we can only move events and not copy them

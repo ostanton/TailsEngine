@@ -1,8 +1,6 @@
 #ifndef TAILS_EVENTDELEGATE_HPP
 #define TAILS_EVENTDELEGATE_HPP
 
-#include <Tails/Config.hpp>
-
 #include <variant>
 
 namespace tails
@@ -14,7 +12,7 @@ namespace tails
      * it overrides the operator() to act like a normal function
      */
     template<typename... Args>
-    struct TAILS_API Delegate
+    struct Delegate
     {
         virtual void execute(Args&&...) = 0;
         virtual void execute(const Args&...) = 0;

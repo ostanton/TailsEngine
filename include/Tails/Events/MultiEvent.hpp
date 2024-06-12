@@ -1,7 +1,6 @@
 #ifndef TAILS_MULTIEVENT_HPP
 #define TAILS_MULTIEVENT_HPP
 
-#include <Tails/Config.hpp>
 #include <Tails/Events/Delegate.hpp>
 
 #include <vector>
@@ -13,7 +12,7 @@ namespace tails
     // the same as Event except can hold more than one delegate to broadcast at a time!
     // friends are not allowed with templated classes apparently. Very sad :(
     template<typename... Args>
-    class TAILS_API MultiEvent final
+    class MultiEvent final
     {
     public:
         MultiEvent() = default;

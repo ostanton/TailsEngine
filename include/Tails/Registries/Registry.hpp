@@ -24,7 +24,6 @@ namespace tails
         virtual void init(RegistrySubsystem& subsystem) = 0;
     };
 
-    // TODO - SFML doesn't use its macros here, why not for templated classes???
     template<typename Base>
     class Registry : public RegistryBase
     {
