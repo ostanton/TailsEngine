@@ -1,6 +1,8 @@
 # Tails Engine
 A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states and layers. Only one state can be "active" at a time (the top one), but each state has any number of layers that can each be individually set to tick, draw, etc. The "GameState" may have a level layer and a screen (UI) layer for the HUD. The "PauseState" may then just have a screen layer, etc.
 
+There are no components in this engine. It has no concept of an ECS. Any entity you create must subclass the Entity class, and be added to your own derived EntityRegistry class to map it to a JSON object name/id.
+
 > Word of note (and caution): This library is primarily tested on a not-so-powerful laptop running Debian and using Makefiles. I run it on Windows 11 occasionally, although chances are if you build via a Visual Studio solution, it might not link properly (I know from experience). It runs fine with Ninja from my experience (with CLion), so just try different things and see what works. I'm not amazingly well-versed in CMake or building in general, so these problems unfortunately either won't get sorted, or will be very far down on my priority list.
 
 > Another note, this is my biggest project to date (sort of, diregarding Unreal games), and I am learning many new things along the way. This is all to say that the code in this library is probably quite sub-par, and the CMakeLists.txt definitely isn't as good as it could be. This is mainly a project just for me, so I have a simple engine I know how to use for 2D games I want to make in the future (since I either suck at searching for them, or there's a lack of proper object-oriented, simple, 2D game engines/frameworks).
