@@ -17,15 +17,8 @@
 
 namespace tails
 {
-    Engine::Engine()
-    {
-
-    }
-
-    Engine::~Engine()
-    {
-
-    }
+    Engine::Engine() = default;
+    Engine::~Engine() = default;
 
     void Paths::printPaths() const
     {

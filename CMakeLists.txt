@@ -13,6 +13,8 @@ option(BUILD_EXAMPLES "Build the included examples" ON)
 add_subdirectory(include)
 add_subdirectory(src)
 
+target_compile_definitions(TailsEngine PRIVATE TAILS_API_EXPORTS)
+
 # dunno how to specify specific directories for each example,
 # so unfortunately they'll all be dumped in the same build/bin!
 if (BUILD_EXAMPLES)
