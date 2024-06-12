@@ -14,15 +14,9 @@ namespace tails
     template<typename... Args>
     struct Delegate
     {
-        virtual void execute(Args&&...) = 0;
-        virtual void execute(const Args&...) = 0;
+        virtual void execute(Args...) = 0;
 
-        void operator()(Args&&... args)
-        {
-            execute(std::forward<Args>(args)...);
-        }
-
-        void operator()(const Args&... args)
+        void operator()(Args... args)
         {
             execute(args...);
         }
@@ -32,18 +26,10 @@ namespace tails
     template<typename... Args>
     struct FunctorDelegate : Delegate<Args...>
     {
-        FunctorDelegate(void(*inFunctor)(Args&&...))
+        FunctorDelegate(void(*inFunctor)(Args...))
             : functor(inFunctor) {}
 
-        FunctorDelegate(void(*inFunctor)(const Args&...))
-            : functor(inFunctor) {}
-
-        void execute(Args&&... args) override
-        {
-            (*functor)(std::forward<Args>(args)...);
-        }
-
-        void execute(const Args&... args) override
+        void execute(Args... args) override
         {
             (*functor)(args...);
         }
@@ -54,29 +40,19 @@ namespace tails
             return *this;
         }
 
-        std::variant<
-            void(*)(Args&&...),
-            void(*)(const Args&...)> functor;
+        void(*functor)(Args...);
     };
 
     // specialised delegate that holds class methods along with their class context as an object
     template<typename C, typename... Args>
     struct MemberDelegate : Delegate<Args...>
     {
-        MemberDelegate(C* inObject, void(C::*inFunction)(Args&&...))
+        MemberDelegate(C* inObject, void(C::*inFunction)(Args...))
             : object(inObject), function(inFunction) {}
 
-        MemberDelegate(C* inObject, void(C::*inFunction)(const Args&...))
-            : object(inObject), function(inFunction) {}
-
-        void execute(Args&&... args) override
+        void execute(Args... args) override
         {
-            (object->*std::get<void(C::*)(Args&&...)>(function))(std::forward<Args>(args)...);
-        }
-
-        void execute(const Args&... args) override
-        {
-            (object->*std::get<void(C::*)(const Args&...)>(function))(args...);
+            (object->*std::get<void(C::*)(Args...)>(function))(args...);
         }
 
         MemberDelegate& operator=(MemberDelegate& other)
@@ -87,9 +63,7 @@ namespace tails
         }
 
         C* object;
-        std::variant<
-            void(C::*)(Args&&...),
-            void(C::*)(const Args&...)> function;
+        void(C::*function)(Args...);
     };
 }
 

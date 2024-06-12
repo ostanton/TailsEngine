@@ -34,75 +34,29 @@ namespace tails
         }
 
         template<typename C>
-        void add(C* object, void(C::*function)(Args&&...))
+        void add(C* object, void(C::*function)(Args...))
         {
             m_delegates.push_back(std::make_unique<MemberDelegate<C, Args...>>(object, function));
         }
 
-        template<typename C>
-        void add(C* object, void(C::*function)(const Args&...))
-        {
-            m_delegates.push_back(std::make_unique<MemberDelegate<C, Args...>>(object, function));
-        }
-
-        void add(void(*function)(Args&&...))
-        {
-            m_delegates.push_back(std::make_unique<FunctorDelegate<Args...>>(function));
-        }
-
-        void add(void(*function)(const Args&...))
+        void add(void(*function)(Args...))
         {
             m_delegates.push_back(std::make_unique<FunctorDelegate<Args...>>(function));
         }
 
         template<typename C>
-        bool addUnique(C* object, void(C::*function)(Args&&...))
+        bool addUnique(C* object, void(C::*function)(Args...))
         {
-            if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),
-                [&](auto& uniqueDelegate)
-                {
-                    return uniqueDelegate->object == object && uniqueDelegate->function == function;
-                }); it != m_delegates.end())
+            if (auto it = getDelegateIterator(object, function); it != m_delegates.end())
                 return false;
 
             add(object, function);
             return true;
         }
 
-        template<typename C>
-        bool addUnique(C* object, void(C::*function)(const Args&...))
+        bool addUnique(void(*function)(Args...))
         {
-            if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),
-                [&](auto& uniqueDelegate)
-                {
-                    return uniqueDelegate->object == object && uniqueDelegate->function == function;
-                }); it != m_delegates.end())
-                return false;
-
-            add(object, function);
-            return true;
-        }
-
-        bool addUnique(void(*function)(Args&&...))
-        {
-            if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),
-                [&](auto& uniqueDelegate)
-                {
-                    return uniqueDelegate->functor == function;
-                }); it != m_delegates.end())
-                return false;
-
-            add(function);
-            return true;
-        }
-
-        bool addUnique(void(*function)(const Args&...))
-        {
-            if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),
-                [&](auto& uniqueDelegate)
-                {
-                    return uniqueDelegate->functor == function;
-                }); it != m_delegates.end())
+            if (auto it = getDelegateIterator(function); it != m_delegates.end())
                 return false;
 
             add(function);
@@ -110,13 +64,9 @@ namespace tails
         }
 
         template<typename C>
-        bool remove(C* object, void(C::*function)(Args&&...))
+        bool remove(C* object, void(C::*function)(Args...))
         {
-            if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),
-                [&](auto& uniqueDelegate)
-                {
-                    return uniqueDelegate->object == object && uniqueDelegate->function == function;
-                }); it != m_delegates.end())
+            if (auto it = getDelegateIterator(object, function); it != m_delegates.end())
             {
                 m_delegates.erase(it);
                 return true;
@@ -125,44 +75,9 @@ namespace tails
             return false;
         }
 
-        template<typename C>
-        bool remove(C* object, void(C::*function)(const Args&...))
+        bool remove(void(*function)(Args...))
         {
-            if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),
-                [&](auto& uniqueDelegate)
-                {
-                    return uniqueDelegate->object == object && uniqueDelegate->function == function;
-                }); it != m_delegates.end())
-            {
-                m_delegates.erase(it);
-                return true;
-            }
-
-            return false;
-        }
-
-        bool remove(void(*function)(Args&&...))
-        {
-            if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),
-                [&](auto& uniqueDelegate)
-                {
-                    return uniqueDelegate->functor == function;
-                }); it != m_delegates.end())
-            {
-                m_delegates.erase(it);
-                return true;
-            }
-
-            return false;
-        }
-
-        bool remove(void(*function)(const Args&...))
-        {
-            if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),
-                [&](auto& uniqueDelegate)
-                {
-                    return uniqueDelegate->functor == function;
-                }); it != m_delegates.end())
+            if (auto it = getDelegateIterator(function); it != m_delegates.end())
             {
                 m_delegates.erase(it);
                 return true;
@@ -172,17 +87,7 @@ namespace tails
         }
 
         // unreal engine terminology because it just makes sense
-        void broadcast(Args&&... args)
-        {
-            if (m_delegates.empty()) return;
-
-            for (auto& del : m_delegates)
-            {
-                del->execute(std::forward<Args>(args)...);
-            }
-        }
-
-        void broadcast(const Args&... args)
+        void broadcast(Args... args)
         {
             if (m_delegates.empty()) return;
 
@@ -193,6 +98,25 @@ namespace tails
         }
 
     private:
+        template<typename C>
+        std::vector<std::unique_ptr<Delegate<Args...>>>::iterator getDelegateIterator(C* object, void(C::*function)(Args...))
+        {
+            return std::find_if(m_delegates.begin(), m_delegates.end(),
+            [&](auto& uniqueDelegate)
+            {
+                return uniqueDelegate->object == object && uniqueDelegate->function == function;
+            });
+        }
+
+        std::vector<std::unique_ptr<Delegate<Args...>>>::iterator getDelegateIterator(void(*function)(Args...))
+        {
+            return std::find_if(m_delegates.begin(), m_delegates.end(),
+            [&](auto& uniqueDelegate)
+            {
+                return uniqueDelegate->functor == function;
+            });
+        }
+
         std::vector<std::unique_ptr<Delegate<Args...>>> m_delegates;
     };
 }
