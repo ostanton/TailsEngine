@@ -11,7 +11,7 @@ namespace tails
 {
     class PanelSlot;
 
-    class PanelWidget : public Widget
+    class TAILS_API PanelWidget : public Widget
     {
     public:
         template<typename W>

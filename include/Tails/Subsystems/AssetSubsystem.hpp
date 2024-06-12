@@ -9,7 +9,7 @@
 
 namespace tails
 {
-    class AssetSubsystem : public Subsystem
+    class TAILS_API AssetSubsystem : public Subsystem
     {
     public:
         uint32_t createAsset(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, const std::string& path);

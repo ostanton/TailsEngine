@@ -11,7 +11,7 @@ namespace tails
 {
     class RegistryBase;
 
-    class RegistrySubsystem : public Subsystem
+    class TAILS_API RegistrySubsystem : public Subsystem
     {
     public:
         template<typename T>

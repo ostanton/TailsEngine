@@ -1,10 +1,12 @@
 #ifndef TAILS_TICKABLE_HPP
 #define TAILS_TICKABLE_HPP
 
+#include <Tails/Config.hpp>
+
 namespace tails
 {
     // abstract class that can tick, providing preTick and postTick methods also
-    class Tickable
+    class TAILS_API Tickable
     {
     public:
         virtual ~Tickable() = default;

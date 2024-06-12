@@ -12,7 +12,7 @@
 namespace tails
 {
     // structure that "maps" a Key with other data like a vector of modifiers
-    struct MappingData
+    struct TAILS_API MappingData
     {
         Key key;
         std::vector<std::unique_ptr<InputModifier>> modifiers;
@@ -20,7 +20,7 @@ namespace tails
         // add loading from json, allowing optional properties, etc.
     };
 
-    struct ActionMapping final
+    struct TAILS_API ActionMapping final
     {
         ActionMapping() = default;
         explicit ActionMapping(InputAction action)
@@ -30,7 +30,7 @@ namespace tails
         std::vector<MappingData> mappingData;
     };
 
-    class InputContext final
+    class TAILS_API InputContext final
     {
     public:
         // TODO - rule of five

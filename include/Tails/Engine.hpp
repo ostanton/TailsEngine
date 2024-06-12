@@ -24,7 +24,7 @@ namespace tails
     class InputSubsystem;
     class StateSubsystem;
 
-    struct Paths
+    struct TAILS_API Paths
     {
         std::string data;
         std::string textures;
@@ -37,14 +37,14 @@ namespace tails
         void printPaths() const;
     };
 
-    struct RenderSettings
+    struct TAILS_API RenderSettings
     {
         sf::Vector2f size {640, 480};
 
         void printSettings() const;
     };
 
-    struct WindowSettings
+    struct TAILS_API WindowSettings
     {
         std::string title;
         sf::Vector2u size {640, 480};
@@ -54,14 +54,14 @@ namespace tails
         [[nodiscard]] sf::Uint32 getWindowStyle() const;
     };
 
-    struct EngineSettings
+    struct TAILS_API EngineSettings
     {
         // initial state to load
         // everything else can be handled from there?
         // registries to use?
     };
 
-    class Engine : public Object
+    class TAILS_API Engine : public Object
     {
     public:
         Engine();

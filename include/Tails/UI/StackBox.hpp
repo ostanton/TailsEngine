@@ -7,13 +7,13 @@ namespace tails
 {
     class StackBoxSlot;
 
-    enum class Orientation
+    enum class TAILS_API Orientation
     {
         Horizontal,
         Vertical
     };
 
-    class StackBox : public PanelWidget
+    class TAILS_API StackBox : public PanelWidget
     {
     public:
         Orientation orientation;

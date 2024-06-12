@@ -5,7 +5,7 @@
 
 namespace tails
 {
-    class AudioSubsystem : public Subsystem
+    class TAILS_API AudioSubsystem : public Subsystem
     {
     protected:
         void init(Engine& engine) override {}

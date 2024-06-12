@@ -1,6 +1,8 @@
 #ifndef TAILS_KEYS_HPP
 #define TAILS_KEYS_HPP
 
+#include <Tails/Config.hpp>
+
 #include <string>
 
 namespace tails
@@ -9,7 +11,7 @@ namespace tails
     // should be passed by const ref much like a string would, because it's basically
     // a wrapper for string at the moment. It should encapsulate SFML's sf::Keyboard::Key
     // enum also if possible, and maybe joystick stuff.
-    struct Key
+    struct TAILS_API Key
     {
         Key() = default;
 
@@ -43,7 +45,7 @@ namespace tails
     };
 
     // const static list of keys and probably controller inputs
-    struct Keys
+    struct TAILS_API Keys
     {
         constexpr static Key Space {"Space"};
         constexpr static Key A {"A"};

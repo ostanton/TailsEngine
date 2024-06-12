@@ -17,7 +17,7 @@ namespace tails
     class StateSubsystem;
     class Engine;
 
-    class State : public Object, public sf::Drawable, public Tickable
+    class TAILS_API State : public Object, public sf::Drawable, public Tickable
     {
         friend StateSubsystem;
 

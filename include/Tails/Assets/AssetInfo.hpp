@@ -11,7 +11,7 @@ namespace tails
     // a non-copyable, but moveable, class for holding resources and their metadata
     // could possibly have vector<Handle> for any asset dependencies
     // TODO - work with asset metadata json files
-    struct AssetInfo
+    struct TAILS_API AssetInfo
     {
         friend class AssetManager;
 

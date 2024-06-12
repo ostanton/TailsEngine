@@ -8,7 +8,7 @@
 namespace tails
 {
     template<typename... Args>
-    class Event final
+    class TAILS_API Event final
     {
     public:
         // TODO -  fix these so we can only move events and not copy them

@@ -11,13 +11,13 @@
 
 namespace tails
 {
-    struct Frame
+    struct TAILS_API Frame
     {
         sf::IntRect rect; // rect of the frame on the sprite sheet
         float speed {1.f}; // multiplier, e.g. 0.5x = twice as long
     };
 
-    struct Animation
+    struct TAILS_API Animation
     {
         Animation() = default;
         Animation(std::vector<Frame> inFrames, int initialFrameIndex, float inSpeed)
@@ -32,7 +32,7 @@ namespace tails
     };
 
     // wrapper for SFML sprite that can be animated
-    class SpriteEntity : public Entity
+    class TAILS_API SpriteEntity : public Entity
     {
     public:
         void setSpriteSheet(const sf::Texture& texture);

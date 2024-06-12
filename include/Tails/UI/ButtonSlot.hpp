@@ -7,7 +7,7 @@ namespace tails
 {
     class Button;
 
-    class ButtonSlot : public PanelSlot
+    class TAILS_API ButtonSlot : public PanelSlot
     {
         friend Button;
 

@@ -13,7 +13,7 @@ namespace tails
     class Widget;
     class PanelWidget;
 
-    class Slot : public Object, public sf::Drawable, public Tickable
+    class TAILS_API Slot : public Object, public sf::Drawable, public Tickable
     {
     public:
         Slot() = default;

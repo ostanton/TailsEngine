@@ -6,7 +6,7 @@
 namespace tails
 {
     // class that modifies an input value
-    class InputModifier
+    class TAILS_API InputModifier
     {
     protected:
         virtual InputValue tick(float deltaTime, InputValue currentValue) = 0;

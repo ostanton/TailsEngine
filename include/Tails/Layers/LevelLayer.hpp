@@ -15,7 +15,7 @@ namespace tails
     class Entity;
     class EntityRegistry;
 
-    class LevelLayer : public Layer
+    class TAILS_API LevelLayer : public Layer
     {
     public:
         void spawnEntity(const std::string& name, const nlohmann::json& json);

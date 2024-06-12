@@ -1,12 +1,14 @@
 #ifndef TAILS_DEBUG_HPP
 #define TAILS_DEBUG_HPP
 
+#include <Tails/Config.hpp>
+
 #include <string>
 #include <iostream>
 
 namespace tails
 {
-    class Debug
+    class TAILS_API Debug
     {
     public:
         template<typename T>

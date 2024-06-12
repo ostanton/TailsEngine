@@ -8,7 +8,7 @@
 namespace tails
 {
     // replace with generic shape wrapper??
-    class RectEntity final : public Entity
+    class TAILS_API RectEntity final : public Entity
     {
     public:
         RectEntity()

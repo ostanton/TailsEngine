@@ -12,7 +12,7 @@ namespace tails
 {
     class LevelLayer;
 
-    class Entity :
+    class TAILS_API Entity :
         public Object,
         public sf::Drawable,
         public sf::Transformable,

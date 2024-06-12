@@ -14,7 +14,7 @@ namespace tails
     class ScreenLayer;
 
     // the outer of a widget is the Screen that owns it
-    class Widget : public Object, public sf::Drawable, public sf::Transformable, public Tickable
+    class TAILS_API Widget : public Object, public sf::Drawable, public sf::Transformable, public Tickable
     {
         friend Slot;
         friend ScreenLayer;

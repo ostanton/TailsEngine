@@ -8,7 +8,7 @@ namespace tails
 {
     class ButtonSlot;
 
-    class Button : public PanelWidget
+    class TAILS_API Button : public PanelWidget
     {
     public:
         template<typename T>

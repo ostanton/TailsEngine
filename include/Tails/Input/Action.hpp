@@ -10,14 +10,14 @@
 
 namespace tails
 {
-    enum class ActionTrigger
+    enum class TAILS_API ActionTrigger
     {
         Started,
         Triggered,
         Completed
     };
 
-    struct InputAction final
+    struct TAILS_API InputAction final
     {
         InputAction() = default;
 

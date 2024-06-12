@@ -7,7 +7,7 @@ namespace tails
 {
     class PanelWidget;
 
-    class PanelSlot : public Slot
+    class TAILS_API PanelSlot : public Slot
     {
         friend PanelWidget;
 

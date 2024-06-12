@@ -7,7 +7,7 @@
 
 namespace tails
 {
-    class RectangleWidget : public Widget
+    class TAILS_API RectangleWidget : public Widget
     {
     public:
         void setSize(const sf::Vector2f& size) override;

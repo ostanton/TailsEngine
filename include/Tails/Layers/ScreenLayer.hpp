@@ -9,7 +9,7 @@ namespace tails
 
     // a screen is like a level, but except for housing entities, it houses a single root widget
     // if expanded to house more, it should have its own ScreenSlot also
-    class ScreenLayer : public Layer
+    class TAILS_API ScreenLayer : public Layer
     {
     public:
         Widget* setContent(std::unique_ptr<Widget> content);

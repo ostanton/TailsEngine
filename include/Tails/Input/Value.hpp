@@ -1,11 +1,13 @@
 #ifndef TAILS_INPUTVALUE_HPP
 #define TAILS_INPUTVALUE_HPP
 
+#include <Tails/Config.hpp>
+
 #include <variant>
 
 namespace tails
 {
-    struct InputValue final
+    struct TAILS_API InputValue final
     {
         std::variant<bool, float> value;
 

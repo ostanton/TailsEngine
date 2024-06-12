@@ -9,7 +9,7 @@
 
 namespace tails
 {
-    class InputSubsystem final : public Subsystem
+    class TAILS_API InputSubsystem final : public Subsystem
     {
     private:
         void init(Engine& engine) override;

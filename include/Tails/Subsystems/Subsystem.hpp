@@ -12,7 +12,7 @@ namespace tails
 
     // subsystems of Engine. A way for the engine to categorise and
     // branch off different tasks it does
-    class Subsystem : public Object, public Tickable, public sf::Drawable
+    class TAILS_API Subsystem : public Object, public Tickable, public sf::Drawable
     {
         friend Engine;
 

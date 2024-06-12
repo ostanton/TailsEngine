@@ -2,11 +2,12 @@
 #define TAILS_TEXTURERESOURCE_HPP
 
 #include <Tails/Assets/Resource.hpp>
+
 #include <SFML/Graphics/Texture.hpp>
 
 namespace tails
 {
-    class Texture : public Resource, public sf::Texture
+    class TAILS_API Texture : public Resource, public sf::Texture
     {
     protected:
         bool load(const std::string& path) override

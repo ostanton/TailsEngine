@@ -15,7 +15,7 @@ namespace tails
 
     // engine subsystem that manages game states
     // TODO - setup a way for a default state class to be initialised
-    class StateSubsystem final : public Subsystem
+    class TAILS_API StateSubsystem final : public Subsystem
     {
     public:
         StateSubsystem();

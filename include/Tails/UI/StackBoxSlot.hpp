@@ -7,12 +7,12 @@ namespace tails
 {
     class StackBox;
 
-    struct Margin
+    struct TAILS_API Margin
     {
         float left, top, right, bottom;
     };
 
-    enum class HorizontalAlignment
+    enum class TAILS_API HorizontalAlignment
     {
         Fill,
         Left,
@@ -20,7 +20,7 @@ namespace tails
         Right
     };
 
-    enum class VerticalAlignment
+    enum class TAILS_API VerticalAlignment
     {
         Fill,
         Top,
@@ -28,7 +28,7 @@ namespace tails
         Bottom
     };
 
-    class StackBoxSlot : public PanelSlot
+    class TAILS_API StackBoxSlot : public PanelSlot
     {
     public:
         StackBoxSlot(PanelWidget* parent, std::unique_ptr<Widget> content);

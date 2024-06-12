@@ -1,11 +1,13 @@
 #ifndef TAILS_OBJECT_HPP
 #define TAILS_OBJECT_HPP
 
+#include <Tails/Config.hpp>
+
 #include <memory>
 
 namespace tails
 {
-    class Object
+    class TAILS_API Object
     {
     public:
         // might want to default instead of delete these, but be weary of slicing!

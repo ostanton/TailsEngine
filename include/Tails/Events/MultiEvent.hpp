@@ -12,7 +12,7 @@ namespace tails
     // the same as Event except can hold more than one delegate to broadcast at a time!
     // friends are not allowed with templated classes apparently. Very sad :(
     template<typename... Args>
-    class MultiEvent final
+    class TAILS_API MultiEvent final
     {
     public:
         MultiEvent() = default;

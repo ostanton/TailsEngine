@@ -1,9 +1,11 @@
 #ifndef TAILS_ASSETHANDLE_HPP
 #define TAILS_ASSETHANDLE_HPP
 
+#include <Tails/Config.hpp>
+
 namespace tails
 {
-    struct AssetHandle
+    struct TAILS_API AssetHandle
     {
         uint32_t id;
     };

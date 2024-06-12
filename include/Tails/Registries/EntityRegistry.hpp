@@ -6,7 +6,7 @@
 
 namespace tails
 {
-    class EntityRegistry : public Registry<Entity>
+    class TAILS_API EntityRegistry : public Registry<Entity>
     {
     protected:
         void init(RegistrySubsystem& subsystem) override;
