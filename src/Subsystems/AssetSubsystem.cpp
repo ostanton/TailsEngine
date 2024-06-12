@@ -2,9 +2,9 @@
 
 namespace tails
 {
-    uint32_t AssetSubsystem::createAsset(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, const std::string& path)
+    uint32_t AssetSubsystem::createAsset(const std::string& jsonPath)
     {
-        m_assets[m_currentID] = AssetInfo(resourceType, assetType, path);
+        m_assets.try_emplace(m_currentID, AssetInfo(jsonPath));
         m_currentID++;
         return m_currentID - 1;
     }
@@ -16,7 +16,7 @@ namespace tails
 
     AssetInfo& AssetSubsystem::getAsset(uint32_t id)
     {
-        return m_assets[id];
+        return m_assets.at(id);
     }
 
     void AssetSubsystem::destroyAsset(uint32_t id)

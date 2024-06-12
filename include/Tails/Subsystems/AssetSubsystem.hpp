@@ -13,7 +13,7 @@ namespace tails
     class TAILS_API AssetSubsystem : public Subsystem
     {
     public:
-        uint32_t createAsset(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, const std::string& path);
+        uint32_t createAsset(const std::string& jsonPath);
         bool isValidID(uint32_t id);
         AssetInfo& getAsset(uint32_t id);
         void destroyAsset(uint32_t id);

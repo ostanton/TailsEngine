@@ -4,11 +4,15 @@
 #include <Tails/Config.hpp>
 #include <Tails/Assets/Resource.hpp>
 
+#include <nlohmann/json_fwd.hpp>
+
 #include <string>
 #include <memory>
 
 namespace tails
 {
+    struct AssetMetadata;
+
     // a non-copyable, but moveable, class for holding resources and their metadata
     // could possibly have vector<Handle> for any asset dependencies
     // TODO - work with asset metadata json files
@@ -18,7 +22,8 @@ namespace tails
 
         enum class ResourceType
         {
-            Texture,
+            Invalid = -1,
+            Texture = 0,
             Sound,
             Font,
             Shader
@@ -26,7 +31,8 @@ namespace tails
 
         enum class AssetType
         {
-            Sprite,
+            Invalid = -1,
+            Sprite = 0,
             Spritesheet,
             Tilemap,
             Music,
@@ -34,9 +40,8 @@ namespace tails
             Font
         };
 
-        AssetInfo() = default;
-        AssetInfo(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, std::string path)
-            : m_resourceType(resourceType), m_assetType(assetType), m_path(std::move(path)) {}
+        AssetInfo() = delete;
+        explicit AssetInfo(std::string jsonPath);
         // delete copy constructor
         AssetInfo(const AssetInfo&) = delete;
         // move constructor
@@ -46,7 +51,7 @@ namespace tails
         // move assignment operator
         AssetInfo& operator=(AssetInfo&& asset) noexcept;
 
-        ~AssetInfo() = default;
+        ~AssetInfo();
 
         bool isLoaded() {return m_resource != nullptr;}
 
@@ -69,11 +74,9 @@ namespace tails
 
         ResourceType getResourceType() {return m_resourceType;}
         AssetType getAssetType() {return m_assetType;}
-        const std::string& getResourcePath() {return m_path;}
+        const AssetMetadata& getMetadata();
 
-        void loadAutoSet(const std::string& path);
-
-        void setData(ResourceType resourceType, AssetType assetType, const std::string& path);
+        void setData(ResourceType resourceType, AssetType assetType, std::string path);
 
         // loads the asset's resource
         bool load();
@@ -82,10 +85,27 @@ namespace tails
         // unloads the assets' resource
         void unload();
 
+        static std::string assetTypeToString(AssetType type);
+        static AssetType stringToAssetType(const std::string& string);
+
+        static ResourceType stringToResourceType(const std::string& string);
+
     private:
-        ResourceType m_resourceType {ResourceType::Texture};
-        AssetType m_assetType {AssetType::Sprite};
-        std::string m_path;
+        bool loadJson(const std::string& jsonPath);
+        void loadSprite(const std::string& key, nlohmann::json& value);
+        void loadSpritesheet(const std::string& key, nlohmann::json& value);
+        void loadTilemap(const std::string& key, nlohmann::json& value);
+        void loadSound(const std::string& key, nlohmann::json& value);
+
+        // set in constructor
+        std::string m_jsonPath;
+
+        // set after loading json metadata using m_jsonPath
+        ResourceType m_resourceType {ResourceType::Invalid};
+        AssetType m_assetType {AssetType::Invalid};
+        std::unique_ptr<AssetMetadata> m_metadata;
+
+        // can be loaded and unloaded when needed
         std::unique_ptr<Resource> m_resource;
     };
 }
