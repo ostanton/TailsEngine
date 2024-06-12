@@ -8,11 +8,12 @@ namespace tails
     struct Paths;
     class Subsystem;
     class Object;
+    class Engine;
 
     class TAILS_API EngineStatics
     {
     public:
-        static const Paths& getPaths(const Subsystem* subsystem);
+        static Engine* getEngine(const Object* object);
         static const Paths* getPaths(const Object* object);
     };
 

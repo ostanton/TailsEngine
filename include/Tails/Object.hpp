@@ -21,10 +21,26 @@ namespace tails
 
         virtual void create() {}
 
+        /**
+         * Loop through the outers of this object until we find the outer of the specified type,
+         * or until the outer is null (meaning this object has no outer)
+         */
         template<typename T>
         T* getTypedOuter() const
         {
-            return static_cast<T*>(outer);
+            static_assert(std::is_base_of_v<Object, T>, "Failed to get outer of specified type, it does not derive Object.");
+
+            Object* pOuter {outer};
+
+            while (pOuter)
+            {
+                if (auto typedOuter = dynamic_cast<T*>(pOuter))
+                {
+                    return typedOuter;
+                }
+            }
+
+            return nullptr;
         }
 
         void markForDestroy() {pendingDestroy = true;}
