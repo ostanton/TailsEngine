@@ -9,6 +9,7 @@ add_library(
     Entities/SpriteEntity.cpp
     Input/Action.cpp
     Input/Context.cpp
+    Layers/LayerCamera.cpp
     Layers/Layer.cpp
     Layers/LevelLayer.cpp
     Layers/ScreenLayer.cpp

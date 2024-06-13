@@ -24,6 +24,7 @@ namespace tails
     class RegistrySubsystem;
     class InputSubsystem;
     class StateSubsystem;
+    class State;
 
     struct TAILS_API Paths
     {
@@ -38,6 +39,10 @@ namespace tails
         void printPaths() const;
     };
 
+    /**
+     * All data to do with how the game renders/draws
+     * Maybe shaders will be stored here??
+     */
     struct TAILS_API RenderSettings
     {
         sf::Vector2f size {640, 480};
@@ -45,21 +50,20 @@ namespace tails
         void printSettings() const;
     };
 
+    /**
+     * All window information/settings. This is volatile, but realistically,
+     * only the fullscreen and maybe the size should change
+     */
     struct TAILS_API WindowSettings
     {
         std::string title;
         sf::Vector2u size {640, 480};
         bool fullscreen {false};
+        bool vsync {false};
+        unsigned int framerateLimit {0};
 
         void printSettings() const;
         [[nodiscard]] sf::Uint32 getWindowStyle() const;
-    };
-
-    struct TAILS_API EngineSettings
-    {
-        // initial state to load
-        // everything else can be handled from there?
-        // registries to use?
     };
 
     class TAILS_API Engine : public Object
@@ -95,8 +99,9 @@ namespace tails
         virtual void loadIni();
 
         // subsystems
-        virtual void initSubsystems();
-        virtual void deinitSubsystems();
+        virtual void initCustomSubsystems();
+        void initSubsystems();
+        void deinitSubsystems();
 
         template<typename T>
         T* createSubsystem(const std::string& name)
@@ -108,6 +113,12 @@ namespace tails
         Subsystem* addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem);
         void destroySubsystem(const std::string& name);
 
+        /* Default but overridable stuff */
+        virtual std::unique_ptr<RegistrySubsystem> setupDefaultRegistrySubsystem();
+        virtual std::unique_ptr<tails::State> setupDefaultState();
+
+        std::string m_engineIniDirectory {"engine.ini"};
+
     private:
         void initWindow();
 
@@ -115,6 +126,9 @@ namespace tails
         void tick(sf::Time& time);
         void draw();
         void postTick();
+        /**
+         * Called once the main loop has exited. Not called in the destructor
+         */
         void deinitialise();
 
         std::unique_ptr<sf::RenderWindow> m_window; // ptr because we want to initialise it after contructor

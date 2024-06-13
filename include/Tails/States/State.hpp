@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 namespace tails
 {
@@ -24,18 +25,10 @@ namespace tails
 
     public:
         State();
-        ~State();
+        ~State() override;
 
         StateSubsystem& getStateSubsystem();
         Engine& getEngine();
-
-        void setCameraPosition(const sf::Vector2f& position);
-        void setCameraPosition(float x, float y);
-        void setCameraResolution(const sf::Vector2f& resolution);
-        void setCameraResolution(float w, float h);
-        void setCamera(const sf::FloatRect& rectangle);
-        void setCamera(const sf::View& camera);
-        const sf::View& getCamera() {return m_camera;}
 
         template<typename T>
         size_t createLayer()
@@ -52,26 +45,37 @@ namespace tails
             return insertLayer(std::make_unique<T>(), index);
         }
 
+        template<typename T>
+        T* getLayer(size_t index)
+        {
+            static_assert(std::is_base_of_v<Layer, T>, "Failed to get layer. Template parameter does not derive Layer.");
+            return static_cast<T*>(getLayer(index));
+        }
+
         Layer* insertLayer(std::unique_ptr<Layer> layer, size_t index);
         size_t addLayer(std::unique_ptr<Layer> layer);
         Layer* getLayer(size_t index);
         bool removeLayer(size_t index);
         bool removeLayer(Layer* layer);
 
+        size_t createLevelLayer(const std::string& path);
+        // TODO - accept XML layout files?
+        size_t createScreenLayer();
+
     protected:
         bool tickWhileInactive {false};
-        bool drawWhileInactive {true};
+        bool drawWhileInactive {false};
 
         virtual void init(StateSubsystem& subsystem);
         virtual void added() {} // called when added to the stack
         virtual void removed() {} // called when removed from the stack
 
-        virtual void preTick();
+        virtual void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-        virtual void postTick();
+        virtual void postTick() override;
 
-        sf::View m_camera {sf::Vector2f(0.f, 0.f), sf::Vector2f(0.f, 0.f)};
+        sf::Vector2f m_customCameraSize {0.f, 0.f};
         std::vector<std::unique_ptr<Layer>> m_layers;
     };
 }

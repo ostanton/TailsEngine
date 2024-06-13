@@ -1,8 +1,8 @@
-#include <Tails/Engine.hpp>
+#include <TestGame/MyEngine.hpp>
 
 int main()
 {
-    tails::Engine engine;
+    MyEngine engine;
     engine.initialise();
     engine.run();
 

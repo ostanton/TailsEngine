@@ -3,6 +3,7 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/JSON/JSONReader.hpp>
+#include <Tails/Assert.hpp>
 
 #include <unordered_map>
 #include <memory>
@@ -44,7 +45,9 @@ namespace tails
         {
             if (!m_registrars.contains(name)) return nullptr;
 
-            std::unique_ptr<Base> result = std::make_unique<Base>(m_registrars[name]->load(json));
+            std::unique_ptr<Base> result;
+            result.reset(m_registrars[name]->read(json));
+            TailsAssert(result, "Null memory returned after reading json");
             return std::move(result);
         }
 

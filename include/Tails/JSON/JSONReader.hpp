@@ -10,6 +10,11 @@ namespace tails
     class TAILS_API JSONReader
     {
     public:
+        /**
+         * Create a covariant return object of specified type from json object
+         * @return Newly allocated object
+         * @note Always check for a null return value!
+         */
         virtual JSONReader* read(const nlohmann::json&) = 0;
     };
 }

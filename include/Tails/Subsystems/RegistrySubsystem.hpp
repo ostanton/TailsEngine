@@ -3,6 +3,7 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/Subsystems/Subsystem.hpp>
+#include <Tails/Registries/Registry.hpp>
 
 #include <unordered_map>
 #include <memory>
@@ -10,8 +11,6 @@
 
 namespace tails
 {
-    class RegistryBase;
-
     class TAILS_API RegistrySubsystem : public Subsystem
     {
     public:
@@ -25,7 +24,7 @@ namespace tails
         RegistryBase* getRegistry(const std::string& name);
 
     protected:
-        void init(Engine& engine) override {}
+        void init(Engine& engine) override;
 
         void tick(float deltaTime) override {}
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}

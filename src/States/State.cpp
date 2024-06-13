@@ -1,5 +1,6 @@
 #include <Tails/States/State.hpp>
 #include <Tails/Layers/LevelLayer.hpp>
+#include <Tails/Layers/ScreenLayer.hpp>
 #include <Tails/Subsystems/StateSubsystem.hpp>
 #include <Tails/Entities/Entity.hpp>
 
@@ -7,15 +8,8 @@
 
 namespace tails
 {
-    State::State()
-    {
-
-    }
-
-    State::~State()
-    {
-
-    }
+    State::State() = default;
+    State::~State() = default;
 
     StateSubsystem& State::getStateSubsystem()
     {
@@ -27,36 +21,6 @@ namespace tails
         return getStateSubsystem().getEngine();
     }
 
-    void State::setCameraPosition(const sf::Vector2f& position)
-    {
-        m_camera.setCenter(position);
-    }
-
-    void State::setCameraPosition(float x, float y)
-    {
-        m_camera.setCenter(x, y);
-    }
-
-    void State::setCameraResolution(const sf::Vector2f& resolution)
-    {
-        m_camera.setSize(resolution);
-    }
-
-    void State::setCameraResolution(float w, float h)
-    {
-        m_camera.setSize(w, h);
-    }
-
-    void State::setCamera(const sf::FloatRect& rectangle)
-    {
-        m_camera.setViewport(rectangle);
-    }
-
-    void State::setCamera(const sf::View& camera)
-    {
-        m_camera = camera;
-    }
-
     Layer* State::insertLayer(std::unique_ptr<Layer> layer, size_t index)
     {
         // do better checks and stuff. This could mess up loops
@@ -65,7 +29,7 @@ namespace tails
         // Maybe unordered_map<size_t, std::unique_ptr<Layer>> m_insertingLayers;
         // then in postTick, loop the map and insert into m_layers with the map's
         // key as index and value as value.
-        auto it = m_layers.insert(m_layers.begin() + index, std::move(layer));
+        auto it = m_layers.insert(m_layers.begin() + static_cast<long long>(index), std::move(layer));
         // could just return iterator?
         return (*it).get();
     }
@@ -91,7 +55,7 @@ namespace tails
     Layer* State::getLayer(size_t index)
     {
         // return if index is outside vector's bounds'
-        if (index < 0 || index >= m_layers.size())
+        if (index >= m_layers.size())
             return nullptr;
 
         return m_layers[index].get();
@@ -99,7 +63,7 @@ namespace tails
 
     bool State::removeLayer(size_t index)
     {
-        if (index < 0 || index >= m_layers.size())
+        if (index >= m_layers.size())
             return false;
 
         m_layers[index]->pendingDestroy = true;
@@ -122,10 +86,21 @@ namespace tails
         return false;
     }
 
+    size_t State::createLevelLayer(const std::string& path)
+    {
+        size_t index = createLayer<LevelLayer>();
+        dynamic_cast<LevelLayer*>(m_layers[index].get())->loadJson(path);
+        return index;
+    }
+
+    size_t State::createScreenLayer()
+    {
+        return createLayer<ScreenLayer>();
+    }
+
     void State::init(StateSubsystem& subsystem)
     {
-        createLayer<LevelLayer>();
-        Debug::print("Created LevelLayer!");
+
     }
 
     void State::preTick()
@@ -136,7 +111,7 @@ namespace tails
             {
                 layer->pendingCreate = false;
                 layer->added();
-                Debug::print("Added layer.");
+                Debug::print("Layer ready for tick.");
             }
 
             layer->preTick();
@@ -177,7 +152,7 @@ namespace tails
             if (m_layers[i]->pendingDestroy)
             {
                 m_layers[i]->removed();
-                m_layers.erase(m_layers.begin() + i);
+                m_layers.erase(m_layers.begin() + static_cast<long long>(i));
             }
             else
                 i++;

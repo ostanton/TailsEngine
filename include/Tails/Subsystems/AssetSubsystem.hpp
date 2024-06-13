@@ -10,7 +10,7 @@
 
 namespace tails
 {
-    class TAILS_API AssetSubsystem : public Subsystem
+    class TAILS_API AssetSubsystem final : public Subsystem
     {
     public:
         uint32_t createAsset(const std::string& jsonPath);
@@ -20,6 +20,9 @@ namespace tails
 
     private:
         void init(Engine& engine) override {}
+        // TODO - could have a setting in the AssetInfo struct for "deleteIfUnloaded"
+        // where the AssetInfo object gets erased from the map at the start of the next frame
+        // if its resource is null?
         void tick(float deltaTime) override {}
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 

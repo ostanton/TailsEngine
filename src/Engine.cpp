@@ -6,6 +6,7 @@
 #include <Tails/Registries/Registry.hpp>
 #include <Tails/Subsystems/InputSubsystem.hpp>
 #include <Tails/Subsystems/StateSubsystem.hpp>
+#include <Tails/States/State.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
@@ -23,7 +24,7 @@ namespace tails
     void Paths::printPaths() const
     {
         std::cout
-            << "Paths:\n"
+            << "\nPaths:\n"
             << "  Data = " << data << "\n"
             << "  Textures = " << textures << "\n"
             << "  Sounds = " << sounds << "\n"
@@ -42,9 +43,11 @@ namespace tails
     void WindowSettings::printSettings() const
     {
         std::cout << "\nWindow:\n"
-            << "  Title = " << title << "\n"
-            << "  Size = " << size.x << "x" << size.y << "\n"
-            << "  Fullscreen = " << fullscreen << "\n";
+                  << "  Title = " << title << "\n"
+                  << "  Size = " << size.x << "x" << size.y << "\n"
+                  << "  Fullscreen = " << fullscreen << "\n"
+                  << "  Vertical Sync = " << vsync << "\n"
+                  << "  Framerate Limit = " << framerateLimit << "\n";
     }
 
     sf::Uint32 WindowSettings::getWindowStyle() const
@@ -54,8 +57,11 @@ namespace tails
 
     void Engine::initialise()
     {
-        Debug::print("Initialising engine...\n");
+        Debug::print("Initialising engine...");
         loadIni();
+        Debug::print("Initialising custom subsystems...\n");
+        initCustomSubsystems();
+        Debug::print("Custom subsystems initialised!\n");
         initSubsystems();
         Debug::print("Engine subsystems initialised.\n");
         initWindow();
@@ -138,7 +144,7 @@ namespace tails
     {
         Debug::print("Loading engine.ini");
         INI::File engineIni;
-        if (!engineIni.Load("engine.ini"))
+        if (!engineIni.Load(m_engineIniDirectory))
         {
             // fails
             Debug::print("Failed to load engine.ini");
@@ -185,21 +191,27 @@ namespace tails
         m_windowSettings.size.x = windowSect->GetValue("size").AsArray()[0].AsInt();
         m_windowSettings.size.y = windowSect->GetValue("size").AsArray()[1].AsInt();
         m_windowSettings.fullscreen = windowSect->GetValue("fullscreen").AsBool();
+        m_windowSettings.vsync = windowSect->GetValue("vsync").AsBool();
+        m_windowSettings.framerateLimit = windowSect->GetValue("framerate limit").AsInt();
 
         m_windowSettings.printSettings();
 
         Debug::print("engine.ini loaded!\n");
     }
 
+    void Engine::initCustomSubsystems() {}
+
     void Engine::initSubsystems()
     {
         Debug::print("Initialising engine subsystems:");
         createSubsystem<AssetSubsystem>("asset");
         createSubsystem<AudioSubsystem>("audio");
-        createSubsystem<RegistrySubsystem>("registry");
-        // load registries here??
+
+        // create default registry subsystem, or user's custom one if overridden
+        addSubsystem("registry", setupDefaultRegistrySubsystem());
+
         createSubsystem<InputSubsystem>("input");
-        createSubsystem<StateSubsystem>("state");
+        createSubsystem<StateSubsystem>("state")->pushState(setupDefaultState());
         // get state subsystem -> setInitialState<MyState>();??
     }
 
@@ -237,6 +249,16 @@ namespace tails
         m_subsystems[name]->pendingDestroy = true;
     }
 
+    std::unique_ptr<RegistrySubsystem> Engine::setupDefaultRegistrySubsystem()
+    {
+        return std::make_unique<RegistrySubsystem>();
+    }
+
+    std::unique_ptr<tails::State> Engine::setupDefaultState()
+    {
+        return nullptr;
+    }
+
     void Engine::initWindow()
     {
         Debug::print("Initialising window...");
@@ -246,6 +268,9 @@ namespace tails
                 m_windowSettings.size.y),
             m_windowSettings.title,
             m_windowSettings.getWindowStyle());
+
+        m_window->setVerticalSyncEnabled(m_windowSettings.vsync);
+        m_window->setFramerateLimit(m_windowSettings.framerateLimit);
     }
 
     void Engine::preTick()

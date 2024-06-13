@@ -3,7 +3,8 @@
 #include <Tails/Entities/Entity.hpp>
 #include <Tails/Subsystems/RegistrySubsystem.hpp>
 #include <Tails/Registries/EntityRegistry.hpp>
-#include <Tails/Entities/RectEntity.hpp>
+#include <Tails/EngineStatics.hpp>
+#include <Tails/Assert.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -12,12 +13,11 @@
 
 namespace tails
 {
-    void LevelLayer::spawnEntity(const std::string& name, const nlohmann::json& json)
+    void LevelLayer::spawnEntity(const std::string& name, nlohmann::json& value)
     {
-        // get entity m_registry and clone it into the entity vector
-        // entityRegistry->loadRegistrar(name, inJson);
+        m_entities.emplace_back(std::move(m_registry->loadRegistrar(name, value)));
 
-        //m_entities.emplace_back(std::make_unique<Entity>(m_registry->loadRegistrar(json.key(), json)));
+        Debug::print("Spawned " + name + "!");
     }
 
     Entity* LevelLayer::spawnEntity(std::unique_ptr<Entity> entity)
@@ -28,19 +28,19 @@ namespace tails
         return m_entities.back().get();
     }
 
-    void LevelLayer::init(State& state)
-    {
-        m_registry = getEngine().getRegistrySubsystem().getRegistry<EntityRegistry>("entity");
-        spawnEntity<RectEntity>();
-        Debug::print("Spawned RectEntity!");
-
-        // load json here?
-    }
-
     void LevelLayer::loadJson(const std::string& path)
     {
         //std::fstream stream {path};
         //nlohmann::json outerObj {stream};
+
+        // level settings?
+        // camera size, position, etc.
+    }
+
+    void LevelLayer::init(State& state)
+    {
+        m_registry = EngineStatics::getEngine(this)->getRegistrySubsystem().getRegistry<EntityRegistry>("entity");
+        TailsAssert(m_registry, "Registry is invalid!");
     }
 
     void LevelLayer::preTick()

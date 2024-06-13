@@ -5,6 +5,13 @@
 
 namespace tails
 {
+    RectEntity* RectEntity::read(const nlohmann::json& json)
+    {
+        RectEntity* result {new RectEntity};
+        result->m_rect.setFillColor(sf::Color(255, 0, 0));
+        return result;
+    }
+
     void RectEntity::tick(float deltaTime)
     {
         setPosition(getPosition().x + deltaTime * 4.f, 0);

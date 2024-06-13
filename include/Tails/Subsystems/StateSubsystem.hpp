@@ -20,7 +20,7 @@ namespace tails
     {
     public:
         StateSubsystem();
-        ~StateSubsystem();
+        ~StateSubsystem() override;
 
         template<typename T>
         T* emplaceState()
@@ -28,14 +28,14 @@ namespace tails
             static_assert(std::is_base_of_v<State, T>, "Failed to emplace state, type does not derive State.");
             Debug::print("Emplacing state...");
             m_states.emplace_back(std::make_unique<T>());
-            setupState(getActiveState(), true);
+            setupState(getActiveState());
             Debug::print("Emplaced state!");
             return static_cast<T*>(getActiveState());
         }
 
         void pushState(std::unique_ptr<State> state);
         void popState();
-        State* getActiveState() const;
+        [[nodiscard]] State* getActiveState() const;
         bool isStateActive(State* state) const;
 
     private:
@@ -45,7 +45,7 @@ namespace tails
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
 
-        void setupState(State* state, bool callCreate);
+        void setupState(State* state);
 
         bool m_popState {false};
         sf::Vector2f m_cameraSize;

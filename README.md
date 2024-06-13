@@ -5,7 +5,7 @@ There are no components in this engine. It has no concept of an ECS. Any entity 
 
 > Word of note (and caution): This library is primarily tested on a not-so-powerful laptop running Debian and using Makefiles. I run it on Windows 11 occasionally, although chances are if you build via a Visual Studio solution, it might not link properly (I know from experience). It runs fine with Ninja from my experience (with CLion), so just try different things and see what works. I'm not amazingly well-versed in CMake or building in general, so these problems unfortunately either won't get sorted, or will be very far down on my priority list.
 
-> Another note, this is my biggest project to date (sort of, diregarding Unreal games), and I am learning many new things along the way. This is all to say that the code in this library is probably quite sub-par, and the CMakeLists.txt definitely isn't as good as it could be. This is mainly a project just for me, so I have a simple engine I know how to use for 2D games I want to make in the future (since I either suck at searching for them, or there's a lack of proper object-oriented, simple, 2D game engines/frameworks).
+> Another note, this is my biggest solo project to date, and I am learning many new things along the way. This is all to say that the code in this library is probably quite sub-par, and the CMakeLists.txt definitely isn't as good as it could be. This is mainly a project just for me, so I have a simple engine I know how to use for 2D games I want to make in the future (since I either suck at searching for them, or there's a lack of proper object-oriented, simple, 2D game engines/frameworks).
 
 - [What it has](#what-it-has)
 - [What is needed still](#what-is-needed-still)
@@ -30,6 +30,7 @@ There are no components in this engine. It has no concept of an ECS. Any entity 
 - All deferred actions like adding or removing items from vector during a tick will be "finalised" at the end of that same frame, or at the start of the next frame, depending on what it is. By finalised I mean adding an item, that item will only start ticking and drawing, etc. after the start of the next frame. When removing an item, it gets erased at the end of that same frame. Start and end lifetime methods (like added, removed, spawn, despawn, etc.) are called at the start and end of the frame respectively once the item has been finalised.
 
 ## What is needed still
+- Regarding "finalisation", I think the spawn, etc. methods should happen at the start of the next frame, but the despawn, etc. methods should happen immediately as they are called. Calling them at the end of the frame allows for the possibility of a pointer in one class to be null (as it has been deleted) when it should be valid.
 - Create default folders and files in same directory as executable if they do not already exist
     - engine.ini
     - save
@@ -176,6 +177,8 @@ resolution = 640, 480
 title = Tails Engine
 size = 640, 480
 fullscreen = false
+vsync = false
+framerate limit = 0
 ```
 
 Without this file, the engine cannot initialise or really do anything, as it relies on those paths being set, and the render and window sections have valid fields and values (for the window to be initialised).

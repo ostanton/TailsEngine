@@ -13,6 +13,9 @@ namespace tails
     class TAILS_API ScreenLayer : public Layer
     {
     public:
+        ScreenLayer();
+        ~ScreenLayer() override;
+
         Widget* setContent(std::unique_ptr<Widget> content);
 
         template<typename T>

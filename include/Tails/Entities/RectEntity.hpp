@@ -9,7 +9,7 @@
 namespace tails
 {
     // replace with generic shape wrapper??
-    class TAILS_API RectEntity final : public Entity
+    class TAILS_API RectEntity : public Entity
     {
     public:
         RectEntity()
@@ -18,17 +18,15 @@ namespace tails
             m_rect.setFillColor(sf::Color(255, 255, 255));
         }
 
-        RectEntity* read(const nlohmann::json& json) override
-        {
-            return new RectEntity;
-        }
+        RectEntity* read(const nlohmann::json& json) override;
 
         sf::RectangleShape& getRect() {return m_rect;}
 
-    private:
+    protected:
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+    private:
         sf::RectangleShape m_rect;
     };
 }

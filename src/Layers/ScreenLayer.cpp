@@ -5,6 +5,9 @@
 
 namespace tails
 {
+    ScreenLayer::ScreenLayer() = default;
+    ScreenLayer::~ScreenLayer() = default;
+
     Widget* ScreenLayer::setContent(std::unique_ptr<Widget> content)
     {
         content->outer = this;

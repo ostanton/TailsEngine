@@ -38,6 +38,8 @@ namespace tails
                 {
                     return typedOuter;
                 }
+
+                pOuter = pOuter->outer;
             }
 
             return nullptr;

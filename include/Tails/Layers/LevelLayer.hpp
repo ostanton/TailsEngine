@@ -16,10 +16,10 @@ namespace tails
     class Entity;
     class EntityRegistry;
 
-    class TAILS_API LevelLayer : public Layer
+    class TAILS_API LevelLayer final : public Layer
     {
     public:
-        void spawnEntity(const std::string& name, const nlohmann::json& json);
+        void spawnEntity(const std::string& name, nlohmann::json& value);
 
         /**
          * Spawns an entity of template type
@@ -43,9 +43,10 @@ namespace tails
          */
         Entity* spawnEntity(std::unique_ptr<Entity> entity);
 
-    protected:
-        void init(State& state) override;
         void loadJson(const std::string& path);
+
+    private:
+        void init(State& state) override;
 
         void preTick() override;
         void tick(float deltaTime) override;

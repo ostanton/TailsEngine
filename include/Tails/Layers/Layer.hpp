@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
+#include <Tails/Layers/LayerCamera.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 
@@ -16,6 +17,9 @@ namespace tails
     {
         friend State;
 
+    public:
+        inline LayerCamera& getCamera() {return m_camera;}
+
     protected:
         virtual void init(State& state) {}
         virtual void added() {}
@@ -23,6 +27,9 @@ namespace tails
 
         State& getState();
         Engine& getEngine();
+
+    private:
+        LayerCamera m_camera;
     };
 }
 

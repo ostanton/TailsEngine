@@ -25,9 +25,14 @@ namespace tails
     public:
         void destroy(); // destroys self
 
+        Entity* read(const nlohmann::json& json) override;
+
     protected:
         virtual void spawn() {}
         virtual void despawn() {}
+
+        void tick(float deltaTime) override {}
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
     };
 }
 

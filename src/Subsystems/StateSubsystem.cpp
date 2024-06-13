@@ -6,21 +6,17 @@
 
 namespace tails
 {
-    StateSubsystem::StateSubsystem()
-    {
-
-    }
-
-    StateSubsystem::~StateSubsystem()
-    {
-
-    }
+    StateSubsystem::StateSubsystem() = default;
+    StateSubsystem::~StateSubsystem() = default;
 
     void StateSubsystem::pushState(std::unique_ptr<State> state)
     {
+        // early return if the state we are pushing is invalid
+        if (!state) return;
+
         state->pendingCreate = true;
         m_states.push_back(std::move(state));
-        setupState(getActiveState(), false);
+        setupState(getActiveState());
     }
 
     void StateSubsystem::popState()
@@ -33,6 +29,8 @@ namespace tails
 
     State* StateSubsystem::getActiveState() const
     {
+        if (m_states.empty() || !m_states.back()) return nullptr;
+
         return m_states.back().get();
     }
 
@@ -43,12 +41,13 @@ namespace tails
 
     void StateSubsystem::init(Engine& engine)
     {
-        emplaceState<State>();
-        Debug::print("Finished init of StateSubsystem.");
+
     }
 
     void StateSubsystem::preTick()
     {
+        if (m_states.empty()) return;
+
         for (auto& state : m_states)
         {
             state->preTick();
@@ -64,17 +63,21 @@ namespace tails
     void StateSubsystem::tick(float deltaTime)
     {
         // add options for non-active states to tick
-        getActiveState()->tick(deltaTime);
+        if (getActiveState())
+            getActiveState()->tick(deltaTime);
     }
 
     void StateSubsystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // add options for non-active states to draw
-        target.draw(*getActiveState(), states);
+        if (getActiveState())
+            target.draw(*getActiveState(), states);
     }
 
     void StateSubsystem::postTick()
     {
+        if (m_states.empty()) return;
+
         for (auto& state : m_states)
         {
             state->postTick();
@@ -86,7 +89,7 @@ namespace tails
         }
     }
 
-    void StateSubsystem::setupState(State* state, bool callCreate)
+    void StateSubsystem::setupState(State* state)
     {
         Debug::print("Setting up state...");
         if (!state)
@@ -96,9 +99,9 @@ namespace tails
         }
         state->outer = this;
         state->init(*this);
-        if (callCreate) state->create();
-        // TODO - state camera things
-        //state->setCameraResolution();
-        //state->setCameraPosition();
+        if (state->m_customCameraSize.x == 0.f && state->m_customCameraSize.y == 0.f)
+        {
+            state->m_customCameraSize = getEngine().getRenderSettings().size;
+        }
     }
 }
