@@ -29,6 +29,8 @@ namespace tails
     template<typename... Args>
     struct FunctorDelegate : Delegate<Args...>
     {
+        FunctorDelegate() = default;
+
         explicit FunctorDelegate(void(*inFunctor)(Args...))
             : functor(inFunctor) {}
 
@@ -39,7 +41,7 @@ namespace tails
 
         FunctorDelegate<Args...>* clone() const override
         {
-            return new FunctorDelegate<Args...>;
+            return new FunctorDelegate<Args...>(functor);
         }
 
         FunctorDelegate<Args...>& operator=(const FunctorDelegate<Args...>& other)
