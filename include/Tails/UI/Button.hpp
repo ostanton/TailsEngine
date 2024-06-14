@@ -26,8 +26,15 @@ namespace tails
         MultiEvent<Button*> pressEvent;
         MultiEvent<Button*> releaseEvent;
 
+        inline bool isPressed() const {return m_pressed;}
+        inline bool isHovered() const {return m_hovered;}
+
     protected:
         void tick(float deltaTime) override;
+
+    private:
+        bool m_pressed {false}; // is currently pressed
+        bool m_hovered {false}; // is currently hovered
     };
 
 } // tails

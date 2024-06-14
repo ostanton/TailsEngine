@@ -16,7 +16,11 @@ namespace tails
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            pressEvent.broadcast(this);
+            if (!m_pressed)
+            {
+                pressEvent.broadcast(this);
+                m_pressed = true;
+            }
         }
     }
 } // tails
