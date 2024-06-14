@@ -22,6 +22,14 @@ namespace tails
         {
             return std::holds_alternative<T>(value);
         }
+
+        template<typename T>
+        InputValue& operator=(T inValue)
+        {
+            // TODO - static assert this
+            value = inValue;
+            return *this;
+        }
     };
 }
 

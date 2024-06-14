@@ -28,13 +28,13 @@ namespace tails
 
     struct TAILS_API Paths
     {
-        std::string data;
-        std::string textures;
-        std::string sounds;
-        std::string fonts;
-        std::string levels;
-        std::string input;
-        std::string saves;
+        std::string data {"res/data/"};
+        std::string textures {"res/tex/"};
+        std::string sounds {"res/sound/"};
+        std::string fonts {"res/font/"};
+        std::string levels {"res/level/"};
+        std::string input {data + "/input/"};
+        std::string saves {"save/"};
 
         void printPaths() const;
     };
@@ -56,7 +56,7 @@ namespace tails
      */
     struct TAILS_API WindowSettings
     {
-        std::string title;
+        std::string title {"Tails Engine"};
         sf::Vector2u size {640, 480};
         bool fullscreen {false};
         bool vsync {false};

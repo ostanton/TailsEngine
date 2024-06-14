@@ -14,23 +14,25 @@ namespace tails
         // TODO -  fix these so we can only move events and not copy them
         Event() = default;
         Event(const Event& other)
-        {
-            //m_delegate = std::make_unique<Delegate<Args...>>(other.m_delegate);
-        }
+            : m_delegate(std::make_unique<Delegate<Args...>>(*other.m_delegate))
+        {}
+
         Event(Event&& other) noexcept
-        {
-            m_delegate = std::move(other.m_delegate);
-        }
+            : m_delegate(std::move(other.m_delegate))
+        {}
+
         Event& operator=(const Event& other)
         {
-            //m_delegate = std::make_unique<Delegate<Args...>>(other.m_delegate);
+            m_delegate = std::make_unique<Delegate<Args...>>(*other.m_delegate);
             return *this;
         }
+
         Event& operator=(Event&& other) noexcept
         {
             m_delegate = std::move(other.m_delegate);
             return *this;
         }
+
         ~Event() = default;
 
         // binds create the delegate wrapper. users do not interface with the delegate class when using events

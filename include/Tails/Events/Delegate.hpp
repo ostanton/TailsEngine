@@ -15,6 +15,9 @@ namespace tails
     struct Delegate
     {
         virtual void execute(Args...) = 0;
+        // to avoid slicing, define a clone method
+        // TODO - is this necessary??
+        virtual Delegate<Args...>* clone() const = 0;
 
         void operator()(Args... args)
         {
@@ -26,7 +29,7 @@ namespace tails
     template<typename... Args>
     struct FunctorDelegate : Delegate<Args...>
     {
-        FunctorDelegate(void(*inFunctor)(Args...))
+        explicit FunctorDelegate(void(*inFunctor)(Args...))
             : functor(inFunctor) {}
 
         void execute(Args... args) override
@@ -34,9 +37,22 @@ namespace tails
             (*functor)(args...);
         }
 
-        FunctorDelegate& operator=(FunctorDelegate& other)
+        FunctorDelegate<Args...>* clone() const override
         {
-            functor = other.functor;
+            return new FunctorDelegate<Args...>;
+        }
+
+        FunctorDelegate<Args...>& operator=(const FunctorDelegate<Args...>& other)
+        {
+            if (other != *this)
+                functor = other.functor;
+
+            return *this;
+        }
+
+        FunctorDelegate<Args...>& operator=(void(*other)(Args...))
+        {
+            functor = other;
             return *this;
         }
 
@@ -47,23 +63,40 @@ namespace tails
     template<typename C, typename... Args>
     struct MemberDelegate : Delegate<Args...>
     {
+        MemberDelegate() = default;
+
         MemberDelegate(C* inObject, void(C::*inFunction)(Args...))
             : object(inObject), function(inFunction) {}
 
         void execute(Args... args) override
         {
-            (object->*std::get<void(C::*)(Args...)>(function))(args...);
+            (object->*function)(args...);
         }
 
-        MemberDelegate& operator=(MemberDelegate& other)
+        MemberDelegate<C, Args...>* clone() const override
         {
-            object = other.object;
-            function = other.function;
+            return new MemberDelegate<C, Args...>(object, function);
+        }
+
+        MemberDelegate<C, Args...>& operator=(const MemberDelegate<C, Args...>& other)
+        {
+            if (other != *this)
+            {
+                object = other.object;
+                function = other.function;
+            }
+
             return *this;
         }
 
-        C* object;
-        void(C::*function)(Args...);
+        void set(C* inObj, void(C::*inFunc)(Args...))
+        {
+            object = inObj;
+            function = inFunc;
+        }
+
+        C* object {nullptr};
+        void(C::*function)(Args...) {nullptr};
     };
 }
 

@@ -19,6 +19,7 @@ namespace tails
         std::vector<std::unique_ptr<InputModifier>> modifiers;
 
         // add loading from json, allowing optional properties, etc.
+        [[nodiscard]] InputValue getModifiedValue(float deltaTime) const;
     };
 
     struct TAILS_API ActionMapping final
@@ -39,11 +40,13 @@ namespace tails
         InputContext(const InputContext&) = delete;
         InputContext(InputContext&&) noexcept;
         InputContext& operator=(const InputContext&) = delete;
+        InputContext& operator=(InputContext&&) noexcept;
 
         void addAction(const std::string& id, InputAction action);
-        ActionMapping& getActionMapping(const std::string& id);
+        void addActionMapping(const std::string& id, ActionMapping& mapping);
+        [[nodiscard]] ActionMapping& getActionMapping(const std::string& id);
 
-        std::unordered_map<std::string, ActionMapping>& getMappings();
+        [[nodiscard]] std::unordered_map<std::string, ActionMapping>& getMappings();
 
     private:
         std::unordered_map<std::string, ActionMapping> m_mappings;

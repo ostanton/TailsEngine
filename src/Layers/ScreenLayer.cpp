@@ -1,5 +1,7 @@
 #include <Tails/Layers/ScreenLayer.hpp>
 #include <Tails/UI/Widget.hpp>
+#include <Tails/UI/WidgetNavigation.hpp>
+#include <Tails/Assert.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -19,6 +21,24 @@ namespace tails
     Widget* ScreenLayer::getContent() const
     {
         return m_content.get();
+    }
+
+    std::unique_ptr<WidgetNavigation> ScreenLayer::setupWidgetNavigation()
+    {
+        return std::make_unique<WidgetNavigation>();
+    }
+
+    WidgetNavigation& ScreenLayer::getNavigation()
+    {
+        return *m_navigation;
+    }
+
+    void ScreenLayer::init(State& state)
+    {
+        Layer::init(state);
+
+        m_navigation = setupWidgetNavigation();
+        TailsAssert(m_navigation, "WidgetNavigation object is invalid!");
     }
 
     void ScreenLayer::preTick()

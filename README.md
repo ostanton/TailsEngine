@@ -46,7 +46,7 @@ There are no components in this engine. It has no concept of an ECS. Any entity 
 - Default game icon. Path will be stored somewhere that is overridable (does it need to be? Not really. Unreal's built icon is called `Application.ico`, and you can't change that I don't think. No it does not matter if you can change it, why put the effort in to make is customisable if no one uses it or needs it?), but by default it's either next to the executable, or in `res/tex/`, by default called `icon.png` or something.
     - It will probably be in the root of `res/tex/` and be called `icon.png`. That's pretty much final.
 - Input Mappings
-    - Scroll down for implementation test
+    - I'm now thinking this solution is a bit too complicated for this engine. I think maybe something simpler is in order? I still want delegates, events and function binding though.
 - Input stack? Probably accidental pushing two buttons on the same frame, if that is even a problem!?
 - Asset Manager/Cache
     - Global or context-sensitive? One in each State?
@@ -160,6 +160,9 @@ The structure by default is as follows:
 - engine.ini
 ```
 The `engine.ini` contents by default is as follows (you can copy and paste for a game using this library to work properly):
+> The trailing forward-slash is added by the engine. The library used to load .ini files does not like forward-slashes
+at the end of non-literal strings for some reason. So just treat these as specifying the folder name instead of
+full directory!
 ```
 [paths]
 data = res/data

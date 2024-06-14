@@ -3,6 +3,11 @@
 
 #include <Tails/States/State.hpp>
 
+namespace tails
+{
+    class Button;
+}
+
 class MyState : public tails::State
 {
 private:

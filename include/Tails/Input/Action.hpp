@@ -24,20 +24,21 @@ namespace tails
 
         std::string name;
         std::unordered_map<ActionTrigger, MultiEvent<InputValue>> funcMap;
+        InputValue currentValue; // value this frame
+        InputValue lastValue; // value last frame
 
         template<typename C>
-        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(InputValue&&))
+        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(InputValue))
         {
-            funcMap[trigger].add(object, function);
+            if (funcMap.contains(trigger))
+                funcMap[trigger].add(object, function);
+
+            MultiEvent<InputValue> event;
+            event.add(object, function);
+            funcMap.try_emplace(trigger, MultiEvent<InputValue>(event));
         }
 
-        template<typename C>
-        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(const InputValue&))
-        {
-            funcMap[trigger].add(object, function);
-        }
-
-        void execute(ActionTrigger trigger, InputValue value);
+        void execute(ActionTrigger trigger);
     };
 }
 

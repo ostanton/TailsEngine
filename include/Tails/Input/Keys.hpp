@@ -3,6 +3,8 @@
 
 #include <Tails/Config.hpp>
 
+#include <SFML/Window/Keyboard.hpp>
+
 #include <string>
 
 namespace tails
@@ -15,17 +17,19 @@ namespace tails
     {
         Key() = default;
 
-        explicit constexpr Key(const std::string& inName)
-            : name(inName) {}
+        explicit constexpr Key(const std::string& inName, sf::Keyboard::Key inKey)
+            : name(inName), key(inKey) {}
 
         constexpr Key(const Key& other)
         {
             name = other.name;
+            key = other.key;
         }
 
         constexpr Key(Key&& other) noexcept
         {
             name = std::move(other.name);
+            key = other.key;
         }
 
         constexpr Key& operator=(const Key& other) = default;
@@ -33,22 +37,21 @@ namespace tails
         constexpr Key& operator=(Key&& other) noexcept
         {
             name = std::move(other.name);
+            key = other.key;
             return *this;
         }
 
-        [[nodiscard]] bool isPressed() const
-        {
-            return true;
-        }
+        [[nodiscard]] bool isPressed() const;
 
         std::string name;
+        sf::Keyboard::Key key {sf::Keyboard::Unknown};
     };
 
     // const static list of keys and probably controller inputs
     struct TAILS_API Keys
     {
-        constexpr static Key Space {"Space"};
-        constexpr static Key A {"A"};
+        constexpr static Key Space {"Space", sf::Keyboard::Space};
+        constexpr static Key A {"A", sf::Keyboard::A};
     };
 }
 

@@ -2,8 +2,8 @@
 
 namespace tails
 {
-    void InputAction::execute(ActionTrigger trigger, InputValue value)
+    void InputAction::execute(ActionTrigger trigger)
     {
-        funcMap[trigger].broadcast(value);
+        funcMap[trigger].broadcast(currentValue);
     }
 }

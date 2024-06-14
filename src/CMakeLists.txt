@@ -1,4 +1,4 @@
-project(Pokemon)
+project(TailsEngine)
 
 add_library(
     TailsEngine
@@ -9,6 +9,7 @@ add_library(
     Entities/SpriteEntity.cpp
     Input/Action.cpp
     Input/Context.cpp
+    Input/Keys.cpp
     Layers/LayerCamera.cpp
     Layers/Layer.cpp
     Layers/LevelLayer.cpp
@@ -21,6 +22,8 @@ add_library(
     Subsystems/RegistrySubsystem.cpp
     Subsystems/InputSubsystem.cpp
     Subsystems/StateSubsystem.cpp
+    UI/CanvasPanel.cpp
+    UI/CanvasSlot.cpp
     UI/Slot.cpp
     UI/Widget.cpp
     UI/PanelWidget.cpp
@@ -30,6 +33,7 @@ add_library(
     UI/RectangleWidget.cpp
     UI/Button.cpp
     UI/ButtonSlot.cpp
+    UI/WidgetNavigation.cpp
     Debug.cpp
     EngineStatics.cpp
     Engine.cpp

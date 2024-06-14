@@ -18,19 +18,27 @@ namespace tails
         MultiEvent() = default;
         MultiEvent(const MultiEvent& other)
         {
-            // TODO - work out the copy constructor!
+            m_delegates.reserve(other.m_delegates.size());
+            for (const auto& del : other.m_delegates)
+            {
+                m_delegates.push_back(std::make_unique<Delegate<Args...>>(del->clone()));
+            }
         }
 
         MultiEvent(MultiEvent&& other) noexcept
         {
-            // TODO - move because unique_ptr!
-            m_delegates = other.m_delegates;
+            m_delegates.reserve(other.m_delegates.size());
+            size_t otherSize {other.m_delegates.size()};
+            for (size_t i {0}; i < otherSize; i++)
+            {
+                m_delegates.push_back(std::move(other.m_delegates[i]));
+            }
         }
 
         MultiEvent& operator=(MultiEvent&& other) noexcept
         {
             // same as up there!
-            m_delegates = other.m_delegates;
+            m_delegates = std::move(other.m_delegates);
         }
 
         template<typename C>

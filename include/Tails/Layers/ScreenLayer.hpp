@@ -7,9 +7,12 @@
 namespace tails
 {
     class Widget;
+    class WidgetNavigation;
 
     // a screen is like a level, but except for housing entities, it houses a single root widget
     // if expanded to house more, it should have its own ScreenSlot also
+    // a screen stretches its content to fit its camera view size, so normally the content is some kind of panel
+    // each screen may also have a navigation member which managers which widget is focused, etc.
     class TAILS_API ScreenLayer : public Layer
     {
     public:
@@ -35,7 +38,11 @@ namespace tails
             return static_cast<T*>(getContent());
         }
 
+        virtual std::unique_ptr<WidgetNavigation> setupWidgetNavigation();
+        WidgetNavigation& getNavigation();
+
     protected:
+        void init(State& state) override;
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -43,6 +50,7 @@ namespace tails
 
     private:
         std::unique_ptr<Widget> m_content;
+        std::unique_ptr<WidgetNavigation> m_navigation;
     };
 }
 

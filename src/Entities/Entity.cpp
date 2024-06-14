@@ -1,5 +1,7 @@
 #include <Tails/Entities/Entity.hpp>
 
+#include <nlohmann/json.hpp>
+
 namespace tails
 {
     void Entity::destroy()
@@ -10,6 +12,31 @@ namespace tails
 
     Entity* Entity::read(const nlohmann::json& json)
     {
-        return new Entity;
+        Entity* result {new Entity};
+        setEntityDefaults(result, json);
+        return result;
+    }
+
+    void Entity::setEntityDefaults(Entity* entity, const nlohmann::json& json)
+    {
+        if (!entity) return;
+
+        for (auto& [key, value] : json.items())
+        {
+            if (key == "position")
+            {
+                setPosition(value["x"].get<float>(), value["y"].get<float>());
+            }
+
+            if (key == "rotation")
+            {
+                setRotation(value.get<float>());
+            }
+
+            if (key == "scale")
+            {
+                setScale(value["x"].get<float>(), value["y"].get<float>());
+            }
+        }
     }
 }

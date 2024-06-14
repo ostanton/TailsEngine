@@ -3,7 +3,6 @@
 #include <Tails/Subsystems/AssetSubsystem.hpp>
 #include <Tails/Subsystems/AudioSubsystem.hpp>
 #include <Tails/Subsystems/RegistrySubsystem.hpp>
-#include <Tails/Registries/Registry.hpp>
 #include <Tails/Subsystems/InputSubsystem.hpp>
 #include <Tails/Subsystems/StateSubsystem.hpp>
 #include <Tails/States/State.hpp>
@@ -142,12 +141,13 @@ namespace tails
 
     void Engine::loadIni()
     {
-        Debug::print("Loading engine.ini");
+        Debug::print("Loading engine initialisation file.");
         INI::File engineIni;
         if (!engineIni.Load(m_engineIniDirectory))
         {
             // fails
-            Debug::print("Failed to load engine.ini");
+            Debug::print("Failed to load engine initialisation file");
+            Debug::print("Using engine defaults.");
             return;
         }
 
@@ -156,16 +156,18 @@ namespace tails
         {
             // fails to find section
             Debug::print("Failed to get paths section");
+            Debug::print("Using engine defaults.");
             return;
         }
 
-        m_paths.data = pathsSect->GetValue("data").AsString();
-        m_paths.textures = pathsSect->GetValue("textures").AsString();
-        m_paths.sounds = pathsSect->GetValue("sounds").AsString();
-        m_paths.fonts = pathsSect->GetValue("fonts").AsString();
-        m_paths.levels = pathsSect->GetValue("levels").AsString();
-        m_paths.input = pathsSect->GetValue("input").AsString();
-        m_paths.saves = pathsSect->GetValue("saves").AsString();
+        // add trailing forward-slash
+        m_paths.data = pathsSect->GetValue("data").AsString() + "/";
+        m_paths.textures = pathsSect->GetValue("textures").AsString() + "/";
+        m_paths.sounds = pathsSect->GetValue("sounds").AsString() + "/";
+        m_paths.fonts = pathsSect->GetValue("fonts").AsString() + "/";
+        m_paths.levels = pathsSect->GetValue("levels").AsString() + "/";
+        m_paths.input = pathsSect->GetValue("input").AsString() + "/";
+        m_paths.saves = pathsSect->GetValue("saves").AsString() + "/";
 
         m_paths.printPaths();
 
@@ -173,6 +175,7 @@ namespace tails
         if (!renderSect)
         {
             Debug::print("Failed to get render section");
+            Debug::print("Using engine defaults.");
             return;
         }
 
@@ -185,6 +188,7 @@ namespace tails
         if (!windowSect)
         {
             Debug::print("Failed to get window section");
+            Debug::print("Using engine defaults.");
             return;
         }
         m_windowSettings.title = windowSect->GetValue("title").AsString();

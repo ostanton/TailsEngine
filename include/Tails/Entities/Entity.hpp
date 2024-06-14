@@ -9,6 +9,8 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace tails
 {
     class LevelLayer;
@@ -33,6 +35,9 @@ namespace tails
 
         void tick(float deltaTime) override {}
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
+
+        // TODO - derived classes override this and provide their own defaults? Or make a new method of their own?
+        void setEntityDefaults(Entity* entity, const nlohmann::json& json);
     };
 }
 

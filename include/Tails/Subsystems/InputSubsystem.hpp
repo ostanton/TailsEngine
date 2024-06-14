@@ -12,6 +12,9 @@ namespace tails
 {
     class TAILS_API InputSubsystem final : public Subsystem
     {
+    public:
+        void addContext(const std::string& name, InputContext& context);
+
     private:
         void init(Engine& engine) override;
         void tick(float deltaTime) override;
