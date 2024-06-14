@@ -48,14 +48,7 @@ There are no components in this engine. It has no concept of an ECS. Any entity 
 - Input Mappings
     - I'm now thinking this solution is a bit too complicated for this engine. I think maybe something simpler is in order? I still want delegates, events and function binding though.
 - Input stack? Probably accidental pushing two buttons on the same frame, if that is even a problem!?
-- Asset Manager/Cache
-    - Global or context-sensitive? One in each State?
-    - Asset metadata (scroll past Input code)
 - Load JSON
-    - Base JsonLoader (get a better name bruh) class with:
-        - JsonLoader* load(Json& obj) - covariant return
-        - maybe std::string getName()
-        - load is called when the object is being spawned or cloned. There is no clone method. When overriding load(), classes should allocate a new object of said class on the heap, set their default members from the json object, then return the pointer to it.
     - Levels?
     - Input actions & contexts
 - Additional States
@@ -72,29 +65,18 @@ There are no components in this engine. It has no concept of an ECS. Any entity 
             - Vertical/Horizontal stack box
             - Canvas
         - Gradient effects with vertex colours?
-- Registry base class
-    - Child templated class with further children like EntityRegistry, InputModifierRegistry, WidgetRegistry, etc.
-- Animated sprites
 - Entity collision
     - Each entity has a `getGlobalBounds()` method? And/or a bool for `canCollide` or something. Need this optimised, only check collisions with entities near the current entity! CollisionManager??
 - Tilemap stuff
 - Audio manager for global sound + music playing
     - midi support
     - custom soundstream stuff
-- Overlay states
-    - A stack (or just plain vector since they overlay?) that draw over the main stack and tick independently.
-    - Or scrap the whole stack idea and just go with a level class and separate widgets that have no bearing on the level?
-    - If keeping with states, how would a HUD work? The level AND hud tick and draw, but then how do you stop them ticking (and maybe drawing) when opening the pause menu? Overlay states fix this? But how do you draw the pause menu over the HUD overlay? Remove the overlay? It doesn't seem very simple. Unless there's a separate Z ordering of layers??? Each state has layers? HUD and level go into one state, call it the GameState. PauseState is pushed, GameState no longer ticks or draws (maybe), and the PauseState is instead the one on top. So now we have the same state system but now states have a vector of layers. States can then be derived from? So users can create their own PauseState, GameState, etc.? What would the type of the vector be? StateLayer? UI screens and levels would need to derive from that then! Users can then make their own layers by deriving StateLayer!
-- Engine default settings struct
-    - User either subclasses or creates an object from it, sets the object types via template parameters (class template so they can both derive and/or instance it?) and pass that into the engine init method?
-    - Would require a base Settings struct, so the templated class one derives it and the engine just has a pointer to the base one!
-    - Would be used to set default registries, maybe GameMode or something if going down the Unreal-style path, etc.
 - Screenshot ability?
     - RenderWindow::capture() - returns an sf::Image, save it to file in save/captures/? SFML docs says it's deprecated and instead to update a texture with the window as input!
 - GameSettings.ini
     - settings file for game-specific settings, like audio volume, maybe resolution/window size?, fullscreen, etc.
+    - user would set what settings should be set here! So not default in engine then? Or default is window things and maybe audio things?
 - Whenever modules are fully supported (could be never lol!) move to that C++ version and move to them. Much faster compilations!
-- Specialised SubsystemManager class so it's easy for any class to have subsystems (problems I have so far is Tickable class and virtual inheritance stuff!)
 - Better CMake support so it's easy to include or fetch it in another CMake project
 
 ## How to build & compile
@@ -160,9 +142,10 @@ The structure by default is as follows:
 - engine.ini
 ```
 The `engine.ini` contents by default is as follows (you can copy and paste for a game using this library to work properly):
-> The trailing forward-slash is added by the engine. The library used to load .ini files does not like forward-slashes
-at the end of non-literal strings for some reason. So just treat these as specifying the folder name instead of
-full directory!
+> A trailing forward-slash is added by the engine. This means that when opening a file via path, you only need to enter
+the file name and whatever path variable to use instead of adding a forward-slash in front of the file name. The
+library used to load .ini files does not like forward-slashes at the end of non-literal strings for some reason. So
+just treat these as specifying the folder name instead of full directory!
 ```
 [paths]
 data = res/data
