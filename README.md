@@ -7,6 +7,10 @@ There are no components in this engine. It has no concept of an ECS. Any entity 
 
 > Another note, this is my biggest solo project to date, and I am learning many new things along the way. This is all to say that the code in this library is probably quite sub-par, and the CMakeLists.txt definitely isn't as good as it could be. This is mainly a project just for me, so I have a simple engine I know how to use for 2D games I want to make in the future (since I either suck at searching for them, or there's a lack of proper object-oriented, simple, 2D game engines/frameworks).
 
+> Documentation is being created slowly but surely in [this directory](docs). That explains the engine's systems and
+> inner workings a LOT better than anything here. If anything, this readme is just for ideas and ramblings I have.
+> Don't take any of the information here as fact or even up-to-date!
+
 - [What it has](#what-it-has)
 - [What is needed still](#what-is-needed-still)
 - [How to compile](#how-to-build--compile)
@@ -28,6 +32,11 @@ There are no components in this engine. It has no concept of an ECS. Any entity 
 - State-specific camera/sf::View
 - Event class that can hold delegates to class methods
 - All deferred actions like adding or removing items from vector during a tick will be "finalised" at the end of that same frame, or at the start of the next frame, depending on what it is. By finalised I mean adding an item, that item will only start ticking and drawing, etc. after the start of the next frame. When removing an item, it gets erased at the end of that same frame. Start and end lifetime methods (like added, removed, spawn, despawn, etc.) are called at the start and end of the frame respectively once the item has been finalised.
+
+## Next features
+The things I want to implement ASAP, basically:
+- Entity collision
+- Input mapping
 
 ## What is needed still
 - Regarding "finalisation", I think the spawn, etc. methods should happen at the start of the next frame, but the despawn, etc. methods should happen immediately as they are called. Calling them at the end of the frame allows for the possibility of a pointer in one class to be null (as it has been deleted) when it should be valid.
@@ -146,7 +155,7 @@ The `engine.ini` contents by default is as follows (you can copy and paste for a
 the file name and whatever path variable to use instead of adding a forward-slash in front of the file name. The
 library used to load .ini files does not like forward-slashes at the end of non-literal strings for some reason. So
 just treat these as specifying the folder name instead of full directory!
-```
+```ini
 [paths]
 data = res/data
 textures = res/tex

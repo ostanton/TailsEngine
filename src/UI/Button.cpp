@@ -5,6 +5,11 @@
 
 namespace tails
 {
+    Button::Button()
+    {
+        m_childMax = 1;
+    }
+
     ButtonSlot* Button::addChildToButton(std::unique_ptr<Widget> content)
     {
         return addChild<ButtonSlot>(std::move(content));

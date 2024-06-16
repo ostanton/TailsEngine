@@ -60,6 +60,7 @@ namespace tails
 
     void LevelLayer::tick(float deltaTime)
     {
+        // TODO - collision, some sort of divide and conquer of the level?
         for (auto& entity : m_entities)
         {
             if (!entity->pendingCreate)

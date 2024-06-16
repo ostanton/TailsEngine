@@ -3,6 +3,7 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
+#include <Tails/Tickable.hpp>
 
 #include <SFML/Config.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -66,7 +67,7 @@ namespace tails
         [[nodiscard]] sf::Uint32 getWindowStyle() const;
     };
 
-    class TAILS_API Engine : public Object
+    class TAILS_API Engine : public Object, public Tickable
     {
     public:
         Engine();
@@ -115,17 +116,17 @@ namespace tails
 
         /* Default but overridable stuff */
         virtual std::unique_ptr<RegistrySubsystem> setupDefaultRegistrySubsystem();
-        virtual std::unique_ptr<tails::State> setupDefaultState();
+        virtual std::unique_ptr<State> setupDefaultState();
 
-        std::string m_engineIniDirectory {"engine.ini"};
+        std::string m_engineIniSource {"engine.ini"};
 
     private:
         void initWindow();
 
-        void preTick();
-        void tick(sf::Time& time);
+        void preTick() override;
+        void tick(float deltaTime) override;
         void draw();
-        void postTick();
+        void postTick() override;
         /**
          * Called once the main loop has exited. Not called in the destructor
          */

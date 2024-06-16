@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/UI/Widget.hpp>
 #include <Tails/UI/PanelSlot.hpp>
+#include <Tails/Debug.hpp>
 
 #include <vector>
 #include <memory>
@@ -41,6 +42,13 @@ namespace tails
         S* addChild(std::unique_ptr<Widget> content)
         {
             static_assert(std::is_base_of_v<PanelSlot, S>, "Failed to create slot, type does not derive PanelSlot.");
+
+            if (m_childMax != 0 && getChildrenCount() >= m_childMax)
+            {
+                Debug::print("Failed to add child, max number of children in widget reached.");
+                return nullptr;
+            }
+
             content->removeFromParent();
             std::unique_ptr<PanelSlot> resultSlot {std::make_unique<S>(this, std::move(content))};
             resultSlot->getContent()->slot = resultSlot.get();
@@ -55,6 +63,9 @@ namespace tails
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
+
+        // maximum number of children this panel can have. 0 for unlimited
+        size_t m_childMax {0};
 
     private:
         std::vector<std::unique_ptr<PanelSlot>> m_slots;

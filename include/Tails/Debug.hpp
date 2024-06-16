@@ -26,7 +26,7 @@ namespace tails
         template<typename... ArgsT>
         static void print(ArgsT&&... s)
         {
-            (std::cout << (s << ...)) << "\n";
+            (std::cout << (std::forward<ArgsT>(s) << ...)) << "\n";
         }
     };
 }

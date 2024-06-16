@@ -12,6 +12,8 @@ namespace tails
     class TAILS_API Button : public PanelWidget
     {
     public:
+        Button();
+
         template<typename T>
         ButtonSlot* addChildToButton()
         {

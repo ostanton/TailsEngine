@@ -11,7 +11,15 @@ namespace tails
     class TAILS_API WidgetNavigation
     {
     public:
+        void setFocus(Widget* widget);
+        bool widgetHasFocus(Widget* widget);
+
+    protected:
         virtual void focusChanged(Widget* oldWidget, Widget* newWidget);
+
+    private:
+        Widget* focusedWidget {nullptr};
+        Widget* lastFocusedWidget {nullptr};
     };
 
 } // tails

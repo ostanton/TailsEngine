@@ -73,6 +73,8 @@ namespace tails
         Debug::print("Begin game loop.\n");
         sf::Clock clock;
 
+        // TODO - untie/separate this from the window? have a "isRunning" bool instead and just close the window
+        // after exiting the loop in "initialise()"?
         while (m_window->isOpen())
         {
             preTick();
@@ -91,8 +93,9 @@ namespace tails
                 }
             }
 
-            tick(time);
+            tick(time.asSeconds());
             draw();
+
             postTick();
         }
 
@@ -143,7 +146,7 @@ namespace tails
     {
         Debug::print("Loading engine initialisation file.");
         INI::File engineIni;
-        if (!engineIni.Load(m_engineIniDirectory))
+        if (!engineIni.Load(m_engineIniSource))
         {
             // fails
             Debug::print("Failed to load engine initialisation file");
@@ -258,7 +261,7 @@ namespace tails
         return std::make_unique<RegistrySubsystem>();
     }
 
-    std::unique_ptr<tails::State> Engine::setupDefaultState()
+    std::unique_ptr<State> Engine::setupDefaultState()
     {
         return nullptr;
     }
@@ -291,14 +294,14 @@ namespace tails
         }
     }
 
-    void Engine::tick(sf::Time& time)
+    void Engine::tick(float deltaTime)
     {
-        m_lifetime += time.asSeconds();
+        m_lifetime += deltaTime;
 
         for (auto& subsystemPair : m_subsystems)
         {
             if (!subsystemPair.second->pendingCreate)
-                subsystemPair.second->tick(time.asSeconds());
+                subsystemPair.second->tick(deltaTime);
         }
     }
 
