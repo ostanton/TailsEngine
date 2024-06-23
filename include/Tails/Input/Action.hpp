@@ -23,22 +23,23 @@ namespace tails
         InputAction() = default;
 
         std::string name;
-        std::unordered_map<ActionTrigger, MultiEvent<InputValue>> funcMap;
-        InputValue currentValue; // value this frame
-        InputValue lastValue; // value last frame
+        std::unordered_map<ActionTrigger, MultiEvent<bool>> funcMap;
+        bool currentValue {false}; // value this frame
+        bool lastValue {false}; // value last frame
 
         template<typename C>
-        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(InputValue))
+        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(bool))
         {
             if (funcMap.contains(trigger))
                 funcMap[trigger].add(object, function);
 
-            MultiEvent<InputValue> event;
+            MultiEvent<bool> event;
             event.add(object, function);
-            funcMap.try_emplace(trigger, MultiEvent<InputValue>(event));
+            funcMap[trigger] = MultiEvent<bool>(std::move(event));
         }
 
         void execute(ActionTrigger trigger);
+        void execute(ActionTrigger trigger, bool value);
     };
 }
 

@@ -5,6 +5,12 @@
 
 namespace tails
 {
+    enum class DelegateType
+    {
+        Functor,
+        Member
+    };
+
     /*
      * A delegate is a wrapper for any kind of function. It has
      * specialised children for member functions, etc. and acts

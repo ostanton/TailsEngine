@@ -10,46 +10,50 @@
 namespace tails
 {
     // the same as Event except can hold more than one delegate to broadcast at a time!
-    // friends are not allowed with templated classes apparently. Very sad :(
+    // friends are not allowed with templated classes, apparently. Very sad :(
     template<typename... Args>
     class MultiEvent final
     {
     public:
         MultiEvent() = default;
-        MultiEvent(const MultiEvent& other)
-        {
-            m_delegates.reserve(other.m_delegates.size());
-            for (const auto& del : other.m_delegates)
-            {
-                m_delegates.push_back(std::make_unique<Delegate<Args...>>(del->clone()));
-            }
-        }
+        MultiEvent(const MultiEvent&) noexcept = default;
+        MultiEvent& operator=(const MultiEvent&) noexcept = default;
 
         MultiEvent(MultiEvent&& other) noexcept
         {
             m_delegates.reserve(other.m_delegates.size());
             size_t otherSize {other.m_delegates.size()};
-            for (size_t i {0}; i < otherSize; i++)
+            for (auto& del : other.m_delegates)
             {
-                m_delegates.push_back(std::move(other.m_delegates[i]));
+                m_delegates.push_back(del);
             }
         }
 
         MultiEvent& operator=(MultiEvent&& other) noexcept
         {
-            // same as up there!
-            m_delegates = std::move(other.m_delegates);
+            m_delegates.reserve(other.m_delegates.size());
+            size_t otherSize {other.m_delegates.size()};
+            for (auto& del : other.m_delegates)
+            {
+                m_delegates.push_back(del);
+            }
+
+            return *this;
         }
 
         template<typename C>
         void add(C* object, void(C::*function)(Args...))
         {
-            m_delegates.push_back(std::make_unique<MemberDelegate<C, Args...>>(object, function));
+            m_delegates.emplace_back(
+                std::make_shared<MemberDelegate<C, Args...>>(object, function)
+            );
         }
 
         void add(void(*function)(Args...))
         {
-            m_delegates.push_back(std::make_unique<FunctorDelegate<Args...>>(function));
+            m_delegates.emplace_back(
+                std::make_shared<FunctorDelegate<Args...>>(function)
+            );
         }
 
         template<typename C>
@@ -125,7 +129,8 @@ namespace tails
             });
         }
 
-        std::vector<std::unique_ptr<Delegate<Args...>>> m_delegates;
+        // vector of pairs, delegates and their type (as casting is not an option)
+        std::vector<std::shared_ptr<Delegate<Args...>>> m_delegates;
     };
 }
 

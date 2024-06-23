@@ -49,6 +49,7 @@ namespace tails
         void init(State& state) override;
 
         void preTick() override;
+        void checkCollision(Entity* entity);
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;

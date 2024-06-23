@@ -58,13 +58,46 @@ namespace tails
         }
     }
 
+    void LevelLayer::checkCollision(Entity* entity)
+    {
+        if (!entity) return;
+
+        for (auto& entity2 : m_entities)
+        {
+            if (entity == entity2.get()) continue;
+
+            if (entity->isCollidingWith(entity2.get()))
+            {
+                entity->m_currentCollidingEntity = entity2.get();
+
+                if (entity->m_lastCollidingEntity != entity2.get())
+                {
+                    entity->collisionStart(entity2.get());
+                }
+            }
+            else
+            {
+                if (entity->m_lastCollidingEntity == entity->m_currentCollidingEntity)
+                {
+                    entity->collisionEnd(entity2.get());
+                    entity->m_lastCollidingEntity = entity->m_currentCollidingEntity;
+                }
+
+                entity->m_currentCollidingEntity = nullptr;
+            }
+        }
+    }
+
     void LevelLayer::tick(float deltaTime)
     {
         // TODO - collision, some sort of divide and conquer of the level?
         for (auto& entity : m_entities)
         {
             if (!entity->pendingCreate)
+            {
                 entity->tick(deltaTime);
+                checkCollision(entity.get());
+            }
         }
     }
 

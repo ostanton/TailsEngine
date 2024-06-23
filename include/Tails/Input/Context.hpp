@@ -15,6 +15,9 @@ namespace tails
     // structure that "maps" a Key with other data like a vector of modifiers
     struct TAILS_API MappingData
     {
+        explicit MappingData(Key inKey)
+            : key(std::move(inKey)) {}
+
         Key key;
         std::vector<std::unique_ptr<InputModifier>> modifiers;
 
@@ -22,6 +25,9 @@ namespace tails
         [[nodiscard]] InputValue getModifiedValue(float deltaTime) const;
     };
 
+    /**
+     * Class that acts like a map key-value pair, containing an InputAction and a vector of data mapped to it
+     */
     struct TAILS_API ActionMapping final
     {
         ActionMapping() = default;
@@ -30,12 +36,13 @@ namespace tails
 
         InputAction inputAction;
         std::vector<MappingData> mappingData;
+
+        [[nodiscard]] bool actionActive();
     };
 
     class TAILS_API InputContext final
     {
     public:
-        // TODO - rule of five
         explicit InputContext() = default;
         InputContext(const InputContext&) = delete;
         InputContext(InputContext&&) noexcept;

@@ -8,6 +8,11 @@ class MyEntity : public tails::RectEntity
 {
 public:
     MyEntity();
+
+private:
+    void spawn() override;
+
+    void handleMoveRight(bool value);
 };
 
 

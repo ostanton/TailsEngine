@@ -13,6 +13,22 @@ namespace tails
         return currentValue;
     }
 
+    bool ActionMapping::actionActive()
+    {
+        bool pressed {false};
+
+        for (auto& data : mappingData)
+        {
+            if (data.key.isPressed())
+            {
+                pressed = true;
+                break;
+            }
+        }
+
+        return pressed;
+    }
+
     InputContext::InputContext(InputContext&& other) noexcept
     {
         m_mappings = std::move(other.m_mappings);

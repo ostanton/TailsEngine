@@ -16,42 +16,30 @@ namespace tails
 
     void InputSubsystem::tick(float deltaTime)
     {
-        // tick contexts
-        for (auto& value : std::ranges::views::values(m_contexts))
+        // loop contexts
+        for (auto& context : std::ranges::views::values(m_contexts))
         {
             // loop every action + data in context
-            for (auto& mapping : std::ranges::views::values(value.getMappings()))
+            for (auto& actionMapping : std::ranges::views::values(context.getMappings()))
             {
-                bool keyPressed {false};
-
-                // loop the data, seeing if the key associated with it is pressed via its modifiers
-                for (const auto& data : mapping.mappingData)
+                if (actionMapping.actionActive())
                 {
-                    if (keyPressed = data.key.isPressed(); keyPressed)
+                    actionMapping.inputAction.currentValue = true;
+
+                    if (actionMapping.inputAction.currentValue != actionMapping.inputAction.lastValue)
+                        actionMapping.inputAction.execute(ActionTrigger::Started, true);
+
+                    actionMapping.inputAction.execute(ActionTrigger::Triggered, true);
+                }
+                else
+                {
+                    if (actionMapping.inputAction.currentValue != actionMapping.inputAction.lastValue)
                     {
-                        mapping.inputAction.currentValue = true;
-                        break;
+                        actionMapping.inputAction.execute(ActionTrigger::Completed, false);
                     }
                 }
 
-                if (keyPressed)
-                {
-                    mapping.inputAction.execute(ActionTrigger::Triggered);
-                }
-
-                if (keyPressed != mapping.inputAction.lastValue.getValue<bool>())
-                {
-                    if (mapping.inputAction.currentValue.getValue<bool>())
-                    {
-                        mapping.inputAction.execute(ActionTrigger::Completed);
-                        mapping.inputAction.lastValue = mapping.inputAction.currentValue;
-                    }
-                    else
-                    {
-                        mapping.inputAction.execute(ActionTrigger::Started);
-                        mapping.inputAction.lastValue = mapping.inputAction.currentValue;
-                    }
-                }
+                //actionMapping.inputAction.lastValue = actionMapping.inputAction.currentValue;
             }
         }
     }

@@ -17,6 +17,16 @@ namespace tails
         return result;
     }
 
+    bool Entity::isCollidingWith(Entity* entity)
+    {
+        return getGlobalBounds().intersects(entity->getGlobalBounds());
+    }
+
+    sf::FloatRect Entity::getGlobalBounds()
+    {
+        return {0.f, 0.f, 0.f, 0.f};
+    }
+
     void Entity::setEntityDefaults(Entity* entity, const nlohmann::json& json)
     {
         if (!entity) return;
