@@ -57,6 +57,26 @@ namespace tails
             return *this;
         }
 
+        MultiEvent& operator+(const MultiEvent& other)
+        {
+            for (auto& del : other.m_delegates)
+            {
+                m_delegates.emplace_back(del->clone());
+            }
+
+            return *this;
+        }
+
+        MultiEvent& operator+(MultiEvent&& other)
+        {
+            for (auto& del : other.m_delegates)
+            {
+                m_delegates.emplace_back(std::move(del));
+            }
+
+            return *this;
+        }
+
         MultiEvent& operator-(Delegate<Args...>* del)
         {
             if (auto it = std::find_if(m_delegates.begin(), m_delegates.end(),

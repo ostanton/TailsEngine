@@ -2,7 +2,6 @@
 #define TAILS_ASSETINFO_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Assets/Resource.hpp>
 
 #include <nlohmann/json_fwd.hpp>
 
@@ -12,6 +11,7 @@
 namespace tails
 {
     struct AssetMetadata;
+    class Resource;
 
     // a non-copyable, but moveable, class for holding resources and their metadata
     // could possibly have vector<Handle> for any asset dependencies
@@ -53,7 +53,7 @@ namespace tails
 
         ~AssetInfo();
 
-        bool isLoaded() {return m_resource != nullptr;}
+        [[nodiscard]] bool isLoaded() const {return m_resource != nullptr;}
 
         // do not return ref, resource could be null. See SFML docs, they return ptr with getters and want const refs for setters.
         template<typename T>
@@ -70,11 +70,19 @@ namespace tails
             return static_cast<T*>(m_resource.get());
         }
 
-        Resource* getBaseResource() {return m_resource.get();}
+        template<typename T>
+        [[nodiscard]] T* getResource() const
+        {
+            if (!m_resource) return nullptr;
 
-        ResourceType getResourceType() {return m_resourceType;}
-        AssetType getAssetType() {return m_assetType;}
-        const AssetMetadata& getMetadata();
+            return static_cast<T*>(m_resource.get());
+        }
+
+        [[nodiscard]] Resource* getBaseResource() const {return m_resource.get();}
+
+        [[nodiscard]] ResourceType getResourceType() const {return m_resourceType;}
+        [[nodiscard]] AssetType getAssetType() const {return m_assetType;}
+        [[nodiscard]] const AssetMetadata& getMetadata() const;
 
         void setData(ResourceType resourceType, AssetType assetType, std::string path);
 

@@ -16,8 +16,8 @@ namespace tails
         StackBoxSlot(PanelWidget* parent, std::unique_ptr<Widget> content);
 
         Margin padding;
-        HorizontalAlignment horizontalAlignment;
-        VerticalAlignment verticalAlignment;
+        HorizontalAlignment horizontalAlignment {HorizontalAlignment::Fill};
+        VerticalAlignment verticalAlignment {VerticalAlignment::Fill};
 
         StackBox* getParentStackBox();
 

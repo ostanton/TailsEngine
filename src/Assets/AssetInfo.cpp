@@ -41,7 +41,7 @@ namespace tails
 
     AssetInfo::~AssetInfo() = default;
 
-    const AssetMetadata& AssetInfo::getMetadata()
+    const AssetMetadata& AssetInfo::getMetadata() const
     {
         // do we need an if first? no, right???
         // it is illegal to have an invalid metadata member.

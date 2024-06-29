@@ -11,6 +11,7 @@ namespace tails
     {
         virtual ~AssetMetadata() = default;
 
+        // path to actual resource file (TODO - local?)
         std::string path;
     };
 } // tails

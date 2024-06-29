@@ -26,6 +26,7 @@ namespace tails
         void tick(float deltaTime) override {}
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
+        // could have some sort of linkage where assets are tied to the lifetime of specific objects?
         std::unordered_map<uint32_t, AssetInfo> m_assets;
         uint32_t m_currentID {0};
     };

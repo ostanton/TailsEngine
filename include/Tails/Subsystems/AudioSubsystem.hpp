@@ -4,32 +4,37 @@
 #include <Tails/Config.hpp>
 #include <Tails/Subsystems/Subsystem.hpp>
 
+#include <vector>
+#include <memory>
+
 namespace tails
 {
+    class Bus;
+
     class TAILS_API AudioSubsystem final : public Subsystem
     {
+    public:
+        AudioSubsystem();
+        ~AudioSubsystem() override;
+
+        template<typename T>
+        size_t createBus()
+        {
+            static_assert(std::is_base_of_v<Bus, T>, "Failed to create bus, it does not derive Bus");
+
+            return addBus(std::make_unique<T>());
+        }
+
+        size_t addBus(std::unique_ptr<Bus> bus);
+        Bus* getBus(size_t index);
+
     protected:
         void init(Engine& engine) override {}
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
     private:
-        // vector of Bus class or something? how will audio be managed?
-        // vector<Bus> m_buses;
-        // int addBus([constructor_params])
-        // {
-        //     m_buses.emplace_back([constructor_params]);
-        // }
-        // Bus* getBus(int bus)
-        // {
-        //     return &m_buses[bus];
-        // }
-        // void playSound(int bus, const sf::SoundBuffer& buffer)
-        // {
-        //     m_buses[bus].setBuffer(buffer);
-        //     m_buses[bus].play();
-        // }
-        // max of 8 buses or something. Buses play one buffer each
+        std::vector<std::unique_ptr<Bus>> m_buses;
     };
 }
 

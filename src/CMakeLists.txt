@@ -4,6 +4,9 @@ add_library(
     TailsEngine
     SHARED
     Assets/AssetInfo.cpp
+    Audio/Bus.cpp
+    Audio/SoundBus.cpp
+    Audio/MusicBus.cpp
     Entities/Entity.cpp
     Entities/RectEntity.cpp
     Entities/SpriteEntity.cpp
