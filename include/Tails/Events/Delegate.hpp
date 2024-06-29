@@ -2,15 +2,10 @@
 #define TAILS_EVENTDELEGATE_HPP
 
 #include <variant>
+#include <memory>
 
 namespace tails
 {
-    enum class DelegateType
-    {
-        Functor,
-        Member
-    };
-
     /*
      * A delegate is a wrapper for any kind of function. It has
      * specialised children for member functions, etc. and acts
@@ -20,51 +15,28 @@ namespace tails
     template<typename... Args>
     struct Delegate
     {
+        Delegate() = default;
+        Delegate(const Delegate&) = default;
+        Delegate(Delegate&&) = default;
+        Delegate& operator=(const Delegate&) = default;
+        Delegate& operator=(Delegate&&) = default;
+        virtual ~Delegate() = default;
+
+        void operator()(Args... args) {execute(args...);}
+
+        /**
+         * Creates a clone of this delegate
+         * @return Unique pointer to new delegate memory
+         */
+        virtual std::unique_ptr<Delegate> clone() const = 0;
+
+        /**
+         * Resets the state of this delegate
+         */
+        virtual void reset() = 0;
+
+    protected:
         virtual void execute(Args...) = 0;
-        // to avoid slicing, define a clone method
-        // TODO - is this necessary??
-        virtual Delegate<Args...>* clone() const = 0;
-
-        void operator()(Args... args)
-        {
-            execute(args...);
-        }
-    };
-
-    // specialised delegate that holds a free-floating function or functor
-    template<typename... Args>
-    struct FunctorDelegate : Delegate<Args...>
-    {
-        FunctorDelegate() = default;
-
-        explicit FunctorDelegate(void(*inFunctor)(Args...))
-            : functor(inFunctor) {}
-
-        void execute(Args... args) override
-        {
-            (*functor)(args...);
-        }
-
-        FunctorDelegate<Args...>* clone() const override
-        {
-            return new FunctorDelegate<Args...>(functor);
-        }
-
-        FunctorDelegate<Args...>& operator=(const FunctorDelegate<Args...>& other)
-        {
-            if (other != *this)
-                functor = other.functor;
-
-            return *this;
-        }
-
-        FunctorDelegate<Args...>& operator=(void(*other)(Args...))
-        {
-            functor = other;
-            return *this;
-        }
-
-        void(*functor)(Args...);
     };
 
     // specialised delegate that holds class methods along with their class context as an object
@@ -72,39 +44,79 @@ namespace tails
     struct MemberDelegate : Delegate<Args...>
     {
         MemberDelegate() = default;
-
-        MemberDelegate(C* inObject, void(C::*inFunction)(Args...))
-            : object(inObject), function(inFunction) {}
-
-        void execute(Args... args) override
+        MemberDelegate(const MemberDelegate& other)
+            : m_object(other.m_object), m_function(other.m_function) {}
+        MemberDelegate(MemberDelegate&& other) noexcept
+            : m_object(other.m_object), m_function(other.m_function)
         {
-            (object->*function)(args...);
+            other.reset();
         }
+        MemberDelegate(C* object, void(C::*function)(Args...))
+            : m_object(object), m_function(function) {}
 
-        MemberDelegate<C, Args...>* clone() const override
-        {
-            return new MemberDelegate<C, Args...>(object, function);
-        }
-
-        MemberDelegate<C, Args...>& operator=(const MemberDelegate<C, Args...>& other)
+        MemberDelegate& operator=(const MemberDelegate& other)
         {
             if (other != *this)
             {
-                object = other.object;
-                function = other.function;
+                m_object = other.m_object;
+                m_function = other.m_function;
             }
-
             return *this;
         }
 
-        void set(C* inObj, void(C::*inFunc)(Args...))
+        MemberDelegate& operator=(MemberDelegate&& other) noexcept
         {
-            object = inObj;
-            function = inFunc;
+            if (other != *this)
+            {
+                m_object = other.m_object;
+                m_function = other.m_function;
+                other.reset();
+            }
+            return *this;
         }
 
-        C* object {nullptr};
-        void(C::*function)(Args...) {nullptr};
+        MemberDelegate& operator=(void(C::*function)(Args...))
+        {
+            m_function = function;
+            return *this;
+        }
+
+        bool operator==(const MemberDelegate& other)
+        {
+            return m_object == other.m_object && m_function == other.m_function;
+        }
+
+        bool operator!=(const MemberDelegate& other)
+        {
+            // CLion says this can be simplified, but then simplifies it to *this != other, which would make an
+            // infinite loop, no? funny things
+            return !(*this == other);
+        }
+
+        ~MemberDelegate() override = default;
+
+        std::unique_ptr<Delegate<Args...>> clone() const override
+        {
+            return std::make_unique<MemberDelegate>(m_object, m_function);
+        }
+
+        void reset() override
+        {
+            m_object = nullptr;
+            m_function = nullptr;
+        }
+
+        C* getObject() const {return m_object;}
+
+    private:
+        void execute(Args... args) override
+        {
+            if (m_object && m_function)
+                (m_object->*m_function)(args...);
+        }
+
+        C* m_object {nullptr};
+        void(C::*m_function)(Args...) {nullptr};
     };
 }
 

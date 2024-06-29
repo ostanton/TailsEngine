@@ -11,19 +11,17 @@ namespace tails
     class Event final
     {
     public:
-        // TODO -  fix these so we can only move events and not copy them
         Event() = default;
+        explicit Event(std::unique_ptr<Delegate<Args...>> del)
+            : m_delegate(std::move(del)) {}
         Event(const Event& other)
-            : m_delegate(std::make_unique<Delegate<Args...>>(*other.m_delegate))
-        {}
-
+            : m_delegate(other.m_delegate->clone()) {}
         Event(Event&& other) noexcept
-            : m_delegate(std::move(other.m_delegate))
-        {}
+            : m_delegate(std::move(other.m_delegate)) {}
 
         Event& operator=(const Event& other)
         {
-            m_delegate = std::make_unique<Delegate<Args...>>(*other.m_delegate);
+            m_delegate.reset(other.m_delegate->clone());
             return *this;
         }
 
@@ -33,27 +31,40 @@ namespace tails
             return *this;
         }
 
+        Event& operator=(std::unique_ptr<Delegate<Args...>> del)
+        {
+            m_delegate = std::move(del);
+            return *this;
+        }
+
         ~Event() = default;
 
-        // binds create the delegate wrapper. users do not interface with the delegate class when using events
+        /**
+         * Binds a function to this event
+         * @tparam C Object class
+         * @param object Object context
+         * @param func Class method
+         */
         template<typename C>
         void bind(C* object, void(C::*function)(Args...))
         {
             m_delegate = std::make_unique<MemberDelegate<C, Args...>>(object, function);
         }
 
-        void bind(void(*function)(Args...))
-        {
-            m_delegate = std::make_unique<FunctorDelegate<Args...>>(function);
-        }
-
+        /**
+         * Removes any bound function
+         */
         void unbind() {m_delegate.reset();}
 
+        /**
+         * Executes the bound function
+         * @param args Function arguments
+         */
         void execute(Args... args)
         {
             if (!m_delegate) return;
 
-            m_delegate->execute(args...);
+            (*m_delegate)(execute(args...));
         }
 
     private:
