@@ -55,8 +55,17 @@ namespace tails
     // const static list of keys and probably controller inputs
     struct TAILS_API Keys
     {
+        constexpr static Key Up {"Up", sf::Keyboard::Up};
+        constexpr static Key Down {"Down", sf::Keyboard::Down};
+        constexpr static Key Left {"Left", sf::Keyboard::Left};
+        constexpr static Key Right {"Right", sf::Keyboard::Right};
         constexpr static Key Space {"Space", sf::Keyboard::Space};
         constexpr static Key A {"A", sf::Keyboard::A};
+        constexpr static Key B {"B", sf::Keyboard::B};
+        constexpr static Key C {"C", sf::Keyboard::C};
+        constexpr static Key D {"D", sf::Keyboard::D};
+        constexpr static Key S {"S", sf::Keyboard::S};
+        constexpr static Key W {"W", sf::Keyboard::W};
     };
 }
 

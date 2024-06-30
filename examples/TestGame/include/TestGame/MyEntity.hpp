@@ -7,16 +7,32 @@ using namespace tails;
 
 class MyEntity : public RectEntity
 {
+    enum class MoveDirection
+    {
+        None,
+        Up,
+        Down,
+        Left,
+        Right
+    };
+
 public:
     MyEntity();
 
 private:
     void spawn() override;
+    void tick(float deltaTime) override;
 
-    void handleMoveRight();
+    void handleStartMoveUp();
+    void handleStartMoveDown();
+    void handleStartMoveLeft();
+    void handleStartMoveRight();
+    void handleStopMove();
 
-    float speed {50.f};
+    float tileSize {32.f};
+    float speed {100.f};
+    MoveDirection direction {MoveDirection::None};
+    float tileOffset {0.f};
 };
-
 
 #endif //TESTGAME_MYENTITY_HPP

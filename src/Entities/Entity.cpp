@@ -17,7 +17,7 @@ namespace tails
         return result;
     }
 
-    bool Entity::isCollidingWith(Entity* entity)
+    bool Entity::isCollidingWith(Entity* entity) const
     {
         return getGlobalBounds().intersects(entity->getGlobalBounds());
     }

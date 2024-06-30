@@ -34,7 +34,7 @@ namespace tails
          * @param entity The entity we are checking for collision with
          * @return Whether we are colliding
          */
-        virtual bool isCollidingWith(Entity* entity);
+        virtual bool isCollidingWith(Entity* entity) const;
 
         bool isColliding() {return m_currentCollidingEntity;}
 
