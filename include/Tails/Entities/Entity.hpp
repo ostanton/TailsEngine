@@ -38,7 +38,7 @@ namespace tails
 
         bool isColliding() {return m_currentCollidingEntity;}
 
-        virtual sf::FloatRect getGlobalBounds();
+        virtual sf::FloatRect getGlobalBounds() const;
 
     protected:
         virtual void spawn() {}

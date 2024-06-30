@@ -22,6 +22,8 @@ namespace tails
 
         sf::RectangleShape& getRect() {return m_rect;}
 
+        sf::FloatRect getGlobalBounds() const override;
+
     protected:
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

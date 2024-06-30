@@ -22,7 +22,7 @@ namespace tails
         return getGlobalBounds().intersects(entity->getGlobalBounds());
     }
 
-    sf::FloatRect Entity::getGlobalBounds()
+    sf::FloatRect Entity::getGlobalBounds() const
     {
         return {0.f, 0.f, 0.f, 0.f};
     }

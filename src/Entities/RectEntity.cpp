@@ -17,4 +17,9 @@ namespace tails
         states.transform *= getTransform();
         target.draw(m_rect, states);
     }
+
+    sf::FloatRect RectEntity::getGlobalBounds() const
+    {
+        return m_rect.getGlobalBounds();
+    }
 }
