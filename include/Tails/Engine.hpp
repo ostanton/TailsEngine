@@ -91,7 +91,8 @@ namespace tails
         template<typename T>
         T* getSubsystem(const std::string& name)
         {
-            static_assert(std::is_base_of_v<Subsystem, T>, "Failed to get typed engine subsystem. Template parameter does not derive Subsystem.");
+            static_assert(std::is_base_of_v<Subsystem, T>,
+                    "Failed to get typed engine subsystem. Template parameter does not derive Subsystem.");
             return static_cast<T*>(getSubsystem(name));
         }
 
@@ -115,7 +116,8 @@ namespace tails
         template<typename T>
         T* createSubsystem(const std::string& name)
         {
-            static_assert(std::is_base_of_v<Subsystem, T>, "Failed to create engine subsystem. It does not derive Subsystem.");
+            static_assert(std::is_base_of_v<Subsystem, T>,
+                    "Failed to create engine subsystem. It does not derive Subsystem.");
             return static_cast<T*>(addSubsystem(name, std::make_unique<T>()));
         }
 

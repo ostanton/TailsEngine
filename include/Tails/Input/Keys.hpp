@@ -53,8 +53,10 @@ namespace tails
     };
 
     // const static list of keys and probably controller inputs
+    // TODO - replace with map??? map<string, Key> - string/key is the name, Key/value is the key itself
     struct TAILS_API Keys
     {
+        constexpr static Key Unknown {"Unknown", sf::Keyboard::Unknown};
         constexpr static Key Up {"Up", sf::Keyboard::Up};
         constexpr static Key Down {"Down", sf::Keyboard::Down};
         constexpr static Key Left {"Left", sf::Keyboard::Left};
@@ -66,6 +68,8 @@ namespace tails
         constexpr static Key D {"D", sf::Keyboard::D};
         constexpr static Key S {"S", sf::Keyboard::S};
         constexpr static Key W {"W", sf::Keyboard::W};
+
+        static const Key& getKeyFromString(const std::string& string);
     };
 }
 
