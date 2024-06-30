@@ -154,54 +154,69 @@ namespace tails
             return;
         }
 
-        auto pathsSect = engineIni.GetSection("paths");
-        if (!pathsSect)
+        if (auto pathsSect = engineIni.FindSection("paths"); pathsSect)
+        {
+            // add trailing forward-slash
+            m_paths.data = pathsSect->GetValue("data").AsString() + "/";
+            m_paths.textures = pathsSect->GetValue("textures").AsString() + "/";
+            m_paths.sounds = pathsSect->GetValue("sounds").AsString() + "/";
+            m_paths.fonts = pathsSect->GetValue("fonts").AsString() + "/";
+            m_paths.levels = pathsSect->GetValue("levels").AsString() + "/";
+            m_paths.input = pathsSect->GetValue("input").AsString() + "/";
+            m_paths.saves = pathsSect->GetValue("saves").AsString() + "/";
+
+            m_paths.printPaths();
+        }
+        else
         {
             // fails to find section
             Debug::print("Failed to get paths section");
             Debug::print("Using engine defaults.");
-            return;
         }
 
-        // add trailing forward-slash
-        m_paths.data = pathsSect->GetValue("data").AsString() + "/";
-        m_paths.textures = pathsSect->GetValue("textures").AsString() + "/";
-        m_paths.sounds = pathsSect->GetValue("sounds").AsString() + "/";
-        m_paths.fonts = pathsSect->GetValue("fonts").AsString() + "/";
-        m_paths.levels = pathsSect->GetValue("levels").AsString() + "/";
-        m_paths.input = pathsSect->GetValue("input").AsString() + "/";
-        m_paths.saves = pathsSect->GetValue("saves").AsString() + "/";
+        if (auto renderSect = engineIni.FindSection("render"); renderSect)
+        {
+            m_renderSettings.size.x = static_cast<float>(renderSect->GetValue("resolution").AsArray()[0].AsDouble());
+            m_renderSettings.size.y = static_cast<float>(renderSect->GetValue("resolution").AsArray()[1].AsDouble());
 
-        m_paths.printPaths();
-
-        auto renderSect = engineIni.GetSection("render");
-        if (!renderSect)
+            m_renderSettings.printSettings();
+        }
+        else
         {
             Debug::print("Failed to get render section");
             Debug::print("Using engine defaults.");
-            return;
         }
 
-        m_renderSettings.size.x = static_cast<float>(renderSect->GetValue("resolution").AsArray()[0].AsDouble());
-        m_renderSettings.size.y = static_cast<float>(renderSect->GetValue("resolution").AsArray()[1].AsDouble());
+        if (auto windowSect = engineIni.FindSection("window"); windowSect)
+        {
+            m_windowSettings.title = windowSect->GetValue("title").AsString();
+            m_windowSettings.size.x = windowSect->GetValue("size").AsArray()[0].AsInt();
+            m_windowSettings.size.y = windowSect->GetValue("size").AsArray()[1].AsInt();
+            m_windowSettings.fullscreen = windowSect->GetValue("fullscreen").AsBool();
+            m_windowSettings.vsync = windowSect->GetValue("vsync").AsBool();
+            m_windowSettings.framerateLimit = windowSect->GetValue("framerate limit").AsInt();
 
-        m_renderSettings.printSettings();
-
-        auto windowSect = engineIni.GetSection("window");
-        if (!windowSect)
+            m_windowSettings.printSettings();
+        }
+        else
         {
             Debug::print("Failed to get window section");
             Debug::print("Using engine defaults.");
-            return;
         }
-        m_windowSettings.title = windowSect->GetValue("title").AsString();
-        m_windowSettings.size.x = windowSect->GetValue("size").AsArray()[0].AsInt();
-        m_windowSettings.size.y = windowSect->GetValue("size").AsArray()[1].AsInt();
-        m_windowSettings.fullscreen = windowSect->GetValue("fullscreen").AsBool();
-        m_windowSettings.vsync = windowSect->GetValue("vsync").AsBool();
-        m_windowSettings.framerateLimit = windowSect->GetValue("framerate limit").AsInt();
 
-        m_windowSettings.printSettings();
+        if (auto contextsSection = engineIni.FindSection("contexts"); contextsSection)
+        {
+            for (auto it = contextsSection->ValuesBegin(); it != contextsSection->ValuesEnd(); ++it)
+            {
+                m_defaultFiles.inputContexts[it->first] = it->second.AsString();
+                Debug::print("Loaded " + it->first + " context, with " + it->second.AsString() + " file");
+            }
+        }
+        else
+        {
+            Debug::print("Failed to get contexts section");
+            Debug::print("No input contexts have been loaded.");
+        }
 
         Debug::print("engine.ini loaded!\n");
     }

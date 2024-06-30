@@ -67,6 +67,11 @@ namespace tails
         [[nodiscard]] sf::Uint32 getWindowStyle() const;
     };
 
+    struct TAILS_API DefaultFiles
+    {
+        std::unordered_map<std::string, std::string> inputContexts;
+    };
+
     class TAILS_API Engine : public Object, public Tickable
     {
     public:
@@ -74,6 +79,7 @@ namespace tails
         ~Engine() override;
 
         const Paths& getFilePaths() {return m_paths;}
+        const DefaultFiles& getDefaultFiles() {return m_defaultFiles;}
         const RenderSettings& getRenderSettings() {return m_renderSettings;}
         const WindowSettings& getWindowSettings() {return m_windowSettings;}
 
@@ -141,6 +147,7 @@ namespace tails
         std::unordered_map<std::string, std::unique_ptr<Subsystem>> m_subsystems;
 
         Paths m_paths;
+        DefaultFiles m_defaultFiles;
         RenderSettings m_renderSettings;
         WindowSettings m_windowSettings;
     };
