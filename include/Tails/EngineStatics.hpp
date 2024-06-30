@@ -20,6 +20,12 @@ namespace tails
          */
         static Engine* getEngine(const Object* object);
         static const Paths* getPaths(const Object* object);
+        /**
+         * Gets the length of the last frame from the engine. The input object must have an outer that leads to Engine
+         * @param object Object of which outers will be traversed
+         * @return Delta Time
+         */
+        static float getEngineDeltaTime(const Object* object);
     };
 
 } // tails

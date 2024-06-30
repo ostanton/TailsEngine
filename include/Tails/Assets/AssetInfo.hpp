@@ -84,6 +84,14 @@ namespace tails
         [[nodiscard]] AssetType getAssetType() const {return m_assetType;}
         [[nodiscard]] const AssetMetadata& getMetadata() const;
 
+        template<typename T>
+        [[nodiscard]] const T& getMetadata() const
+        {
+            static_assert(std::is_base_of_v<AssetMetadata, T>,
+                    "Failed to get metadata, desired target type does not derive AssetMetadata");
+            return *dynamic_cast<T*>(m_metadata.get());
+        }
+
         void setData(ResourceType resourceType, AssetType assetType, std::string path);
 
         // loads the asset's resource

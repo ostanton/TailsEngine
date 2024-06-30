@@ -2,9 +2,8 @@
 #define TAILS_INPUTCONTEXT_HPP
 
 #include <Tails/Config.hpp>
+#include <Tails/Tickable.hpp>
 #include <Tails/Input/Action.hpp>
-#include <Tails/Input/Modifier.hpp>
-#include <Tails/Input/Keys.hpp>
 
 #include <unordered_map>
 #include <string>
@@ -12,51 +11,21 @@
 
 namespace tails
 {
-    // structure that "maps" a Key with other data like a vector of modifiers
-    struct TAILS_API MappingData
+    class InputSubsystem;
+
+    class TAILS_API InputContext final : public Tickable
     {
-        explicit MappingData(Key inKey)
-            : key(std::move(inKey)) {}
+        friend InputSubsystem;
 
-        Key key;
-        std::vector<std::unique_ptr<InputModifier>> modifiers;
-
-        // add loading from json, allowing optional properties, etc.
-        [[nodiscard]] InputValue getModifiedValue(float deltaTime) const;
-    };
-
-    /**
-     * Class that acts like a map key-value pair, containing an InputAction and a vector of data mapped to it
-     */
-    struct TAILS_API ActionMapping final
-    {
-        ActionMapping() = default;
-        explicit ActionMapping(InputAction action)
-            : inputAction(std::move(action)) {}
-
-        InputAction inputAction;
-        std::vector<MappingData> mappingData;
-
-        [[nodiscard]] bool actionActive();
-    };
-
-    class TAILS_API InputContext final
-    {
     public:
-        explicit InputContext() = default;
-        InputContext(const InputContext&) = delete;
-        InputContext(InputContext&&) noexcept;
-        InputContext& operator=(const InputContext&) = delete;
-        InputContext& operator=(InputContext&&) noexcept;
-
-        void addAction(const std::string& id, InputAction action);
-        void addActionMapping(const std::string& id, ActionMapping& mapping);
-        [[nodiscard]] ActionMapping& getActionMapping(const std::string& id);
-
-        [[nodiscard]] std::unordered_map<std::string, ActionMapping>& getMappings();
+        void addAction(const std::string& name, const InputAction& action);
+        InputAction& getAction(const std::string& name);
+        void removeAction(const std::string& name);
 
     private:
-        std::unordered_map<std::string, ActionMapping> m_mappings;
+        void tick(float deltaTime) override;
+
+        std::unordered_map<std::string, InputAction> m_mappings;
     };
 }
 

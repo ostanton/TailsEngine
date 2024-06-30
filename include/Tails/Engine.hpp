@@ -96,6 +96,8 @@ namespace tails
         InputSubsystem& getInputSubsystem();
         StateSubsystem& getStateSubsystem();
 
+        float getDeltaTime() const {return m_deltaTime;}
+
     protected:
         virtual void loadIni();
 
@@ -134,6 +136,7 @@ namespace tails
 
         std::unique_ptr<sf::RenderWindow> m_window; // ptr because we want to initialise it after contructor
         float m_lifetime {0.f}; // how long the engine has been alive/ticking/running, etc.
+        float m_deltaTime {0.f}; // length of current frame
 
         std::unordered_map<std::string, std::unique_ptr<Subsystem>> m_subsystems;
 

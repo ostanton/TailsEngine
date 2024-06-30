@@ -2,61 +2,26 @@
 
 namespace tails
 {
-    InputValue MappingData::getModifiedValue(float deltaTime) const
+    void InputContext::addAction(const std::string& name, const InputAction& action)
     {
-        InputValue currentValue;
-        for (auto& modifier : modifiers)
+        m_mappings[name] = action;
+    }
+
+    InputAction& InputContext::getAction(const std::string& name)
+    {
+        return m_mappings[name];
+    }
+
+    void InputContext::removeAction(const std::string& name)
+    {
+        m_mappings.erase(name);
+    }
+
+    void InputContext::tick(float deltaTime)
+    {
+        for (auto& [key, value] : m_mappings)
         {
-            currentValue = modifier->modify(deltaTime, currentValue);
+            value.tick(deltaTime);
         }
-
-        return currentValue;
-    }
-
-    bool ActionMapping::actionActive()
-    {
-        bool pressed {false};
-
-        for (auto& data : mappingData)
-        {
-            if (data.key.isPressed())
-            {
-                pressed = true;
-                break;
-            }
-        }
-
-        return pressed;
-    }
-
-    InputContext::InputContext(InputContext&& other) noexcept
-    {
-        m_mappings = std::move(other.m_mappings);
-    }
-
-    InputContext& InputContext::operator=(InputContext&& other) noexcept
-    {
-        m_mappings = std::move(other.m_mappings);
-        return *this;
-    }
-
-    void InputContext::addAction(const std::string& id, InputAction action)
-    {
-        m_mappings[id] = ActionMapping(std::move(action));
-    }
-
-    void InputContext::addActionMapping(const std::string& id, ActionMapping& mapping)
-    {
-        m_mappings[id] = std::move(mapping);
-    }
-
-    ActionMapping& InputContext::getActionMapping(const std::string& id)
-    {
-        return m_mappings[id];
-    }
-
-    std::unordered_map<std::string, ActionMapping>& InputContext::getMappings()
-    {
-        return m_mappings;
     }
 }

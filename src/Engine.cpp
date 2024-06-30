@@ -80,7 +80,7 @@ namespace tails
             preTick();
 
             sf::Event ev;
-            auto time = clock.restart();
+            m_deltaTime = clock.restart().asSeconds();
 
             while (m_window->pollEvent(ev))
             {
@@ -93,7 +93,7 @@ namespace tails
                 }
             }
 
-            tick(time.asSeconds());
+            tick(m_deltaTime);
             draw();
 
             postTick();

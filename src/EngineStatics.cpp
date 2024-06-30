@@ -12,4 +12,9 @@ namespace tails
     {
         return &getEngine(object)->getFilePaths();
     }
+
+    float EngineStatics::getEngineDeltaTime(const Object* object)
+    {
+        return getEngine(object)->getDeltaTime();
+    }
 } // tails

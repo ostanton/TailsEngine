@@ -41,6 +41,11 @@ namespace tails
             return *this;
         }
 
+        bool operator==(const Key& other) const
+        {
+            return name == other.name && key == other.key;
+        }
+
         [[nodiscard]] bool isPressed() const;
 
         std::string name;

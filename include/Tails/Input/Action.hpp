@@ -2,8 +2,9 @@
 #define TAILS_INPUTACTION_HPP
 
 #include <Tails/Config.hpp>
+#include <Tails/Tickable.hpp>
 #include <Tails/Events/MultiEvent.hpp>
-#include <Tails/Input/Value.hpp>
+#include <Tails/Input/Keys.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -11,6 +12,8 @@
 
 namespace tails
 {
+    class InputContext;
+
     enum class TAILS_API ActionTrigger
     {
         Started,
@@ -18,28 +21,38 @@ namespace tails
         Completed
     };
 
-    struct TAILS_API InputAction final
+    struct TAILS_API InputAction final : public Tickable
     {
-        InputAction() = default;
+        friend InputContext;
 
-        std::string name;
-        std::unordered_map<ActionTrigger, MultiEvent<bool>> funcMap;
-        bool currentValue {false}; // value this frame
-        bool lastValue {false}; // value last frame
+        InputAction() = default;
+        InputAction(const std::vector<Key>& keys, const std::unordered_map<ActionTrigger, MultiEvent<>>& events);
+        InputAction(const Key& key, const std::pair<ActionTrigger, MultiEvent<>>& event);
+        InputAction(const std::vector<Key>& keys, const std::pair<ActionTrigger, MultiEvent<>>& event);
+
+        MultiEvent<>& getEvent(ActionTrigger trigger) {return m_events[trigger];}
+        const std::unordered_map<ActionTrigger, MultiEvent<>>& getEvents() const {return m_events;}
 
         template<typename C>
-        void addFunction(ActionTrigger trigger, C* object, void(C::*function)(bool))
+        void addFunction(ActionTrigger trigger, C* object, void(C::*function)())
         {
-            if (funcMap.contains(trigger))
-                funcMap[trigger].add(object, function);
-
-            MultiEvent<bool> event;
-            event.add(object, function);
-            funcMap[trigger] = MultiEvent<bool>(std::move(event));
+            m_events[trigger].add(object, function);
         }
 
-        void execute(ActionTrigger trigger);
-        void execute(ActionTrigger trigger, bool value);
+        void addKey(const Key& key) {m_keys.push_back(key);}
+        bool containsKey(const Key& key) const;
+        const std::vector<Key>& getKeys() const {return m_keys;}
+
+    private:
+        void tick(float deltaTime) override;
+
+        bool anyKeyPressed();
+        void broadcastTrigger(ActionTrigger trigger);
+
+        std::unordered_map<ActionTrigger, MultiEvent<>> m_events;
+        std::vector<Key> m_keys;
+        bool lastState {false};
+        bool currentState {false};
     };
 }
 

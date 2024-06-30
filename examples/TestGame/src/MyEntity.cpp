@@ -12,17 +12,18 @@ void MyEntity::spawn()
 {
     Entity::spawn();
 
-    tails::InputContext playerContext;
-    tails::InputAction moveRightAction;
-    moveRightAction.addFunction(tails::ActionTrigger::Triggered, this, &MyEntity::handleMoveRight);
-    tails::ActionMapping actionMapping(moveRightAction);
-    actionMapping.mappingData.emplace_back(tails::Keys::Space);
-    playerContext.addActionMapping("move_right", actionMapping);
+    InputContext playerContext;
+    InputAction moveRightAction;
 
-    tails::EngineStatics::getEngine(this)->getInputSubsystem().addContext("player", playerContext);
+    moveRightAction.addKey(Keys::Space);
+    moveRightAction.addFunction(ActionTrigger::Triggered, this, &MyEntity::handleMoveRight);
+
+    playerContext.addAction("move_right", moveRightAction);
+
+    EngineStatics::getEngine(this)->getInputSubsystem().addContext("player", playerContext);
 }
 
-void MyEntity::handleMoveRight(bool value)
+void MyEntity::handleMoveRight()
 {
-
+    move(speed * EngineStatics::getEngineDeltaTime(this), 0.f);
 }

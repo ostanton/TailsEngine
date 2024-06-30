@@ -2,9 +2,10 @@
 #define TESTGAME_MYENTITY_HPP
 
 #include <Tails/Entities/RectEntity.hpp>
-#include <Tails/Input/Value.hpp>
 
-class MyEntity : public tails::RectEntity
+using namespace tails;
+
+class MyEntity : public RectEntity
 {
 public:
     MyEntity();
@@ -12,7 +13,9 @@ public:
 private:
     void spawn() override;
 
-    void handleMoveRight(bool value);
+    void handleMoveRight();
+
+    float speed {50.f};
 };
 
 

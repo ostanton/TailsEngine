@@ -19,28 +19,7 @@ namespace tails
         // loop contexts
         for (auto& context : std::ranges::views::values(m_contexts))
         {
-            // loop every action + data in context
-            for (auto& actionMapping : std::ranges::views::values(context.getMappings()))
-            {
-                if (actionMapping.actionActive())
-                {
-                    actionMapping.inputAction.currentValue = true;
-
-                    if (actionMapping.inputAction.currentValue != actionMapping.inputAction.lastValue)
-                        actionMapping.inputAction.execute(ActionTrigger::Started, true);
-
-                    actionMapping.inputAction.execute(ActionTrigger::Triggered, true);
-                }
-                else
-                {
-                    if (actionMapping.inputAction.currentValue != actionMapping.inputAction.lastValue)
-                    {
-                        actionMapping.inputAction.execute(ActionTrigger::Completed, false);
-                    }
-                }
-
-                //actionMapping.inputAction.lastValue = actionMapping.inputAction.currentValue;
-            }
+            context.tick(deltaTime);
         }
     }
 }
