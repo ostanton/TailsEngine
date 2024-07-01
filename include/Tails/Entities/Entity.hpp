@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
+#include <Tails/Transform.hpp>
 #include <Tails/JSON/JSONReader.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -39,6 +40,9 @@ namespace tails
         bool isColliding() {return m_currentCollidingEntity;}
 
         virtual sf::FloatRect getGlobalBounds() const;
+
+        void setTransform(const Transform& transform);
+        Transform makeTransform() const;
 
     protected:
         virtual void spawn() {}

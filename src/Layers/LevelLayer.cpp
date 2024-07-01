@@ -28,6 +28,13 @@ namespace tails
         return m_entities.back().get();
     }
 
+    Entity* LevelLayer::spawnEntity(std::unique_ptr<Entity> entity, const Transform& transform)
+    {
+        auto result = spawnEntity(std::move(entity));
+        result->setTransform(transform);
+        return result;
+    }
+
     void LevelLayer::loadJson(const std::string& path)
     {
         //std::fstream stream {path};
@@ -40,7 +47,7 @@ namespace tails
     void LevelLayer::init(State& state)
     {
         m_registry = EngineStatics::getEngine(this)->getRegistrySubsystem().getRegistry<EntityRegistry>("entity");
-        TailsAssert(m_registry, "Registry is invalid!");
+        TailsAssert(m_registry, "Entity Registry is invalid in LevelLayer!");
     }
 
     void LevelLayer::preTick()

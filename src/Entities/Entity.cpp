@@ -1,4 +1,5 @@
 #include <Tails/Entities/Entity.hpp>
+#include <Tails/Debug.hpp>
 
 #include <nlohmann/json.hpp>
 
@@ -25,6 +26,19 @@ namespace tails
     sf::FloatRect Entity::getGlobalBounds() const
     {
         return {0.f, 0.f, 0.f, 0.f};
+    }
+
+    void Entity::setTransform(const Transform& transform)
+    {
+        Debug::print(transform.toString());
+        setPosition(transform.position);
+        setRotation(transform.rotation);
+        setScale(transform.scale);
+    }
+
+    Transform Entity::makeTransform() const
+    {
+        return {getPosition(), getRotation(), getScale()};
     }
 
     void Entity::setEntityDefaults(Entity* entity, const nlohmann::json& json)

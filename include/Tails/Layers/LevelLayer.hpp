@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/Layers/Layer.hpp>
 #include <Tails/Debug.hpp>
+#include <Tails/Transform.hpp>
 
 #include <nlohmann/json_fwd.hpp>
 
@@ -15,6 +16,7 @@ namespace tails
 {
     class Entity;
     class EntityRegistry;
+    struct Transform;
 
     class TAILS_API LevelLayer final : public Layer
     {
@@ -27,13 +29,11 @@ namespace tails
          * @return Pointer to spawned entity
          */
         template<typename T>
-        T* spawnEntity() // transform or something as input
+        T* spawnEntity(const Transform& transform = {sf::Vector2f(0.f, 0.f), 0.f})
         {
             static_assert(std::is_base_of_v<Entity, T>, "Failed to spawn entity, template parameter does not derive Entity.");
             Debug::print("Spawning entity...");
-            std::unique_ptr<Entity> resultEntity {std::make_unique<T>()};
-            // could just do an in-place make_unique, but we will probably want to set some properties of entity first!
-            return static_cast<T*>(spawnEntity(std::move(resultEntity)));
+            return static_cast<T*>(spawnEntity(std::make_unique<T>(), transform));
         }
 
         /**
@@ -42,6 +42,7 @@ namespace tails
          * @return Pointer to moved entity
          */
         Entity* spawnEntity(std::unique_ptr<Entity> entity);
+        Entity* spawnEntity(std::unique_ptr<Entity> entity, const Transform& transform);
 
         void loadJson(const std::string& path);
 

@@ -22,10 +22,10 @@ namespace tails
     {
         Animation() = default;
         Animation(std::vector<Frame> inFrames, int initialFrameIndex, float inSpeed)
-            : frames(inFrames), currentFrameIndex(initialFrameIndex), speed(inSpeed) {}
+            : frames(std::move(inFrames)), currentFrameIndex(initialFrameIndex), speed(inSpeed) {}
 
         std::vector<Frame> frames; // the frames to play through
-        int currentFrameIndex; // current frame index
+        int currentFrameIndex {0}; // current frame index
         float speed {1.f}; // multiplier
         bool loop {true};
 
