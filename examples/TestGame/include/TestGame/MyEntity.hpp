@@ -29,6 +29,9 @@ private:
     void handleStartMoveRight();
     void handleStopMove();
 
+    void collisionStart(tails::Entity *other) override;
+    void collisionEnd(tails::Entity *other) override;
+
     float tileSize {32.f};
     float speed {100.f};
     MoveDirection direction {MoveDirection::None};

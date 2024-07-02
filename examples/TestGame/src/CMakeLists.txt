@@ -8,6 +8,7 @@ add_executable(
     MyEntityRegistry.cpp
     MyEntity.cpp
     MyRegistrySubsystem.cpp
+    MyScreen.cpp
 )
 
 target_link_libraries(

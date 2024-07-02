@@ -8,11 +8,14 @@ namespace tails
 {
     void Widget::removeFromParent()
     {
-        getParent()->removeChild(this);
+        if (getParent())
+            getParent()->removeChild(this);
     }
 
     PanelWidget* Widget::getParent() const
     {
+        if (!slot) return nullptr;
+
         return slot->getParent();
     }
 

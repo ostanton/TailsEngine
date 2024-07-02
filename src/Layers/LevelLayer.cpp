@@ -80,6 +80,7 @@ namespace tails
                 if (entity->m_lastCollidingEntity != entity2.get())
                 {
                     entity->collisionStart(entity2.get());
+                    entity->m_lastCollidingEntity = entity2.get();
                 }
             }
             else
@@ -87,10 +88,8 @@ namespace tails
                 if (entity->m_lastCollidingEntity == entity->m_currentCollidingEntity)
                 {
                     entity->collisionEnd(entity2.get());
-                    entity->m_lastCollidingEntity = entity->m_currentCollidingEntity;
+                    entity->m_currentCollidingEntity = nullptr;
                 }
-
-                entity->m_currentCollidingEntity = nullptr;
             }
         }
     }

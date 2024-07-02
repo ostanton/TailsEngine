@@ -13,6 +13,12 @@ namespace tails
     public:
         void setSize(const sf::Vector2f& size) override;
 
+        sf::RectangleShape& getRectangle() {return m_rectangle;}
+
+    protected:
+        void tick(float deltaTime) override {}
+        void draw(sf::RenderTarget &target, sf::RenderStates states) const override {}
+
     private:
         sf::RectangleShape m_rectangle;
     };

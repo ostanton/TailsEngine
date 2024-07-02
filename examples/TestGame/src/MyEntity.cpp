@@ -113,3 +113,17 @@ void MyEntity::handleStopMove()
 {
     //Debug::print("Stopped moving!");
 }
+
+void MyEntity::collisionStart(tails::Entity* other)
+{
+    Entity::collisionStart(other);
+
+    Debug::print("Start collision!");
+}
+
+void MyEntity::collisionEnd(tails::Entity* other)
+{
+    Entity::collisionEnd(other);
+
+    Debug::print("Stop collision!");
+}
