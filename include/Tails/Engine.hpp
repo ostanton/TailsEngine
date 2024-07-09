@@ -105,12 +105,24 @@ namespace tails
 
         float getDeltaTime() const {return m_deltaTime;}
 
+        /**
+         * Since the window is the only thing that can kill the engine besides this method, use this method if
+         * there is no current window.
+         */
+        void killEngine();
+
+        /**
+         * Closes the current window. If you then wish to kill the engine, use killEngine().
+         */
+        void closeWindow();
+
     protected:
         virtual void loadIni();
 
         // subsystems
-        virtual void initCustomSubsystems();
+        virtual void initCustomSubsystems() {}
         void initSubsystems();
+        void postInitSubsystems();
         void deinitSubsystems();
 
         template<typename T>
@@ -122,7 +134,6 @@ namespace tails
         }
 
         Subsystem* addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem);
-        void destroySubsystem(const std::string& name);
 
         /* Default but overridable stuff */
         virtual std::unique_ptr<RegistrySubsystem> setupDefaultRegistrySubsystem();
@@ -142,7 +153,8 @@ namespace tails
          */
         void deinitialise();
 
-        std::unique_ptr<sf::RenderWindow> m_window; // ptr because we want to initialise it after contructor
+        bool m_running {false};
+        std::unique_ptr<sf::RenderWindow> m_window; // ptr because we want to initialise it after constructor
         float m_lifetime {0.f}; // how long the engine has been alive/ticking/running, etc.
         float m_deltaTime {0.f}; // length of current frame
 

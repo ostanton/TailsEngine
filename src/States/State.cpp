@@ -44,11 +44,8 @@ namespace tails
         }
         layer->outer = this;
         layer->pendingCreate = true;
-        Debug::print("Layer is pending create, about to initialise...");
         layer->init(*this);
-        Debug::print("Layer setup!");
         m_layers.push_back(std::move(layer));
-        Debug::print("Layer added!");
         return m_layers.size() - 1;
     }
 
@@ -67,6 +64,7 @@ namespace tails
             return false;
 
         m_layers[index]->pendingDestroy = true;
+        m_layers[index]->removed();
         return true;
     }
 
@@ -80,6 +78,7 @@ namespace tails
         ); it != m_layers.end())
         {
             (*it)->pendingDestroy = true;
+            (*it)->removed();
             return true;
         }
 
@@ -111,7 +110,6 @@ namespace tails
             {
                 layer->pendingCreate = false;
                 layer->added();
-                Debug::print("Layer ready for tick.");
             }
 
             layer->preTick();
@@ -150,10 +148,7 @@ namespace tails
             m_layers[i]->postTick();
 
             if (m_layers[i]->pendingDestroy)
-            {
-                m_layers[i]->removed();
                 m_layers.erase(m_layers.begin() + static_cast<long long>(i));
-            }
             else
                 i++;
         }

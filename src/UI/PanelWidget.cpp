@@ -110,7 +110,7 @@ namespace tails
 
             if (m_slots[i]->pendingDestroy)
             {
-                m_slots.erase(m_slots.begin() + i);
+                m_slots.erase(m_slots.begin() + static_cast<long long>(i));
             }
             else
                 i++;

@@ -35,6 +35,22 @@ namespace tails
         return result;
     }
 
+    bool LevelLayer::destroyEntity(Entity* entity)
+    {
+        // check if the entity is in the level
+        if (auto it = std::find_if(m_entities.begin(), m_entities.end(),
+            [&](auto& uniqueEntity)
+            {
+                return uniqueEntity.get() == entity;
+            }); it != m_entities.end())
+        {
+            entity->destroy();
+            return true;
+        }
+
+        return false;
+    }
+
     void LevelLayer::loadJson(const std::string& path)
     {
         //std::fstream stream {path};
@@ -123,10 +139,7 @@ namespace tails
             m_entities[i]->postTick();
 
             if (m_entities[i]->pendingDestroy)
-            {
-                m_entities[i]->despawn();
-                m_entities.erase(m_entities.begin() + i);
-            }
+                m_entities.erase(m_entities.begin() + static_cast<long long>(i));
             else
                 i++;
         }

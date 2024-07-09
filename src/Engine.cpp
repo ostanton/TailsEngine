@@ -65,6 +65,8 @@ namespace tails
         Debug::print("Engine subsystems initialised.\n");
         initWindow();
         Debug::print("Window initialised!\n");
+        postInitSubsystems();
+        m_running = true;
         Debug::print("Engine initialised!\n");
     }
 
@@ -73,23 +75,26 @@ namespace tails
         Debug::print("Begin game loop.\n");
         sf::Clock clock;
 
-        // TODO - untie/separate this from the window? have a "isRunning" bool instead and just close the window
-        // after exiting the loop in "initialise()"?
-        while (m_window->isOpen())
+        while (m_running)
         {
             preTick();
 
             sf::Event ev;
             m_deltaTime = clock.restart().asSeconds();
 
-            while (m_window->pollEvent(ev))
+            if (m_window->isOpen())
             {
-                switch (ev.type)
+                while (m_window->pollEvent(ev))
                 {
-                    default:
-                        break;
-                    case sf::Event::Closed:
-                        m_window->close();
+                    switch (ev.type)
+                    {
+                        default:
+                            break;
+                        case sf::Event::Closed:
+                            // kill the engine, this is the expected behaviour of games and general programs.
+                            // you don't want the engine still running in the background with no window!
+                            killEngine();
+                    }
                 }
             }
 
@@ -140,6 +145,16 @@ namespace tails
     StateSubsystem& Engine::getStateSubsystem()
     {
         return *getSubsystem<StateSubsystem>("state");
+    }
+
+    void Engine::killEngine()
+    {
+        m_running = false;
+    }
+
+    void Engine::closeWindow()
+    {
+        m_window->close();
     }
 
     void Engine::loadIni()
@@ -221,10 +236,10 @@ namespace tails
         Debug::print("engine.ini loaded!\n");
     }
 
-    void Engine::initCustomSubsystems() {}
-
     void Engine::initSubsystems()
     {
+        // subsystems should all be initialised here, and only here.
+        // all subsystems must be initialised before the main loop begins
         Debug::print("Initialising engine subsystems:");
         createSubsystem<AssetSubsystem>("asset");
         createSubsystem<AudioSubsystem>("audio");
@@ -235,6 +250,14 @@ namespace tails
         createSubsystem<InputSubsystem>("input");
         createSubsystem<StateSubsystem>("state")->pushState(setupDefaultState());
         // get state subsystem -> setInitialState<MyState>();??
+    }
+
+    void Engine::postInitSubsystems()
+    {
+        for (auto& [key, subsystem] : m_subsystems)
+        {
+            subsystem->postInit();
+        }
     }
 
     void Engine::deinitSubsystems()
@@ -249,9 +272,12 @@ namespace tails
 
         Debug::print("Subsystems deinitialised.\n");
 
+        // this isn't really needed, they're smart pointers!
+        /*
         Debug::print("Destroying subsystems...");
         m_subsystems.clear();
         Debug::print("Subsystems destroyed.\n");
+         */
     }
 
     Subsystem* Engine::addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem)
@@ -260,15 +286,9 @@ namespace tails
         m_subsystems[name] = std::move(subsystem);
         m_subsystems[name]->outer = this;
         m_subsystems[name]->init(*this);
+        m_subsystems[name]->pendingCreate = false;
         Debug::print("  " + name + " subsystem initialised.");
         return m_subsystems[name].get();
-    }
-
-    void Engine::destroySubsystem(const std::string& name)
-    {
-        if (!m_subsystems.contains(name)) return;
-
-        m_subsystems[name]->pendingDestroy = true;
     }
 
     std::unique_ptr<RegistrySubsystem> Engine::setupDefaultRegistrySubsystem()
@@ -301,11 +321,7 @@ namespace tails
         {
             subsystemPair.second->preTick();
 
-            if (subsystemPair.second->pendingCreate)
-            {
-                subsystemPair.second->pendingCreate = false;
-                //subsystemPair.second->init(*this);
-            }
+            // subsystems should not be added during gameplay
         }
     }
 
@@ -315,22 +331,21 @@ namespace tails
 
         for (auto& subsystemPair : m_subsystems)
         {
-            if (!subsystemPair.second->pendingCreate)
-                subsystemPair.second->tick(deltaTime);
+            subsystemPair.second->tick(deltaTime);
         }
     }
 
     void Engine::draw()
     {
+        if (!m_window->isOpen()) return;
+
         m_window->clear();
 
+        // TODO - optimise to only draw subsystems that state they can be drawn??
         for (auto& subsystemPair : m_subsystems)
         {
-            // collate views into one here? window does that be default anyway? hmm?
-            if (!subsystemPair.second->pendingCreate)
-            {
-                m_window->draw(*subsystemPair.second);
-            }
+            // combine sf::Views into one?
+            m_window->draw(*subsystemPair.second);
         }
 
         m_window->display();
@@ -338,24 +353,18 @@ namespace tails
 
     void Engine::postTick()
     {
-        for (auto it {m_subsystems.begin()}; it != m_subsystems.end();)
+        for (auto& [key, subsystem] : m_subsystems)
         {
-            (*it).second->postTick();
-
-            if ((*it).second->pendingDestroy)
-            {
-                Debug::print("  " + (*it).first + " subsystem destroyed.");
-                (*it).second->deinit();
-                m_subsystems.erase(it);
-            }
-            else
-                ++it;
+            subsystem->postTick();
         }
     }
 
     void Engine::deinitialise()
     {
         Debug::print("\nDeinitialising engine...\n");
+        Debug::print("Closing the window...");
+        m_window->close();
+        Debug::print("Window closed!\n");
         deinitSubsystems();
         Debug::print("Engine deinitialised. Exiting...");
     }

@@ -28,6 +28,12 @@ namespace tails
     public:
         void destroy(); // destroys self
 
+        /**
+         * If you only want to add to existing Entity loading behaviour, override setEntityDefaults() instead.
+         * That method is called here anyway. Override this if you want to overwrite all that functionality.
+         * @param json The json object
+         * @return Created entity
+         */
         Entity* read(const nlohmann::json& json) override;
 
         /**
@@ -51,8 +57,13 @@ namespace tails
         void tick(float deltaTime) override {}
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
-        // TODO - derived classes override this and provide their own defaults? Or make a new method of their own?
-        void setEntityDefaults(Entity* entity, const nlohmann::json& json);
+        /**
+         * Sets the default values of this Entity from a json object.
+         * Ideally this should be a chain of parent->child->child, etc. of having their members set.
+         * @param entity Entity's defaults to set
+         * @param json json object to get defaults from
+         */
+        virtual void setEntityDefaults(Entity* entity, const nlohmann::json& json);
 
         /**
          * Called when a collision between this entity and another starts

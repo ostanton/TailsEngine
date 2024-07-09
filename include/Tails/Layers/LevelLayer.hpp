@@ -44,6 +44,8 @@ namespace tails
         Entity* spawnEntity(std::unique_ptr<Entity> entity);
         Entity* spawnEntity(std::unique_ptr<Entity> entity, const Transform& transform);
 
+        bool destroyEntity(Entity* entity);
+
         void loadJson(const std::string& path);
 
     private:
