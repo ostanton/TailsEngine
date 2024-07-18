@@ -10,6 +10,8 @@ namespace tails
     class TAILS_API JSONReader
     {
     public:
+        virtual ~JSONReader() = default;
+        
         /**
          * Create a covariant return object of specified type from json object
          * @return Newly allocated object

@@ -104,33 +104,33 @@ cmake -DBUILD_EXAMPLES=OFF ..
 ```
 At the moment, there is only one example, and it is the most barebones thing ever. Its CMake also does not show how to FetchContent with this library. To do that, go to [Integration](#integration).
 ## Dependencies
-This project uses C++20 features and requires CMake version 3.25.1 or above.
-### Fetched with CMake
-These libraries are automatically downloaded and added and built when running CMake.
+This project uses C++20 features and requires CMake version 3.25.1 or above. All libraries are automatically downloaded and built via [CPM](https://github.com/cpm-cmake/CPM.cmake).
 - [SFML 2.6.1](https://www.sfml-dev.org/)
 - [nlohmann/json](https://github.com/nlohmann/json)
-### Manually included
-These libraries are not downloaded with CMake, but are found in their respective folders in `include/`.
-- [LeksysINI](https://github.com/Lek-sys/LeksysINI)
+- [metayeti/mINI](https://github.com/metayeti/mINI)
 
 ## Integration
 A simple example CMakeLists.txt could be as follows:
 ```cmake
 cmake_minimum_required(VERSION 3.25.1)
-project(Example)
 
-add_executable(Example main.cpp)
+project(TestTailsGame LANGUAGES CXX)
 
-include(FetchContent)
-FetchContent_Declare(
-    TailsEngine
-    GIT_REPOSITORY https://github.com/ostanton/TailsEngine.git
-    GIT_TAG master
+# Download CPM.cmake
+file(
+    DOWNLOAD
+    https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.40.0/CPM.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake
 )
-FetchContent_MakeAvailable(TailsEngine)
+include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
-target_include_directories(Example PRIVATE TailsEngine)
-target_link_libraries(TailsEngine)
+add_executable(TailsGame main.cpp)
+
+# UNTESTED!
+CPMAddPackage("gh:ostanton/TailsEngine")
+
+# UNTESTED!
+target_link_libraries(TailsGame PRIVATE TailsEngine)
 ```
 > I am not a wizard at CMake. I don't think SFML, etc. links properly in external projects. I don't really know how to make them work but it's low on my priority list anyway.
 ## Binary folder
@@ -166,14 +166,19 @@ input = res/data/input
 saves = save
 
 [render]
-resolution = 640, 480
+resolution_x = 640
+resolution_y = 480
 
 [window]
 title = Tails Engine
-size = 640, 480
+size_x = 640
+size_y = 480
 fullscreen = false
 vsync = false
-framerate limit = 0
+framerate_limit = 0
+
+[contexts]
+player = player.json
 ```
 
 Without this file, the engine cannot initialise or really do anything, as it relies on those paths being set, and the render and window sections have valid fields and values (for the window to be initialised).

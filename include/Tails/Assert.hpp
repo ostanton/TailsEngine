@@ -12,7 +12,7 @@
 #define TailsAssert(condition, message)\
    (!(condition)) ?\
       (std::cerr << "Assertion failed: (" << #condition << ")\n"\
-      << "Context: " << __PRETTY_FUNCTION__ << "\n"\
+      << "Context: " << __FUNCTION__ << "\n"\
       << __FILE__\
       << ", line " << __LINE__ << "."\
       << "\n" << "Reason: " << message << "\n", abort(), 0) : 1

@@ -18,8 +18,6 @@ namespace tails
     // TODO - work with asset metadata json files
     struct TAILS_API AssetInfo
     {
-        friend class AssetManager;
-
         enum class ResourceType
         {
             Invalid = -1,

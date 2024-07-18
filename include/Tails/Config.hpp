@@ -25,6 +25,10 @@
 #endif
 */
 
+#if defined(SFML_DEBUG)
+#define TAILS_DEBUG
+#endif
+
 #define TAILS_API
 
 #endif // TAILS_CONFIG_HPP

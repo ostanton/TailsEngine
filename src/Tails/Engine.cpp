@@ -12,7 +12,7 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
 
-#include <LeksysINI/iniparser.hpp>
+#include <mini/ini.h>
 #include <iostream>
 
 namespace tails
@@ -160,8 +160,12 @@ namespace tails
     void Engine::loadIni()
     {
         Debug::print("Loading engine initialisation file.");
-        INI::File engineIni;
-        if (!engineIni.Load(m_engineIniSource))
+        
+        mINI::INIFile engineIniFile(m_engineIniSource); // reference to ini file?
+        mINI::INIStructure engineIni; // structure to hold the data itself
+
+        // read file into structure
+        if (!engineIniFile.read(engineIni))
         {
             // fails
             Debug::print("Failed to load engine initialisation file");
@@ -169,16 +173,33 @@ namespace tails
             return;
         }
 
-        if (auto pathsSect = engineIni.FindSection("paths"); pathsSect)
+        auto stringToBool = [](const std::string& string) -> bool
         {
+            std::string lowercase {string};
+            // transform to lowercase
+            std::ranges::transform(lowercase.begin(), lowercase.end(), lowercase.begin(),
+                [](const unsigned char c)
+                {
+                    return std::tolower(c);
+                });
+            
+            if (string == "true" || string == "1")
+                return true;
+
+            return false;
+        };
+        
+        if (engineIni.has("paths"))
+        {
+            auto& pathsSection = engineIni["paths"];
             // add trailing forward-slash
-            m_paths.data = pathsSect->GetValue("data").AsString() + "/";
-            m_paths.textures = pathsSect->GetValue("textures").AsString() + "/";
-            m_paths.sounds = pathsSect->GetValue("sounds").AsString() + "/";
-            m_paths.fonts = pathsSect->GetValue("fonts").AsString() + "/";
-            m_paths.levels = pathsSect->GetValue("levels").AsString() + "/";
-            m_paths.input = pathsSect->GetValue("input").AsString() + "/";
-            m_paths.saves = pathsSect->GetValue("saves").AsString() + "/";
+            m_paths.data = pathsSection["data"] + "/";
+            m_paths.textures = pathsSection["textures"] + "/";
+            m_paths.sounds = pathsSection["sounds"] + "/";
+            m_paths.fonts = pathsSection["fonts"] + "/";
+            m_paths.levels = pathsSection["levels"] + "/";
+            m_paths.input = pathsSection["input"] + "/";
+            m_paths.saves = pathsSection["saves"] + "/";
 
             m_paths.printPaths();
         }
@@ -189,10 +210,11 @@ namespace tails
             Debug::print("Using engine defaults.");
         }
 
-        if (auto renderSect = engineIni.FindSection("render"); renderSect)
+        if (engineIni.has("render"))
         {
-            m_renderSettings.size.x = static_cast<float>(renderSect->GetValue("resolution").AsArray()[0].AsDouble());
-            m_renderSettings.size.y = static_cast<float>(renderSect->GetValue("resolution").AsArray()[1].AsDouble());
+            auto& renderSection = engineIni["render"];
+            m_renderSettings.size.x = std::stof(renderSection["resolution_x"]);
+            m_renderSettings.size.y = std::stof(renderSection["resolution_y"]);
 
             m_renderSettings.printSettings();
         }
@@ -202,14 +224,15 @@ namespace tails
             Debug::print("Using engine defaults.");
         }
 
-        if (auto windowSect = engineIni.FindSection("window"); windowSect)
+        if (engineIni.has("window"))
         {
-            m_windowSettings.title = windowSect->GetValue("title").AsString();
-            m_windowSettings.size.x = windowSect->GetValue("size").AsArray()[0].AsInt();
-            m_windowSettings.size.y = windowSect->GetValue("size").AsArray()[1].AsInt();
-            m_windowSettings.fullscreen = windowSect->GetValue("fullscreen").AsBool();
-            m_windowSettings.vsync = windowSect->GetValue("vsync").AsBool();
-            m_windowSettings.framerateLimit = windowSect->GetValue("framerate limit").AsInt();
+            auto& windowSection = engineIni["window"];
+            m_windowSettings.title = windowSection["title"];
+            m_windowSettings.size.x = std::stoi(windowSection["size_x"]);
+            m_windowSettings.size.y = std::stoi(windowSection["size_y"]);
+            m_windowSettings.fullscreen = stringToBool(windowSection["fullscreen"]);
+            m_windowSettings.vsync = stringToBool(windowSection["vsync"]);
+            m_windowSettings.framerateLimit = std::stoi(windowSection["framerate_limit"]);
 
             m_windowSettings.printSettings();
         }
@@ -219,12 +242,12 @@ namespace tails
             Debug::print("Using engine defaults.");
         }
 
-        if (auto contextsSection = engineIni.FindSection("contexts"); contextsSection)
+        if (engineIni.has("contexts"))
         {
-            for (auto it = contextsSection->ValuesBegin(); it != contextsSection->ValuesEnd(); ++it)
+            for (auto const& [name, file] : engineIni["contexts"])
             {
-                m_defaultFiles.inputContexts[it->first] = it->second.AsString();
-                Debug::print("Loaded " + it->first + " context, with " + it->second.AsString() + " file");
+                m_defaultFiles.inputContexts[name] = file;
+                Debug::print("Loaded " + name + " context, with " + file + " file");
             }
         }
         else
