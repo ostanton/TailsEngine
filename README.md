@@ -1,22 +1,12 @@
 # Tails Engine
 A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states and layers. Only one state can be "active" at a time (the top one), but each state has any number of layers that can each be individually set to tick, draw, etc. The "GameState" may have a level layer and a screen (UI) layer for the HUD. The "PauseState" may then just have a screen layer, etc.
 
-There are no components in this engine. It has no concept of an ECS. Any entity you create must subclass the Entity class, and be added to your own derived EntityRegistry class to map it to a JSON object name/id.
-
-> Word of note (and caution): This library is primarily tested on a not-so-powerful laptop running Debian and using Makefiles. I run it on Windows 11 occasionally, although chances are if you build via a Visual Studio solution, it might not link properly (I know from experience). It runs fine with Ninja from my experience (with CLion), so just try different things and see what works. I'm not amazingly well-versed in CMake or building in general, so these problems unfortunately either won't get sorted, or will be very far down on my priority list.
-
-> Another note, this is my biggest solo project to date, and I am learning many new things along the way. This is all to say that the code in this library is probably quite sub-par, and the CMakeLists.txt definitely isn't as good as it could be. This is mainly a project just for me, so I have a simple engine I know how to use for 2D games I want to make in the future (since I either suck at searching for them, or there's a lack of proper object-oriented, simple, 2D game engines/frameworks).
-
-> Documentation is being created slowly but surely in [this directory](docs). That explains the engine's systems and
-> inner workings a LOT better than anything here. If anything, this readme is just for ideas and ramblings I have.
-> Don't take any of the information here as fact or even up-to-date!
+> Examples and docs are being separated from this repository into their own, or just elsewhere. Their links will be here when they do end up in that elsewhere.
 
 - [What it has](#what-it-has)
 - [What is needed still](#what-is-needed-still)
 - [How to compile](#how-to-build--compile)
 - [Dependencies](#dependencies)
-    - [Fetched with CMake](#fetched-with-cmake)
-    - [Manually included](#manually-included)
 - [Integration](#integration)
 
 ## What it has
@@ -95,18 +85,11 @@ cd build
 cmake ..
 make
 ```
-### Building examples
-The example(s) will be set to build automatically. To disable this, use `-DBUILD_EXAMPLES=OFF`
 
-For example:
-```
-cmake -DBUILD_EXAMPLES=OFF ..
-```
-At the moment, there is only one example, and it is the most barebones thing ever. Its CMake also does not show how to FetchContent with this library. To do that, go to [Integration](#integration).
 ## Dependencies
 This project uses C++20 features and requires CMake version 3.25.1 or above. All libraries are automatically downloaded and built via [CPM](https://github.com/cpm-cmake/CPM.cmake).
 - [SFML 2.6.1](https://www.sfml-dev.org/)
-  - And thus on [OpenAL](https://openal-soft.org/) (download the binaries [here](https://openal-soft.org/openal-binaries/) )
+  - And thus [OpenAL](https://openal-soft.org/) (download the binaries [here](https://openal-soft.org/openal-binaries/) )
 - [nlohmann/json](https://github.com/nlohmann/json)
 - [metayeti/mINI](https://github.com/metayeti/mINI)
 
@@ -128,11 +111,10 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 add_executable(TailsGame main.cpp)
 
 # Use CPM to add the TailsEngine package
-CPMAddPackage("gh:ostanton/TailsEngine@v0.0.2")
+CPMAddPackage("gh:ostanton/TailsEngine@0.0.2")
 
 target_link_libraries(TailsGame PRIVATE TailsEngine)
 ```
-> I am not a wizard at CMake. I don't think SFML, etc. links properly in external projects. I don't really know how to make them work but it's low on my priority list anyway.
 ## Binary folder
 The game expects an `engine.ini` file next to the executable. This is where paths to textures, sounds, etc. are set, in addition to window settings and render settings. Some of these might move to a separate `user_settings.ini` file in the future. For now though, it's all in the `engine.ini` file.
 The structure by default is as follows:
@@ -180,50 +162,8 @@ framerate_limit = 0
 [contexts]
 player = player.json
 ```
-
+> `[contexts]` is for input action mappings.
 Without this file, the engine cannot initialise or really do anything, as it relies on those paths being set, and the render and window sections have valid fields and values (for the window to be initialised).
-
-## Classes (alphabetical order)
-- Debug
-- Engine
-- Object
-- Tickable
-### Assets
-- Asset Handle
-- Asset Info
-- Resource
-    - Font Resource
-    - Sound Resource
-    - Texture Resource
-### Entities
-- Entity
-    - Rect Entity
-    - Sprite Entity
-### Events
-- Delegate
-    - Method Delegate
-- Event
-- Multi Event
-### Input
-- Input Action
-- Input Context
-- Input Modifier
-- Input Value
-### Layers
-- Layer
-### Registries
-- Registry
-### States
-- State
-### Subsystems
-- Subsystem
-    - Asset Subsystem
-    - Audio Subsystem
-    - Input Subsystem
-    - State Subsystem
-### UI
-- Slot
-- Widget
 
 ## Asset Metadata
 ### Asset types
