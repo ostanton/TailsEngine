@@ -127,10 +127,9 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
 add_executable(TailsGame main.cpp)
 
-# UNTESTED!
-CPMAddPackage("gh:ostanton/TailsEngine")
+# Use CPM to add the TailsEngine package
+CPMAddPackage("gh:ostanton/TailsEngine@v0.0.2")
 
-# UNTESTED!
 target_link_libraries(TailsGame PRIVATE TailsEngine)
 ```
 > I am not a wizard at CMake. I don't think SFML, etc. links properly in external projects. I don't really know how to make them work but it's low on my priority list anyway.
