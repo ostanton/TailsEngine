@@ -106,6 +106,7 @@ At the moment, there is only one example, and it is the most barebones thing eve
 ## Dependencies
 This project uses C++20 features and requires CMake version 3.25.1 or above. All libraries are automatically downloaded and built via [CPM](https://github.com/cpm-cmake/CPM.cmake).
 - [SFML 2.6.1](https://www.sfml-dev.org/)
+  - And thus on [OpenAL](https://openal-soft.org/) (download the binaries [here](https://openal-soft.org/openal-binaries/) )
 - [nlohmann/json](https://github.com/nlohmann/json)
 - [metayeti/mINI](https://github.com/metayeti/mINI)
 

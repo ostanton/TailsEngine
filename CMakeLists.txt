@@ -36,6 +36,7 @@ CPMAddPackage("gh:metayeti/mINI#0.9.15")
 
 message("-- Tails: Finished adding packages")
 
+# Might want mINI to be public too? Would the user want it?
 target_include_directories(
     TailsEngine
     PUBLIC
@@ -46,10 +47,10 @@ target_include_directories(
 
 target_link_libraries(
     TailsEngine
-    PRIVATE
+    PUBLIC
         sfml-graphics
         sfml-audio
         nlohmann_json::nlohmann_json
 )
 
-target_compile_features(TailsEngine PRIVATE cxx_std_20)
+target_compile_features(TailsEngine PUBLIC cxx_std_20)
