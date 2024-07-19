@@ -25,10 +25,19 @@
 #endif
 */
 
-#if defined(SFML_DEBUG)
+#if !defined(NDEBUG)
 #define TAILS_DEBUG
 #endif
 
 #define TAILS_API
+
+// Define our own function macro for whatever the compiler supports (not a fully tested/complete list)
+#ifdef TAILS_MSVC
+#define TAILS_FUNCTION __FUNCSIG__
+#elif TAILS_GNU
+#define TAILS_FUNCTION __PRETTY_FUNCTION__
+#else
+#define TAILS_FUNCTION __FUNCTION__
+#endif
 
 #endif // TAILS_CONFIG_HPP

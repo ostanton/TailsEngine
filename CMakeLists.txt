@@ -36,6 +36,34 @@ CPMAddPackage("gh:metayeti/mINI#0.9.15")
 
 message("-- Tails: Finished adding packages")
 
+# These definitions are subject to change, the engine is very young still
+
+# Compiler definitions (I only use MSVC or GCC, so other compilers won't be well supported)
+# See https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
+# Microsoft Visual C
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_MSVC)
+# GNU Compiler Collection (GCC, etc.)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_GNU)
+# Clang (does not include AppleClang)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_CLANG)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_APPLECLANG)
+endif ()
+
+# Platform definitions
+# See https://stackoverflow.com/questions/9160335/os-specific-instructions-in-cmake-how-to
+# and https://cmake.org/cmake/help/latest/variable/CMAKE_SYSTEM_NAME.html
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_WINDOWS)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_APPLE)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_LINUX)
+endif ()
+
 # Might want mINI to be public too? Would the user want it?
 target_include_directories(
     TailsEngine
