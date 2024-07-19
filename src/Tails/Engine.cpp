@@ -183,7 +183,7 @@ namespace tails
                     return std::tolower(c);
                 });
             
-            if (string == "true" || string == "1")
+            if (lowercase == "true" || string == "1")
                 return true;
 
             return false;
