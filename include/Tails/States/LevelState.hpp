@@ -1,6 +1,7 @@
 #ifndef TAILS_LEVELSTATE_HPP
 #define TAILS_LEVELSTATE_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/States/State.hpp>
 
 #include <vector>
@@ -11,7 +12,7 @@ namespace tails
     class Entity;
     class WorldLayer;
 
-    class LevelState final : public State
+    class TAILS_API LevelState final : public State
     {
         friend WorldLayer;
 

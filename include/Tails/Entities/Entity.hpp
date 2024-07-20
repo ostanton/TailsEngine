@@ -14,13 +14,10 @@
 
 namespace tails
 {
-    class InputSubsystem;
-}
-
-namespace tails
-{
     class LevelState;
     class WorldLayer;
+    class Engine;
+    class InputSubsystem;
 
     class TAILS_API Entity :
         public Object,
@@ -58,6 +55,7 @@ namespace tails
 
         [[nodiscard]] LevelState& getLevel() const;
         [[nodiscard]] WorldLayer& getWorld() const;
+        [[nodiscard]] Engine& getEngine() const;
 
     protected:
         virtual void spawn() {}

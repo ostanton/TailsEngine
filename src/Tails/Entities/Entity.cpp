@@ -1,6 +1,7 @@
 #include <Tails/Entities/Entity.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/States/LevelState.hpp>
+#include <Tails/Engine.hpp>
 
 #include <nlohmann/json.hpp>
 
@@ -74,5 +75,10 @@ namespace tails
     WorldLayer& Entity::getWorld() const
     {
         return getLevel().getWorld();
+    }
+
+    Engine& Entity::getEngine() const
+    {
+        return *getTypedOuter<Engine>();
     }
 }

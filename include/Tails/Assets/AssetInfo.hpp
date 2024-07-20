@@ -12,12 +12,15 @@ namespace tails
 {
     struct AssetMetadata;
     class Resource;
+    class AssetSubsystem;
 
     // a non-copyable, but moveable, class for holding resources and their metadata
     // could possibly have vector<Handle> for any asset dependencies
     // TODO - work with asset metadata json files
     struct TAILS_API AssetInfo
     {
+        friend AssetSubsystem;
+        
         enum class Category
         {
             Invalid = -1,
@@ -38,8 +41,7 @@ namespace tails
             Font
         };
 
-        AssetInfo() = delete;
-        explicit AssetInfo(const std::string& path);
+        AssetInfo();
         // delete copy constructor
         AssetInfo(const AssetInfo&) = delete;
         // move constructor

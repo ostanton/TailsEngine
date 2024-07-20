@@ -14,10 +14,7 @@
 
 namespace tails
 {
-    AssetInfo::AssetInfo(const std::string& path)
-    {
-        loadFromFile(path);
-    }
+    AssetInfo::AssetInfo() = default;
 
     AssetInfo::AssetInfo(AssetInfo&& asset) noexcept
     {

@@ -2,9 +2,10 @@
 
 namespace tails
 {
-    uint32_t AssetSubsystem::createAsset(const std::string& jsonPath)
+    uint32_t AssetSubsystem::createAsset(const std::string& path)
     {
-        m_assets.try_emplace(m_currentID, AssetInfo(jsonPath));
+        m_assets.try_emplace(m_currentID, AssetInfo());
+        m_assets[m_currentID].loadFromFile(path);
         m_currentID++;
         return m_currentID - 1;
     }

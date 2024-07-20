@@ -1,6 +1,7 @@
 #ifndef TAILS_WORLDLAYER_HPP
 #define TAILS_WORLDLAYER_HPP
 
+#include <Tails/Config.hpp>
 #include <Tails/Layers/Layer.hpp>
 
 #include <string>
@@ -13,7 +14,7 @@ namespace tails
     /**
      * Manages levels. Mostly just a level-friendly interface for Layer. Intended to only hold LevelStates.
      */
-    class WorldLayer : public Layer
+    class TAILS_API WorldLayer : public Layer
     {
     public:
         [[nodiscard]] LevelState* getCurrentLevel() const;
