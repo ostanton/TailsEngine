@@ -89,7 +89,7 @@ make
 ## Dependencies
 This project uses C++20 features and requires CMake version 3.25.1 or above. All libraries are automatically downloaded and built via [CPM](https://github.com/cpm-cmake/CPM.cmake).
 - [SFML 2.6.1](https://www.sfml-dev.org/)
-  - And thus [OpenAL](https://openal-soft.org/) (download the binaries [here](https://openal-soft.org/openal-binaries/) )
+  - And thus [OpenAL](https://openal-soft.org/) (download the binaries [here](https://openal-soft.org/openal-binaries/) ). Note that OpenAL is only required in debug. It seems to statically link or something in release builds.
 - [nlohmann/json](https://github.com/nlohmann/json)
 - [metayeti/mINI](https://github.com/metayeti/mINI)
 
@@ -176,7 +176,7 @@ Without this file, the engine cannot initialise or really do anything, as it rel
 
 > Only spritesheets "require" metadata, for the animations. It is optional for everything else, to cut down on file count. Therefore, any function that takes in a path to a .png for example also should be able to take in a path to a metadata .json. Maybe there will be things like `loadSpriteSheet()` which only allows a path to the metadata, etc. But generally both functions is preferrable. The metadata generally would just link to the source asset anyway. If an asset does not have an associated `.json` of the same name, it will be created with sensible defaults, like music always looping, having 1 volume and pitch, etc.
 
-```
+```json
 {
     "type": "spritesheet",
     "source": "playersheet.png",
