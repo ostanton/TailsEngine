@@ -39,7 +39,7 @@ namespace tails
         };
 
         AssetInfo() = delete;
-        explicit AssetInfo(std::string jsonPath);
+        explicit AssetInfo(const std::string& path);
         // delete copy constructor
         AssetInfo(const AssetInfo&) = delete;
         // move constructor
@@ -112,6 +112,7 @@ namespace tails
         [[nodiscard]] static Category stringToAssetCategory(const std::string& string);
 
     private:
+        bool loadFromFile(const std::string& path);
         bool loadJson(const std::string& jsonPath);
         void loadSprite(const std::string& key, nlohmann::json& value);
         void loadSpritesheet(const std::string& key, nlohmann::json& value);
@@ -120,8 +121,8 @@ namespace tails
         void loadSound(const std::string& key, nlohmann::json& value);
         void loadFont(const std::string& key, nlohmann::json& value);
 
-        // set in constructor
-        std::string m_jsonPath;
+        // path to source file (json, raw resource, etc.)
+        std::string m_path;
 
         // set after loading json metadata using m_jsonPath
         Category m_category {Category::Invalid};

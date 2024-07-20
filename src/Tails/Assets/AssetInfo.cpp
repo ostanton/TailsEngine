@@ -14,15 +14,14 @@
 
 namespace tails
 {
-    AssetInfo::AssetInfo(std::string jsonPath)
-            : m_jsonPath(std::move(jsonPath))
+    AssetInfo::AssetInfo(const std::string& path)
     {
-        loadJson(m_jsonPath);
+        loadFromFile(path);
     }
 
     AssetInfo::AssetInfo(AssetInfo&& asset) noexcept
     {
-        m_jsonPath = std::move(asset.m_jsonPath);
+        m_path = std::move(asset.m_path);
         m_category = asset.m_category;
         m_type = asset.m_type;
         m_metadata = std::move(asset.m_metadata);
@@ -31,7 +30,7 @@ namespace tails
 
     AssetInfo& AssetInfo::operator=(AssetInfo&& asset) noexcept
     {
-        m_jsonPath = std::move(asset.m_jsonPath);
+        m_path = std::move(asset.m_path);
         m_category = asset.m_category;
         m_type = asset.m_type;
         m_metadata = std::move(asset.m_metadata);
@@ -51,12 +50,12 @@ namespace tails
         return *m_metadata;
     }
 
-    void AssetInfo::setData(Category category, Type type, std::string jsonPath)
+    void AssetInfo::setData(Category category, Type type, std::string path)
     {
         m_category = category;
         m_type = type;
-        m_jsonPath = std::move(jsonPath);
-        loadJson(m_jsonPath);
+        m_path = std::move(path);
+        loadFromFile(m_path);
     }
 
     bool AssetInfo::load()
@@ -88,7 +87,7 @@ namespace tails
         return m_resource->load(m_metadata->path);
     }
 
-    bool AssetInfo::load(Category category, Type type, const std::string &path)
+    bool AssetInfo::load(Category category, Type type, const std::string& path)
     {
         setData(category, type, path);
         return load();
@@ -173,17 +172,35 @@ namespace tails
         return Category::Invalid;
     }
 
+    bool AssetInfo::loadFromFile(const std::string& path)
+    {
+        // if found path is of json format:
+        return loadJson(path);
+        // if it is just a raw resource (.png, .wav, etc.) then return load() with defaults or something
+        // default path in metadata can be == m_path member here
+        // can also have global defaults for the metadata, so if there is no json or a property is not specified
+        // in json, the global default is used instead. Where will those global defaults be defined? probably
+        // in a struct passed to the asset subsystem via the engine.
+    }
+
     bool AssetInfo::loadJson(const std::string& jsonPath)
     {
         // allocate new metadata memory of correct type based on json object key
         // set its default values
 
-        std::ifstream stream {"./" + jsonPath};
+        std::ifstream stream {jsonPath};
+
+        if (!stream.is_open())
+        {
+            std::cerr << "Failed to find JSON metadata file: " << jsonPath << "\n";
+            return false;
+        }
+        
         nlohmann::json obj {nlohmann::json::parse(stream)};
 
-        if (!obj)
+        if (obj.is_null())
         {
-            std::cout << "Failed to load JSON asset file: " << jsonPath << "\n";
+            std::cout << "Failed to load JSON metadata file: " << jsonPath << "\n";
             return false;
         }
 
@@ -199,34 +216,34 @@ namespace tails
             {
                 m_type = stringToAssetType(value.get<std::string>());
                 TailsAssert((m_type == Type::Invalid), "Invalid asset type!");
-            }
 
-            switch (m_type)
-            {
-            case Type::Sprite:
-                loadSprite(key, value);
-                break;
-            case Type::Spritesheet:
-                loadSpritesheet(key, value);
-                break;
-            case Type::Tilemap:
-                loadTilemap(key, value);
-                break;
-            case Type::Music:
-                loadMusic(key, value);
-                break;
-            case Type::Sound:
-                loadSound(key, value);
-                break;
-            case Type::Font:
-                loadFont(key, value);
-                break;
-            case Type::Invalid:
-                std::cout << "Invalid asset type in: " << jsonPath << "\n";
-                return false;
-            }
+                switch (m_type)
+                {
+                case Type::Sprite:
+                    loadSprite(key, value);
+                    break;
+                case Type::Spritesheet:
+                    loadSpritesheet(key, value);
+                    break;
+                case Type::Tilemap:
+                    loadTilemap(key, value);
+                    break;
+                case Type::Music:
+                    loadMusic(key, value);
+                    break;
+                case Type::Sound:
+                    loadSound(key, value);
+                    break;
+                case Type::Font:
+                    loadFont(key, value);
+                    break;
+                case Type::Invalid:
+                    std::cout << "Invalid asset type in: " << jsonPath << "\n";
+                    return false;
+                }
 
-            TailsAssert(m_metadata, "Metadata is null after being allocated?!");
+                TailsAssert(m_metadata, "Metadata is null after being allocated?!");
+            }
 
             if (key == "source")
                 // TODO - make this be the path local to exec and not local to json file!!!
