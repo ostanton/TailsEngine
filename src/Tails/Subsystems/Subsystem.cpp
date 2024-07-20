@@ -3,7 +3,7 @@
 
 namespace tails
 {
-    Engine& Subsystem::getEngine()
+    Engine& Subsystem::getEngine() const
     {
         return *getTypedOuter<Engine>();
     }

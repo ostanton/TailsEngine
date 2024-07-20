@@ -59,29 +59,38 @@ namespace tails
         // TODO - maybe hide these members and provide clear helper functions like markForDestroy()
     };
 
-    // prefer std::make_unique over this if possible
+    /**
+     * Creates a new object of specified type. It MUST have a valid outer.
+     * @tparam T Object type to create
+     * @param outer The object that "contains" the created object
+     * @return The created object
+     */
     template<typename T>
-    T* newObject(Object* outer)
+    T* newObject(Object& outer)
     {
         static_assert(std::is_base_of_v<Object, T>,
                 "Failed to create object of specified type, it does not derive Object.");
-        TailsAssert(outer == nullptr, "New object must have a valid outer.");
         
         T* resultObj {new T};
-        resultObj->outer = outer;
+        resultObj->outer = &outer;
         resultObj->create();
         return resultObj;
     }
 
+    /**
+     * Creates a new unique_ptr object of specified type. It MUST have a valid outer.
+     * @tparam T Object type to create
+     * @param outer The object that "contains" the created object
+     * @return The created object
+     */
     template<typename T>
-    std::unique_ptr<T> newObjectUnique(Object* outer)
+    std::unique_ptr<T> newObjectUnique(Object& outer)
     {
         static_assert(std::is_base_of_v<Object, T>,
                 "Failed to create object of specified type, it does not derive Object.");
-        TailsAssert(outer == nullptr, "New object must have a valid outer.");
         
         auto resultObj = std::make_unique<T>();
-        resultObj->outer = outer;
+        resultObj->outer = &outer;
         resultObj->create();
         return resultObj;
     }

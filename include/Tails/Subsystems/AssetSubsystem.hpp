@@ -13,10 +13,13 @@ namespace tails
     class TAILS_API AssetSubsystem final : public Subsystem
     {
     public:
-        uint32_t createAsset(const std::string& path);
-        bool isValidID(uint32_t id);
-        AssetInfo& getAsset(uint32_t id);
-        void destroyAsset(uint32_t id);
+        using tempHandle = size_t;
+        
+        tempHandle createAsset(const std::string& path);
+        [[nodiscard]] bool isValidID(tempHandle id) const;
+        [[nodiscard]] const AssetInfo& getAsset(tempHandle id) const;
+        [[nodiscard]] AssetInfo& getAsset(tempHandle id);
+        void destroyAsset(tempHandle id);
 
     private:
         void init(Engine& engine) override {}
@@ -27,8 +30,8 @@ namespace tails
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
         // could have some sort of linkage where assets are tied to the lifetime of specific objects?
-        std::unordered_map<uint32_t, AssetInfo> m_assets;
-        uint32_t m_currentID {0};
+        std::unordered_map<tempHandle, AssetInfo> m_assets;
+        tempHandle m_currentID {0};
     };
 }
 

@@ -18,7 +18,7 @@ namespace tails
         friend Engine;
 
     public:
-        Engine& getEngine();
+        Engine& getEngine() const;
 
     protected:
         /**

@@ -13,10 +13,12 @@ namespace tails
     struct AssetMetadata;
     class Resource;
     class AssetSubsystem;
+    class Texture;
+    class Sound;
+    class Font;
 
     // a non-copyable, but moveable, class for holding resources and their metadata
     // could possibly have vector<Handle> for any asset dependencies
-    // TODO - work with asset metadata json files
     struct TAILS_API AssetInfo
     {
         friend AssetSubsystem;
@@ -85,6 +87,9 @@ namespace tails
         }
 
         [[nodiscard]] Resource* getResource() const {return m_resource.get();}
+        [[nodiscard]] Texture* getTexture() const;
+        [[nodiscard]] Sound* getSound() const;
+        [[nodiscard]] Font* getFont() const;
 
         [[nodiscard]] Category getCategory() const {return m_category;}
         [[nodiscard]] Type getType() const {return m_type;}

@@ -37,6 +37,21 @@ namespace tails
 
     AssetInfo::~AssetInfo() = default;
 
+    Texture* AssetInfo::getTexture() const
+    {
+        return getResource<Texture>();
+    }
+
+    Sound* AssetInfo::getSound() const
+    {
+        return getResource<Sound>();
+    }
+
+    Font* AssetInfo::getFont() const
+    {
+        return getResource<Font>();
+    }
+
     const AssetMetadata& AssetInfo::getMetadata() const
     {
         // do we need an if first? no, right???

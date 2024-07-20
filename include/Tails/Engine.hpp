@@ -72,6 +72,10 @@ namespace tails
         std::unordered_map<std::string, std::string> inputContexts;
     };
 
+    /**
+     * The program's heart. It controls the window, subsystems, etc.
+     * This is the only derivative of Object that is allowed to have no outer.
+     */
     class TAILS_API Engine : public Object, public Tickable
     {
     public:
