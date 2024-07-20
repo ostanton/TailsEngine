@@ -61,7 +61,8 @@ namespace tails
 
         for (auto& context : std::ranges::views::values(m_contexts))
         {
-            context.preTick();
+            // contexts don't preTick or postTick (they do but they don't do anything there)
+            //context.preTick();
 
             if (context.pendingCreate)
                 context.pendingCreate = false;
@@ -82,12 +83,12 @@ namespace tails
     {
         Subsystem::postTick();
 
-        for (auto it = m_contexts.begin(); it != m_contexts.end();)
+        for (auto it = m_contexts.rbegin(); it != m_contexts.rend();)
         {
-            it->second.postTick();
+            //it->second.postTick();
 
             if (it->second.pendingDestroy)
-                m_contexts.erase(it);
+                m_contexts.erase(it->first);
             else
                 ++it;
         }

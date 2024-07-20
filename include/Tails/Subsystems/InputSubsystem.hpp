@@ -5,7 +5,7 @@
 #include <Tails/Subsystems/Subsystem.hpp>
 #include <Tails/Input/Context.hpp>
 
-#include <unordered_map>
+#include <map>
 #include <string>
 
 namespace tails
@@ -25,7 +25,7 @@ namespace tails
         void postTick() override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
-        std::unordered_map<std::string, InputContext> m_contexts; // use unique_ptr instead?
+        std::map<std::string, InputContext> m_contexts; // use unique_ptr instead?
     };
 }
 

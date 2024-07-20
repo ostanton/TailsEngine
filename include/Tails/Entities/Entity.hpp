@@ -14,6 +14,11 @@
 
 namespace tails
 {
+    class InputSubsystem;
+}
+
+namespace tails
+{
     class LevelState;
     class WorldLayer;
 
@@ -57,6 +62,7 @@ namespace tails
     protected:
         virtual void spawn() {}
         virtual void postSpawn() {}
+        virtual void setupInput(InputSubsystem& inputSubsystem) {}
         virtual void despawn() {}
 
         void tick(float deltaTime) override {}

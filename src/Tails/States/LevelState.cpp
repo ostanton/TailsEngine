@@ -4,6 +4,9 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include "Tails/Engine.hpp"
+#include "Tails/Subsystems/LayerSubsystem.hpp"
+
 namespace tails
 {
     Entity* LevelState::spawnEntity(std::unique_ptr<Entity> entity)
@@ -29,6 +32,10 @@ namespace tails
             {
                 entity->pendingCreate = false;
                 entity->postSpawn();
+                // TODO - might want to move this somewhere else?
+                // it is here because contexts are removed on postTick, so adding a context of the same name
+                // as one being removed executes after (preTick) the one being removed (postTick)
+                entity->setupInput(getWorld().getLayerSubsystem().getEngine().getInputSubsystem());
             }
         }
     }
@@ -55,12 +62,12 @@ namespace tails
     {
         Tickable::postTick();
 
-        for (auto it = m_entities.begin(); it != m_entities.end();)
+        for (auto it = m_entities.rbegin(); it != m_entities.rend();)
         {
             it->get()->postTick();
 
             if (it->get()->pendingDestroy)
-                m_entities.erase(it);
+                m_entities.erase(it.base());
             else
                 ++it;
         }
