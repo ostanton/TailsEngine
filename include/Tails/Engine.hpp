@@ -122,7 +122,7 @@ namespace tails
         // subsystems
         void initSubsystems();
         virtual void initCustomSubsystems() {}
-        void postInitSubsystems();
+        virtual void postInitSubsystems();
         void deinitSubsystems();
 
         template<typename T>

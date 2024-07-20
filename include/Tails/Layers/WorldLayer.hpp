@@ -13,7 +13,7 @@ namespace tails
     /**
      * Manages levels. Mostly just a level-friendly interface for Layer. Intended to only hold LevelStates.
      */
-    class WorldLayer final : public Layer
+    class WorldLayer : public Layer
     {
     public:
         [[nodiscard]] LevelState* getCurrentLevel() const;
