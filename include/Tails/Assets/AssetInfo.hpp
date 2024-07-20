@@ -18,7 +18,7 @@ namespace tails
     // TODO - work with asset metadata json files
     struct TAILS_API AssetInfo
     {
-        enum class ResourceType
+        enum class Category
         {
             Invalid = -1,
             Texture = 0,
@@ -27,7 +27,7 @@ namespace tails
             Shader
         };
 
-        enum class AssetType
+        enum class Type
         {
             Invalid = -1,
             Sprite = 0,
@@ -55,8 +55,11 @@ namespace tails
 
         // do not return ref, resource could be null. See SFML docs, they return ptr with getters and want const refs for setters.
         template<typename T>
-        T* getResource(bool loadIfUnavailable = false)
+        [[nodiscard]] T* getResource(bool loadIfUnavailable = false)
         {
+            static_assert(std::is_base_of_v<Resource, T>,
+                "Failed to get resource, desired type does not derive Resource.");
+            
             if (loadIfUnavailable)
             {
                 if (!isLoaded())
@@ -71,15 +74,18 @@ namespace tails
         template<typename T>
         [[nodiscard]] T* getResource() const
         {
+            static_assert(std::is_base_of_v<Resource, T>,
+                "Failed to get resource, desired type does not derive Resource.");
+            
             if (!m_resource) return nullptr;
 
             return static_cast<T*>(m_resource.get());
         }
 
-        [[nodiscard]] Resource* getBaseResource() const {return m_resource.get();}
+        [[nodiscard]] Resource* getResource() const {return m_resource.get();}
 
-        [[nodiscard]] ResourceType getResourceType() const {return m_resourceType;}
-        [[nodiscard]] AssetType getAssetType() const {return m_assetType;}
+        [[nodiscard]] Category getCategory() const {return m_category;}
+        [[nodiscard]] Type getType() const {return m_type;}
         [[nodiscard]] const AssetMetadata& getMetadata() const;
 
         template<typename T>
@@ -90,33 +96,36 @@ namespace tails
             return *dynamic_cast<T*>(m_metadata.get());
         }
 
-        void setData(ResourceType resourceType, AssetType assetType, std::string path);
+        void setData(Category category, Type type, std::string path);
 
         // loads the asset's resource
         bool load();
-        bool load(ResourceType resourceType, AssetType assetType, const std::string& path);
+        bool load(Category category, Type type, const std::string& path);
 
         // unloads the assets' resource
         void unload();
 
-        static std::string assetTypeToString(AssetType type);
-        static AssetType stringToAssetType(const std::string& string);
+        [[nodiscard]] static std::string assetTypeToString(Type type);
+        [[nodiscard]] static Type stringToAssetType(const std::string& string);
 
-        static ResourceType stringToResourceType(const std::string& string);
+        [[nodiscard]] static std::string assetCategoryToString(Category category);
+        [[nodiscard]] static Category stringToAssetCategory(const std::string& string);
 
     private:
         bool loadJson(const std::string& jsonPath);
         void loadSprite(const std::string& key, nlohmann::json& value);
         void loadSpritesheet(const std::string& key, nlohmann::json& value);
         void loadTilemap(const std::string& key, nlohmann::json& value);
+        void loadMusic(const std::string& key, nlohmann::json& value);
         void loadSound(const std::string& key, nlohmann::json& value);
+        void loadFont(const std::string& key, nlohmann::json& value);
 
         // set in constructor
         std::string m_jsonPath;
 
         // set after loading json metadata using m_jsonPath
-        ResourceType m_resourceType {ResourceType::Invalid};
-        AssetType m_assetType {AssetType::Invalid};
+        Category m_category {Category::Invalid};
+        Type m_type {Type::Invalid};
         std::unique_ptr<AssetMetadata> m_metadata;
 
         // can be loaded and unloaded when needed

@@ -23,8 +23,8 @@ namespace tails
     AssetInfo::AssetInfo(AssetInfo&& asset) noexcept
     {
         m_jsonPath = std::move(asset.m_jsonPath);
-        m_resourceType = asset.m_resourceType;
-        m_assetType = asset.m_assetType;
+        m_category = asset.m_category;
+        m_type = asset.m_type;
         m_metadata = std::move(asset.m_metadata);
         m_resource = std::move(asset.m_resource);
     }
@@ -32,8 +32,8 @@ namespace tails
     AssetInfo& AssetInfo::operator=(AssetInfo&& asset) noexcept
     {
         m_jsonPath = std::move(asset.m_jsonPath);
-        m_resourceType = asset.m_resourceType;
-        m_assetType = asset.m_assetType;
+        m_category = asset.m_category;
+        m_type = asset.m_type;
         m_metadata = std::move(asset.m_metadata);
         m_resource = std::move(asset.m_resource);
         return *this;
@@ -51,13 +51,10 @@ namespace tails
         return *m_metadata;
     }
 
-    void AssetInfo::setData(
-            AssetInfo::ResourceType resourceType,
-            AssetInfo::AssetType assetType,
-            std::string jsonPath)
+    void AssetInfo::setData(Category category, Type type, std::string jsonPath)
     {
-        m_resourceType = resourceType;
-        m_assetType = assetType;
+        m_category = category;
+        m_type = type;
         m_jsonPath = std::move(jsonPath);
         loadJson(m_jsonPath);
     }
@@ -68,29 +65,32 @@ namespace tails
         // TODO - maybe load metadata here instead of returning false? or assert?
         if (!m_metadata) return false;
 
-        switch (m_resourceType)
+        switch (m_category)
         {
-            default:
-                return false;
-            case ResourceType::Texture:
-                m_resource = std::make_unique<Texture>();
-                break;
-            case ResourceType::Sound:
-                m_resource = std::make_unique<Sound>();
-                break;
-            case ResourceType::Font:
-                m_resource = std::make_unique<Font>();
-                break;
+        default:
+            std::cout << "Loading this category is not yet supported.\n";
+            return false;
+        case Category::Texture:
+            m_resource = std::make_unique<Texture>();
+            break;
+        case Category::Sound:
+            m_resource = std::make_unique<Sound>();
+            break;
+        case Category::Font:
+            m_resource = std::make_unique<Font>();
+            break;
         }
 
         if (!m_resource) return false;
 
+        // TODO - accept Metadata type instead of string? Then the specific load methods can
+        // cast to specific metadata types and set default values.
         return m_resource->load(m_metadata->path);
     }
 
-    bool AssetInfo::load(AssetInfo::ResourceType resourceType, AssetInfo::AssetType assetType, const std::string &path)
+    bool AssetInfo::load(Category category, Type type, const std::string &path)
     {
-        setData(resourceType, assetType, path);
+        setData(category, type, path);
         return load();
     }
 
@@ -102,58 +102,75 @@ namespace tails
         m_resource.reset();
     }
 
-    std::string AssetInfo::assetTypeToString(AssetType type)
+    std::string AssetInfo::assetTypeToString(Type type)
     {
         switch (type)
         {
-            case AssetType::Invalid:
-            default:
-                return "invalid";
-            case AssetType::Sprite:
-                return "sprite";
-            case AssetType::Spritesheet:
-                return "spritesheet";
-            case AssetType::Tilemap:
-                return "tilemap";
-            case AssetType::Music:
-                return "music";
-            case AssetType::Sound:
-                return "sound";
-            case AssetType::Font:
-                return "font";
+        default:
+            return "invalid";
+        case Type::Sprite:
+            return "sprite";
+        case Type::Spritesheet:
+            return "spritesheet";
+        case Type::Tilemap:
+            return "tilemap";
+        case Type::Music:
+            return "music";
+        case Type::Sound:
+            return "sound";
+        case Type::Font:
+            return "font";
         }
     }
 
-    AssetInfo::AssetType AssetInfo::stringToAssetType(const std::string& string)
+    AssetInfo::Type AssetInfo::stringToAssetType(const std::string& string)
     {
         if (string == "sprite")
-            return AssetType::Sprite;
-        else if (string == "spritesheet")
-            return AssetType::Spritesheet;
-        else if (string == "tilemap")
-            return AssetType::Tilemap;
-        else if (string == "music")
-            return AssetType::Music;
-        else if (string == "sound")
-            return AssetType::Sound;
-        else if (string == "font")
-            return AssetType::Font;
-        else
-            return AssetType::Invalid;
+            return Type::Sprite;
+        if (string == "spritesheet")
+            return Type::Spritesheet;
+        if (string == "tilemap")
+            return Type::Tilemap;
+        if (string == "music")
+            return Type::Music;
+        if (string == "sound")
+            return Type::Sound;
+        if (string == "font")
+            return Type::Font;
+        
+        return Type::Invalid;
     }
 
-    AssetInfo::ResourceType AssetInfo::stringToResourceType(const std::string& string)
+    std::string AssetInfo::assetCategoryToString(Category category)
+    {
+        switch (category)
+        {
+        case Category::Invalid:
+        default:
+            return "invalid";
+        case Category::Texture:
+            return "texture";
+        case Category::Sound:
+            return "sound";
+        case Category::Font:
+            return "font";
+        case Category::Shader:
+            return "shader";
+        }
+    }
+
+    AssetInfo::Category AssetInfo::stringToAssetCategory(const std::string& string)
     {
         if (string == "texture")
-            return ResourceType::Texture;
-        else if (string == "sound")
-            return ResourceType::Sound;
-        else if (string == "font")
-            return ResourceType::Font;
-        else if (string == "shader")
-            return ResourceType::Shader;
-        else
-            return ResourceType::Invalid;
+            return Category::Texture;
+        if (string == "sound")
+            return Category::Sound;
+        if (string == "font")
+            return Category::Font;
+        if (string == "shader")
+            return Category::Shader;
+        
+        return Category::Invalid;
     }
 
     bool AssetInfo::loadJson(const std::string& jsonPath)
@@ -161,41 +178,52 @@ namespace tails
         // allocate new metadata memory of correct type based on json object key
         // set its default values
 
-        std::ifstream stream {jsonPath};
+        std::ifstream stream {"./" + jsonPath};
         nlohmann::json obj {nlohmann::json::parse(stream)};
+
+        if (!obj)
+        {
+            std::cout << "Failed to load JSON asset file: " << jsonPath << "\n";
+            return false;
+        }
 
         for (auto& [key, value] : obj.items())
         {
             if (key == "category")
             {
-                m_resourceType = stringToResourceType(value.get<std::string>());
-                TailsAssert((m_resourceType == ResourceType::Invalid), "Invalid resource type!");
+                m_category = stringToAssetCategory(value.get<std::string>());
+                TailsAssert((m_category == Category::Invalid), "Invalid resource type!");
             }
 
             if (key == "type")
             {
-                m_assetType = stringToAssetType(value.get<std::string>());
-                TailsAssert((m_assetType == AssetType::Invalid), "Invalid asset type!");
+                m_type = stringToAssetType(value.get<std::string>());
+                TailsAssert((m_type == Type::Invalid), "Invalid asset type!");
             }
 
-            switch (m_assetType)
+            switch (m_type)
             {
-                case AssetType::Sprite:
-                    loadSprite(key, value);
-                    break;
-                case AssetType::Spritesheet:
-                    loadSpritesheet(key, value);
-                    break;
-                case AssetType::Tilemap:
-                    loadTilemap(key, value);
-                    break;
-                case AssetType::Sound:
-                case AssetType::Music:
-                    loadSound(key, value);
-                    break;
-                case AssetType::Font:
-                default:
-                    return false;
+            case Type::Sprite:
+                loadSprite(key, value);
+                break;
+            case Type::Spritesheet:
+                loadSpritesheet(key, value);
+                break;
+            case Type::Tilemap:
+                loadTilemap(key, value);
+                break;
+            case Type::Music:
+                loadMusic(key, value);
+                break;
+            case Type::Sound:
+                loadSound(key, value);
+                break;
+            case Type::Font:
+                loadFont(key, value);
+                break;
+            case Type::Invalid:
+                std::cout << "Invalid asset type in: " << jsonPath << "\n";
+                return false;
             }
 
             TailsAssert(m_metadata, "Metadata is null after being allocated?!");
@@ -240,6 +268,11 @@ namespace tails
         }
     }
 
+    void AssetInfo::loadMusic(const std::string& key, nlohmann::json& value)
+    {
+        
+    }
+
     void AssetInfo::loadSound(const std::string& key, nlohmann::json& value)
     {
         m_metadata = std::make_unique<SoundMetadata>();
@@ -253,5 +286,10 @@ namespace tails
 
         if (key == "duration")
             metadataPtr->duration = value.get<float>();
+    }
+
+    void AssetInfo::loadFont(const std::string& key, nlohmann::json& value)
+    {
+        
     }
 }
