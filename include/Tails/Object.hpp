@@ -2,6 +2,7 @@
 #define TAILS_OBJECT_HPP
 
 #include <Tails/Config.hpp>
+#include <Tails/Assert.hpp>
 
 #include <memory>
 
@@ -32,7 +33,8 @@ namespace tails
         template<typename T>
         T* getTypedOuter() const
         {
-            static_assert(std::is_base_of_v<Object, T>, "Failed to get outer of specified type, it does not derive Object.");
+            static_assert(std::is_base_of_v<Object, T>,
+                "Failed to get outer of specified type, it does not derive Object.");
 
             Object* pOuter {outer};
 
@@ -61,7 +63,11 @@ namespace tails
     template<typename T>
     T* newObject(Object* outer)
     {
-        Object* resultObj {new T};
+        static_assert(std::is_base_of_v<Object, T>,
+                "Failed to create object of specified type, it does not derive Object.");
+        TailsAssert(outer == nullptr, "New object must have a valid outer.");
+        
+        T* resultObj {new T};
         resultObj->outer = outer;
         resultObj->create();
         return resultObj;
@@ -70,10 +76,14 @@ namespace tails
     template<typename T>
     std::unique_ptr<T> newObjectUnique(Object* outer)
     {
-        std::unique_ptr<Object> resultObj {std::make_unique<T>()};
+        static_assert(std::is_base_of_v<Object, T>,
+                "Failed to create object of specified type, it does not derive Object.");
+        TailsAssert(outer == nullptr, "New object must have a valid outer.");
+        
+        auto resultObj = std::make_unique<T>();
         resultObj->outer = outer;
         resultObj->create();
-        return std::move(resultObj);
+        return resultObj;
     }
 }
 

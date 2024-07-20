@@ -102,8 +102,8 @@ namespace tails
     {
         switch (type)
         {
-        default:
-            return "invalid";
+        case Type::Invalid:
+            break;
         case Type::Sprite:
             return "sprite";
         case Type::Spritesheet:
@@ -117,6 +117,8 @@ namespace tails
         case Type::Font:
             return "font";
         }
+
+        return "invalid";
     }
 
     AssetInfo::Type AssetInfo::stringToAssetType(const std::string& string)
@@ -142,8 +144,7 @@ namespace tails
         switch (category)
         {
         case Category::Invalid:
-        default:
-            return "invalid";
+            break;
         case Category::Texture:
             return "texture";
         case Category::Sound:
@@ -153,6 +154,8 @@ namespace tails
         case Category::Shader:
             return "shader";
         }
+
+        return "invalid";
     }
 
     AssetInfo::Category AssetInfo::stringToAssetCategory(const std::string& string)
@@ -206,13 +209,13 @@ namespace tails
             if (key == "category")
             {
                 m_category = stringToAssetCategory(value.get<std::string>());
-                TailsAssert((m_category == Category::Invalid), "Invalid resource type!");
+                TailsAssert(m_category == Category::Invalid, "Invalid resource type!");
             }
 
             if (key == "type")
             {
                 m_type = stringToAssetType(value.get<std::string>());
-                TailsAssert((m_type == Type::Invalid), "Invalid asset type!");
+                TailsAssert(m_type == Type::Invalid, "Invalid asset type!");
 
                 switch (m_type)
                 {
