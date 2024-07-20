@@ -37,8 +37,8 @@ namespace tails
 
         // set focus to this widget
         void setFocus();
-        inline MultiEvent<Widget*>& getOnFocusEvent() {return m_onFocus;}
-        inline MultiEvent<Widget*>& getOnUnFocusEvent() {return m_onUnFocus;}
+        inline MultiEvent<Widget*>& getFocusEvent() {return m_onFocus;}
+        inline MultiEvent<Widget*>& getUnFocusEvent() {return m_onUnFocus;}
         // check if this widget is currently focused
         bool isFocused();
 

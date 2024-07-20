@@ -11,7 +11,7 @@ A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states a
 
 ## What it has
 - Clear initialisation/deinitialisation of the engine
-    - Engine subsystems (AssetSubsystem, InputSubsystem, StateSubsystem, etc.)
+    - Engine subsystems (AssetSubsystem, InputSubsystem, LayerSubsystem, etc.)
 - States
     - Level State
 - State Stack

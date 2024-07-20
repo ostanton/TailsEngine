@@ -1,5 +1,6 @@
 #include <Tails/Entities/Entity.hpp>
 #include <Tails/Debug.hpp>
+#include <Tails/States/LevelState.hpp>
 
 #include <nlohmann/json.hpp>
 
@@ -63,5 +64,15 @@ namespace tails
                 setScale(value["x"].get<float>(), value["y"].get<float>());
             }
         }
+    }
+
+    LevelState& Entity::getLevel() const
+    {
+        return *getTypedOuter<LevelState>();
+    }
+
+    WorldLayer& Entity::getWorld() const
+    {
+        return getLevel().getWorld();
     }
 }

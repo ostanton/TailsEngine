@@ -12,8 +12,8 @@ namespace tails
         focusedWidget = widget;
 
         // broadcast the focus and un-focus events
-        lastFocusedWidget->getOnUnFocusEvent().broadcast(lastFocusedWidget);
-        focusedWidget->getOnFocusEvent().broadcast(focusedWidget);
+        lastFocusedWidget->getUnFocusEvent().broadcast(lastFocusedWidget);
+        focusedWidget->getFocusEvent().broadcast(focusedWidget);
 
         // call the virtual focusChanged method for custom implementations
         focusChanged(lastFocusedWidget, focusedWidget);

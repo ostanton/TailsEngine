@@ -9,6 +9,8 @@
 #include <memory>
 #include <string>
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace tails
 {
     class RegistrySubsystem;

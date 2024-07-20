@@ -19,6 +19,10 @@ namespace tails
         Object& operator=(Object&&) = delete; // move assignment
         virtual ~Object() = default;
 
+        /**
+         * Called as soon as this object is created after its outer has been set. For non-context-specific
+         * things in which you need things like the outer, do them here
+         */
         virtual void create() {}
 
         /**

@@ -4,7 +4,8 @@
 #include <Tails/Subsystems/AudioSubsystem.hpp>
 #include <Tails/Subsystems/RegistrySubsystem.hpp>
 #include <Tails/Subsystems/InputSubsystem.hpp>
-#include <Tails/Subsystems/StateSubsystem.hpp>
+#include <Tails/Subsystems/LayerSubsystem.hpp>
+#include <Tails/Layers/Layer.hpp>
 #include <Tails/States/State.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -58,10 +59,10 @@ namespace tails
     {
         Debug::print("Initialising engine...");
         loadIni();
+        initSubsystems();
         Debug::print("Initialising custom subsystems...\n");
         initCustomSubsystems();
         Debug::print("Custom subsystems initialised!\n");
-        initSubsystems();
         Debug::print("Engine subsystems initialised.\n");
         initWindow();
         Debug::print("Window initialised!\n");
@@ -142,9 +143,9 @@ namespace tails
         return *getSubsystem<InputSubsystem>("input");
     }
 
-    StateSubsystem& Engine::getStateSubsystem()
+    LayerSubsystem& Engine::getLayerSubsystem()
     {
-        return *getSubsystem<StateSubsystem>("state");
+        return *getSubsystem<LayerSubsystem>("state");
     }
 
     void Engine::killEngine()
@@ -261,7 +262,7 @@ namespace tails
 
     void Engine::initSubsystems()
     {
-        // subsystems should all be initialised here, and only here.
+        // subsystems should all be initialised here, and only here (except custom subsystems).
         // all subsystems must be initialised before the main loop begins
         Debug::print("Initialising engine subsystems:");
         createSubsystem<AssetSubsystem>("asset");
@@ -271,8 +272,7 @@ namespace tails
         addSubsystem("registry", setupDefaultRegistrySubsystem());
 
         createSubsystem<InputSubsystem>("input");
-        createSubsystem<StateSubsystem>("state")->pushState(setupDefaultState());
-        // get state subsystem -> setInitialState<MyState>();??
+        createSubsystem<LayerSubsystem>("state")->addLayer(setupDefaultLayer());
     }
 
     void Engine::postInitSubsystems()
@@ -319,7 +319,7 @@ namespace tails
         return std::make_unique<RegistrySubsystem>();
     }
 
-    std::unique_ptr<State> Engine::setupDefaultState()
+    std::unique_ptr<Layer> Engine::setupDefaultLayer()
     {
         return nullptr;
     }

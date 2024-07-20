@@ -24,8 +24,8 @@ namespace tails
     class AudioSubsystem;
     class RegistrySubsystem;
     class InputSubsystem;
-    class StateSubsystem;
-    class State;
+    class LayerSubsystem;
+    class Layer;
 
     struct TAILS_API Paths
     {
@@ -101,7 +101,7 @@ namespace tails
         AudioSubsystem& getAudioSubsystem();
         RegistrySubsystem& getRegistrySubsystem();
         InputSubsystem& getInputSubsystem();
-        StateSubsystem& getStateSubsystem();
+        LayerSubsystem& getLayerSubsystem();
 
         float getDeltaTime() const {return m_deltaTime;}
 
@@ -120,8 +120,8 @@ namespace tails
         virtual void loadIni();
 
         // subsystems
-        virtual void initCustomSubsystems() {}
         void initSubsystems();
+        virtual void initCustomSubsystems() {}
         void postInitSubsystems();
         void deinitSubsystems();
 
@@ -137,7 +137,7 @@ namespace tails
 
         /* Default but overridable stuff */
         virtual std::unique_ptr<RegistrySubsystem> setupDefaultRegistrySubsystem();
-        virtual std::unique_ptr<State> setupDefaultState();
+        virtual std::unique_ptr<Layer> setupDefaultLayer();
 
         std::string m_engineIniSource {"engine.ini"};
 

@@ -14,7 +14,8 @@
 
 namespace tails
 {
-    class LevelLayer;
+    class LevelState;
+    class WorldLayer;
 
     class TAILS_API Entity :
         public Object,
@@ -23,7 +24,7 @@ namespace tails
         public Tickable,
         public JSONReader
     {
-        friend LevelLayer;
+        friend LevelState;
 
     public:
         void destroy(); // destroys self
@@ -50,8 +51,12 @@ namespace tails
         void setTransform(const Transform& transform);
         Transform makeTransform() const;
 
+        [[nodiscard]] LevelState& getLevel() const;
+        [[nodiscard]] WorldLayer& getWorld() const;
+
     protected:
         virtual void spawn() {}
+        virtual void postSpawn() {}
         virtual void despawn() {}
 
         void tick(float deltaTime) override {}
