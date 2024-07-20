@@ -9,12 +9,14 @@ namespace tails
 {
     void InputSubsystem::addContext(const std::string& name, InputContext&& context)
     {
+        context.pendingCreate = true;
         m_contexts.try_emplace(name, std::move(context));
     }
 
     void InputSubsystem::addContext(const std::string& name, const InputContext& context)
     {
         m_contexts[name] = context;
+        m_contexts[name].pendingCreate = true;
     }
 
     InputContext& InputSubsystem::getContext(const std::string& name)
@@ -24,7 +26,8 @@ namespace tails
 
     void InputSubsystem::removeContext(const std::string& name)
     {
-        m_contexts.erase(name);
+        if (m_contexts.contains(name))
+            m_contexts[name].pendingDestroy = true;
     }
 
     void InputSubsystem::init(Engine& engine)
@@ -52,12 +55,41 @@ namespace tails
         }
     }
 
+    void InputSubsystem::preTick()
+    {
+        Subsystem::preTick();
+
+        for (auto& context : std::ranges::views::values(m_contexts))
+        {
+            context.preTick();
+
+            if (context.pendingCreate)
+                context.pendingCreate = false;
+        }
+    }
+
     void InputSubsystem::tick(float deltaTime)
     {
         // loop contexts
         for (auto& context : std::ranges::views::values(m_contexts))
         {
-            context.tick(deltaTime);
+            if (!context.pendingCreate)
+                context.tick(deltaTime);
+        }
+    }
+
+    void InputSubsystem::postTick()
+    {
+        Subsystem::postTick();
+
+        for (auto it = m_contexts.begin(); it != m_contexts.end();)
+        {
+            it->second.postTick();
+
+            if (it->second.pendingDestroy)
+                m_contexts.erase(it);
+            else
+                ++it;
         }
     }
 }

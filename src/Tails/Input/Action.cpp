@@ -57,7 +57,7 @@ namespace tails
         }
     }
 
-    bool InputAction::anyKeyPressed()
+    bool InputAction::anyKeyPressed() const
     {
         for (auto& key : m_keys)
         {

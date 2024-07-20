@@ -76,34 +76,38 @@ namespace tails
     {
     public:
         Engine();
+        Engine(const Engine&) = delete;
+        Engine(Engine&&) = delete;
+        Engine& operator=(const Engine&) = delete;
+        Engine& operator=(Engine&&) = delete;
         ~Engine() override;
 
-        const Paths& getFilePaths() {return m_paths;}
-        const DefaultFiles& getDefaultFiles() {return m_defaultFiles;}
-        const RenderSettings& getRenderSettings() {return m_renderSettings;}
-        const WindowSettings& getWindowSettings() {return m_windowSettings;}
+        [[nodiscard]] const Paths& getFilePaths() const {return m_paths;}
+        [[nodiscard]] const DefaultFiles& getDefaultFiles() const {return m_defaultFiles;}
+        [[nodiscard]] const RenderSettings& getRenderSettings() const {return m_renderSettings;}
+        [[nodiscard]] const WindowSettings& getWindowSettings() const {return m_windowSettings;}
 
         void initialise();
         void run();
 
-        sf::RenderWindow& getWindow();
+        [[nodiscard]] sf::RenderWindow& getWindow() const;
 
         template<typename T>
-        T* getSubsystem(const std::string& name)
+        [[nodiscard]] T* getSubsystem(const std::string& name) const
         {
             static_assert(std::is_base_of_v<Subsystem, T>,
                     "Failed to get typed engine subsystem. Template parameter does not derive Subsystem.");
             return static_cast<T*>(getSubsystem(name));
         }
 
-        Subsystem* getSubsystem(const std::string& name);
-        AssetSubsystem& getAssetSubsystem();
-        AudioSubsystem& getAudioSubsystem();
-        RegistrySubsystem& getRegistrySubsystem();
-        InputSubsystem& getInputSubsystem();
-        LayerSubsystem& getLayerSubsystem();
+        [[nodiscard]] Subsystem* getSubsystem(const std::string& name) const;
+        [[nodiscard]] AssetSubsystem& getAssetSubsystem() const;
+        [[nodiscard]] AudioSubsystem& getAudioSubsystem() const;
+        [[nodiscard]] RegistrySubsystem& getRegistrySubsystem() const;
+        [[nodiscard]] InputSubsystem& getInputSubsystem() const;
+        [[nodiscard]] LayerSubsystem& getLayerSubsystem() const;
 
-        float getDeltaTime() const {return m_deltaTime;}
+        [[nodiscard]] float getDeltaTime() const {return m_deltaTime;}
 
         /**
          * Since the window is the only thing that can kill the engine besides this method, use this method if
@@ -115,6 +119,8 @@ namespace tails
          * Closes the current window. If you then wish to kill the engine, use killEngine().
          */
         void closeWindow();
+
+        [[nodiscard]] virtual std::string getEngineIniFile() const {return "engine.ini";}
 
     protected:
         virtual void loadIni();
@@ -136,10 +142,8 @@ namespace tails
         Subsystem* addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem);
 
         /* Default but overridable stuff */
-        virtual std::unique_ptr<RegistrySubsystem> setupDefaultRegistrySubsystem();
-        virtual std::unique_ptr<Layer> setupDefaultLayer();
-
-        std::string m_engineIniSource {"engine.ini"};
+        virtual std::unique_ptr<RegistrySubsystem> getDefaultRegistrySubsystem();
+        virtual std::unique_ptr<Layer> getDefaultLayer();
 
     private:
         void initWindow();

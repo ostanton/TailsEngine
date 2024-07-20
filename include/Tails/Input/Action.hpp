@@ -30,8 +30,8 @@ namespace tails
         InputAction(const Key& key, const std::pair<ActionTrigger, MultiEvent<>>& event);
         InputAction(const std::vector<Key>& keys, const std::pair<ActionTrigger, MultiEvent<>>& event);
 
-        MultiEvent<>& getEvent(ActionTrigger trigger) {return m_events[trigger];}
-        const std::unordered_map<ActionTrigger, MultiEvent<>>& getEvents() const {return m_events;}
+        [[nodiscard]] MultiEvent<>& getEvent(ActionTrigger trigger) {return m_events[trigger];}
+        [[nodiscard]] const std::unordered_map<ActionTrigger, MultiEvent<>>& getEvents() const {return m_events;}
 
         template<typename C>
         void addFunction(ActionTrigger trigger, C* object, void(C::*function)())
@@ -40,13 +40,13 @@ namespace tails
         }
 
         void addKey(const Key& key) {m_keys.push_back(key);}
-        bool containsKey(const Key& key) const;
-        const std::vector<Key>& getKeys() const {return m_keys;}
+        [[nodiscard]] bool containsKey(const Key& key) const;
+        [[nodiscard]] const std::vector<Key>& getKeys() const {return m_keys;}
 
     private:
         void tick(float deltaTime) override;
 
-        bool anyKeyPressed();
+        [[nodiscard]] bool anyKeyPressed() const;
         void broadcastTrigger(ActionTrigger trigger);
 
         std::unordered_map<ActionTrigger, MultiEvent<>> m_events;

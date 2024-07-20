@@ -66,6 +66,9 @@ namespace tails
     {
         Tickable::preTick();
 
+        // TODO - don't always set every tick!
+        m_activeState = m_states.size() - 1;
+
         for (auto& state : m_states)
         {
             state->preTick();

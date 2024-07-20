@@ -15,12 +15,14 @@ namespace tails
     public:
         void addContext(const std::string& name, InputContext&& context);
         void addContext(const std::string& name, const InputContext& context);
-        InputContext& getContext(const std::string& name);
+        [[nodiscard]] InputContext& getContext(const std::string& name);
         void removeContext(const std::string& name);
 
     private:
         void init(Engine& engine) override;
+        void preTick() override;
         void tick(float deltaTime) override;
+        void postTick() override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 
         std::unordered_map<std::string, InputContext> m_contexts; // use unique_ptr instead?

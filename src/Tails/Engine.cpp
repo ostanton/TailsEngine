@@ -111,39 +111,39 @@ namespace tails
         deinitialise();
     }
 
-    sf::RenderWindow& Engine::getWindow()
+    sf::RenderWindow& Engine::getWindow() const
     {
         return *m_window;
     }
 
-    Subsystem* Engine::getSubsystem(const std::string& name)
+    Subsystem* Engine::getSubsystem(const std::string& name) const
     {
         if (!m_subsystems.contains(name)) return nullptr;
 
-        return m_subsystems[name].get();
+        return m_subsystems.at(name).get();
     }
 
-    AssetSubsystem& Engine::getAssetSubsystem()
+    AssetSubsystem& Engine::getAssetSubsystem() const
     {
         return *getSubsystem<AssetSubsystem>("asset");
     }
 
-    AudioSubsystem& Engine::getAudioSubsystem()
+    AudioSubsystem& Engine::getAudioSubsystem() const
     {
         return *getSubsystem<AudioSubsystem>("audio");
     }
 
-    RegistrySubsystem& Engine::getRegistrySubsystem()
+    RegistrySubsystem& Engine::getRegistrySubsystem() const
     {
         return *getSubsystem<RegistrySubsystem>("registry");
     }
 
-    InputSubsystem& Engine::getInputSubsystem()
+    InputSubsystem& Engine::getInputSubsystem() const
     {
         return *getSubsystem<InputSubsystem>("input");
     }
 
-    LayerSubsystem& Engine::getLayerSubsystem()
+    LayerSubsystem& Engine::getLayerSubsystem() const
     {
         return *getSubsystem<LayerSubsystem>("state");
     }
@@ -162,7 +162,7 @@ namespace tails
     {
         Debug::print("Loading engine initialisation file.");
         
-        mINI::INIFile engineIniFile(m_engineIniSource); // reference to ini file?
+        mINI::INIFile engineIniFile(getEngineIniFile()); // reference to ini file?
         mINI::INIStructure engineIni; // structure to hold the data itself
 
         // read file into structure
@@ -174,6 +174,7 @@ namespace tails
             return;
         }
 
+        // quick function to convert string to bool
         auto stringToBool = [](const std::string& string) -> bool
         {
             std::string lowercase {string};
@@ -269,10 +270,10 @@ namespace tails
         createSubsystem<AudioSubsystem>("audio");
 
         // create default registry subsystem, or user's custom one if overridden
-        addSubsystem("registry", setupDefaultRegistrySubsystem());
+        addSubsystem("registry", getDefaultRegistrySubsystem());
 
         createSubsystem<InputSubsystem>("input");
-        createSubsystem<LayerSubsystem>("state")->addLayer(setupDefaultLayer());
+        createSubsystem<LayerSubsystem>("state")->addLayer(getDefaultLayer());
     }
 
     void Engine::postInitSubsystems()
@@ -314,12 +315,12 @@ namespace tails
         return m_subsystems[name].get();
     }
 
-    std::unique_ptr<RegistrySubsystem> Engine::setupDefaultRegistrySubsystem()
+    std::unique_ptr<RegistrySubsystem> Engine::getDefaultRegistrySubsystem()
     {
         return std::make_unique<RegistrySubsystem>();
     }
 
-    std::unique_ptr<Layer> Engine::setupDefaultLayer()
+    std::unique_ptr<Layer> Engine::getDefaultLayer()
     {
         return nullptr;
     }
