@@ -26,21 +26,21 @@ namespace tails
         enum class Category
         {
             Invalid = -1,
-            Texture = 0,
-            Sound,
-            Font,
+            Texture = 0,  // defaults to Type::Sprite
+            Sound,        // defaults to Type::Sound
+            Font,         // defaults to Type::Font
             Shader
         };
 
         enum class Type
         {
             Invalid = -1,
-            Sprite = 0,
-            Spritesheet,
-            Tilemap,
-            Music,
-            Sound,
-            Font
+            Sprite = 0,   // Category::Texture
+            Spritesheet,  // Category::Texture
+            Tilemap,      // Category::Texture
+            Music,        // Category::Sound
+            Sound,        // Category::Sound
+            Font          // Category::Font
         };
 
         AssetInfo();
@@ -119,14 +119,26 @@ namespace tails
         [[nodiscard]] static Category stringToAssetCategory(const std::string& string);
 
     private:
+        /* Load from file methods */
+        
         bool loadFromFile(const std::string& path);
         bool loadJson(const std::string& jsonPath);
+
+        /* Load metadata from json methods */
+        
         void loadSprite(const std::string& key, nlohmann::json& value);
         void loadSpritesheet(const std::string& key, nlohmann::json& value);
         void loadTilemap(const std::string& key, nlohmann::json& value);
         void loadMusic(const std::string& key, nlohmann::json& value);
         void loadSound(const std::string& key, nlohmann::json& value);
         void loadFont(const std::string& key, nlohmann::json& value);
+
+        /**
+         * Gets a file's category based on its extension
+         * @param extension File extension
+         * @return File's category
+         */
+        static Category getCategoryFromExtension(const std::string& extension);
 
         // path to source file (json, raw resource, etc.)
         std::string m_path;

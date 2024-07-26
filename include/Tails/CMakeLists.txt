@@ -11,6 +11,7 @@ target_sources(
     Object.hpp
     Tickable.hpp
     Transform.hpp
+    Vector2.hpp
 )
 
 add_subdirectory(Assets)

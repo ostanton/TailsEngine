@@ -189,10 +189,41 @@ namespace tails
 
     bool AssetInfo::loadFromFile(const std::string& path)
     {
+        m_path = path;
+        
+        size_t pos = path.find_last_of('.');
+        std::string fileType {path.substr(pos + 1)};
+        
         // if found path is of json format:
-        return loadJson(path);
-        // if it is just a raw resource (.png, .wav, etc.) then return load() with defaults or something
-        // default path in metadata can be == m_path member here
+        if (fileType == "json")
+            return loadJson(path);
+
+        // find category of resource from its file extension since it is not json metadata
+        m_category = getCategoryFromExtension(fileType);
+        TailsAssert(m_category == Category::Invalid, "Invalid resource category!");
+        
+        switch (m_category)
+        {
+        case Category::Texture:
+            m_type = Type::Sprite;
+            m_metadata = std::make_unique<SpriteMetadata>();
+            break;
+        case Category::Sound:
+            m_type = Type::Sound;
+            m_metadata = std::make_unique<SoundMetadata>();
+            break;
+        case Category::Font:
+            m_type = Type::Font;
+            // TODO - font metadata
+            break;
+        case Category::Shader:
+        case Category::Invalid:
+            break;
+        }
+
+        m_metadata->path = path;
+        return load();
+        
         // can also have global defaults for the metadata, so if there is no json or a property is not specified
         // in json, the global default is used instead. Where will those global defaults be defined? probably
         // in a struct passed to the asset subsystem via the engine.
@@ -224,7 +255,7 @@ namespace tails
             if (key == "category")
             {
                 m_category = stringToAssetCategory(value.get<std::string>());
-                TailsAssert(m_category == Category::Invalid, "Invalid resource type!");
+                TailsAssert(m_category == Category::Invalid, "Invalid resource category!");
             }
 
             if (key == "type")
@@ -261,11 +292,14 @@ namespace tails
             }
 
             if (key == "source")
-                // TODO - make this be the path local to exec and not local to json file!!!
-                m_metadata->path = value.get<std::string>();
+            {
+                // turn the source value into full path instead of path relative to json
+                size_t pos {jsonPath.rfind('/')};
+                m_metadata->path = jsonPath.substr(0, pos) + '/' + value.get<std::string>();
+            }
         }
 
-        return true;
+        return load();
     }
 
     void AssetInfo::loadSprite(const std::string& key, nlohmann::json& value)
@@ -323,5 +357,19 @@ namespace tails
     void AssetInfo::loadFont(const std::string& key, nlohmann::json& value)
     {
         
+    }
+
+    AssetInfo::Category AssetInfo::getCategoryFromExtension(const std::string& extension)
+    {
+        if (extension == "png" || extension == "jpg" || extension == "jpg")
+            return Category::Texture;
+        if (extension == "wav")
+            return Category::Sound;
+        if (extension == "ttf")
+            return Category::Font;
+        if (extension == "frag")
+            return Category::Shader;
+        
+        return Category::Invalid;
     }
 }
