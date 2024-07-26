@@ -47,10 +47,7 @@ namespace tails
                 "Failed to get resource, desired type does not derive Resource.");
             
             if (loadIfUnavailable)
-            {
-                if (!isLoaded())
-                    load();
-            }
+                load();
 
             if (!m_resource) return nullptr;
 
@@ -68,10 +65,10 @@ namespace tails
             return static_cast<T*>(m_resource.get());
         }
 
-        [[nodiscard]] Resource* getResource() const {return m_resource.get();}
-        [[nodiscard]] TextureResource* getTexture() const;
-        [[nodiscard]] SoundResource* getSound() const;
-        [[nodiscard]] FontResource* getFont() const;
+        [[nodiscard]] Resource& getResource() const {return *m_resource;}
+        [[nodiscard]] TextureResource& getTexture() const;
+        [[nodiscard]] SoundResource& getSound() const;
+        [[nodiscard]] FontResource& getFont() const;
 
         /**
          * Load this asset's resource into memory

@@ -27,19 +27,19 @@ namespace tails
 
     AssetInfo::~AssetInfo() = default;
 
-    TextureResource* AssetInfo::getTexture() const
+    TextureResource& AssetInfo::getTexture() const
     {
-        return getResource<TextureResource>();
+        return *getResource<TextureResource>();
     }
 
-    SoundResource* AssetInfo::getSound() const
+    SoundResource& AssetInfo::getSound() const
     {
-        return getResource<SoundResource>();
+        return *getResource<SoundResource>();
     }
 
-    FontResource* AssetInfo::getFont() const
+    FontResource& AssetInfo::getFont() const
     {
-        return getResource<FontResource>();
+        return *getResource<FontResource>();
     }
 
     bool AssetInfo::load()
