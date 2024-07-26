@@ -2,12 +2,18 @@
 
 namespace tails
 {
-    AssetSubsystem::tempHandle AssetSubsystem::createAsset(const std::string& path)
+    AssetSubsystem::tempHandle AssetSubsystem::createAsset(const std::string& path, bool load)
     {
-        m_assets.try_emplace(m_currentID, AssetInfo());
-        m_assets[m_currentID].loadFromFile(path);
+        m_assets.try_emplace(m_currentID, AssetInfo(path));
+        if (load)
+            m_assets.at(m_currentID).load();
         ++m_currentID;
         return m_currentID - 1;
+    }
+
+    AssetSubsystem::tempHandle AssetSubsystem::createMusicAsset(const std::string& path)
+    {
+        return createAsset(path, false);
     }
 
     bool AssetSubsystem::isValidID(tempHandle id) const

@@ -8,7 +8,7 @@
 
 namespace tails
 {
-    class TAILS_API Texture : public Resource, public sf::Texture
+class TAILS_API TextureResource : public Resource, public sf::Texture
     {
     protected:
         bool load(const std::string& path) override

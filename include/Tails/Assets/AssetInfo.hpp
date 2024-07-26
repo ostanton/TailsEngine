@@ -3,47 +3,29 @@
 
 #include <Tails/Config.hpp>
 
-#include <nlohmann/json_fwd.hpp>
-
 #include <string>
 #include <memory>
 
 namespace tails
 {
-    struct AssetMetadata;
     class Resource;
     class AssetSubsystem;
-    class Texture;
-    class Sound;
-    class Font;
+    class TextureResource;
+    class SoundResource;
+    class FontResource;
 
-    // a non-copyable, but moveable, class for holding resources and their metadata
-    // could possibly have vector<Handle> for any asset dependencies
+    /**
+     * A refactored structure created as a wrapper for a Resource and manages its lifetime.
+     * This should be simple and straightforward, which is why I gutted the metadata & json loading stuff.
+     * Can also be used just to reference an asset, like a piece of music that should be streamed and not loaded
+     * into memory.
+     */
     struct TAILS_API AssetInfo
     {
         friend AssetSubsystem;
-        
-        enum class Category
-        {
-            Invalid = -1,
-            Texture = 0,  // defaults to Type::Sprite
-            Sound,        // defaults to Type::Sound
-            Font,         // defaults to Type::Font
-            Shader
-        };
 
-        enum class Type
-        {
-            Invalid = -1,
-            Sprite = 0,   // Category::Texture
-            Spritesheet,  // Category::Texture
-            Tilemap,      // Category::Texture
-            Music,        // Category::Sound
-            Sound,        // Category::Sound
-            Font          // Category::Font
-        };
-
-        AssetInfo();
+        AssetInfo() = delete;
+        explicit AssetInfo(std::string path);
         // delete copy constructor
         AssetInfo(const AssetInfo&) = delete;
         // move constructor
@@ -87,66 +69,35 @@ namespace tails
         }
 
         [[nodiscard]] Resource* getResource() const {return m_resource.get();}
-        [[nodiscard]] Texture* getTexture() const;
-        [[nodiscard]] Sound* getSound() const;
-        [[nodiscard]] Font* getFont() const;
-
-        [[nodiscard]] Category getCategory() const {return m_category;}
-        [[nodiscard]] Type getType() const {return m_type;}
-        [[nodiscard]] const AssetMetadata& getMetadata() const;
-
-        template<typename T>
-        [[nodiscard]] const T& getMetadata() const
-        {
-            static_assert(std::is_base_of_v<AssetMetadata, T>,
-                    "Failed to get metadata, desired target type does not derive AssetMetadata");
-            return *dynamic_cast<T*>(m_metadata.get());
-        }
-
-        void setData(Category category, Type type, std::string path);
-
-        // loads the asset's resource
-        bool load();
-        bool load(Category category, Type type, const std::string& path);
-
-        // unloads the assets' resource
-        void unload();
-
-        [[nodiscard]] static std::string assetTypeToString(Type type);
-        [[nodiscard]] static Type stringToAssetType(const std::string& string);
-
-        [[nodiscard]] static std::string assetCategoryToString(Category category);
-        [[nodiscard]] static Category stringToAssetCategory(const std::string& string);
-
-    private:
-        /* Load from file methods */
-        
-        bool loadFromFile(const std::string& path);
-        bool loadJson(const std::string& jsonPath);
-
-        /* Load metadata from json methods */
-        
-        void loadSprite(const std::string& key, nlohmann::json& value);
-        void loadSpritesheet(const std::string& key, nlohmann::json& value);
-        void loadTilemap(const std::string& key, nlohmann::json& value);
-        void loadMusic(const std::string& key, nlohmann::json& value);
-        void loadSound(const std::string& key, nlohmann::json& value);
-        void loadFont(const std::string& key, nlohmann::json& value);
+        [[nodiscard]] TextureResource* getTexture() const;
+        [[nodiscard]] SoundResource* getSound() const;
+        [[nodiscard]] FontResource* getFont() const;
 
         /**
-         * Gets a file's category based on its extension
-         * @param extension File extension
-         * @return File's category
+         * Load this asset's resource into memory
+         * @return Load was successful
          */
-        static Category getCategoryFromExtension(const std::string& extension);
+        bool load();
+
+        /**
+         * Unloads this asset's resource from memory, freeing it
+         */
+        void unload();
+
+        [[nodiscard]] const std::string& getPath() const {return m_path;}
+
+    private:
+        template<typename T>
+        bool loadResource()
+        {
+            m_resource = std::make_unique<T>();
+            return loadResource();
+        }
+
+        bool loadResource();
 
         // path to source file (json, raw resource, etc.)
         std::string m_path;
-
-        // set after loading json metadata using m_jsonPath
-        Category m_category {Category::Invalid};
-        Type m_type {Type::Invalid};
-        std::unique_ptr<AssetMetadata> m_metadata;
 
         // can be loaded and unloaded when needed
         std::unique_ptr<Resource> m_resource;

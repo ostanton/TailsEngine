@@ -8,7 +8,7 @@
 
 namespace tails
 {
-    class TAILS_API Font : public Resource, public sf::Font
+class TAILS_API FontResource : public Resource, public sf::Font
     {
     protected:
         bool load(const std::string& path) override

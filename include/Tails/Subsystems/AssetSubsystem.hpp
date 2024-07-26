@@ -15,7 +15,8 @@ namespace tails
     public:
         using tempHandle = size_t;
         
-        tempHandle createAsset(const std::string& path);
+        tempHandle createAsset(const std::string& path, bool load = true);
+        tempHandle createMusicAsset(const std::string& path);
         [[nodiscard]] bool isValidID(tempHandle id) const;
         [[nodiscard]] const AssetInfo& getAsset(tempHandle id) const;
         [[nodiscard]] AssetInfo& getAsset(tempHandle id);

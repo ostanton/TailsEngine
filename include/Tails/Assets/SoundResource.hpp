@@ -9,7 +9,7 @@
 namespace tails
 {
     // can be extended for more cool audio functionality, maybe effects and such
-    class TAILS_API Sound : public Resource, public sf::SoundBuffer
+class TAILS_API SoundResource : public Resource, public sf::SoundBuffer
     {
     protected:
         bool load(const std::string& path) override

@@ -6,7 +6,7 @@ namespace tails
 {
     void MusicBus::setAsset(const AssetInfo& asset)
     {
-        m_music.openFromFile(asset.getMetadata().path);
+        m_music.openFromFile(asset.getPath());
     }
 
     void MusicBus::play()
