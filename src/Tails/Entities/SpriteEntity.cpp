@@ -6,6 +6,11 @@
 
 namespace tails
 {
+    void Animation::addFrame(const Frame& frame)
+    {
+        frames.push_back(frame);
+    }
+
     void SpriteEntity::setSpriteSheet(const sf::Texture& texture)
     {
         m_sprite.setTexture(texture);
@@ -23,7 +28,7 @@ namespace tails
         return &m_anims[id];
     }
 
-    void SpriteEntity::addAnimation(const std::string& id, Animation animation)
+    void SpriteEntity::addAnimation(const std::string& id, const Animation& animation)
     {
         m_anims[id] = animation;
     }
@@ -53,12 +58,12 @@ namespace tails
 
     void SpriteEntity::tick(float deltaTime)
     {
-        updateAnimation(deltaTime);
+        if (m_animPlaying)
+            updateAnimation(deltaTime);
     }
 
     void SpriteEntity::updateAnimation(float deltaTime)
     {
-        if (!m_animPlaying) return;
         if (!m_currentAnim) return;
 
         m_sprite.setTextureRect(m_currentAnim->getCurrentFrame().rect);
@@ -66,10 +71,11 @@ namespace tails
         m_animTimer += deltaTime * m_currentAnim->speed;
 
         // return if we have not reached the next frame
-        if (m_animTimer < 1.f / m_currentAnim->speed)
+        if (m_animTimer < 1.f * m_currentAnim->speed)
             return;
 
         m_currentAnim->currentFrameIndex++;
+        m_animTimer = 0.f;
 
         // either loop to first frame or stop playing once we reach the last frame
         if (m_currentAnim->currentFrameIndex >= m_currentAnim->frames.size())

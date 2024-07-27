@@ -25,11 +25,12 @@ namespace tails
             : frames(std::move(inFrames)), currentFrameIndex(initialFrameIndex), speed(inSpeed) {}
 
         std::vector<Frame> frames; // the frames to play through
-        int currentFrameIndex {0}; // current frame index
+        size_t currentFrameIndex {0}; // current frame index
         float speed {1.f}; // multiplier
         bool loop {true};
 
         const Frame& getCurrentFrame() {return frames[currentFrameIndex];}
+        void addFrame(const Frame& frame);
     };
 
     // wrapper for SFML sprite that can be animated
@@ -41,7 +42,7 @@ namespace tails
         // animations
         Animation* createAnimation(const std::string& id); // constructs a default animation object in-place
         Animation* createAnimation(const std::string& id, std::vector<Frame> frames, int startingFrame, float speed); // constructs a new animation object in-place
-        void addAnimation(const std::string& id, Animation animation); // adds an existing animation object
+        void addAnimation(const std::string& id, const Animation& animation); // adds an existing animation object
         void selectAnimation(const std::string& id); // select an animation, does not autoplay
         void play(); // play the current animation
         void play(const std::string& id); // selects and plays an animation
@@ -53,9 +54,9 @@ namespace tails
         void updateAnimation(float deltaTime);
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-        bool m_animPlaying; // is the selected animation playing?
+        bool m_animPlaying {false}; // is the selected animation playing?
         std::unordered_map<std::string, Animation> m_anims; // list of available animations mapped to an ID
-        Animation* m_currentAnim; // pointer to currently selected animation. use iterator instead?
+        Animation* m_currentAnim {nullptr}; // pointer to currently selected animation. use iterator instead?
         sf::Sprite m_sprite; // sprite to draw and apply animation to
         float m_animTimer {0.f};
     };

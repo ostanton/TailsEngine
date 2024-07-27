@@ -33,12 +33,16 @@ namespace tails
     {
         m_path = std::move(asset.m_path);
         m_resource = std::move(asset.m_resource);
+        m_category = asset.m_category;
+        asset.m_category = Invalid;
     }
 
     AssetInfo& AssetInfo::operator=(AssetInfo&& asset) noexcept
     {
         m_path = std::move(asset.m_path);
         m_resource = std::move(asset.m_resource);
+        m_category = asset.m_category;
+        asset.m_category = Invalid;
         return *this;
     }
 

@@ -34,7 +34,7 @@ namespace tails
         };
 
         AssetInfo() = delete;
-        explicit AssetInfo(Category category, const std::string& path, const Engine& engine);
+        AssetInfo(Category category, const std::string& path, const Engine& engine);
         // delete copy constructor
         AssetInfo(const AssetInfo&) = delete;
         // move constructor
@@ -118,7 +118,7 @@ namespace tails
         /**
          * The category of this asset
          */
-        Category m_category {Invalid};
+        Category m_category;
 
         /**
          * The resource data that is loaded or unloaded
