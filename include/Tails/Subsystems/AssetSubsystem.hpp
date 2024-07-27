@@ -15,8 +15,16 @@ namespace tails
     public:
         using tempHandle = size_t;
         
-        tempHandle createAsset(const std::string& path, bool load = true);
+        tempHandle createAsset(AssetInfo::Category category, const std::string& path, bool load = true);
+
+        /** Methods that create an asset from a "template", like texture, etc. */
+        
+        tempHandle createTexture(const std::string& path, bool load = true);
+        tempHandle createSound(const std::string& path, bool load = true);
+        tempHandle createFont(const std::string& path, bool load = true);
         tempHandle createMusicAsset(const std::string& path);
+
+        
         [[nodiscard]] bool isValidID(tempHandle id) const;
         [[nodiscard]] const AssetInfo& getAsset(tempHandle id) const;
         [[nodiscard]] AssetInfo& getAsset(tempHandle id);

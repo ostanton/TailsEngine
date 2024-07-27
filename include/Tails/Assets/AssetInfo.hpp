@@ -13,6 +13,7 @@ namespace tails
     class TextureResource;
     class SoundResource;
     class FontResource;
+    class Engine;
 
     /**
      * A refactored structure created as a wrapper for a Resource and manages its lifetime.
@@ -24,8 +25,16 @@ namespace tails
     {
         friend AssetSubsystem;
 
+        enum Category
+        {
+            Invalid = -1,
+            Texture = 0,
+            Sound,
+            Font
+        };
+
         AssetInfo() = delete;
-        explicit AssetInfo(std::string path);
+        explicit AssetInfo(Category category, const std::string& path, const Engine& engine);
         // delete copy constructor
         AssetInfo(const AssetInfo&) = delete;
         // move constructor
@@ -66,9 +75,9 @@ namespace tails
         }
 
         [[nodiscard]] Resource& getResource() const {return *m_resource;}
-        [[nodiscard]] TextureResource& getTexture() const;
-        [[nodiscard]] SoundResource& getSound() const;
-        [[nodiscard]] FontResource& getFont() const;
+        [[nodiscard]] TextureResource& getTextureResource() const;
+        [[nodiscard]] SoundResource& getSoundResource() const;
+        [[nodiscard]] FontResource& getFontResource() const;
 
         /**
          * Load this asset's resource into memory
@@ -82,21 +91,38 @@ namespace tails
         void unload();
 
         [[nodiscard]] const std::string& getPath() const {return m_path;}
+        [[nodiscard]] Category getCategory() const {return m_category;}
 
-    private:
+        /**
+         * Loads a resource of desired type
+         * @tparam T Resource type to load
+         * @return Whether loading was successful
+         */
         template<typename T>
         bool loadResource()
         {
+            static_assert(std::is_base_of_v<Resource, T>, "Failed to load resource, desired type does not derive Resource.");
+            
             m_resource = std::make_unique<T>();
             return loadResource();
         }
-
+        
+    private:
         bool loadResource();
 
-        // path to source file (json, raw resource, etc.)
+        /**
+         * Path to resource, always relative to executable location via Engine's ini file
+         */
         std::string m_path;
 
-        // can be loaded and unloaded when needed
+        /**
+         * The category of this asset
+         */
+        Category m_category {Invalid};
+
+        /**
+         * The resource data that is loaded or unloaded
+         */
         std::unique_ptr<Resource> m_resource;
     };
 }

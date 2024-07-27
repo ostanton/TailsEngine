@@ -1,16 +1,33 @@
 #include <Tails/Assets/AssetInfo.hpp>
 #include <Tails/Assets/SoundResource.hpp>
 #include <Tails/Assets/FontResource.hpp>
-#include <Tails/Assets/Metadata/AssetMetadata.hpp>
 #include <Tails/Assets/TextureResource.hpp>
+#include <Tails/Engine.hpp>
 
 #include <nlohmann/json.hpp>
 
 namespace tails
 {
-    AssetInfo::AssetInfo(std::string path)
-        : m_path(std::move(path))
-    {}
+    AssetInfo::AssetInfo(Category category, const std::string& path, const Engine& engine)
+        : m_category(category)
+    {
+        switch (category)
+        {
+        case Texture:
+            m_path = engine.getFilePaths().textures + path;
+            break;
+        case Sound:
+            m_path = engine.getFilePaths().sounds + path;
+            break;
+        case Font:
+            m_path = engine.getFilePaths().fonts + path;
+            break;
+        case Invalid:
+            // if invalid, treat the path like a normal path relative to the executable
+            m_path = path;
+            break;
+        }
+    }
 
     AssetInfo::AssetInfo(AssetInfo&& asset) noexcept
     {
@@ -27,17 +44,17 @@ namespace tails
 
     AssetInfo::~AssetInfo() = default;
 
-    TextureResource& AssetInfo::getTexture() const
+    TextureResource& AssetInfo::getTextureResource() const
     {
         return *getResource<TextureResource>();
     }
 
-    SoundResource& AssetInfo::getSound() const
+    SoundResource& AssetInfo::getSoundResource() const
     {
         return *getResource<SoundResource>();
     }
 
-    FontResource& AssetInfo::getFont() const
+    FontResource& AssetInfo::getFontResource() const
     {
         return *getResource<FontResource>();
     }
@@ -46,14 +63,17 @@ namespace tails
     {
         if (!isLoaded())
         {
-            if (loadResource<TextureResource>())
-                return true;
-            if (loadResource<SoundResource>())
-                return true;
-            if (loadResource<FontResource>())
-                return true;
-
-            return false;
+            switch (m_category)
+            {
+            case Texture:
+                return loadResource<TextureResource>();
+            case Sound:
+                return loadResource<SoundResource>();
+            case Font:
+                return loadResource<FontResource>();
+            case Invalid:
+                return false;
+            }
         }
 
         return m_resource->load(m_path);

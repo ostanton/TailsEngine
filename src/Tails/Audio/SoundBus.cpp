@@ -7,7 +7,7 @@ namespace tails
 {
     void SoundBus::setAsset(const AssetInfo& asset)
     {
-        m_sound.setBuffer(*asset.getSound());
+        m_sound.setBuffer(asset.getSoundResource());
     }
 
     void SoundBus::play()
