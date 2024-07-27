@@ -1,4 +1,17 @@
 # Tails Engine
+
+Beyond the description section is the previous target stuff for this engine. For now, I want this engine to be more like a "retro" game engine, specifically containing simple architecture and producing results akin to that of a Gameboy Advance and similar. The idea is this:
+- Games made using Tails Engine will be mostly scripted with [AngelScript](https://www.angelcode.com/angelscript/), similar to Unreal Engine and Blueprints.
+- The game will render at a fixed resolution that can be "upscaled" to fix the window size.
+- Simple implementations of everything. Like managing assets, an "AssetHandle" is just a `size_t`, an "AssetInfo" object is just a container for the raw data with some extra information and the ability to load and unload that raw data, etc. Even that is probably overkill however (you only really need a way for multiple sprites to reference one texture, that's the bare minimum. loading & unloading on the fly doesn't really add anything, as if a sprite exists, it will use the specified texture. If it does not exist, either the texture also does not exist, or something else using the texture exists. `shared_ptr` stuff probably idk).
+- Input is only as complicated as it is because I wanted to conquer the challenge of making it work. I will strip it back probably to the barebones of:
+  - Actions with mapped keys
+  - When action is active, changes state, etc., call bound function
+  - Contexts (like the idea of them in Unreal) will cease to exist. A game will have a list of "actions" and the keys bound to those actions, and that is is. No dynamic adding and rmoving. This is to emulate a Gameboy (for example) having a set amount of buttons that are usable. Keys can just be bound to the actions for user-friendlyness, etc.
+- Delegates and events will still exist. They are QoL things that just help so much, why remove them? (That being said I might make a separate delegate library for them also.)
+- Outers may not exist anymore, instead favouring a global `Engine` pointer or something. Stripping this back to where the base `Object` class isn't even needed would be nice.
+
+## Description
 A simple, 2D, game engine in C++ and SFML. It focuses on the concept of states and layers. Only one state can be "active" at a time (the top one), but each state has any number of layers that can each be individually set to tick, draw, etc. The "GameState" may have a level layer and a screen (UI) layer for the HUD. The "PauseState" may then just have a screen layer, etc.
 
 > Examples and docs are being separated from this repository into their own, or just elsewhere. Their links will be here when they do end up in that elsewhere.
