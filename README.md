@@ -1,5 +1,6 @@
 # Tails Engine
 
+This engine is in a rewrite!
 [Devlogs on the rewrite of this engine.](https://www.youtube.com/playlist?list=PL8y2eQUFF8A-a4O3URQ2i6lYfzapD0ouc)
 
 Beyond the description section is the previous target stuff for this engine. For now, I want this engine to be more like a "retro" game engine, specifically containing simple architecture and producing results akin to that of a Gameboy Advance and similar. The idea is this:
