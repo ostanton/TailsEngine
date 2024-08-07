@@ -1,395 +1,147 @@
 #include <Tails/Engine.hpp>
-#include <Tails/Debug.hpp>
-#include <Tails/Subsystems/AssetSubsystem.hpp>
-#include <Tails/Subsystems/AudioSubsystem.hpp>
-#include <Tails/Subsystems/RegistrySubsystem.hpp>
-#include <Tails/Subsystems/InputSubsystem.hpp>
-#include <Tails/Subsystems/LayerSubsystem.hpp>
-#include <Tails/Layers/Layer.hpp>
-#include <Tails/States/State.hpp>
+#include <Tails/Level.hpp>
 
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/System/Time.hpp>
 
-#include <mini/ini.h>
 #include <iostream>
 
 namespace tails
 {
-    Engine::Engine() = default;
-    Engine::~Engine() = default;
-
-    void Paths::printPaths() const
+    CEngine::CEngine()
     {
-        std::cout
-            << "\nPaths:\n"
-            << "  Data = " << data << "\n"
-            << "  Textures = " << textures << "\n"
-            << "  Sounds = " << sounds << "\n"
-            << "  Fonts = " << fonts << "\n"
-            << "  Levels = " << levels << "\n"
-            << "  Input = " << input << "\n"
-            << "  Saves = " << saves << "\n";
+        // TODO - swap magic numbers with user-defined ones or something
+
+        // Setup internal render texture
+        m_renderTextureInternal.create(240, 160);
+
+        // Set the size and center of the camera initially
+        m_renderView.setSize(240.f, 160.f);
+        m_renderView.setCenter(120.f, 80.f);
+
+        // Setup world
+        m_world.outer = this;
+        // TODO - default level to load
+        m_world.setDefaultLevel("");
     }
 
-    void RenderSettings::printSettings() const
+    CEngine::~CEngine() = default;
+
+    void CEngine::init()
     {
-        std::cout << "\nRender:\n"
-            << "  Resolution = " << size.x << "x" << size.y << "\n";
+        // Set default render target as window
+        setRenderTarget<sf::RenderWindow>(sf::VideoMode(640, 480), "Window");
     }
 
-    void WindowSettings::printSettings() const
+    void CEngine::run()
     {
-        std::cout << "\nWindow:\n"
-                  << "  Title = " << title << "\n"
-                  << "  Size = " << size.x << "x" << size.y << "\n"
-                  << "  Fullscreen = " << fullscreen << "\n"
-                  << "  Vertical Sync = " << vsync << "\n"
-                  << "  Framerate Limit = " << framerateLimit << "\n";
-    }
-
-    sf::Uint32 WindowSettings::getWindowStyle() const
-    {
-        return fullscreen ? sf::Style::Fullscreen : sf::Style::Default;
-    }
-
-    void Engine::initialise()
-    {
-        Debug::print("Initialising engine...");
-        loadIni();
-        initSubsystems();
-        Debug::print("Initialising custom subsystems...\n");
-        initCustomSubsystems();
-        Debug::print("Custom subsystems initialised!\n");
-        Debug::print("Engine subsystems initialised.\n");
-        initWindow();
-        Debug::print("Window initialised!\n");
-        postInitSubsystems();
-        m_running = true;
-        Debug::print("Engine initialised!\n");
-    }
-
-    void Engine::run()
-    {
-        Debug::print("Begin game loop.\n");
         sf::Clock clock;
-
+        const auto window = dynamic_cast<sf::RenderWindow*>(m_renderTarget.get());
+        const auto& internalRenderTexture = m_renderTextureInternal.getTexture();
+        
+        calculateInternalAspectRatio(m_renderTarget->getSize());
+        
         while (m_running)
         {
             preTick();
-
-            sf::Event ev;
-            m_deltaTime = clock.restart().asSeconds();
-
-            if (m_window->isOpen())
+            
+            sf::Time time {clock.restart()};
+            
+            if (window)
             {
-                while (m_window->pollEvent(ev))
+                sf::Event ev;
+                while (window->pollEvent(ev))
                 {
                     switch (ev.type)
                     {
-                        default:
-                            break;
-                        case sf::Event::Closed:
-                            // kill the engine, this is the expected behaviour of games and general programs.
-                            // you don't want the engine still running in the background with no window!
-                            killEngine();
+                    default:
+                        break;
+                    case sf::Event::Closed:
+                        kill();
+                        break;
+                    case sf::Event::Resized:
+                        calculateInternalAspectRatio(window->getSize());
+                        break;
                     }
                 }
             }
 
-            tick(m_deltaTime);
-            draw();
+            tick(time.asSeconds());
+            
+            m_renderTextureInternal.clear();
+            draw(m_renderTextureInternal, m_renderStates);
+            m_renderTextureInternal.display();
+
+            m_renderTarget->clear();
+            m_renderTarget->setView(m_renderView);
+            sf::Sprite renderSprite {internalRenderTexture};
+            m_renderTarget->draw(renderSprite);
+            m_renderTarget->setView(m_renderTarget->getDefaultView());
+
+            if (window)
+            {
+                window->display();
+            }
 
             postTick();
         }
-
-        Debug::print("\nEnd game loop.");
-        std::cout << "  Engine was alive for: " << m_lifetime << " seconds.\n";
-
-        deinitialise();
     }
 
-    sf::RenderWindow& Engine::getWindow() const
-    {
-        return *m_window;
-    }
-
-    Subsystem* Engine::getSubsystem(const std::string& name) const
-    {
-        if (!m_subsystems.contains(name)) return nullptr;
-
-        return m_subsystems.at(name).get();
-    }
-
-    AssetSubsystem& Engine::getAssetSubsystem() const
-    {
-        return *getSubsystem<AssetSubsystem>("asset");
-    }
-
-    AudioSubsystem& Engine::getAudioSubsystem() const
-    {
-        return *getSubsystem<AudioSubsystem>("audio");
-    }
-
-    RegistrySubsystem& Engine::getRegistrySubsystem() const
-    {
-        return *getSubsystem<RegistrySubsystem>("registry");
-    }
-
-    InputSubsystem& Engine::getInputSubsystem() const
-    {
-        return *getSubsystem<InputSubsystem>("input");
-    }
-
-    LayerSubsystem& Engine::getLayerSubsystem() const
-    {
-        return *getSubsystem<LayerSubsystem>("state");
-    }
-
-    void Engine::killEngine()
+    void CEngine::kill()
     {
         m_running = false;
     }
 
-    void Engine::closeWindow()
+    void CEngine::preTick()
     {
-        m_window->close();
+        ITickable::preTick();
+
+        m_world.preTick();
     }
 
-    void Engine::loadIni()
+    void CEngine::tick(float deltaTime)
     {
-        Debug::print("Loading engine initialisation file.");
-        
-        mINI::INIFile engineIniFile(getEngineIniFile()); // reference to ini file?
-        mINI::INIStructure engineIni; // structure to hold the data itself
+        m_world.tick(deltaTime);
+    }
 
-        // read file into structure
-        if (!engineIniFile.read(engineIni))
-        {
-            // fails
-            Debug::print("Failed to load engine initialisation file");
-            Debug::print("Using engine defaults.");
-            return;
-        }
+    void CEngine::draw(sf::RenderTarget& target, sf::RenderStates states)
+    {
+        target.draw(m_world, states);
+    }
 
-        // quick function to convert string to bool
-        auto stringToBool = [](const std::string& string) -> bool
-        {
-            std::string lowercase {string};
-            // transform to lowercase
-            std::ranges::transform(lowercase.begin(), lowercase.end(), lowercase.begin(),
-                [](const unsigned char c)
-                {
-                    return std::tolower(c);
-                });
-            
-            if (lowercase == "true" || string == "1")
-                return true;
+    void CEngine::postTick()
+    {
+        ITickable::postTick();
 
-            return false;
+        m_world.postTick();
+    }
+
+    void CEngine::calculateInternalAspectRatio(sf::Vector2u windowSize)
+    {
+        // TODO - swap magic numbers with internal res
+        const sf::Vector2f ratio {
+            static_cast<float>(windowSize.x) / 240.f,
+            static_cast<float>(windowSize.y) / 160.f
         };
-        
-        if (engineIni.has("paths"))
-        {
-            auto& pathsSection = engineIni["paths"];
-            // add trailing forward-slash
-            m_paths.data = pathsSection["data"] + "/";
-            m_paths.textures = pathsSection["textures"] + "/";
-            m_paths.sounds = pathsSection["sounds"] + "/";
-            m_paths.fonts = pathsSection["fonts"] + "/";
-            m_paths.levels = pathsSection["levels"] + "/";
-            m_paths.input = pathsSection["input"] + "/";
-            m_paths.saves = pathsSection["saves"] + "/";
 
-            m_paths.printPaths();
-        }
-        else
+        sf::FloatRect viewportRect {0.f, 0.f, 1.f, 1.f};
+
+        if (ratio.x > ratio.y)
         {
-            // fails to find section
-            Debug::print("Failed to get paths section");
-            Debug::print("Using engine defaults.");
+            viewportRect.width = ratio.y / ratio.x;
+            viewportRect.left = (1.f - viewportRect.width) / 2.f;
+        }
+        else if (ratio.x < ratio.y)
+        {
+            viewportRect.height = ratio.x / ratio.y;
+            viewportRect.top = (1.f - viewportRect.height) / 2.f;
         }
 
-        if (engineIni.has("render"))
-        {
-            auto& renderSection = engineIni["render"];
-            m_renderSettings.size.x = std::stof(renderSection["resolution_x"]);
-            m_renderSettings.size.y = std::stof(renderSection["resolution_y"]);
-
-            m_renderSettings.printSettings();
-        }
-        else
-        {
-            Debug::print("Failed to get render section");
-            Debug::print("Using engine defaults.");
-        }
-
-        if (engineIni.has("window"))
-        {
-            auto& windowSection = engineIni["window"];
-            m_windowSettings.title = windowSection["title"];
-            m_windowSettings.size.x = std::stoi(windowSection["size_x"]);
-            m_windowSettings.size.y = std::stoi(windowSection["size_y"]);
-            m_windowSettings.fullscreen = stringToBool(windowSection["fullscreen"]);
-            m_windowSettings.vsync = stringToBool(windowSection["vsync"]);
-            m_windowSettings.framerateLimit = std::stoi(windowSection["framerate_limit"]);
-
-            m_windowSettings.printSettings();
-        }
-        else
-        {
-            Debug::print("Failed to get window section");
-            Debug::print("Using engine defaults.");
-        }
-
-        if (engineIni.has("contexts"))
-        {
-            for (auto const& [name, file] : engineIni["contexts"])
-            {
-                m_defaultFiles.inputContexts[name] = file;
-                Debug::print("Loaded " + name + " context, with " + file + " file");
-            }
-        }
-        else
-        {
-            Debug::print("Failed to get contexts section");
-            Debug::print("No input contexts have been loaded.");
-        }
-
-        Debug::print("engine.ini loaded!\n");
-    }
-
-    void Engine::initSubsystems()
-    {
-        // subsystems should all be initialised here, and only here (except custom subsystems).
-        // all subsystems must be initialised before the main loop begins
-        Debug::print("Initialising engine subsystems:");
-        createSubsystem<AssetSubsystem>("asset");
-        createSubsystem<AudioSubsystem>("audio");
-
-        // create default registry subsystem, or user's custom one if overridden
-        addSubsystem("registry", getDefaultRegistrySubsystem());
-
-        createSubsystem<InputSubsystem>("input");
-        createSubsystem<LayerSubsystem>("state")->addLayer(getDefaultLayer());
-    }
-
-    void Engine::postInitSubsystems()
-    {
-        for (auto& [key, subsystem] : m_subsystems)
-        {
-            subsystem->postInit();
-        }
-    }
-
-    void Engine::deinitSubsystems()
-    {
-        Debug::print("Deinitialising subsystems:");
-        for (auto& subsystemPair : m_subsystems)
-        {
-            Debug::print("  Deinitialising " + subsystemPair.first + " subsystem...");
-            subsystemPair.second->deinit();
-            Debug::print("  " + subsystemPair.first + " subsystem deinitialised.");
-        }
-
-        Debug::print("Subsystems deinitialised.\n");
-
-        // this isn't really needed, they're smart pointers!
-        /*
-        Debug::print("Destroying subsystems...");
-        m_subsystems.clear();
-        Debug::print("Subsystems destroyed.\n");
-         */
-    }
-
-    Subsystem* Engine::addSubsystem(const std::string& name, std::unique_ptr<Subsystem> subsystem)
-    {
-        Debug::print("  Initialising " + name + " subsystem...");
-        m_subsystems[name] = std::move(subsystem);
-        m_subsystems[name]->outer = this;
-        m_subsystems[name]->init(*this);
-        m_subsystems[name]->pendingCreate = false;
-        Debug::print("  " + name + " subsystem initialised.");
-        return m_subsystems[name].get();
-    }
-
-    std::unique_ptr<RegistrySubsystem> Engine::getDefaultRegistrySubsystem()
-    {
-        return std::make_unique<RegistrySubsystem>();
-    }
-
-    std::unique_ptr<Layer> Engine::getDefaultLayer()
-    {
-        return nullptr;
-    }
-
-    void Engine::initWindow()
-    {
-        Debug::print("Initialising window...");
-        m_window = std::make_unique<sf::RenderWindow>(
-            sf::VideoMode(
-                m_windowSettings.size.x,
-                m_windowSettings.size.y),
-            m_windowSettings.title,
-            m_windowSettings.getWindowStyle());
-
-        m_window->setVerticalSyncEnabled(m_windowSettings.vsync);
-        m_window->setFramerateLimit(m_windowSettings.framerateLimit);
-    }
-
-    void Engine::preTick()
-    {
-        for (auto& subsystemPair : m_subsystems)
-        {
-            subsystemPair.second->preTick();
-
-            // subsystems should not be added during gameplay
-        }
-    }
-
-    void Engine::tick(float deltaTime)
-    {
-        m_lifetime += deltaTime;
-
-        for (auto& subsystemPair : m_subsystems)
-        {
-            subsystemPair.second->tick(deltaTime);
-        }
-    }
-
-    void Engine::draw()
-    {
-        if (!m_window->isOpen()) return;
-
-        m_window->clear();
-
-        // TODO - optimise to only draw subsystems that state they can be drawn??
-        for (auto& subsystemPair : m_subsystems)
-        {
-            // combine sf::Views into one?
-            m_window->draw(*subsystemPair.second);
-        }
-
-        m_window->display();
-    }
-
-    void Engine::postTick()
-    {
-        for (auto& [key, subsystem] : m_subsystems)
-        {
-            subsystem->postTick();
-        }
-    }
-
-    void Engine::deinitialise()
-    {
-        Debug::print("\nDeinitialising engine...\n");
-        Debug::print("Closing the window...");
-        m_window->close();
-        Debug::print("Window closed!\n");
-        deinitSubsystems();
-        Debug::print("Engine deinitialised. Exiting...");
+        std::cout << "Width: " << viewportRect.width << "\n" <<
+            "Height: " << viewportRect.height << "\n" <<
+            "Left: " << viewportRect.left << "\n" <<
+            "Top: " << viewportRect.top << "\n";
+        m_renderView.setViewport(viewportRect);
     }
 }

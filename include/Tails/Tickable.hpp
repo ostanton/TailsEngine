@@ -5,12 +5,11 @@
 
 namespace tails
 {
-    // abstract class that can tick, providing preTick and postTick methods also
-    class TAILS_API Tickable
+    class TAILS_API ITickable
     {
     public:
-        virtual ~Tickable() = default;
-
+        virtual ~ITickable() = default;
+        
     protected:
         virtual void preTick() {}
         virtual void tick(float deltaTime) = 0;

@@ -1,0 +1,64 @@
+///////////////////////////////////////////////
+Asset loading/mapping via plain json file
+
+"assets.json"
+{
+    "textures": {
+        "player": "player.png",
+        "enemy": "enemy.png"
+    },
+    "sounds": {
+        "jump": "jump.ogg"
+    },
+    "fonts": {
+        "main": "arial.ttf"
+    },
+    "groups": {
+        "player": {
+            "textures": [ // when multiple required
+                "player"
+            ],
+            "sounds": [
+                "jump"
+            ],
+            "texture": "player" // when just one required
+        }
+    }
+}
+
+[dir]
+textures = res/textures/
+sounds = res/sounds/
+fonts = res/fonts/
+
+"level.json"
+{
+    "assets": {
+        "textures": [
+            "enemy"
+        ]
+        "groups": [
+            "player"
+        ]
+    },
+    "etc"
+}
+
+- CLevel loads level.json
+- CLevel loads assets into data cache from level.json
+- data cache combines path value from json with path dir from engine.ini
+- data cache loads from file
+
+The level won't have entity-specific assets to load, only level-specific ones.
+Individual entities will have their own assets they depend on, gotten somehow.
+Maybe a virtual function that returns a vector of strings (IDs)? Or just a vector of strings set in the constructor?
+Possibly a feature of CObject, or another abstract class - IAssetContainer - or something
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
+INPUT
+
+map<IInputDevice, vector<int>> buttons;
+
+Each action has buttons mapped to a specific device?
+///////////////////////////////////////////////
