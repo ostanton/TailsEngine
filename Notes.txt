@@ -58,9 +58,29 @@ Possibly a feature of CObject, or another abstract class - IAssetContainer - or 
 ///////////////////////////////////////////////
 INPUT
 
-map<IInputDevice, vector<int>> buttons;
+map<IInputDevice*, vector<int>> buttons;
 
 Each action has buttons mapped to a specific device?
+
+// add button
+template<typename T>
+void addButton(int button)
+{
+    // for each key
+    for (auto& key : buttons.keys())
+    {
+        // check if type of key == T
+        if (dynamic_cast<T*>(key))
+        {
+            // if so, add button to vector via that key
+            buttons[key].push_back(button);
+            return;
+        }
+    }
+    
+    // if it does not exist, create it
+    buttons.try_emplace(new T, button);
+}
 ///////////////////////////////////////////////
 
 ///////////////////////////////////////////////
