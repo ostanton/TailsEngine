@@ -62,3 +62,18 @@ map<IInputDevice, vector<int>> buttons;
 
 Each action has buttons mapped to a specific device?
 ///////////////////////////////////////////////
+
+///////////////////////////////////////////////
+Engine class:
+    Don't have m_renderTargetInternal, view, etc. as members?
+    Have them just as local variables in the run() function?
+    They aren't used outside of that except for initialisation right?
+    And nothing outside of engine requires them to be intialised before them.
+    So there's no point having them initialise first except for convention or whatever.
+Maybe have pimpl for these? Raw pointers in the class definition, and have them point to the automatic data in run(),
+    so we can have getter functions for them still, even though they are local to run()
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
+Move init() to start of run() function? Maybe check if the engine is already initialised and run init() if not?
+///////////////////////////////////////////////
