@@ -1,74 +1,96 @@
 #include <Tails/InputManager.hpp>
-#include <Tails/InputDevice.hpp>
-#include <Tails/KeyboardDevice.hpp>
+
+#include "SFML/Window/Joystick.hpp"
+#include "SFML/Window/Keyboard.hpp"
+#include "SFML/Window/Mouse.hpp"
 
 namespace tails
 {
-    bool SAction::isDeviceButtonPressed(IInputDevice& device) const
+    SKey::SKey(EInputDevice inDevice, int inCode)
+        : device(static_cast<int>(inDevice)), code(inCode)
     {
-        for (auto button : buttons)
+    }
+
+    void SKey::setDevice(EInputDevice inDevice)
+    {
+        device = static_cast<int>(inDevice);
+    }
+
+    bool SKey::isPressed()
+    {
+        switch (device)
         {
-            if (device.isButtonPressed(button))
-                return true;
+        case static_cast<int>(EInputDevice::Keyboard):
+            return sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(code));
+        case static_cast<int>(EInputDevice::Mouse):
+            return sf::Mouse::isButtonPressed(static_cast<sf::Mouse::Button>(code));
+        case static_cast<int>(EInputDevice::Controller):
+            // support multiple controllers?? Probably not!
+            return sf::Joystick::isButtonPressed(0, code);
+        default:
+            break;
         }
 
         return false;
     }
 
-    void SAction::addButton(int button)
+    EInputDevice SKey::inputDeviceFromString(const std::string& device)
     {
-        buttons.push_back(button);
+        if (device == "Keyboard" || device == "keyboard")
+            return EInputDevice::Keyboard;
+        if (device == "Mouse" || device == "mouse")
+            return EInputDevice::Mouse;
+        if (device == "Controller" || device == "controller")
+            return EInputDevice::Controller;
+
+        return EInputDevice::Unknown;
     }
 
-    bool SAction::operator==(const SAction& other) const
+    std::string SKey::stringFromInputDevice(EInputDevice device)
     {
-        return name == other.name && buttons == other.buttons;
-    }
-
-    bool CInputManager::isActionPressed(const SAction& action)
-    {
-        if (get().m_devices.empty()) return false;
-        
-        const auto it = std::find(get().m_actions.begin(), get().m_actions.end(), action);
-        if (it == get().m_actions.end()) return false;
-
-        for (auto& device : get().m_devices)
+        switch (device)
         {
-            if (it->isDeviceButtonPressed(*device))
-                return true;
+        case EInputDevice::Keyboard:
+            return "Keyboard";
+        case EInputDevice::Mouse:
+            return "Mouse";
+        case EInputDevice::Controller:
+            return "Controller";
+        default:
+            break;
         }
 
-        return false;
+        return "Unknown";
     }
 
     bool CInputManager::isActionPressed(const std::string& action)
     {
-        for (auto& actionObj : get().m_actions)
+        for (auto& [actionName, values] : get().m_actions)
         {
-            if (actionObj.name == action)
+            if (actionName == action)
             {
-                return isActionPressed(actionObj);
+                for (auto& key : values)
+                {
+                    if (key.isPressed())
+                        return true;
+                }
             }
         }
 
         return false;
     }
 
-    SAction& CInputManager::addAction(const SAction& action)
+    void CInputManager::addAction(std::string name, SKey key)
     {
-        get().m_actions.emplace_back(action);
-        return get().m_actions.back();
+        addAction(std::move(name), std::vector({key}));
     }
 
-    SAction& CInputManager::addAction(std::string name, const std::vector<int>& buttons)
+    void CInputManager::addAction(std::string name, const std::vector<SKey>& keys)
     {
-        get().m_actions.emplace_back(std::move(name), buttons);
-        return get().m_actions.back();
-    }
-
-    CInputManager::CInputManager()
-    {
-        registerInputDevice<CKeyboardDevice>();
+        if (get().m_actions.contains(name))
+            get().m_actions[name] = keys;
+        else
+            get().m_actions.try_emplace(std::move(name), keys);
     }
 
     CInputManager& CInputManager::get()

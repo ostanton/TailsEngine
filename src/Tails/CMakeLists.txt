@@ -8,8 +8,10 @@ add_library(
     World.cpp
     Level.cpp
     InputManager.cpp
-    KeyboardDevice.cpp
     Entity.cpp
     AssetCache.cpp
     TextureAsset.cpp
+    SoundAsset.cpp
+    AudioManager.cpp
+    Directories.cpp
 )

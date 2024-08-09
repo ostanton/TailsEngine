@@ -20,6 +20,16 @@ set(SFML_USE_STATIC_STD_LIBS ON)
 # Add SFML
 CPMAddPackage("gh:SFML/SFML#2.6.1")
 
-target_link_libraries(TailsEngine PUBLIC sfml-graphics)
+# Add nlohmann/json
+CPMAddPackage("gh:nlohmann/json@3.11.3")
+
+target_link_libraries(
+    TailsEngine
+    PUBLIC
+        sfml-graphics
+        sfml-audio
+        nlohmann_json::nlohmann_json
+)
+
 target_include_directories(TailsEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(TailsEngine PUBLIC cxx_std_20)

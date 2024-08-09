@@ -56,34 +56,6 @@ Possibly a feature of CObject, or another abstract class - IAssetContainer - or 
 ///////////////////////////////////////////////
 
 ///////////////////////////////////////////////
-INPUT
-
-map<IInputDevice*, vector<int>> buttons;
-
-Each action has buttons mapped to a specific device?
-
-// add button
-template<typename T>
-void addButton(int button)
-{
-    // for each key
-    for (auto& key : buttons.keys())
-    {
-        // check if type of key == T
-        if (dynamic_cast<T*>(key))
-        {
-            // if so, add button to vector via that key
-            buttons[key].push_back(button);
-            return;
-        }
-    }
-    
-    // if it does not exist, create it
-    buttons.try_emplace(new T, button);
-}
-///////////////////////////////////////////////
-
-///////////////////////////////////////////////
 Engine class:
     Don't have m_renderTargetInternal, view, etc. as members?
     Have them just as local variables in the run() function?
@@ -96,4 +68,42 @@ Maybe have pimpl for these? Raw pointers in the class definition, and have them 
 
 ///////////////////////////////////////////////
 Move init() to start of run() function? Maybe check if the engine is already initialised and run init() if not?
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
+engine.json
+{
+    "render": {
+        "resolution": {
+            "x": 240,
+            "y": 160
+        },
+        "resizable": false
+    },
+    "dirs": {
+        "texture": "res/textures/",
+        "sound": "res/sounds/",
+        "music": "res/music/",
+        "font": "res/fonts/"
+    },
+    "assets": {
+        "texture": {
+            "player": "player.png",
+            "enemy": "enemy.png"
+        },
+        "sound": {
+            "jump": "player_jump.ogg"
+        },
+        "groups": {
+            "player": {
+                "texture": [
+                    "player"
+                ],
+                "sound": [
+                    "jump"
+                ]
+            }
+        }
+    }
+}
 ///////////////////////////////////////////////

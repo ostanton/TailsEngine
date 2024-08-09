@@ -1,11 +1,18 @@
 #include <Tails/AssetCache.hpp>
 #include <Tails/TextureAsset.hpp>
+#include <Tails/SoundAsset.hpp>
+#include <Tails/Directories.hpp>
 
 namespace tails
 {
     std::shared_ptr<CTextureAsset> CAssetCache::loadTexture(const std::string& id, const std::string& path)
     {
         return load<CTextureAsset>(id, path);
+    }
+
+    std::shared_ptr<CSoundAsset> CAssetCache::loadSound(const std::string& id, const std::string& path)
+    {
+        return load<CSoundAsset>(id, path);
     }
 
     std::shared_ptr<IAssetData> CAssetCache::getAsset(const std::string& id)
@@ -25,7 +32,8 @@ namespace tails
     std::shared_ptr<IAssetData> CAssetCache::loadImpl(
         const std::string& id, const std::string& path, const std::shared_ptr<IAssetData>& data)
     {
-        data->load(path);
+        // TODO - debug print on fail load
+        data->load(CDirectories::getDirectory(data->getType()) + path);
         
         if (get().m_data.contains(id))
             get().m_data[id] = data;

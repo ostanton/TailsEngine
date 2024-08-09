@@ -12,6 +12,7 @@ namespace tails
 {
     class IAssetData;
     class CTextureAsset;
+    class CSoundAsset;
     
     class TAILS_API CAssetCache final
     {
@@ -19,6 +20,7 @@ namespace tails
         
     public:
         static std::shared_ptr<CTextureAsset> loadTexture(const std::string& id, const std::string& path);
+        static std::shared_ptr<CSoundAsset> loadSound(const std::string& id, const std::string& path);
 
         template<typename T>
         static std::shared_ptr<T> load(const std::string& id, const std::string& path)

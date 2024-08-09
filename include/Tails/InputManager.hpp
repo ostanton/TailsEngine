@@ -3,50 +3,57 @@
 
 #include <Tails/Config.hpp>
 
-#include <memory>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 namespace tails
 {
-    class IInputDevice;
-
-    struct SAction
+    enum class TAILS_API EInputDevice : int
     {
-        std::string name;
-        std::vector<int> buttons;
+        Unknown,
+        Keyboard,
+        Mouse,
+        Controller,
 
-        [[nodiscard]] bool isDeviceButtonPressed(IInputDevice& device) const;
-
-        void addButton(int button);
-
-        bool operator==(const SAction& other) const;
+        Count
     };
-    
+
+    struct TAILS_API SKey final
+    {
+        SKey(EInputDevice inDevice, int inCode);
+
+        /**
+         * The key type, normally set via EInputDevice, i.e. keyboard, mouse, etc.
+         */
+        int device {0};
+
+        /**
+         * The button itself, i.e. on keyboard: 0 = A, 1 = B, etc.
+         * Can be set from sf::Keyboard::Key, sf::Mouse::Button, etc.
+         */
+        int code {0};
+
+        void setDevice(EInputDevice inDevice);
+
+        [[nodiscard]] bool isPressed();
+
+        static EInputDevice inputDeviceFromString(const std::string& device);
+        static std::string stringFromInputDevice(EInputDevice device);
+    };
+
     class TAILS_API CInputManager final
     {
     public:
-        template<typename T>
-        static void registerInputDevice()
-        {
-            static_assert(std::is_base_of_v<IInputDevice, T>,
-                "Failed to register input device, it does not derive IInputDevice.");
-            get().m_devices.emplace_back(std::make_unique<T>());
-        }
-        
-        static bool isActionPressed(const SAction& action);
         static bool isActionPressed(const std::string& action);
 
-        static SAction& addAction(const SAction& action);
-        static SAction& addAction(std::string name, const std::vector<int>& buttons);
+        static void addAction(std::string name, SKey key);
+        static void addAction(std::string name, const std::vector<SKey>& keys);
         
     private:
-        CInputManager();
-        
         static CInputManager& get();
 
-        std::vector<SAction> m_actions;
-        std::vector<std::unique_ptr<IInputDevice>> m_devices;
+        std::unordered_map<std::string, std::vector<SKey>> m_actions;
     };
 }
 

@@ -10,10 +10,11 @@ target_sources(
     World.hpp
     Level.hpp
     InputManager.hpp
-    InputDevice.hpp
-    KeyboardDevice.hpp
     Entity.hpp
     AssetData.hpp
     AssetCache.hpp
     TextureAsset.hpp
+    SoundAsset.hpp
+    AudioManager.hpp
+    Directories.hpp
 )

@@ -12,6 +12,12 @@ namespace tails
     public:
         virtual ~IAssetData() = default;
         virtual bool load(const std::string& path) = 0;
+
+        /**
+         * Gets the asset type (texture, sound, etc.) as seen in the assets json
+         * @return Type as string
+         */
+        virtual std::string getType() = 0;
     };
 }
 

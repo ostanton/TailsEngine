@@ -6,4 +6,9 @@ namespace tails
     {
         return loadFromFile(path);
     }
+
+    std::string CTextureAsset::getType()
+    {
+        return "texture";
+    }
 }

@@ -13,6 +13,7 @@ namespace tails
     class TAILS_API CTextureAsset final : public IAssetData, public sf::Texture
     {
         bool load(const std::string& path) override;
+        std::string getType() override;
     };
 }
 

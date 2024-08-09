@@ -17,8 +17,12 @@ namespace tails
     class TAILS_API CEngine : public CObject, public ITickable
     {
     public:
-        // Internal Engine things setup here
+        /**
+         * Sets up engine with "engine.json" as engine setup file
+         */
         CEngine();
+        // Internal Engine things setup here
+        explicit CEngine(const std::string& engineSetupFile);
         ~CEngine() override;
     
         template<typename T, typename... Args>
@@ -37,6 +41,10 @@ namespace tails
 
         [[nodiscard]] sf::RenderTarget& getRenderTarget() const {return *m_renderTarget;}
         [[nodiscard]] const sf::RenderStates& getRenderState() const {return m_renderStates;}
+        [[nodiscard]] sf::RenderTexture& getInternalRenderTexture() {return m_renderTextureInternal;}
+        [[nodiscard]] const sf::RenderTexture& getInternalRenderTexture() const {return m_renderTextureInternal;}
+        [[nodiscard]] sf::View& getRenderView() {return m_renderView;}
+        [[nodiscard]] const sf::View& getRenderView() const {return m_renderView;}
         [[nodiscard]] CWorld& getWorld() {return m_world;}
         [[nodiscard]] const CWorld& getWorld() const {return m_world;}
 
@@ -68,6 +76,8 @@ namespace tails
         sf::RenderStates m_renderStates;
         bool m_running {true};
         CWorld m_world;
+
+        sf::Vector2u m_renderResolution {240, 160};
     };
 }
 

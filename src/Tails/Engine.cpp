@@ -1,29 +1,59 @@
 #include <Tails/Engine.hpp>
 #include <Tails/Level.hpp>
+#include <Tails/Directories.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include <nlohmann/json.hpp>
+
 #include <iostream>
+#include <fstream>
 
 namespace tails
 {
-    CEngine::CEngine()
+    CEngine::CEngine() : CEngine("engine.json")
     {
-        // TODO - swap magic numbers with user-defined ones or something
+    }
 
-        // Setup internal render texture
-        m_renderTextureInternal.create(240, 160);
-
-        // Set the size and center of the camera initially
-        m_renderView.setSize(240.f, 160.f);
-        m_renderView.setCenter(120.f, 80.f);
-
+    CEngine::CEngine(const std::string& engineSetupFile)
+    {
         // Setup world
         m_world.outer = this;
-        // TODO - default level to load
-        m_world.setDefaultLevel("");
+        
+        // TODO - swap magic numbers with user-defined ones or something
+        std::fstream setupFile {engineSetupFile};
+        nlohmann::json setupJson {nlohmann::json::parse(setupFile)};
+
+        if (setupJson.is_null())
+            return;
+
+        // Set world's default level
+        if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
+            m_world.setDefaultLevel(defaultLevelJson.get<std::string>());
+
+        if (const auto& dirJson = setupJson["dirs"]; !dirJson.is_null())
+            CDirectories::loadDirectories(dirJson);
+
+        if (const auto& renderJson = setupJson["render"]; !renderJson.is_null())
+        {
+            if (const auto& resolutionJson = renderJson["resolution"]; !resolutionJson.is_null())
+                m_renderResolution = {
+                    resolutionJson["x"].get<unsigned int>(),
+                    resolutionJson["y"].get<unsigned int>()
+                };
+            
+            // Setup internal render texture
+            m_renderTextureInternal.create(m_renderResolution.x, m_renderResolution.y);
+
+            // Set the size and center of the camera initially
+            m_renderView.setSize(
+                static_cast<float>(m_renderResolution.x),
+                static_cast<float>(m_renderResolution.y)
+            );
+            m_renderView.setCenter(m_renderView.getSize() * 0.5f);
+        }
     }
 
     CEngine::~CEngine() = default;
@@ -75,8 +105,7 @@ namespace tails
 
             m_renderTarget->clear();
             m_renderTarget->setView(m_renderView);
-            sf::Sprite renderSprite {internalRenderTexture};
-            m_renderTarget->draw(renderSprite);
+            m_renderTarget->draw(sf::Sprite(internalRenderTexture));
             m_renderTarget->setView(m_renderTarget->getDefaultView());
 
             if (window)
