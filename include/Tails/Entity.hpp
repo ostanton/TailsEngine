@@ -29,6 +29,7 @@ namespace tails
         CEntity();
         
         void destroy();
+        bool colliding(const CEntity* entity) const;
 
         virtual sf::FloatRect getGlobalBounds() const;
 
@@ -40,25 +41,33 @@ namespace tails
         /**
          * Called the same frame as this entity is spawned.
          */
-        virtual void spawn() {}
+        virtual void onSpawn() {}
 
         /**
          * Called the start of the next frame after this entity is spawned.
          */
-        virtual void postSpawn() {}
+        virtual void onPostSpawn() {}
 
         /**
          * Called the same frame this entity is despawned/marked for destroy.
          */
-        virtual void despawn() {}
+        virtual void onDespawn() {}
 
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+        /**
+         * Called every frame while we are colliding with another entity.
+         * @param other The entity we are colliding against
+         */
+        virtual void onCollision(CEntity& other) {}
 
         [[nodiscard]] CLevel& getLevel() const;
         [[nodiscard]] CEngine& getEngine() const;
 
     private:
+        void spawn(CLevel& level);
+        
         sf::VertexArray m_vertices {sf::TriangleStrip, 4};
         std::shared_ptr<CTextureAsset> m_texture;
     };

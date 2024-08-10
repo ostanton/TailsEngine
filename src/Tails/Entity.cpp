@@ -14,7 +14,14 @@ namespace tails
     void CEntity::destroy()
     {
         markForDestroy();
-        despawn();
+        onDespawn();
+    }
+
+    bool CEntity::colliding(const CEntity* entity) const
+    {
+        if (!entity) return false;
+        
+        return getGlobalBounds().intersects(entity->getGlobalBounds());
     }
 
     sf::FloatRect CEntity::getGlobalBounds() const
@@ -68,5 +75,11 @@ namespace tails
     CEngine& CEntity::getEngine() const
     {
         return getLevel().getEngine();
+    }
+
+    void CEntity::spawn(CLevel& level)
+    {
+        outer = &level;
+        onSpawn();
     }
 }

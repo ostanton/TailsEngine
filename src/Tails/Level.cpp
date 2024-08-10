@@ -23,6 +23,14 @@ namespace tails
         return getWorld().getEngine();
     }
 
+    bool CLevel::entitiesColliding(const CEntity* entity1, const CEntity* entity2)
+    {
+        // check for if entity2 is valid resides in colliding()
+        if (!entity1) return false;
+        
+        return entity1->colliding(entity2);
+    }
+
     CLevel::CLevel(std::string path)
         : m_path(std::move(path))
     {
@@ -40,7 +48,7 @@ namespace tails
             if (entity->pendingCreate())
             {
                 entity->unmarkForCreate();
-                entity->postSpawn();
+                entity->onPostSpawn();
             }
         }
     }
@@ -50,7 +58,11 @@ namespace tails
         for (auto& entity : m_entities)
         {
             if (!entity->pendingCreate())
+            {
                 entity->tick(deltaTime);
+
+                checkCollision(entity.get());
+            }
         }
     }
 
@@ -78,10 +90,23 @@ namespace tails
         }
     }
 
+    void CLevel::checkCollision(CEntity* entity) const
+    {
+        if (!entity) return;
+        
+        for (auto& entity2 : m_entities)
+        {
+            if (!entity2->pendingCreate() && entity2.get() != entity)
+            {
+                if (entity->colliding(entity2.get()))
+                    entity->onCollision(*entity2);
+            }
+        }
+    }
+
     CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity)
     {
-        entity->outer = this;
-        entity->spawn();
+        entity->spawn(*this);
 
         m_entities.emplace_back(std::move(entity));
 

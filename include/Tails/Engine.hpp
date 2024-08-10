@@ -6,6 +6,7 @@
 #include <Tails/Tickable.hpp>
 #include <Tails/World.hpp>
 
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -14,14 +15,13 @@
 
 namespace tails
 {
-    class TAILS_API CEngine : public CObject, public ITickable
+    class TAILS_API CEngine final : public CObject, public ITickable, public sf::Drawable
     {
     public:
         /**
          * Sets up engine with "engine.json" as engine setup file
          */
         CEngine();
-        // Internal Engine things setup here
         explicit CEngine(const std::string& engineSetupFile);
         ~CEngine() override;
     
@@ -34,8 +34,6 @@ namespace tails
             m_renderTarget = std::make_unique<T>(std::forward<Args>(args)...);
         }
 
-        // Player-centric things (like window size, etc.) setup here
-        virtual void init();
         void run();
         void kill();
 
@@ -51,7 +49,7 @@ namespace tails
     protected:
         void preTick() override;
         void tick(float deltaTime) override;
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states);
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
         
     private:

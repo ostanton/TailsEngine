@@ -23,7 +23,11 @@ namespace tails
         
     public:
         CLevel() = delete;
+        CLevel(const CLevel&) = delete;
+        CLevel(CLevel&&) = default;
         ~CLevel() override;
+        CLevel& operator=(const CLevel&) = delete;
+        CLevel& operator=(CLevel&&) = default;
         
         template<typename T>
         T* spawnEntity()
@@ -32,10 +36,12 @@ namespace tails
             return static_cast<T*>(spawnEntityImpl(std::make_unique<T>()));
         }
 
-        void destroyEntity(CEntity* entity);
+        static void destroyEntity(CEntity* entity);
 
         [[nodiscard]] CWorld& getWorld() const;
         [[nodiscard]] CEngine& getEngine() const;
+
+        static bool entitiesColliding(const CEntity* entity1, const CEntity* entity2);
         
     private:
         CLevel(std::string path);
@@ -44,6 +50,8 @@ namespace tails
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
+
+        void checkCollision(CEntity* entity) const;
 
         CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity);
 

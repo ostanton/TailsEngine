@@ -58,14 +58,12 @@ namespace tails
 
     CEngine::~CEngine() = default;
 
-    void CEngine::init()
-    {
-        // Set default render target as window
-        setRenderTarget<sf::RenderWindow>(sf::VideoMode(640, 480), "Window");
-    }
-
     void CEngine::run()
     {
+        // Set default render target as window if it has not already been set
+        if (!m_renderTarget)
+            setRenderTarget<sf::RenderWindow>(sf::VideoMode(640, 480), "Window");
+        
         sf::Clock clock;
         const auto window = dynamic_cast<sf::RenderWindow*>(m_renderTarget.get());
         const auto& internalRenderTexture = m_renderTextureInternal.getTexture();
@@ -134,7 +132,7 @@ namespace tails
         m_world.tick(deltaTime);
     }
 
-    void CEngine::draw(sf::RenderTarget& target, sf::RenderStates states)
+    void CEngine::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         target.draw(m_world, states);
     }
