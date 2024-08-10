@@ -10,7 +10,8 @@ namespace tails
 
     void CLevel::destroyEntity(CEntity* entity)
     {
-        entity->destroy();
+        if (entity)
+            entity->destroy();
     }
 
     CWorld& CLevel::getWorld() const
