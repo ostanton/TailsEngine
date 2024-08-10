@@ -14,4 +14,5 @@ add_library(
     SoundAsset.cpp
     AudioManager.cpp
     Directories.cpp
+    Screen.cpp
 )

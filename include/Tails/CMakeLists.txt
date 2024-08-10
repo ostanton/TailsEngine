@@ -17,4 +17,5 @@ target_sources(
     SoundAsset.hpp
     AudioManager.hpp
     Directories.hpp
+    Screen.hpp
 )
