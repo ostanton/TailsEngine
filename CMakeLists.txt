@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.29.3 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.28.3)
 
 project(TailsEngine LANGUAGES CXX)
 
 # Download and include CPM
+message("Downloading CPM")
 file(
   DOWNLOAD
   https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.40.1/CPM.cmake
