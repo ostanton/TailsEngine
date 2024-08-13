@@ -65,6 +65,8 @@ namespace tails
 
     void CEngine::run()
     {
+        // TODO - have chaiscript here or in main??? Do we even have main if it's here??
+        
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
             setRenderTarget<sf::RenderWindow>(sf::VideoMode(640, 480), "Window");
@@ -176,4 +178,10 @@ namespace tails
             "Top: " << viewportRect.top << "\n";
         m_renderView.setViewport(viewportRect);
     }
+}
+
+int main()
+{
+    tails::CEngine engine;
+    engine.run();
 }

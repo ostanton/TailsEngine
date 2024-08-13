@@ -116,4 +116,5 @@ Add(ed) ChaiScript! Then have it serialise and deserialise stuff to/from json
 Turn the engine into something that loads projects, instead of a project loading the library.
 So the engine contains the main() function, and the project just states what ChaiScript classes, etc. are used.
 Like in Unreal, there is no inheriting of the main engine class, etc., just saying "use this game mode", etc. for that engine instance.
+We don't need main() in the library itself if ChaiScript can be initialised in run(), so do that? Maybe?
 ///////////////////////////////////////////////
