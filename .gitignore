@@ -47,3 +47,4 @@ CMakeUserPresets.json
 # Folders
 build/
 .idea/
+cmake-build-debug/

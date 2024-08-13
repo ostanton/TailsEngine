@@ -24,6 +24,9 @@ CPMAddPackage("gh:SFML/SFML#2.6.1")
 # Add nlohmann/json
 CPMAddPackage("gh:nlohmann/json@3.11.3")
 
+# Add ChaiScript
+CPMAddPackage("gh:ChaiScript/ChaiScript@6.1.0")
+
 target_link_libraries(
     TailsEngine
     PUBLIC
@@ -32,5 +35,11 @@ target_link_libraries(
         nlohmann_json::nlohmann_json
 )
 
-target_include_directories(TailsEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(
+    TailsEngine
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${chaiscript_SOURCE_DIR}/include
+)
+
 target_compile_features(TailsEngine PUBLIC cxx_std_20)

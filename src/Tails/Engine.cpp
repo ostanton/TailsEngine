@@ -17,6 +17,11 @@ namespace tails
     {
     }
 
+    void testPrint()
+    {
+        std::cout << "Hello world\n";
+    }
+
     CEngine::CEngine(const std::string& engineSetupFile)
     {
         // Setup world
