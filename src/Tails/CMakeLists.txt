@@ -15,4 +15,5 @@ add_library(
     AudioManager.cpp
     Directories.cpp
     Screen.cpp
+    ChaiScript.cpp
 )

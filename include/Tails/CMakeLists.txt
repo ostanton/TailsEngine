@@ -18,4 +18,5 @@ target_sources(
     AudioManager.hpp
     Directories.hpp
     Screen.hpp
+    ChaiScript.hpp
 )

@@ -1,6 +1,7 @@
 #include <Tails/Engine.hpp>
 #include <Tails/Level.hpp>
 #include <Tails/Directories.hpp>
+#include <Tails/ChaiScript.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -24,6 +25,8 @@ namespace tails
 
     CEngine::CEngine(const std::string& engineSetupFile)
     {
+        g_chaiScript.add(chaiscript::fun(&testPrint), "testPrint");
+
         // Setup world
         m_world.outer = this;
         
@@ -178,19 +181,4 @@ namespace tails
             "Top: " << viewportRect.top << "\n";
         m_renderView.setViewport(viewportRect);
     }
-}
-
-int main()
-{
-    /**
-     * Maybe having a function that the client implements called "setupChaiClasses" or something.
-     * main() is then called here (or a file called main.cpp or something),
-     * and the chaiscript object is created here, and all the Tails Engine classes are added.
-     * Then setupChaiClasses() is called, passing a reference to the ChaiScript object,
-     * allowing the client to add their own C++ classes to ChaiScript.
-     * Then, the engine is created and the game begins, etc.
-     */
-
-    tails::CEngine engine;
-    engine.run();
 }
