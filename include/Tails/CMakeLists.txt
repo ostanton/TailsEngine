@@ -18,5 +18,9 @@ target_sources(
     AudioManager.hpp
     Directories.hpp
     Screen.hpp
-    ChaiScript.hpp
+    ClassRegistry.hpp
+    Serialisable.hpp
+    EngineRegistry.hpp
+    Debug.hpp
+    Vector2.hpp
 )

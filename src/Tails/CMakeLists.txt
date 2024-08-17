@@ -15,5 +15,7 @@ add_library(
     AudioManager.cpp
     Directories.cpp
     Screen.cpp
-    ChaiScript.cpp
+    ClassRegistry.cpp
+    EngineRegistry.cpp
+    Debug.cpp
 )

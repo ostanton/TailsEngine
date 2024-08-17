@@ -1,7 +1,7 @@
 #include <Tails/Engine.hpp>
 #include <Tails/Level.hpp>
 #include <Tails/Directories.hpp>
-#include <Tails/ChaiScript.hpp>
+#include <Tails/EngineRegistry.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -14,35 +14,35 @@
 
 namespace tails
 {
-    CEngine::CEngine() : CEngine("engine.json")
+    CEngine::CEngine() : CEngine("engine.json", {std::make_unique<CEngineRegistry>()})
     {
     }
 
-    void testPrint()
+    CEngine::CEngine(const std::string& engineSetupFile,
+        std::vector<std::unique_ptr<CClassRegistry>>&& registries)
+            : m_registries(std::move(registries))
     {
-        std::cout << "Hello world\n";
-    }
-
-    CEngine::CEngine(const std::string& engineSetupFile)
-    {
-        g_chaiScript.add(chaiscript::fun(&testPrint), "testPrint");
-
+        if (!getRegistry<CEngineRegistry>())
+            m_registries.emplace_back(std::make_unique<CEngineRegistry>());
+        
         // Setup world
         m_world.outer = this;
         
-        // TODO - swap magic numbers with user-defined ones or something
         std::fstream setupFile {engineSetupFile};
         nlohmann::json setupJson {nlohmann::json::parse(setupFile)};
 
         if (setupJson.is_null())
+        {
+            // TODO - debug print fail error thing
             return;
-
-        // Set world's default level
-        if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
-            m_world.setDefaultLevel(defaultLevelJson.get<std::string>());
+        }
 
         if (const auto& dirJson = setupJson["dirs"]; !dirJson.is_null())
             CDirectories::loadDirectories(dirJson);
+        
+        // Set world's default level
+        if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
+            m_world.setDefaultLevel(defaultLevelJson.get<std::string>());
 
         if (const auto& renderJson = setupJson["render"]; !renderJson.is_null())
         {
@@ -68,11 +68,10 @@ namespace tails
 
     void CEngine::run()
     {
-        // TODO - have chaiscript here or in main??? Do we even have main if it's here??
-        
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
-            setRenderTarget<sf::RenderWindow>(sf::VideoMode(640, 480), "Window");
+            setRenderTarget<sf::RenderWindow>(
+                sf::VideoMode(m_windowResolution.x, m_windowResolution.y), "Window");
         
         sf::Clock clock;
         const auto window = dynamic_cast<sf::RenderWindow*>(m_renderTarget.get());
@@ -156,10 +155,9 @@ namespace tails
 
     void CEngine::calculateInternalAspectRatio(sf::Vector2u windowSize)
     {
-        // TODO - swap magic numbers with internal res
         const sf::Vector2f ratio {
-            static_cast<float>(windowSize.x) / 240.f,
-            static_cast<float>(windowSize.y) / 160.f
+            static_cast<float>(windowSize.x) / static_cast<float>(m_renderResolution.x),
+            static_cast<float>(windowSize.y) / static_cast<float>(m_renderResolution.y)
         };
 
         sf::FloatRect viewportRect {0.f, 0.f, 1.f, 1.f};

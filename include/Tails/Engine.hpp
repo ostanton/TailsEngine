@@ -15,6 +15,8 @@
 
 namespace tails
 {
+    class CClassRegistry;
+    
     class TAILS_API CEngine final : public CObject, public ITickable, public sf::Drawable
     {
     public:
@@ -22,7 +24,8 @@ namespace tails
          * Sets up engine with "engine.json" as engine setup file
          */
         CEngine();
-        explicit CEngine(const std::string& engineSetupFile);
+        explicit CEngine(const std::string& engineSetupFile,
+            std::vector<std::unique_ptr<CClassRegistry>>&& registries);
         ~CEngine() override;
     
         template<typename T, typename... Args>
@@ -45,6 +48,26 @@ namespace tails
         [[nodiscard]] const sf::View& getRenderView() const {return m_renderView;}
         [[nodiscard]] CWorld& getWorld() {return m_world;}
         [[nodiscard]] const CWorld& getWorld() const {return m_world;}
+
+        template<typename T>
+        [[nodiscard]] bool registryExists() const
+        {
+            return getRegistry<T>();
+        }
+
+        template<typename T>
+        [[nodiscard]] T* getRegistry() const
+        {
+            if (m_registries.empty()) return nullptr;
+            
+            for (auto& registry : m_registries)
+            {
+                if (auto castedRegistry = dynamic_cast<T*>(registry.get()))
+                    return castedRegistry;
+            }
+
+            return nullptr;
+        }
 
     protected:
         void preTick() override;
@@ -72,10 +95,26 @@ namespace tails
         sf::View m_renderView;
         
         sf::RenderStates m_renderStates;
+
+        /**
+         * Whether the engine is currently running. This should probably always be true
+         * (unless the game is closing)!
+         */
         bool m_running {true};
+
+        /**
+         * The world associated with the engine.
+         */
         CWorld m_world;
 
         sf::Vector2u m_renderResolution {240, 160};
+        sf::Vector2u m_windowResolution {1280, 720};
+
+        /**
+         * The registries that handle all the serialisation stuff for engine and custom
+         * classes. They are set in the engine's constructor, and cannot be added after.
+         */
+        std::vector<std::unique_ptr<CClassRegistry>> m_registries;
     };
 }
 

@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
+#include <Tails/Serialisable.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -20,6 +21,7 @@ namespace tails
     class TAILS_API CEntity :
         public CObject,
         public ITickable,
+        public ISerialisable,
         public sf::Drawable,
         public sf::Transformable
     {
@@ -27,6 +29,7 @@ namespace tails
 
     public:
         CEntity();
+        ~CEntity() override;
         
         void destroy();
         bool colliding(const CEntity* entity) const;
@@ -36,6 +39,8 @@ namespace tails
         virtual void setTexture(const std::shared_ptr<CTextureAsset>& texture);
         virtual void setSize(float x, float y);
         void setSize(const sf::Vector2f& size);
+
+        const sf::Vector2f& getSize() const;
         
     protected:
         /**
@@ -66,6 +71,10 @@ namespace tails
         [[nodiscard]] CEngine& getEngine() const;
 
     private:
+        nlohmann::json serialise() override;
+        void deserialise(const nlohmann::json& obj) override;
+        std::unique_ptr<ISerialisable> clone() override;
+        
         void spawn(CLevel& level);
         
         sf::VertexArray m_vertices {sf::TriangleStrip, 4};

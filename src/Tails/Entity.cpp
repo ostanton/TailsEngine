@@ -1,6 +1,8 @@
 #include <Tails/Entity.hpp>
 #include <Tails/Level.hpp>
 #include <Tails/TextureAsset.hpp>
+#include <Tails/AssetCache.hpp>
+#include <Tails/Vector2.hpp>
 
 #include "SFML/Graphics/RenderTarget.hpp"
 
@@ -8,8 +10,10 @@ namespace tails
 {
     CEntity::CEntity()
     {
-        setSize(32.f, 32.f);
+        CEntity::setSize(32.f, 32.f);
     }
+
+    CEntity::~CEntity() = default;
 
     void CEntity::destroy()
     {
@@ -45,6 +49,7 @@ namespace tails
 
     void CEntity::setSize(float x, float y)
     {
+        m_vertices[0].position = {0.f, 0.f};
         m_vertices[1].position = {0.f, y};
         m_vertices[2].position = {x, 0.f};
         m_vertices[3].position = {x, y};
@@ -53,6 +58,11 @@ namespace tails
     void CEntity::setSize(const sf::Vector2f& size)
     {
         setSize(size.x, size.y);
+    }
+
+    const sf::Vector2f& CEntity::getSize() const
+    {
+        return m_vertices[3].position;
     }
 
     void CEntity::tick(float deltaTime)
@@ -75,6 +85,46 @@ namespace tails
     CEngine& CEntity::getEngine() const
     {
         return getLevel().getEngine();
+    }
+
+    nlohmann::json CEntity::serialise()
+    {
+        nlohmann::json obj;
+        obj.push_back({"position"});
+        obj["position"].push_back(TVector2f::toJSON(getPosition()));
+
+        obj.push_back({"rotation"});
+        obj["rotation"] = getRotation();
+
+        obj.push_back({"scale"});
+        obj["scale"].push_back(TVector2f::toJSON(getScale()));
+
+        obj.push_back({"size"});
+        obj["size"].push_back(TVector2f::toJSON(getSize()));
+        
+        return obj;
+    }
+
+    void CEntity::deserialise(const nlohmann::json& obj)
+    {
+        setPosition(TVector2f::fromJSON(obj["position"]));
+        setRotation(obj["rotation"].get<float>());
+        setScale(TVector2f::fromJSON(obj["scale"]));
+        setSize(TVector2f::fromJSON(obj["size"]));
+
+        // textures
+        // TODO - get path of texture ID from whatever engine.ini file or something?
+        setTexture(CAssetCache::loadTexture(obj["texture"].get<std::string>(), ""));
+    }
+
+    std::unique_ptr<ISerialisable> CEntity::clone()
+    {
+        auto obj = std::make_unique<CEntity>();
+        obj->setPosition(getPosition());
+        obj->setRotation(getRotation());
+        obj->setScale(getScale());
+        obj->setSize(getSize());
+        return obj;
     }
 
     void CEntity::spawn(CLevel& level)

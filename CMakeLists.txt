@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.28.3)
 
 project(TailsEngine LANGUAGES CXX)
 
+# TODO - Check if we have CPM already, same with getting packages!
 # Download and include CPM
-message("Downloading CPM")
+message("-- TailsEngine: Downloading CPM")
 file(
   DOWNLOAD
   https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.40.1/CPM.cmake
@@ -24,9 +25,6 @@ CPMAddPackage("gh:SFML/SFML#2.6.1")
 # Add nlohmann/json
 CPMAddPackage("gh:nlohmann/json@3.11.3")
 
-# Add ChaiScript
-CPMAddPackage("gh:ChaiScript/ChaiScript@6.1.0")
-
 target_link_libraries(
     TailsEngine
     PUBLIC
@@ -39,7 +37,6 @@ target_include_directories(
     TailsEngine
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${chaiscript_SOURCE_DIR}/include
 )
 
 target_compile_features(TailsEngine PUBLIC cxx_std_20)
