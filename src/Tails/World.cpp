@@ -9,13 +9,17 @@ namespace tails
     void CWorld::openLevel(std::string path)
     {
         // cannot use make_unique unless CLevel(string) constructor is public
+        // TODO:
+        // maybe change this so we check for if m_path is set, and delay this until postTick?
+        // then we only have 2 levels open for the duration of that function.
+        // or not have the level to load, just the path to load??
         m_levelToLoad.reset(new CLevel(std::move(path)));
         m_levelToLoad->outer = this;
     }
 
     CEngine& CWorld::getEngine() const
     {
-        return *static_cast<CEngine*>(outer);
+        return *dynamic_cast<CEngine*>(outer);
     }
 
     void CWorld::setDefaultLevel(std::string path)
@@ -50,6 +54,7 @@ namespace tails
 
         if (m_levelToLoad)
         {
+            m_currentLevel->onClose();
             m_currentLevel = std::move(m_levelToLoad);
             m_levelToLoad.reset();
         }

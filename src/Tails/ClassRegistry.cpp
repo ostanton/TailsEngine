@@ -1,5 +1,4 @@
 #include <Tails/ClassRegistry.hpp>
-#include <Tails/Serialisable.hpp>
 
 namespace tails
 {
@@ -23,16 +22,7 @@ namespace tails
 
     std::unique_ptr<ISerialisable> CClassRegistry::instantiateClass(const std::string& name)
     {
-        if (m_classes.contains(name))
-        {
-            // you are not expected to set className, etc. in the overriden class method.
-            auto result = m_classes[name]->clone();
-            if (result->m_className != name)
-                result->m_className = name;
-            return result;
-        }
-
-        return nullptr;
+        return instantiateClass<ISerialisable>(name);
     }
 
     bool CClassRegistry::classExists(const std::string& name) const

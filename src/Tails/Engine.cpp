@@ -14,7 +14,9 @@
 
 namespace tails
 {
-    CEngine::CEngine() : CEngine("engine.json", {std::make_unique<CEngineRegistry>()})
+    // removed make_unique for engine registry here because it was causing compile errors
+    // to do with unique_ptr's deleted copy-constructor (I think). Couldn't fix it.
+    CEngine::CEngine() : CEngine("engine.json", {})
     {
     }
 

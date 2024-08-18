@@ -4,7 +4,7 @@
 #include <Tails/AssetCache.hpp>
 #include <Tails/Vector2.hpp>
 
-#include "SFML/Graphics/RenderTarget.hpp"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace tails
 {
@@ -79,7 +79,7 @@ namespace tails
 
     CLevel& CEntity::getLevel() const
     {
-        return *static_cast<CLevel*>(outer);
+        return *dynamic_cast<CLevel*>(outer);
     }
 
     CEngine& CEntity::getEngine() const
@@ -87,7 +87,7 @@ namespace tails
         return getLevel().getEngine();
     }
 
-    nlohmann::json CEntity::serialise()
+    nlohmann::json CEntity::serialise() const
     {
         nlohmann::json obj;
         obj.push_back({"position"});
@@ -117,7 +117,7 @@ namespace tails
         setTexture(CAssetCache::loadTexture(obj["texture"].get<std::string>(), ""));
     }
 
-    std::unique_ptr<ISerialisable> CEntity::clone()
+    std::unique_ptr<ISerialisable> CEntity::clone() const
     {
         auto obj = std::make_unique<CEntity>();
         obj->setPosition(getPosition());

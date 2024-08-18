@@ -2,18 +2,26 @@ cmake_minimum_required(VERSION 3.28.3)
 
 project(TailsEngine LANGUAGES CXX)
 
-# TODO - Check if we have CPM already, same with getting packages!
-# Download and include CPM
-message("-- TailsEngine: Downloading CPM")
-file(
-  DOWNLOAD
-  https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.40.1/CPM.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake
-)
+# Download CPM if it does not already exist
+if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake")
+    message("-- TailsEngine: CPM is already downloaded")
+else ()
+    message("-- TailsEngine: Downloading CPM")
+    file(
+      DOWNLOAD
+      https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.40.1/CPM.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake
+    )
+endif ()
+
+# Include CPM
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
 add_subdirectory(src/Tails)
 add_subdirectory(include/Tails)
+
+# Don't need to check if these are downloaded, CPM seems to do it for us
+# Could check on the user's PC elsewhere, but having a clean clone is good I think
 
 # Build SFML statically
 set(BUILD_SHARED_LIBS OFF)

@@ -71,9 +71,9 @@ namespace tails
         [[nodiscard]] CEngine& getEngine() const;
 
     private:
-        nlohmann::json serialise() override;
+        nlohmann::json serialise() const override;
         void deserialise(const nlohmann::json& obj) override;
-        std::unique_ptr<ISerialisable> clone() override;
+        std::unique_ptr<ISerialisable> clone() const override;
         
         void spawn(CLevel& level);
         

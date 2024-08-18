@@ -1,12 +1,22 @@
 #include <Tails/Level.hpp>
 #include <Tails/World.hpp>
 #include <Tails/Entity.hpp>
+#include <Tails/EngineRegistry.hpp>
+#include <Tails/Engine.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace tails
 {
     CLevel::~CLevel() = default;
+
+    CEntity* CLevel::spawnEntity(const std::string& className)
+    {
+        auto result = spawnEntityImpl(
+            getEngine().getRegistry<CEngineRegistry>()->instantiateClass<CEntity>(className)
+        );
+        return result;
+    }
 
     void CLevel::destroyEntity(CEntity* entity)
     {
@@ -16,7 +26,7 @@ namespace tails
 
     CWorld& CLevel::getWorld() const
     {
-        return *static_cast<CWorld*>(outer);
+        return *dynamic_cast<CWorld*>(outer);
     }
 
     CEngine& CLevel::getEngine() const
@@ -35,7 +45,17 @@ namespace tails
     CLevel::CLevel(std::string path)
         : m_path(std::move(path))
     {
+        load();
+    }
+
+    void CLevel::load()
+    {
+        /* CLEANUP OF OLD LEVEL */
         
+        // destroy all entities
+        
+
+        /* SETUP OF NEW LEVEL */
     }
 
     void CLevel::preTick()
@@ -84,10 +104,22 @@ namespace tails
         {
             it->get()->postTick();
 
+            // not really any idea if this works, found it on stack overflow or something
             if (it->get()->pendingDestroy())
                 it = decltype(it)(m_entities.erase(std::next(it).base()));
             else
                 ++it;
+        }
+    }
+
+    void CLevel::onClose() const
+    {
+        if (!m_entities.empty())
+        {
+            for (auto& entity : m_entities)
+            {
+                entity->destroy();
+            }
         }
     }
 

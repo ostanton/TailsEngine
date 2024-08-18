@@ -2,6 +2,7 @@
 #define TAILS_REGISTRY_HPP
 
 #include <Tails/Config.hpp>
+#include <Tails/Serialisable.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -9,8 +10,6 @@
 
 namespace tails
 {
-    class ISerialisable;
-    
     /**
      * A wrapper for mapping "prototype" object instances to literal class name strings, allowing for some
      * limited, yet useful, reflection.
@@ -39,6 +38,20 @@ namespace tails
 
         [[nodiscard]] std::unique_ptr<ISerialisable> instantiateClass(const std::string& name);
         [[nodiscard]] bool classExists(const std::string& name) const;
+
+        template<typename T>
+        std::unique_ptr<T> instantiateClass(const std::string& name)
+        {
+            if (m_classes.contains(name))
+            {
+                std::unique_ptr<T> obj {static_cast<T*>(m_classes[name]->clone().release())};
+                if (obj->m_className != name)
+                    obj->m_className = name;
+                return obj;
+            }
+
+            return nullptr;
+        }
         
     private:
         /**

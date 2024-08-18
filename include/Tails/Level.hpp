@@ -36,6 +36,8 @@ namespace tails
             return static_cast<T*>(spawnEntityImpl(std::make_unique<T>()));
         }
 
+        CEntity* spawnEntity(const std::string& className);
+
         static void destroyEntity(CEntity* entity);
 
         [[nodiscard]] CWorld& getWorld() const;
@@ -46,10 +48,21 @@ namespace tails
     private:
         CLevel(std::string path);
 
+        /**
+         * Load the level from the already set .json file.
+         * Essentially "reloads" it.
+         */
+        void load();
+
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
+
+        /**
+         * Called when this level is being closed and another is opening.
+         */
+        void onClose() const;
 
         void checkCollision(CEntity* entity) const;
 
