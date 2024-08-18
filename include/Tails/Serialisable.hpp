@@ -40,9 +40,9 @@ namespace tails
         [[nodiscard]] const std::string& getClassName() const {return m_className;}
         
     protected:
-        virtual [[nodiscard]] nlohmann::json serialise() const = 0;
+        [[nodiscard]] virtual nlohmann::json serialise() const = 0;
         virtual void deserialise(const nlohmann::json& obj) = 0;
-        virtual [[nodiscard]] std::unique_ptr<ISerialisable> clone() const = 0;
+        [[nodiscard]] virtual std::unique_ptr<ISerialisable> clone() const = 0;
 
     private:
         std::string m_className;
