@@ -30,7 +30,7 @@ namespace tails
         // Setup world
         m_world.outer = this;
         
-        std::fstream setupFile {engineSetupFile};
+        std::ifstream setupFile {engineSetupFile};
         nlohmann::json setupJson {nlohmann::json::parse(setupFile)};
 
         if (setupJson.is_null())
@@ -64,6 +64,19 @@ namespace tails
             );
             m_renderView.setCenter(m_renderView.getSize() * 0.5f);
         }
+
+        if (const auto& windowJson = setupJson["window"]; !windowJson.is_null())
+        {
+            if (const auto& titleJson = windowJson["title"]; !titleJson.is_null())
+                m_windowProperties.title = titleJson.get<std::string>();
+
+            // TODO - change this for some user settings json?
+            if (const auto& sizeJson = windowJson["resolution"]; !sizeJson.is_null())
+            {
+                m_windowProperties.resolution.x = sizeJson["x"].get<unsigned int>();
+                m_windowProperties.resolution.y = sizeJson["y"].get<unsigned int>();
+            }
+        }
     }
 
     CEngine::~CEngine() = default;
@@ -73,7 +86,12 @@ namespace tails
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
             setRenderTarget<sf::RenderWindow>(
-                sf::VideoMode(m_windowResolution.x, m_windowResolution.y), "Window");
+                sf::VideoMode(
+                    m_windowProperties.resolution.x,
+                    m_windowProperties.resolution.y
+                ),
+                m_windowProperties.title
+            );
         
         sf::Clock clock;
         const auto window = dynamic_cast<sf::RenderWindow*>(m_renderTarget.get());

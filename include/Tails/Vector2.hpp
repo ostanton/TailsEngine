@@ -3,6 +3,8 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace tails
 {
     /**

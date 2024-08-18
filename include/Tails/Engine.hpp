@@ -12,10 +12,17 @@
 #include <SFML/Graphics/View.hpp>
 
 #include <memory>
+#include <string>
 
 namespace tails
 {
     class CClassRegistry;
+
+    struct TAILS_API SWindowProperties final
+    {
+        std::string title;
+        sf::Vector2u resolution {1280, 720};
+    };
     
     class TAILS_API CEngine final : public CObject, public ITickable, public sf::Drawable
     {
@@ -108,7 +115,7 @@ namespace tails
         CWorld m_world;
 
         sf::Vector2u m_renderResolution {240, 160};
-        sf::Vector2u m_windowResolution {1280, 720};
+        SWindowProperties m_windowProperties;
 
         /**
          * The registries that handle all the serialisation stuff for engine and custom
