@@ -43,7 +43,7 @@ namespace tails
         
         CDebug::print("Loading " + engineSetupFile);
         std::ifstream setupFile {engineSetupFile};
-        nlohmann::json setupJson {nlohmann::json::parse(setupFile)};
+        nlohmann::json setupJson = nlohmann::json::parse(setupFile);
 
         if (setupJson.is_null())
         {
@@ -51,7 +51,7 @@ namespace tails
             return;
         }
 
-        CDebug::print("JSON is valid");
+        CDebug::print(std::string("JSON is a valid ") + setupJson.type_name());
 
         /* DIRECTORIES */
 
