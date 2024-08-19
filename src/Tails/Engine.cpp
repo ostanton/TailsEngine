@@ -2,6 +2,7 @@
 #include <Tails/Level.hpp>
 #include <Tails/Directories.hpp>
 #include <Tails/EngineRegistry.hpp>
+#include <Tails/Debug.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -30,22 +31,26 @@ namespace tails
         // Setup world
         m_world.outer = this;
         
+        CDebug::print("Opening " + engineSetupFile);
         std::ifstream setupFile {engineSetupFile};
         nlohmann::json setupJson {nlohmann::json::parse(setupFile)};
 
         if (setupJson.is_null())
         {
-            // TODO - debug print fail error thing
+            CDebug::print("Failed to load " + engineSetupFile);
             return;
         }
 
+        CDebug::print("Trying to load directories");
         if (const auto& dirJson = setupJson["dirs"]; !dirJson.is_null())
             CDirectories::loadDirectories(dirJson);
         
+        CDebug::print("Opening default level");
         // Set world's default level
         if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
-            m_world.setDefaultLevel(defaultLevelJson.get<std::string>());
+            m_world.openLevel(defaultLevelJson.get<std::string>());
 
+        CDebug::print("Trying to set render settings");
         if (const auto& renderJson = setupJson["render"]; !renderJson.is_null())
         {
             if (const auto& resolutionJson = renderJson["resolution"]; !resolutionJson.is_null())
@@ -65,6 +70,7 @@ namespace tails
             m_renderView.setCenter(m_renderView.getSize() * 0.5f);
         }
 
+        CDebug::print("Trying to set window settings");
         if (const auto& windowJson = setupJson["window"]; !windowJson.is_null())
         {
             if (const auto& titleJson = windowJson["title"]; !titleJson.is_null())

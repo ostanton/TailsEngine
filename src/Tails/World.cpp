@@ -6,15 +6,31 @@
 
 namespace tails
 {
-    void CWorld::openLevel(std::string path)
+    CLevel* CWorld::openLevel(std::string path)
     {
-        // cannot use make_unique unless CLevel(string) constructor is public
-        // TODO:
-        // maybe change this so we check for if m_path is set, and delay this until postTick?
-        // then we only have 2 levels open for the duration of that function.
-        // or not have the level to load, just the path to load??
-        m_levelToLoad.reset(new CLevel(std::move(path)));
-        m_levelToLoad->outer = this;
+        m_openLevels.emplace_back(new CLevel(std::move(path)));
+        CLevel* result {m_openLevels.back().get()};
+        result->outer = this;
+
+        result->open();
+
+        return result;
+    }
+
+    bool CWorld::closeLevel(CLevel* level)
+    {
+        if (auto it = std::find_if(m_openLevels.begin(), m_openLevels.end(),
+            [&](auto& uniqueLevel)
+            {
+                return uniqueLevel.get() == level;
+            }); it != m_openLevels.end())
+        {
+            level->markForDestroy();
+            level->close();
+            return true;
+        }
+
+        return false;
     }
 
     CEngine& CWorld::getEngine() const
@@ -22,41 +38,51 @@ namespace tails
         return *dynamic_cast<CEngine*>(outer);
     }
 
-    void CWorld::setDefaultLevel(std::string path)
+    CLevel& CWorld::getLevel(size_t index) const
     {
-        // cannot use make_unique unless CLevel(string) constructor is public
-        m_currentLevel.reset(new CLevel(std::move(path)));
-        m_currentLevel->outer = this;
+        return *m_openLevels[index];
     }
 
     void CWorld::preTick()
     {
         ITickable::preTick();
 
-        m_currentLevel->preTick();
+        for (auto& level : m_openLevels)
+        {
+            level->preTick();
+        }
     }
 
     void CWorld::tick(float deltaTime)
     {
-        m_currentLevel->tick(deltaTime);
+        for (auto& level : m_openLevels)
+        {
+            level->tick(deltaTime);
+        }
     }
 
     void CWorld::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        target.draw(*m_currentLevel, states);
+        for (auto& level : m_openLevels)
+        {
+            target.draw(*level, states);
+        }
     }
 
     void CWorld::postTick()
     {
         ITickable::postTick();
 
-        m_currentLevel->postTick();
-
-        if (m_levelToLoad)
+        for (auto it = m_openLevels.rbegin(); it != m_openLevels.rend();)
         {
-            m_currentLevel->onClose();
-            m_currentLevel = std::move(m_levelToLoad);
-            m_levelToLoad.reset();
+            (*it)->postTick();
+
+            if ((*it)->pendingDestroy())
+            {
+                it = decltype(it)(m_openLevels.erase(std::next(it).base()));
+            }
+            else
+                ++it;
         }
     }
 }

@@ -54,6 +54,8 @@ namespace tails
          */
         void load();
 
+        void open();
+
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -62,7 +64,7 @@ namespace tails
         /**
          * Called when this level is being closed and another is opening.
          */
-        void onClose() const;
+        void close() const;
 
         void checkCollision(CEntity* entity) const;
 

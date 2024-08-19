@@ -58,6 +58,11 @@ namespace tails
         /* SETUP OF NEW LEVEL */
     }
 
+    void CLevel::open()
+    {
+
+    }
+
     void CLevel::preTick()
     {
         ITickable::preTick();
@@ -112,7 +117,7 @@ namespace tails
         }
     }
 
-    void CLevel::onClose() const
+    void CLevel::close() const
     {
         if (!m_entities.empty())
         {

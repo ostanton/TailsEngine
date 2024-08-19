@@ -9,6 +9,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 namespace tails
 {
@@ -20,23 +21,22 @@ namespace tails
         friend CEngine;
 
     public:
-        void openLevel(std::string path);
+        CLevel* openLevel(std::string path);
+        bool closeLevel(CLevel* level);
 
         [[nodiscard]] CEngine& getEngine() const;
-        [[nodiscard]] CLevel& getLevel() const {return *m_currentLevel;}
+        [[nodiscard]] CLevel& getLevel(size_t index) const;
         
     private:
         CWorld() = default;
-        
-        void setDefaultLevel(std::string path);
         
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
 
-        std::unique_ptr<CLevel> m_currentLevel;
-        std::unique_ptr<CLevel> m_levelToLoad;
+        std::vector<std::unique_ptr<CLevel>> m_openLevels;
+        std::vector<CLevel*> m_levelsToClose;
     };
 }
 
