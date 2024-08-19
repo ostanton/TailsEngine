@@ -51,6 +51,8 @@ namespace tails
             return;
         }
 
+        CDebug::print("JSON is valid");
+
         /* DIRECTORIES */
 
         if (const auto& dirJson = setupJson["dirs"]; !dirJson.is_null())

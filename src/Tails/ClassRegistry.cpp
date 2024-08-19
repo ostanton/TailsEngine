@@ -8,7 +8,7 @@ namespace tails
     void CClassRegistry::registerClass(const std::string& className, std::unique_ptr<ISerialisable> classObj)
     {
         classObj->m_className = className;
-        CDebug::print("Registered " + className + " with typeid of " + typeid(classObj.get()).raw_name());
+        CDebug::print("Registered " + className + " with typeid of " + typeid(classObj.get()).name());
         m_classes.try_emplace(className, std::move(classObj));
     }
 
