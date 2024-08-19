@@ -10,7 +10,7 @@ namespace tails
 {
     CEntity::CEntity()
     {
-        CEntity::setSize(32.f, 32.f);
+        setSize(16.f, 16.f);
     }
 
     CEntity::~CEntity() = default;
@@ -18,7 +18,7 @@ namespace tails
     void CEntity::destroy()
     {
         markForDestroy();
-        onDespawn();
+        despawn();
     }
 
     bool CEntity::colliding(const CEntity* entity) const
@@ -47,6 +47,11 @@ namespace tails
         };
     }
 
+    std::shared_ptr<CTextureAsset> CEntity::getTexture() const
+    {
+        return m_texture;
+    }
+
     void CEntity::setSize(float x, float y)
     {
         m_vertices[0].position = {0.f, 0.f};
@@ -63,6 +68,19 @@ namespace tails
     const sf::Vector2f& CEntity::getSize() const
     {
         return m_vertices[3].position;
+    }
+
+    void CEntity::setColour(sf::Color colour)
+    {
+        for (size_t i {0}; i < m_vertices.getVertexCount(); i++)
+        {
+            m_vertices[i].color = colour;
+        }
+    }
+
+    sf::Color CEntity::getColour() const
+    {
+        return m_vertices[0].color;
     }
 
     void CEntity::tick(float deltaTime)
@@ -127,9 +145,9 @@ namespace tails
         return obj;
     }
 
-    void CEntity::spawn(CLevel& level)
+    void CEntity::initSpawn(CLevel* level)
     {
-        outer = &level;
-        onSpawn();
+        outer = level;
+        spawn();
     }
 }

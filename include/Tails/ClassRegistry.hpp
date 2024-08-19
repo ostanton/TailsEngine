@@ -18,35 +18,35 @@ namespace tails
     {
     public:
         CClassRegistry() = default;
-        CClassRegistry(const CClassRegistry& other);
+        CClassRegistry(const CClassRegistry& other) = default;
         CClassRegistry(CClassRegistry&&) noexcept = default;
         virtual ~CClassRegistry();
 
-        CClassRegistry& operator=(const CClassRegistry& other);
+        CClassRegistry& operator=(const CClassRegistry& other) = default;
         CClassRegistry& operator=(CClassRegistry&&) = default;
         
         template<typename C>
-        void registerClass(const std::string& name)
+        void registerClass(const std::string& className)
         {
             static_assert(std::is_base_of_v<ISerialisable, C>,
                 "Failed to register class, it does not derive ISerialisable.");
 
-            registerClass(name, std::make_unique<C>());
+            registerClass(className, std::make_unique<C>());
         }
 
-        void registerClass(const std::string& name, std::unique_ptr<ISerialisable> classObj);
+        void registerClass(const std::string& className, std::unique_ptr<ISerialisable> classObj);
 
         [[nodiscard]] std::unique_ptr<ISerialisable> instantiateClass(const std::string& name);
         [[nodiscard]] bool classExists(const std::string& name) const;
 
         template<typename T>
-        std::unique_ptr<T> instantiateClass(const std::string& name)
+        std::unique_ptr<T> instantiateClass(const std::string& className)
         {
-            if (m_classes.contains(name))
+            if (m_classes.contains(className))
             {
-                std::unique_ptr<T> obj {static_cast<T*>(m_classes[name]->clone().release())};
-                if (obj->m_className != name)
-                    obj->m_className = name;
+                std::unique_ptr<T> obj {static_cast<T*>(m_classes[className]->clone().release())};
+                if (obj->m_className != className)
+                    obj->m_className = className;
                 return obj;
             }
 

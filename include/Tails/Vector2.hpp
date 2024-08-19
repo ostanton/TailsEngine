@@ -92,8 +92,18 @@ namespace tails
         {
             return !(*this == other);
         }
+
+        [[nodiscard]] std::string toString() const
+        {
+            return std::to_string(x) + "x" + std::to_string(y);
+        }
+
+        [[nodiscard]] static std::string toString(const sf::Vector2<T>& other)
+        {
+            return std::to_string(other.x) + "x" + std::to_string(other.y);
+        }
         
-        static nlohmann::json toJSON(const sf::Vector2<T>& other)
+        [[nodiscard]] static nlohmann::json toJSON(const sf::Vector2<T>& other)
         {
             nlohmann::json obj;
             obj.push_back("x");
@@ -103,7 +113,7 @@ namespace tails
             return obj;
         }
 
-        static TVector2 fromJSON(const nlohmann::json& obj)
+        [[nodiscard]] static TVector2 fromJSON(const nlohmann::json& obj)
         {
             return {obj["x"].get<T>(), obj["y"].get<T>()};
         }

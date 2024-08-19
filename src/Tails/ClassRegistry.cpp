@@ -1,23 +1,15 @@
 #include <Tails/ClassRegistry.hpp>
+#include <Tails/Debug.hpp>
 
 namespace tails
 {
-    CClassRegistry::CClassRegistry(const CClassRegistry& other)
-    {
-        
-    }
-
     CClassRegistry::~CClassRegistry() = default;
 
-    CClassRegistry& CClassRegistry::operator=(const CClassRegistry& other)
+    void CClassRegistry::registerClass(const std::string& className, std::unique_ptr<ISerialisable> classObj)
     {
-        return *this;
-    }
-
-    void CClassRegistry::registerClass(const std::string& name, std::unique_ptr<ISerialisable> classObj)
-    {
-        classObj->m_className = name;
-        m_classes.try_emplace(name, std::move(classObj));
+        classObj->m_className = className;
+        CDebug::print("Registered " + className + " with typeid of " + typeid(classObj.get()).raw_name());
+        m_classes.try_emplace(className, std::move(classObj));
     }
 
     std::unique_ptr<ISerialisable> CClassRegistry::instantiateClass(const std::string& name)

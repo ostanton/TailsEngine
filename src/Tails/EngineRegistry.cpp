@@ -6,6 +6,6 @@ namespace tails
 {
     CEngineRegistry::CEngineRegistry()
     {
-        registerClass<CEntity>("Entity");
+        registerClass<CEntity>("CEntity");
     }
 }

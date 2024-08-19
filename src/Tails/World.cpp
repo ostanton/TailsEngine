@@ -38,9 +38,11 @@ namespace tails
         return *dynamic_cast<CEngine*>(outer);
     }
 
-    CLevel& CWorld::getLevel(size_t index) const
+    CLevel* CWorld::getLevel(size_t index) const
     {
-        return *m_openLevels[index];
+        if (index >= m_openLevels.size()) return nullptr;
+        
+        return m_openLevels[index].get();
     }
 
     void CWorld::preTick()

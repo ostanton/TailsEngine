@@ -3,6 +3,7 @@
 #include <Tails/Directories.hpp>
 #include <Tails/EngineRegistry.hpp>
 #include <Tails/Debug.hpp>
+#include <Tails/Vector2.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -10,11 +11,20 @@
 
 #include <nlohmann/json.hpp>
 
-#include <iostream>
 #include <fstream>
 
 namespace tails
 {
+    std::string SWindowProperties::toString() const
+    {
+        return "Window properties:\nTitle - " + title + "\nResolution - " + TVector2u::toString(resolution);
+    }
+
+    std::string SRenderProperties::toString() const
+    {
+        return "Render properties:\nResolution - " + TVector2u::toString(resolution);
+    }
+
     // removed make_unique for engine registry here because it was causing compile errors
     // to do with unique_ptr's deleted copy-constructor (I think). Couldn't fix it.
     CEngine::CEngine() : CEngine("engine.json", {})
@@ -31,7 +41,7 @@ namespace tails
         // Setup world
         m_world.outer = this;
         
-        CDebug::print("Opening " + engineSetupFile);
+        CDebug::print("Loading " + engineSetupFile);
         std::ifstream setupFile {engineSetupFile};
         nlohmann::json setupJson {nlohmann::json::parse(setupFile)};
 
@@ -41,40 +51,65 @@ namespace tails
             return;
         }
 
-        CDebug::print("Trying to load directories");
+        /* DIRECTORIES */
+
         if (const auto& dirJson = setupJson["dirs"]; !dirJson.is_null())
             CDirectories::loadDirectories(dirJson);
+        else
+            CDebug::print("Failed to load directories, using default");
         
-        CDebug::print("Opening default level");
-        // Set world's default level
+        /* WORLD AND LEVEL */
+        
         if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
             m_world.openLevel(defaultLevelJson.get<std::string>());
+        else
+        {
+            CDebug::print("Failed to open default level, opening blank level");
+            m_world.openLevel("");
+        }
 
-        CDebug::print("Trying to set render settings");
+        if (const auto level = m_world.getLevel(0))
+            CDebug::print("Opened level - " + level->getPath());
+        else
+            CDebug::print("Created level is invalid!");
+
+        /* RENDER SETTINGS */
+
         if (const auto& renderJson = setupJson["render"]; !renderJson.is_null())
         {
             if (const auto& resolutionJson = renderJson["resolution"]; !resolutionJson.is_null())
-                m_renderResolution = {
+                m_renderProperties.resolution = {
                     resolutionJson["x"].get<unsigned int>(),
                     resolutionJson["y"].get<unsigned int>()
                 };
-            
-            // Setup internal render texture
-            m_renderTextureInternal.create(m_renderResolution.x, m_renderResolution.y);
-
-            // Set the size and center of the camera initially
-            m_renderView.setSize(
-                static_cast<float>(m_renderResolution.x),
-                static_cast<float>(m_renderResolution.y)
-            );
-            m_renderView.setCenter(m_renderView.getSize() * 0.5f);
+            else
+                CDebug::print("Failed to load render resolution, using default");
+        }
+        else
+        {
+            CDebug::print("Failed to load render settings, using default");
         }
 
-        CDebug::print("Trying to set window settings");
+        // Setup internal render texture
+        m_renderTextureInternal.create(m_renderProperties.resolution.x, m_renderProperties.resolution.y);
+
+        // Set the size and center of the camera initially
+        m_renderView.setSize(
+            static_cast<float>(m_renderProperties.resolution.x),
+            static_cast<float>(m_renderProperties.resolution.y)
+        );
+        m_renderView.setCenter(m_renderView.getSize() * 0.5f);
+        
+        CDebug::print(m_renderProperties.toString());
+
+        /* WINDOW SETTINGS */
+
         if (const auto& windowJson = setupJson["window"]; !windowJson.is_null())
         {
             if (const auto& titleJson = windowJson["title"]; !titleJson.is_null())
                 m_windowProperties.title = titleJson.get<std::string>();
+            else
+                CDebug::print("Failed to load window title, using default");
 
             // TODO - change this for some user settings json?
             if (const auto& sizeJson = windowJson["resolution"]; !sizeJson.is_null())
@@ -82,7 +117,15 @@ namespace tails
                 m_windowProperties.resolution.x = sizeJson["x"].get<unsigned int>();
                 m_windowProperties.resolution.y = sizeJson["y"].get<unsigned int>();
             }
+            else
+                CDebug::print("Failed to load window resolution, using default");
         }
+        else
+            CDebug::print("Failed to load window settings, using default");
+        
+        CDebug::print(m_windowProperties.toString());
+
+        CDebug::print(engineSetupFile + " loaded");
     }
 
     CEngine::~CEngine() = default;
@@ -182,8 +225,8 @@ namespace tails
     void CEngine::calculateInternalAspectRatio(sf::Vector2u windowSize)
     {
         const sf::Vector2f ratio {
-            static_cast<float>(windowSize.x) / static_cast<float>(m_renderResolution.x),
-            static_cast<float>(windowSize.y) / static_cast<float>(m_renderResolution.y)
+            static_cast<float>(windowSize.x) / static_cast<float>(m_renderProperties.resolution.x),
+            static_cast<float>(windowSize.y) / static_cast<float>(m_renderProperties.resolution.y)
         };
 
         sf::FloatRect viewportRect {0.f, 0.f, 1.f, 1.f};
@@ -198,11 +241,7 @@ namespace tails
             viewportRect.height = ratio.x / ratio.y;
             viewportRect.top = (1.f - viewportRect.height) / 2.f;
         }
-
-        std::cout << "Width: " << viewportRect.width << "\n" <<
-            "Height: " << viewportRect.height << "\n" <<
-            "Left: " << viewportRect.left << "\n" <<
-            "Top: " << viewportRect.top << "\n";
+        
         m_renderView.setViewport(viewportRect);
     }
 }

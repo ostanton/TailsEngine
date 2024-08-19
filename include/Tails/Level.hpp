@@ -44,6 +44,8 @@ namespace tails
         [[nodiscard]] CEngine& getEngine() const;
 
         static bool entitiesColliding(const CEntity* entity1, const CEntity* entity2);
+
+        [[nodiscard]] const std::string& getPath() const {return m_path;}
         
     private:
         CLevel(std::string path);

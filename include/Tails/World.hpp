@@ -25,7 +25,7 @@ namespace tails
         bool closeLevel(CLevel* level);
 
         [[nodiscard]] CEngine& getEngine() const;
-        [[nodiscard]] CLevel& getLevel(size_t index) const;
+        [[nodiscard]] CLevel* getLevel(size_t index) const;
         
     private:
         CWorld() = default;
@@ -36,7 +36,6 @@ namespace tails
         void postTick() override;
 
         std::vector<std::unique_ptr<CLevel>> m_openLevels;
-        std::vector<CLevel*> m_levelsToClose;
     };
 }
 

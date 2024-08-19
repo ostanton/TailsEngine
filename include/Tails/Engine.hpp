@@ -20,8 +20,17 @@ namespace tails
 
     struct TAILS_API SWindowProperties final
     {
-        std::string title;
+        std::string title {"Tails Engine"};
         sf::Vector2u resolution {1280, 720};
+
+        [[nodiscard]] std::string toString() const;
+    };
+
+    struct TAILS_API SRenderProperties final
+    {
+        sf::Vector2u resolution {240, 160};
+
+        [[nodiscard]] std::string toString() const;
     };
     
     class TAILS_API CEngine final : public CObject, public ITickable, public sf::Drawable
@@ -114,7 +123,7 @@ namespace tails
          */
         CWorld m_world;
 
-        sf::Vector2u m_renderResolution {240, 160};
+        SRenderProperties m_renderProperties;
         SWindowProperties m_windowProperties;
 
         /**

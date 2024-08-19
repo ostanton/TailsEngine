@@ -44,7 +44,10 @@ namespace tails
         virtual void deserialise(const nlohmann::json& obj) = 0;
         [[nodiscard]] virtual std::unique_ptr<ISerialisable> clone() const = 0;
 
-    private:
+        /**
+         * "Reflectable" class name. If this class is not registered in a
+         * class registry subclass, set this in the constructor instead.
+         */
         std::string m_className;
     };
 }

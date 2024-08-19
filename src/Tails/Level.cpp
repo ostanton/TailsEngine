@@ -12,10 +12,9 @@ namespace tails
 
     CEntity* CLevel::spawnEntity(const std::string& className)
     {
-        auto result = spawnEntityImpl(
+        return spawnEntityImpl(
             getEngine().getRegistry<CEngineRegistry>()->instantiateClass<CEntity>(className)
         );
-        return result;
     }
 
     void CLevel::destroyEntity(CEntity* entity)
@@ -74,7 +73,7 @@ namespace tails
             if (entity->pendingCreate())
             {
                 entity->unmarkForCreate();
-                entity->onPostSpawn();
+                entity->postSpawn();
             }
         }
     }
@@ -137,14 +136,16 @@ namespace tails
             if (!entity2->pendingCreate() && entity2.get() != entity)
             {
                 if (entity->colliding(entity2.get()))
-                    entity->onCollision(*entity2);
+                    entity->collision(*entity2);
             }
         }
     }
 
     CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity)
     {
-        entity->spawn(*this);
+        entity->initSpawn(this);
+
+        if (entity->outer) {}
 
         m_entities.emplace_back(std::move(entity));
 
