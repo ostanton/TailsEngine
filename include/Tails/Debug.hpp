@@ -12,22 +12,38 @@ namespace tails
     class TAILS_API CDebug final
     {
     public:
+        /**
+         * Prints arguments via a comma-separated list to cout
+         */
         template<typename... Args>
-        static void print(Args... args)
+        static void print(Args&&... args)
         {
 #ifndef NDEBUG
-            // TODO - is this possible?? instead of separate overload?
-            if ((sizeof...(args)) > 0)
-                std::cout << (args << ...) << "\n";
-            else
-                std::cout << "\n";
+            // TODO - test for args == 0 isntead of separate overload?
+            ((std::cout << std::forward<Args>(args)), ...) << "\n";
 #endif // NDEBUG
         }
 
+        /**
+         * Prints a blank new line to cout
+         */
         static void print()
         {
 #ifndef NDEBUG
             std::cout << "\n";
+#endif // NDEBUG
+        }
+
+        /**
+         * Prints arguments via a comma-separated list to cerr,
+         * with the line prefix "Error: "
+         */
+        template<typename... Args>
+        static void error(Args&&... args)
+        {
+#ifndef NDEBUG
+            std::cerr << "Error: ";
+            ((std::cerr << std::forward<Args>(args)), ...) << "\n";
 #endif // NDEBUG
         }
     };

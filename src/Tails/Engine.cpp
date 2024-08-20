@@ -56,12 +56,12 @@ namespace tails
         // Setup world
         m_world.outer = this;
         
-        CDebug::print("Loading " + engineSetupFile);
+        CDebug::print("Loading ", engineSetupFile);
 
         std::ifstream setupFile {engineSetupFile};
         if (!setupFile.is_open())
         {
-            CDebug::print("Failed to find " + engineSetupFile);
+            CDebug::print("Failed to find ", engineSetupFile);
             initInternalRender();
             m_world.openLevel("");
             return;
@@ -71,13 +71,13 @@ namespace tails
 
         if (setupJson.is_null())
         {
-            CDebug::print("Failed to load " + engineSetupFile);
+            CDebug::print("Failed to load ", engineSetupFile);
             initInternalRender();
             m_world.openLevel("");
             return;
         }
 
-        CDebug::print(std::string("JSON is a valid ") + setupJson.type_name());
+        CDebug::print(std::string("JSON is a valid "), setupJson.type_name());
 
         /* DIRECTORIES */
 
@@ -119,9 +119,9 @@ namespace tails
         }
 
         if (const auto level = m_world.getLevel(0))
-            CDebug::print("Opened level - " + level->getSettings().name);
+            CDebug::print("Opened level - ", level->getSettings().name);
         else
-            CDebug::print("Created level is invalid!");
+            CDebug::error("Created level is invalid!");
         CDebug::print();
 
         /* WINDOW SETTINGS */
@@ -148,14 +148,14 @@ namespace tails
         CDebug::print(m_windowProperties.toString());
         CDebug::print();
 
-        CDebug::print(engineSetupFile + " loaded");
+        CDebug::print(engineSetupFile, " loaded");
         CDebug::print();
     }
 
     CEngine::~CEngine()
     {
         CDebug::print("Engine destructing");
-        CDebug::print("Engine alive for " + std::to_string(m_lifeTime) + " seconds");
+        CDebug::print("Engine alive for ", m_lifeTime, " seconds");
     }
 
     void CEngine::run()
@@ -199,6 +199,7 @@ namespace tails
                         break;
                     case sf::Event::Resized:
                         calculateInternalAspectRatio(window->getSize());
+                        CDebug::print("Resized window size: ", ev.size.width, "x", ev.size.height);
                         break;
                     }
                 }
