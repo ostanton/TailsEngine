@@ -25,7 +25,7 @@ namespace tails
         if (get().m_dirs.contains(id))
             return get().m_dirs[id];
 
-        return {};
+        return "";
     }
 
     CDirectories& CDirectories::get()

@@ -6,6 +6,7 @@
 #include <Tails/Tickable.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/View.hpp>
 
 #include <string>
 #include <memory>
@@ -16,6 +17,7 @@ namespace tails
     class CWorld;
     class CEntity;
     class CEngine;
+    struct SLevelSettings;
     
     class TAILS_API CLevel final : public CObject, public ITickable, public sf::Drawable
     {
@@ -29,14 +31,20 @@ namespace tails
         CLevel& operator=(const CLevel&) = delete;
         CLevel& operator=(CLevel&&) = default;
         
+        /**
+         * Spawn an entity from its class.
+         */
         template<typename T>
-        T* spawnEntity()
+        T* spawnEntity(const sf::Vector2f& position = {0.f, 0.f}, float rotation = 0.f, const sf::Vector2f& scale = {1.f, 1.f})
         {
             static_assert(std::is_base_of_v<CEntity, T>, "Failed to spawn entity, it does not derive CEntity.");
-            return static_cast<T*>(spawnEntityImpl(std::make_unique<T>()));
+            return static_cast<T*>(spawnEntityImpl(std::make_unique<T>(), position, rotation, scale));
         }
 
-        CEntity* spawnEntity(const std::string& className);
+        /**
+         * Spawn an entity from its "reflected" class name.
+         */
+        CEntity* spawnEntity(const std::string& className, const sf::Vector2f& position = {0.f, 0.f}, float rotation = 0.f, const sf::Vector2f& scale = {1.f, 1.f});
 
         static void destroyEntity(CEntity* entity);
 
@@ -46,17 +54,16 @@ namespace tails
         static bool entitiesColliding(const CEntity* entity1, const CEntity* entity2);
 
         [[nodiscard]] const std::string& getPath() const {return m_path;}
+        [[nodiscard]] SLevelSettings& getSettings() const {return *m_settings;}
+
+        [[nodiscard]] sf::View& getCameraView() {return m_camera;}
+        [[nodiscard]] const sf::View& getCameraView() const {return m_camera;}
         
     private:
         CLevel(std::string path);
 
-        /**
-         * Load the level from the already set .json file.
-         * Essentially "reloads" it.
-         */
-        void load();
-
         void open();
+        void setSettings(std::unique_ptr<SLevelSettings> settings);
 
         void preTick() override;
         void tick(float deltaTime) override;
@@ -70,11 +77,14 @@ namespace tails
 
         void checkCollision(CEntity* entity) const;
 
-        CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity);
+        CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, float rotation, const sf::Vector2f& scale);
 
         std::string m_path;
+        std::unique_ptr<SLevelSettings> m_settings;
 
         std::vector<std::unique_ptr<CEntity>> m_entities;
+
+        sf::View m_camera;
     };
 }
 

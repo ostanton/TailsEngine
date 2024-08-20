@@ -25,6 +25,9 @@ namespace tails
         CClassRegistry& operator=(const CClassRegistry& other) = default;
         CClassRegistry& operator=(CClassRegistry&&) = default;
         
+        /**
+         * Registers a "prototype" of the specified class and maps it to the input class name
+         */
         template<typename C>
         void registerClass(const std::string& className)
         {

@@ -92,6 +92,7 @@ namespace tails
         void postTick() override;
         
     private:
+        void initInternalRender();
         void calculateInternalAspectRatio(sf::Vector2u windowSize);
         
         /**
@@ -125,6 +126,8 @@ namespace tails
 
         SRenderProperties m_renderProperties;
         SWindowProperties m_windowProperties;
+
+        float m_lifeTime {0.f};
 
         /**
          * The registries that handle all the serialisation stuff for engine and custom

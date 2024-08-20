@@ -1,16 +1,22 @@
 #include <Tails/World.hpp>
 #include <Tails/Level.hpp>
 #include <Tails/Engine.hpp>
+#include <Tails/LevelSettings.hpp>
+#include <Tails/Debug.hpp>
+#include <Tails/Vector2.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace tails
 {
-    CLevel* CWorld::openLevel(std::string path)
+    CLevel* CWorld::openLevel(std::string path, std::unique_ptr<SLevelSettings> settings)
     {
         m_openLevels.emplace_back(new CLevel(std::move(path)));
         CLevel* result {m_openLevels.back().get()};
         result->outer = this;
+        result->setSettings(std::move(settings));
+        result->m_camera.setCenter(getEngine().getRenderView().getCenter());
+        result->m_camera.setSize(getEngine().getRenderView().getSize());
 
         result->open();
 

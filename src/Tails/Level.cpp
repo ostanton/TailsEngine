@@ -1,8 +1,11 @@
+#include "Tails/Debug.hpp"
 #include <Tails/Level.hpp>
 #include <Tails/World.hpp>
 #include <Tails/Entity.hpp>
 #include <Tails/EngineRegistry.hpp>
 #include <Tails/Engine.hpp>
+#include <Tails/LevelSettings.hpp>
+#include <Tails/Vector2.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -10,10 +13,11 @@ namespace tails
 {
     CLevel::~CLevel() = default;
 
-    CEntity* CLevel::spawnEntity(const std::string& className)
+    CEntity* CLevel::spawnEntity(const std::string& className, const sf::Vector2f& position, float rotation, const sf::Vector2f& scale)
     {
         return spawnEntityImpl(
-            getEngine().getRegistry<CEngineRegistry>()->instantiateClass<CEntity>(className)
+            getEngine().getRegistry<CEngineRegistry>()->instantiateClass<CEntity>(className),
+            position, rotation, scale
         );
     }
 
@@ -44,22 +48,26 @@ namespace tails
     CLevel::CLevel(std::string path)
         : m_path(std::move(path))
     {
-        load();
-    }
-
-    void CLevel::load()
-    {
-        /* CLEANUP OF OLD LEVEL */
-        
-        // destroy all entities
-        
-
-        /* SETUP OF NEW LEVEL */
     }
 
     void CLevel::open()
     {
+        // TODO - replace with loading from json, the name specified there.
+        // If not specified, the file name or something.
+        if (m_path.empty())
+            getSettings().name = "<none>";
+    }
 
+    void CLevel::setSettings(std::unique_ptr<SLevelSettings> settings)
+    {
+        if (settings)
+        {
+            m_settings = std::move(settings);
+            return;
+        }
+
+        if (!m_settings)
+            m_settings = std::make_unique<SLevelSettings>();
     }
 
     void CLevel::preTick()
@@ -93,11 +101,14 @@ namespace tails
 
     void CLevel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        target.setView(m_camera);
         for (auto& entity : m_entities)
         {
+            // TODO - round position to integer??
             if (!entity->pendingCreate())
                 target.draw(*entity, states);
         }
+        target.setView(target.getDefaultView());
     }
 
     void CLevel::postTick()
@@ -141,11 +152,13 @@ namespace tails
         }
     }
 
-    CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity)
+    CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, float rotation, const sf::Vector2f& scale)
     {
-        entity->initSpawn(this);
+        entity->setPosition(position);
+        entity->setRotation(rotation);
+        entity->setScale(scale);
 
-        if (entity->outer) {}
+        entity->initSpawn(this);
 
         m_entities.emplace_back(std::move(entity));
 

@@ -15,13 +15,14 @@ namespace tails
 {
     class CEngine;
     class CLevel;
+    struct SLevelSettings;
     
     class TAILS_API CWorld final : public CObject, public ITickable, public sf::Drawable
     {
         friend CEngine;
 
     public:
-        CLevel* openLevel(std::string path);
+        CLevel* openLevel(std::string path, std::unique_ptr<SLevelSettings> settings = nullptr);
         bool closeLevel(CLevel* level);
 
         [[nodiscard]] CEngine& getEngine() const;

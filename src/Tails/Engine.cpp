@@ -4,6 +4,7 @@
 #include <Tails/EngineRegistry.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Vector2.hpp>
+#include <Tails/LevelSettings.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -17,12 +18,12 @@ namespace tails
 {
     std::string SWindowProperties::toString() const
     {
-        return "Window properties:\nTitle - " + title + "\nResolution - " + TVector2u::toString(resolution);
+        return "Window properties:\nTitle - " + title + "\nResolution - " + SVector2u::toString(resolution);
     }
 
     std::string SRenderProperties::toString() const
     {
-        return "Render properties:\nResolution - " + TVector2u::toString(resolution);
+        return "Render properties:\nResolution - " + SVector2u::toString(resolution);
     }
 
     // removed make_unique for engine registry here because it was causing compile errors
@@ -35,6 +36,20 @@ namespace tails
         std::vector<std::unique_ptr<CClassRegistry>>&& registries)
             : m_registries(std::move(registries))
     {
+        // TODO - replace the above paramters with some SEngineSettings struct:
+        /*
+         * struct SEngineSettings
+         * {
+         *     string setupFile;
+         *     registries;
+         *     levelSettings;??
+         * }
+         *
+         * And maybe a templated constructor for this? or just take in a unique_ptr?
+         * so clients can derive the struct to add their own stuff. how would they use
+         * that stuff? no idea lol. maybe not. Would be nice to have a custom levelsettings
+         * struct though!
+         */
         if (!getRegistry<CEngineRegistry>())
             m_registries.emplace_back(std::make_unique<CEngineRegistry>());
         
@@ -42,12 +57,23 @@ namespace tails
         m_world.outer = this;
         
         CDebug::print("Loading " + engineSetupFile);
+
         std::ifstream setupFile {engineSetupFile};
+        if (!setupFile.is_open())
+        {
+            CDebug::print("Failed to find " + engineSetupFile);
+            initInternalRender();
+            m_world.openLevel("");
+            return;
+        }
+
         nlohmann::json setupJson = nlohmann::json::parse(setupFile);
 
         if (setupJson.is_null())
         {
             CDebug::print("Failed to load " + engineSetupFile);
+            initInternalRender();
+            m_world.openLevel("");
             return;
         }
 
@@ -59,21 +85,6 @@ namespace tails
             CDirectories::loadDirectories(dirJson);
         else
             CDebug::print("Failed to load directories, using default");
-        
-        /* WORLD AND LEVEL */
-        
-        if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
-            m_world.openLevel(defaultLevelJson.get<std::string>());
-        else
-        {
-            CDebug::print("Failed to open default level, opening blank level");
-            m_world.openLevel("");
-        }
-
-        if (const auto level = m_world.getLevel(0))
-            CDebug::print("Opened level - " + level->getPath());
-        else
-            CDebug::print("Created level is invalid!");
 
         /* RENDER SETTINGS */
 
@@ -92,17 +103,26 @@ namespace tails
             CDebug::print("Failed to load render settings, using default");
         }
 
-        // Setup internal render texture
-        m_renderTextureInternal.create(m_renderProperties.resolution.x, m_renderProperties.resolution.y);
+        initInternalRender();
 
-        // Set the size and center of the camera initially
-        m_renderView.setSize(
-            static_cast<float>(m_renderProperties.resolution.x),
-            static_cast<float>(m_renderProperties.resolution.y)
-        );
-        m_renderView.setCenter(m_renderView.getSize() * 0.5f);
-        
         CDebug::print(m_renderProperties.toString());
+        CDebug::print();
+        
+        /* WORLD AND LEVEL */
+        
+        if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
+            m_world.openLevel(defaultLevelJson.get<std::string>());
+        else
+        {
+            CDebug::print("Failed to open default level, opening blank level");
+            m_world.openLevel("");
+        }
+
+        if (const auto level = m_world.getLevel(0))
+            CDebug::print("Opened level - " + level->getSettings().name);
+        else
+            CDebug::print("Created level is invalid!");
+        CDebug::print();
 
         /* WINDOW SETTINGS */
 
@@ -126,14 +146,21 @@ namespace tails
             CDebug::print("Failed to load window settings, using default");
         
         CDebug::print(m_windowProperties.toString());
+        CDebug::print();
 
         CDebug::print(engineSetupFile + " loaded");
+        CDebug::print();
     }
 
-    CEngine::~CEngine() = default;
+    CEngine::~CEngine()
+    {
+        CDebug::print("Engine destructing");
+        CDebug::print("Engine alive for " + std::to_string(m_lifeTime) + " seconds");
+    }
 
     void CEngine::run()
     {
+        CDebug::print("Initialising final render target");
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
             setRenderTarget<sf::RenderWindow>(
@@ -149,6 +176,8 @@ namespace tails
         const auto& internalRenderTexture = m_renderTextureInternal.getTexture();
         
         calculateInternalAspectRatio(m_renderTarget->getSize());
+
+        CDebug::print("Main loop started");
         
         while (m_running)
         {
@@ -193,6 +222,9 @@ namespace tails
 
             postTick();
         }
+
+        CDebug::print("Main loop ended");
+        CDebug::print();
     }
 
     void CEngine::kill()
@@ -209,6 +241,7 @@ namespace tails
 
     void CEngine::tick(float deltaTime)
     {
+        m_lifeTime += deltaTime;
         m_world.tick(deltaTime);
     }
 
@@ -222,6 +255,20 @@ namespace tails
         ITickable::postTick();
 
         m_world.postTick();
+    }
+
+    void CEngine::initInternalRender()
+    {
+        CDebug::print("Initialising internal render target");
+        // Setup internal render texture
+        m_renderTextureInternal.create(m_renderProperties.resolution.x, m_renderProperties.resolution.y);
+
+        // Set the size and center of the camera initially
+        m_renderView.setSize(
+            static_cast<float>(m_renderProperties.resolution.x),
+            static_cast<float>(m_renderProperties.resolution.y)
+        );
+        m_renderView.setCenter(m_renderView.getSize() * 0.5f);
     }
 
     void CEngine::calculateInternalAspectRatio(sf::Vector2u windowSize)

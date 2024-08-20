@@ -31,10 +31,18 @@ namespace tails
         CEntity();
         ~CEntity() override;
         
+        /**
+         * Mark this entity for destruction at the start of the next frame.
+         */
         void destroy();
+
+        /**
+         * Check if this entity is colliding with another.
+         * @param entity The entity we're testing collision with
+         */
         bool colliding(const CEntity* entity) const;
 
-        virtual sf::FloatRect getGlobalBounds() const;
+        sf::FloatRect getGlobalBounds() const;
 
         void setTexture(const std::shared_ptr<CTextureAsset>& texture);
         [[nodiscard]] std::shared_ptr<CTextureAsset> getTexture() const;

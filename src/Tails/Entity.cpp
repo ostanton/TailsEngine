@@ -3,6 +3,7 @@
 #include <Tails/TextureAsset.hpp>
 #include <Tails/AssetCache.hpp>
 #include <Tails/Vector2.hpp>
+#include <Tails/Directories.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -11,6 +12,7 @@ namespace tails
     CEntity::CEntity()
     {
         setSize(16.f, 16.f);
+        setOrigin(getSize() * 0.5f);
     }
 
     CEntity::~CEntity() = default;
@@ -109,30 +111,30 @@ namespace tails
     {
         nlohmann::json obj;
         obj.push_back({"position"});
-        obj["position"].push_back(TVector2f::toJSON(getPosition()));
+        obj["position"].push_back(SVector2f::toJSON(getPosition()));
 
         obj.push_back({"rotation"});
         obj["rotation"] = getRotation();
 
         obj.push_back({"scale"});
-        obj["scale"].push_back(TVector2f::toJSON(getScale()));
+        obj["scale"].push_back(SVector2f::toJSON(getScale()));
 
         obj.push_back({"size"});
-        obj["size"].push_back(TVector2f::toJSON(getSize()));
+        obj["size"].push_back(SVector2f::toJSON(getSize()));
         
         return obj;
     }
 
     void CEntity::deserialise(const nlohmann::json& obj)
     {
-        setPosition(TVector2f::fromJSON(obj["position"]));
+        setPosition(SVector2f::fromJSON(obj["position"]));
         setRotation(obj["rotation"].get<float>());
-        setScale(TVector2f::fromJSON(obj["scale"]));
-        setSize(TVector2f::fromJSON(obj["size"]));
+        setScale(SVector2f::fromJSON(obj["scale"]));
+        setSize(SVector2f::fromJSON(obj["size"]));
 
         // textures
-        // TODO - get path of texture ID from whatever engine.ini file or something?
-        setTexture(CAssetCache::loadTexture(obj["texture"].get<std::string>(), ""));
+        // TODO - something something to get the texture id from json I dunno???
+        setTexture(CAssetCache::loadTexture(obj["texture"].get<std::string>(), CDirectories::getDirectory("texture")));
     }
 
     std::unique_ptr<ISerialisable> CEntity::clone() const
@@ -142,6 +144,9 @@ namespace tails
         obj->setRotation(getRotation());
         obj->setScale(getScale());
         obj->setSize(getSize());
+
+        obj->setTexture(getTexture());
+
         return obj;
     }
 

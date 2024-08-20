@@ -16,7 +16,18 @@ namespace tails
         static void print(Args... args)
         {
 #ifndef NDEBUG
-            std::cout << (args << ...) << "\n";
+            // TODO - is this possible?? instead of separate overload?
+            if ((sizeof...(args)) > 0)
+                std::cout << (args << ...) << "\n";
+            else
+                std::cout << "\n";
+#endif // NDEBUG
+        }
+
+        static void print()
+        {
+#ifndef NDEBUG
+            std::cout << "\n";
 #endif // NDEBUG
         }
     };

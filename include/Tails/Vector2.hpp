@@ -3,7 +3,7 @@
 
 #include <SFML/System/Vector2.hpp>
 
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json.hpp>
 
 namespace tails
 {
@@ -122,9 +122,9 @@ namespace tails
         T y;
     };
 
-    using TVector2f = TVector2<float>;
-    using TVector2i = TVector2<int>;
-    using TVector2u = TVector2<unsigned int>;
+    using SVector2f = TVector2<float>;
+    using SVector2i = TVector2<int>;
+    using SVector2u = TVector2<unsigned int>;
 }
 
 #endif // TAILS_VECTOR2_HPP
