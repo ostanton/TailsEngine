@@ -23,4 +23,5 @@ target_sources(
     EngineRegistry.hpp
     Debug.hpp
     Vector2.hpp
+    EngineSettings.hpp
 )

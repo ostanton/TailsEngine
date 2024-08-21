@@ -63,7 +63,7 @@ namespace tails
         CLevel(std::string path);
 
         void open();
-        void setSettings(std::unique_ptr<SLevelSettings> settings);
+        void setSettings(SLevelSettings* settings);
 
         void preTick() override;
         void tick(float deltaTime) override;
@@ -80,7 +80,12 @@ namespace tails
         CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, float rotation, const sf::Vector2f& scale);
 
         std::string m_path;
-        std::unique_ptr<SLevelSettings> m_settings;
+
+        /**
+         * Settings for the level (could be anything, like gravity scale, day length, etc.).
+         * Non-owning raw pointer because SEngineSettings owns the data for this
+         */
+        SLevelSettings* m_settings {nullptr};
 
         std::vector<std::unique_ptr<CEntity>> m_entities;
 

@@ -1,4 +1,3 @@
-#include "Tails/Debug.hpp"
 #include <Tails/Level.hpp>
 #include <Tails/World.hpp>
 #include <Tails/Entity.hpp>
@@ -6,6 +5,8 @@
 #include <Tails/Engine.hpp>
 #include <Tails/LevelSettings.hpp>
 #include <Tails/Vector2.hpp>
+#include <Tails/EngineSettings.hpp>
+#include <Tails/Debug.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -16,7 +17,7 @@ namespace tails
     CEntity* CLevel::spawnEntity(const std::string& className, const sf::Vector2f& position, float rotation, const sf::Vector2f& scale)
     {
         return spawnEntityImpl(
-            getEngine().getRegistry<CEngineRegistry>()->instantiateClass<CEntity>(className),
+            getEngine().getSettings().getRegistry<CEngineRegistry>()->instantiateClass<CEntity>(className),
             position, rotation, scale
         );
     }
@@ -55,19 +56,12 @@ namespace tails
         // TODO - replace with loading from json, the name specified there.
         // If not specified, the file name or something.
         if (m_path.empty())
-            getSettings().name = "<none>";
+            getSettings().name = "none";
     }
 
-    void CLevel::setSettings(std::unique_ptr<SLevelSettings> settings)
+    void CLevel::setSettings(SLevelSettings* settings)
     {
-        if (settings)
-        {
-            m_settings = std::move(settings);
-            return;
-        }
-
-        if (!m_settings)
-            m_settings = std::make_unique<SLevelSettings>();
+        m_settings = settings;
     }
 
     void CLevel::preTick()

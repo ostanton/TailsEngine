@@ -5,6 +5,7 @@
 #include <Tails/Debug.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/LevelSettings.hpp>
+#include <Tails/EngineSettings.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -18,7 +19,7 @@ namespace tails
 {
     std::string SWindowProperties::toString() const
     {
-        return "Window properties:\nTitle - " + title + "\nResolution - " + SVector2u::toString(resolution);
+        return "Window properties:\nTitle - \"" + title + "\"\nResolution - " + SVector2u::toString(resolution);
     }
 
     std::string SRenderProperties::toString() const
@@ -26,44 +27,27 @@ namespace tails
         return "Render properties:\nResolution - " + SVector2u::toString(resolution);
     }
 
-    // removed make_unique for engine registry here because it was causing compile errors
-    // to do with unique_ptr's deleted copy-constructor (I think). Couldn't fix it.
-    CEngine::CEngine() : CEngine("engine.json", {})
+    CEngine::CEngine() : CEngine(nullptr)
     {
     }
 
-    CEngine::CEngine(const std::string& engineSetupFile,
-        std::vector<std::unique_ptr<CClassRegistry>>&& registries)
-            : m_registries(std::move(registries))
+    CEngine::CEngine(std::unique_ptr<SEngineSettings> engineSettings)
+            : m_settings(std::move(engineSettings))
     {
-        // TODO - replace the above paramters with some SEngineSettings struct:
-        /*
-         * struct SEngineSettings
-         * {
-         *     string setupFile;
-         *     registries;
-         *     levelSettings;??
-         * }
-         *
-         * And maybe a templated constructor for this? or just take in a unique_ptr?
-         * so clients can derive the struct to add their own stuff. how would they use
-         * that stuff? no idea lol. maybe not. Would be nice to have a custom levelsettings
-         * struct though!
-         */
-        if (!getRegistry<CEngineRegistry>())
-            m_registries.emplace_back(std::make_unique<CEngineRegistry>());
+        // If input engine settings is null, use default
+        if (!engineSettings)
+            m_settings = std::make_unique<SEngineSettings>();
         
         // Setup world
         m_world.outer = this;
         
-        CDebug::print("Loading ", engineSetupFile);
+        CDebug::print("Loading ", m_settings->getSetupFilePath());
 
-        std::ifstream setupFile {engineSetupFile};
+        std::ifstream setupFile {m_settings->getSetupFilePath()};
         if (!setupFile.is_open())
         {
-            CDebug::print("Failed to find ", engineSetupFile);
-            initInternalRender();
-            m_world.openLevel("");
+            CDebug::print("Failed to find ", m_settings->getSetupFilePath());
+            initMembers();
             return;
         }
 
@@ -71,13 +55,13 @@ namespace tails
 
         if (setupJson.is_null())
         {
-            CDebug::print("Failed to load ", engineSetupFile);
-            initInternalRender();
-            m_world.openLevel("");
+            CDebug::print("Failed to load ", m_settings->getSetupFilePath());
+            initMembers();
             return;
         }
 
         CDebug::print(std::string("JSON is a valid "), setupJson.type_name());
+        CDebug::print();
 
         /* DIRECTORIES */
 
@@ -85,6 +69,7 @@ namespace tails
             CDirectories::loadDirectories(dirJson);
         else
             CDebug::print("Failed to load directories, using default");
+        CDebug::print();
 
         /* RENDER SETTINGS */
 
@@ -111,15 +96,15 @@ namespace tails
         /* WORLD AND LEVEL */
         
         if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
-            m_world.openLevel(defaultLevelJson.get<std::string>());
+            initWorldLevel(defaultLevelJson.get<std::string>());
         else
         {
             CDebug::print("Failed to open default level, opening blank level");
-            m_world.openLevel("");
+            initWorldLevel("");
         }
 
         if (const auto level = m_world.getLevel(0))
-            CDebug::print("Opened level - ", level->getSettings().name);
+            CDebug::print("Opened level - \"", level->getSettings().name, "\"");
         else
             CDebug::error("Created level is invalid!");
         CDebug::print();
@@ -148,7 +133,7 @@ namespace tails
         CDebug::print(m_windowProperties.toString());
         CDebug::print();
 
-        CDebug::print(engineSetupFile, " loaded");
+        CDebug::print(m_settings->getSetupFilePath(), " loaded");
         CDebug::print();
     }
 
@@ -160,6 +145,7 @@ namespace tails
 
     void CEngine::run()
     {
+        CDebug::print();
         CDebug::print("Initialising final render target");
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
@@ -170,6 +156,7 @@ namespace tails
                 ),
                 m_windowProperties.title
             );
+        CDebug::print();
         
         sf::Clock clock;
         const auto window = dynamic_cast<sf::RenderWindow*>(m_renderTarget.get());
@@ -258,6 +245,12 @@ namespace tails
         m_world.postTick();
     }
 
+    void CEngine::initMembers()
+    {
+        initInternalRender();
+        initWorldLevel("");
+    }
+
     void CEngine::initInternalRender()
     {
         CDebug::print("Initialising internal render target");
@@ -270,6 +263,11 @@ namespace tails
             static_cast<float>(m_renderProperties.resolution.y)
         );
         m_renderView.setCenter(m_renderView.getSize() * 0.5f);
+    }
+
+    void CEngine::initWorldLevel(std::string path)
+    {
+        m_world.openLevel(std::move(path), &m_settings->getLevelSettings());
     }
 
     void CEngine::calculateInternalAspectRatio(sf::Vector2u windowSize)

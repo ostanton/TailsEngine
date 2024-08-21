@@ -39,6 +39,7 @@ namespace tails
     void CEntity::setTexture(const std::shared_ptr<CTextureAsset>& texture)
     {
         m_texture = texture;
+        if (!texture) return;
 
         m_vertices[0].texCoords = {0.f, 0.f};
         m_vertices[1].texCoords = {0.f, static_cast<float>(texture->getSize().y)};

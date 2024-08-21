@@ -17,6 +17,7 @@
 namespace tails
 {
     class CClassRegistry;
+    struct SEngineSettings;
 
     struct TAILS_API SWindowProperties final
     {
@@ -36,12 +37,8 @@ namespace tails
     class TAILS_API CEngine final : public CObject, public ITickable, public sf::Drawable
     {
     public:
-        /**
-         * Sets up engine with "engine.json" as engine setup file
-         */
         CEngine();
-        explicit CEngine(const std::string& engineSetupFile,
-            std::vector<std::unique_ptr<CClassRegistry>>&& registries);
+        explicit CEngine(std::unique_ptr<SEngineSettings> engineSettings);
         ~CEngine() override;
     
         template<typename T, typename... Args>
@@ -64,26 +61,7 @@ namespace tails
         [[nodiscard]] const sf::View& getRenderView() const {return m_renderView;}
         [[nodiscard]] CWorld& getWorld() {return m_world;}
         [[nodiscard]] const CWorld& getWorld() const {return m_world;}
-
-        template<typename T>
-        [[nodiscard]] bool registryExists() const
-        {
-            return getRegistry<T>();
-        }
-
-        template<typename T>
-        [[nodiscard]] T* getRegistry() const
-        {
-            if (m_registries.empty()) return nullptr;
-            
-            for (auto& registry : m_registries)
-            {
-                if (auto castedRegistry = dynamic_cast<T*>(registry.get()))
-                    return castedRegistry;
-            }
-
-            return nullptr;
-        }
+        [[nodiscard]] SEngineSettings& getSettings() const {return *m_settings;}
 
     protected:
         void preTick() override;
@@ -92,7 +70,9 @@ namespace tails
         void postTick() override;
         
     private:
+        void initMembers();
         void initInternalRender();
+        void initWorldLevel(std::string path);
         void calculateInternalAspectRatio(sf::Vector2u windowSize);
         
         /**
@@ -126,14 +106,9 @@ namespace tails
 
         SRenderProperties m_renderProperties;
         SWindowProperties m_windowProperties;
+        std::unique_ptr<SEngineSettings> m_settings;
 
         float m_lifeTime {0.f};
-
-        /**
-         * The registries that handle all the serialisation stuff for engine and custom
-         * classes. They are set in the engine's constructor, and cannot be added after.
-         */
-        std::vector<std::unique_ptr<CClassRegistry>> m_registries;
     };
 }
 

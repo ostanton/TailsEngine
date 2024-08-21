@@ -9,12 +9,12 @@
 
 namespace tails
 {
-    CLevel* CWorld::openLevel(std::string path, std::unique_ptr<SLevelSettings> settings)
+    CLevel* CWorld::openLevel(std::string path, SLevelSettings* settings)
     {
         m_openLevels.emplace_back(new CLevel(std::move(path)));
         CLevel* result {m_openLevels.back().get()};
         result->outer = this;
-        result->setSettings(std::move(settings));
+        result->setSettings(settings);
         result->m_camera.setCenter(getEngine().getRenderView().getCenter());
         result->m_camera.setSize(getEngine().getRenderView().getSize());
 

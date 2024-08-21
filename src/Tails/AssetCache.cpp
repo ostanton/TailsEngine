@@ -33,12 +33,19 @@ namespace tails
         const std::string& id, const std::string& path, const std::shared_ptr<IAssetData>& data)
     {
         // TODO - debug print on fail load
-        data->load(CDirectories::getDirectory(data->getType()) + path);
+        if (!data->load(CDirectories::getDirectory(data->getType()) + path))
+        {
+            // SFML has a print for this already, we're ok to not print this I think
+            //CDebug::print("Failed to load path ", path);
+            return nullptr;
+        }
         
         if (get().m_data.contains(id))
             get().m_data[id] = data;
         else
             get().m_data.try_emplace(id, data);
+
+        CDebug::print("Loaded \"", id, "\" {type: ", data->getType(), ", path: \"", path, "\"}");
         
         return data;
     }

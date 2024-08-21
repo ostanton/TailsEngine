@@ -18,4 +18,5 @@ add_library(
     ClassRegistry.cpp
     EngineRegistry.cpp
     Debug.cpp
+    EngineSettings.cpp
 )

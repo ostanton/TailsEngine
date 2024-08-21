@@ -2,6 +2,7 @@
 #define TAILS_ASSETCACHE_HPP
 
 #include <Tails/Config.hpp>
+#include <Tails/Debug.hpp>
 
 #include <unordered_map>
 #include <string>
@@ -32,7 +33,10 @@ namespace tails
                 if (!get().m_data.contains(name)) return;
                 
                 if (get().m_data[name].expired())
+                {
                     get().m_data.erase(name);
+                    CDebug::print("Erased asset \"", name, "\"");
+                }
             };
 
             std::shared_ptr<T> data {new T, std::bind(deleter, id)};
