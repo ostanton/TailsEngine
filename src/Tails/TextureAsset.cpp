@@ -7,7 +7,7 @@ namespace tails
         return loadFromFile(path);
     }
 
-    std::string CTextureAsset::getType()
+    std::string CTextureAsset::getType() const
     {
         return "texture";
     }

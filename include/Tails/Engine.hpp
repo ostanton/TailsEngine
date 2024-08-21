@@ -5,6 +5,7 @@
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 #include <Tails/World.hpp>
+#include <Tails/WidgetViewport.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -62,6 +63,8 @@ namespace tails
         [[nodiscard]] CWorld& getWorld() {return m_world;}
         [[nodiscard]] const CWorld& getWorld() const {return m_world;}
         [[nodiscard]] SEngineSettings& getSettings() const {return *m_settings;}
+        [[nodiscard]] WViewport& getViewport() {return m_viewport;}
+        [[nodiscard]] const WViewport& getViewport() const {return m_viewport;}
 
     protected:
         void preTick() override;
@@ -103,6 +106,12 @@ namespace tails
          * The world associated with the engine.
          */
         CWorld m_world;
+
+        /**
+         * The container for widgets. Might replace with pointer so client and decide
+         * what class to use (their own viewport kind thing).
+         */
+        WViewport m_viewport;
 
         SRenderProperties m_renderProperties;
         SWindowProperties m_windowProperties;

@@ -7,13 +7,17 @@
 #include <SFML/Audio/Music.hpp>
 
 #include <string>
+#include <memory>
 
 namespace tails
 {
+    class CSoundAsset;
+
     class TAILS_API CAudioManager final
     {
     public:
         static void playSound(const std::string& assetID);
+        static void playSound(std::shared_ptr<CSoundAsset> asset);
 
         static void playMusic(const std::string& path);
 

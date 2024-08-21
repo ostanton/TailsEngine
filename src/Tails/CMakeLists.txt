@@ -14,9 +14,12 @@ add_library(
     SoundAsset.cpp
     AudioManager.cpp
     Directories.cpp
-    Screen.cpp
     ClassRegistry.cpp
     EngineRegistry.cpp
     Debug.cpp
     EngineSettings.cpp
+    Widget.cpp
+    WidgetContainer.cpp
+    WidgetViewport.cpp
+    WidgetText.cpp
 )

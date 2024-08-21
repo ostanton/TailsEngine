@@ -7,7 +7,7 @@ namespace tails
         return loadFromFile(path);
     }
 
-    std::string CSoundAsset::getType()
+    std::string CSoundAsset::getType() const
     {
         return "sound";
     }

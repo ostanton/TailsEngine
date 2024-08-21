@@ -225,17 +225,20 @@ namespace tails
         ITickable::preTick();
 
         m_world.preTick();
+        m_viewport.preTick();
     }
 
     void CEngine::tick(float deltaTime)
     {
         m_lifeTime += deltaTime;
         m_world.tick(deltaTime);
+        m_viewport.tick(deltaTime);
     }
 
     void CEngine::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         target.draw(m_world, states);
+        target.draw(m_viewport, states);
     }
 
     void CEngine::postTick()
@@ -243,6 +246,7 @@ namespace tails
         ITickable::postTick();
 
         m_world.postTick();
+        m_viewport.postTick();
     }
 
     void CEngine::initMembers()

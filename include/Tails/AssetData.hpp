@@ -17,7 +17,7 @@ namespace tails
          * Gets the asset type (texture, sound, etc.) as seen in the assets json
          * @return Type as string
          */
-        virtual std::string getType() = 0;
+        virtual std::string getType() const = 0;
     };
 }
 

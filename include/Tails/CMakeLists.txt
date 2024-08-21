@@ -15,13 +15,17 @@ target_sources(
     AssetCache.hpp
     TextureAsset.hpp
     SoundAsset.hpp
+    FontAsset.hpp
     AudioManager.hpp
     Directories.hpp
-    Screen.hpp
     ClassRegistry.hpp
     Serialisable.hpp
     EngineRegistry.hpp
     Debug.hpp
     Vector2.hpp
     EngineSettings.hpp
+    Widget.hpp
+    WidgetContainer.hpp
+    WidgetViewport.hpp
+    WidgetText.hpp
 )

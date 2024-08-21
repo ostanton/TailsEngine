@@ -13,7 +13,7 @@ namespace tails
     class TAILS_API CSoundAsset final : public IAssetData, public sf::SoundBuffer
     {
         bool load(const std::string& path) override;
-        std::string getType() override;
+        std::string getType() const override;
     };
 }
 

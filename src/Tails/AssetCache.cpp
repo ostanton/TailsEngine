@@ -1,6 +1,7 @@
 #include <Tails/AssetCache.hpp>
 #include <Tails/TextureAsset.hpp>
 #include <Tails/SoundAsset.hpp>
+#include <Tails/FontAsset.hpp>
 #include <Tails/Directories.hpp>
 
 namespace tails
@@ -13,6 +14,11 @@ namespace tails
     std::shared_ptr<CSoundAsset> CAssetCache::loadSound(const std::string& id, const std::string& path)
     {
         return load<CSoundAsset>(id, path);
+    }
+
+    std::shared_ptr<CFontAsset> CAssetCache::loadFont(const std::string& id, const std::string& path)
+    {
+        return load<CFontAsset>(id, path);
     }
 
     std::shared_ptr<IAssetData> CAssetCache::getAsset(const std::string& id)
