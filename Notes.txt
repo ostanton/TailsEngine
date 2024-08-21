@@ -26,11 +26,6 @@ Asset loading/mapping via plain json file
     }
 }
 
-[dir]
-textures = res/textures/
-sounds = res/sounds/
-fonts = res/fonts/
-
 "level.json"
 {
     "assets": {
@@ -53,21 +48,6 @@ The level won't have entity-specific assets to load, only level-specific ones.
 Individual entities will have their own assets they depend on, gotten somehow.
 Maybe a virtual function that returns a vector of strings (IDs)? Or just a vector of strings set in the constructor?
 Possibly a feature of CObject, or another abstract class - IAssetContainer - or something
-///////////////////////////////////////////////
-
-///////////////////////////////////////////////
-Engine class:
-    Don't have m_renderTargetInternal, view, etc. as members?
-    Have them just as local variables in the run() function?
-    They aren't used outside of that except for initialisation right?
-    And nothing outside of engine requires them to be intialised before them.
-    So there's no point having them initialise first except for convention or whatever.
-Maybe have pimpl for these? Raw pointers in the class definition, and have them point to the automatic data in run(),
-    so we can have getter functions for them still, even though they are local to run()
-///////////////////////////////////////////////
-
-///////////////////////////////////////////////
-Move init() to start of run() function? Maybe check if the engine is already initialised and run init() if not?
 ///////////////////////////////////////////////
 
 ///////////////////////////////////////////////
@@ -106,15 +86,4 @@ engine.json
         }
     }
 }
-///////////////////////////////////////////////
-
-///////////////////////////////////////////////
-Add(ed) ChaiScript! Then have it serialise and deserialise stuff to/from json
-///////////////////////////////////////////////
-
-///////////////////////////////////////////////
-Turn the engine into something that loads projects, instead of a project loading the library.
-So the engine contains the main() function, and the project just states what ChaiScript classes, etc. are used.
-Like in Unreal, there is no inheriting of the main engine class, etc., just saying "use this game mode", etc. for that engine instance.
-We don't need main() in the library itself if ChaiScript can be initialised in run(), so do that? Maybe?
 ///////////////////////////////////////////////
