@@ -23,6 +23,8 @@ namespace tails
     class TAILS_API WText : public CWidget
     {
     public:
+        WText();
+        
         void setText(const sf::String& text);
         [[nodiscard]] const sf::String& getText() const;
 
@@ -46,6 +48,9 @@ namespace tails
 
         void setOutlineThickness(float thickness);
         [[nodiscard]] float getOutlineThickness() const;
+
+        void setStyle(sf::Text::Style style);
+        [[nodiscard]] unsigned int getStyle() const;
 
     protected:
         void tick(float deltaTime) override {}

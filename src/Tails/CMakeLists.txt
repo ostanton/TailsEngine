@@ -12,6 +12,7 @@ add_library(
     AssetCache.cpp
     TextureAsset.cpp
     SoundAsset.cpp
+    FontAsset.cpp
     AudioManager.cpp
     Directories.cpp
     ClassRegistry.cpp

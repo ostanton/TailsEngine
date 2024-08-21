@@ -5,6 +5,12 @@
 
 namespace tails
 {
+    WText::WText()
+    {
+        m_text.setString("Text");
+        m_text.setCharacterSize(16);
+    }
+
     void WText::setText(const sf::String& text)
     {
         m_text.setString(std::move(text));
@@ -84,6 +90,16 @@ namespace tails
     float WText::getOutlineThickness() const
     {
         return m_text.getOutlineThickness();
+    }
+
+    void WText::setStyle(sf::Text::Style style)
+    {
+        m_text.setStyle(style);
+    }
+
+    unsigned int WText::getStyle() const
+    {
+        return m_text.getStyle();
     }
 
     void WText::draw(sf::RenderTarget& target, sf::RenderStates states) const
