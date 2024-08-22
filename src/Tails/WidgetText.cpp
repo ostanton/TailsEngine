@@ -8,12 +8,12 @@ namespace tails
     WText::WText()
     {
         m_text.setString("Text");
-        m_text.setCharacterSize(16);
+        m_text.setCharacterSize(8);
     }
 
     void WText::setText(const sf::String& text)
     {
-        m_text.setString(std::move(text));
+        m_text.setString(text);
     }
 
     const sf::String& WText::getText() const

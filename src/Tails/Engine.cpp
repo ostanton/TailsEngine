@@ -276,6 +276,8 @@ namespace tails
 
     void CEngine::calculateInternalAspectRatio(sf::Vector2u windowSize)
     {
+        // TODO - support integer scaling so we never get half pixels on weird window sizes
+        // would be nice to have a toggle so you can enable/disable for each game or even game settings?
         const sf::Vector2f ratio {
             static_cast<float>(windowSize.x) / static_cast<float>(m_renderProperties.resolution.x),
             static_cast<float>(windowSize.y) / static_cast<float>(m_renderProperties.resolution.y)
