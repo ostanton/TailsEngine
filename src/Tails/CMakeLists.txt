@@ -23,4 +23,7 @@ add_library(
     WidgetContainer.cpp
     WidgetViewport.cpp
     WidgetText.cpp
+    LevelSettings.cpp
+    VerticalContainer.cpp
+    Padding.cpp
 )

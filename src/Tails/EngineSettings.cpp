@@ -5,8 +5,12 @@
 namespace tails
 {
     SEngineSettings::SEngineSettings()
-        : m_setupFilePath("engine.json"), m_levelSettings(std::make_unique<SLevelSettings>())
     {
         m_registries.emplace_back(std::make_unique<CEngineRegistry>());
+    }
+
+    std::unique_ptr<SLevelSettings>SEngineSettings::createLevelSettings() const
+    {
+        return std::make_unique<SLevelSettings>();
     }
 }

@@ -107,4 +107,14 @@ namespace tails
         states.transform *= getTransform();
         target.draw(m_text, states);
     }
+
+    void WText::setSize(const sf::Vector2f& size)
+    {
+
+    }
+
+    std::optional<sf::Vector2f> WText::getSize() const
+    {
+        return std::make_optional(m_text.getGlobalBounds().getSize());
+    }
 }

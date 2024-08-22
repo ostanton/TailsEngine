@@ -22,8 +22,9 @@ namespace tails
         friend CEngine;
 
     public:
-        CLevel* openLevel(std::string path, SLevelSettings* settings = nullptr);
+        CLevel* openLevel(std::string path, std::unique_ptr<SLevelSettings> settings = nullptr);
         bool closeLevel(CLevel* level);
+        bool closeLevel(size_t index);
 
         [[nodiscard]] CEngine& getEngine() const;
         [[nodiscard]] CLevel* getLevel(size_t index) const;

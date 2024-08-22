@@ -21,15 +21,39 @@ namespace tails
         using DataMap = std::unordered_map<std::string, std::weak_ptr<IAssetData>>;
         
     public:
+        /**
+         * Loads a texture asset from file, or gets it if the ID exists and the asset is valid.
+         * @param id The asset's unique identifier
+         * @param path Where to find the asset in relation to CDirectories' set directories
+         */
         static std::shared_ptr<CTextureAsset> loadTexture(const std::string& id, const std::string& path);
+
+        /**
+         * Loads a sound (one shot, not music) asset from file, or gets it if the ID exists and the asset is valid.
+         * @param id The asset's unique identifier
+         * @param path Where to find the asset in relation to CDirectories' set directories
+         */
         static std::shared_ptr<CSoundAsset> loadSound(const std::string& id, const std::string& path);
+
+        /**
+         * Loads a font asset from file, or gets it if the ID exists and the asset is valid.
+         * @param id The asset's unique identifier
+         * @param path Where to find the asset in relation to CDirectories' set directories
+         */
         static std::shared_ptr<CFontAsset> loadFont(const std::string& id, const std::string& path);
 
+        /**
+         * Loads an asset from file, or gets it if the ID exists and the asset is valid.
+         * @param id The asset's unique identifier
+         * @param path Where to find the asset in relation to CDirectories' set directories
+         * @tparam T The asset type to load
+         */
         template<typename T>
-        static std::shared_ptr<T> load(const std::string& id, const std::string& path)
+        static std::shared_ptr<T> loadAsset(const std::string& id, const std::string& path)
         {
             static_assert(std::is_base_of_v<IAssetData, T>, "Failed to load asset, it does not derive IAssetData.");
 
+            // Asset deleter, erases the map entry when the last shared_ptr is deleted.
             auto deleter = [&](const std::string& name)
             {
                 if (!get().m_data.contains(name)) return;
@@ -41,13 +65,23 @@ namespace tails
                 }
             };
 
+            // Create the shared_ptr object to use the deleter, and pass to implementation function
+            // to be added to the map
             std::shared_ptr<T> data {new T, std::bind(deleter, id)};
             
             return std::static_pointer_cast<T>(loadImpl(id, path, data));
         }
 
+        /**
+         * Gets the asset of ID if valid.
+         * @param id The asset's unique identifier
+         */
         [[nodiscard]] static std::shared_ptr<IAssetData> getAsset(const std::string& id);
 
+        /**
+         * Gets the asset of ID if valid and casts it to the specified type.
+         * @param id The asset's unique identifier
+         */
         template<typename T>
         [[nodiscard]] static std::shared_ptr<T> getAsset(const std::string& id)
         {

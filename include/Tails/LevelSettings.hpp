@@ -9,6 +9,8 @@ namespace tails
 {
     struct TAILS_API SLevelSettings
     {
+        virtual ~SLevelSettings() = default;
+
         std::string name;
     };
 }

@@ -52,6 +52,9 @@ namespace tails
         void setStyle(sf::Text::Style style);
         [[nodiscard]] unsigned int getStyle() const;
 
+        void setSize(const sf::Vector2f& size) override;
+        std::optional<sf::Vector2f> getSize() const override;
+
     protected:
         void tick(float deltaTime) override {}
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

@@ -9,12 +9,12 @@
 
 namespace tails
 {
-    CLevel* CWorld::openLevel(std::string path, SLevelSettings* settings)
+    CLevel* CWorld::openLevel(std::string path, std::unique_ptr<SLevelSettings> settings)
     {
         m_openLevels.emplace_back(new CLevel(std::move(path)));
         CLevel* result {m_openLevels.back().get()};
         result->outer = this;
-        result->setSettings(settings);
+        result->setSettings(std::move(settings));
         result->m_camera.setCenter(getEngine().getRenderView().getCenter());
         result->m_camera.setSize(getEngine().getRenderView().getSize());
 
@@ -37,6 +37,16 @@ namespace tails
         }
 
         return false;
+    }
+
+    bool CWorld::closeLevel(size_t index)
+    {
+        if (index >= m_openLevels.size())
+            return false;
+
+        m_openLevels[index]->markForDestroy();
+        m_openLevels[index]->close();
+        return true;
     }
 
     CEngine& CWorld::getEngine() const

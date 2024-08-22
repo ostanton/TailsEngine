@@ -22,7 +22,7 @@ namespace tails
 
         SEngineSettings();
 
-        [[nodiscard]] const std::string& getSetupFilePath() const {return m_setupFilePath;}
+        [[nodiscard]] virtual std::string getSetupFilePath() const {return "engine.json";}
 
         template<typename T>
         [[nodiscard]] T* getRegistry() const
@@ -44,12 +44,10 @@ namespace tails
             return getRegistry<T>();
         }
 
-        [[nodiscard]] SLevelSettings& getLevelSettings() const {return *m_levelSettings;}
+        [[nodiscard]] virtual std::unique_ptr<SLevelSettings> createLevelSettings() const;
 
     private:
-        std::string m_setupFilePath;
         std::vector<std::unique_ptr<CClassRegistry>> m_registries;
-        std::unique_ptr<SLevelSettings> m_levelSettings;
     };
 }
 

@@ -28,4 +28,6 @@ target_sources(
     WidgetContainer.hpp
     WidgetViewport.hpp
     WidgetText.hpp
+    VerticalContainer.hpp
+    Padding.hpp
 )

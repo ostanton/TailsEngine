@@ -13,7 +13,7 @@ namespace tails
      */
     class TAILS_API WViewport : public WContainer
     {
-    public:
+        void drawChild(size_t childIndex) const override {}
     };
 }
 

@@ -72,10 +72,13 @@ namespace tails
     void WContainer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform *= getTransform();
-        for (auto& child : m_children)
+        for (size_t i {0}; i < m_children.size(); i++)
         {
-            if (!child->pendingCreate())
-                target.draw(*child, states);
+            if (!m_children[i]->pendingCreate())
+            {
+                drawChild(i);
+                target.draw(*m_children[i], states);
+            }
         }
     }
 

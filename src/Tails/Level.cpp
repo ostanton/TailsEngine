@@ -55,13 +55,15 @@ namespace tails
     {
         // TODO - replace with loading from json, the name specified there.
         // If not specified, the file name or something.
+
+        // TODO - use default settings if level settings does not exist!!
         if (m_path.empty())
             getSettings().name = "none";
     }
 
-    void CLevel::setSettings(SLevelSettings* settings)
+    void CLevel::setSettings(std::unique_ptr<SLevelSettings> settings)
     {
-        m_settings = settings;
+        m_settings = std::move(settings);
     }
 
     void CLevel::preTick()

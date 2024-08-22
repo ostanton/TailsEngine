@@ -8,17 +8,17 @@ namespace tails
 {
     std::shared_ptr<CTextureAsset> CAssetCache::loadTexture(const std::string& id, const std::string& path)
     {
-        return load<CTextureAsset>(id, path);
+        return loadAsset<CTextureAsset>(id, path);
     }
 
     std::shared_ptr<CSoundAsset> CAssetCache::loadSound(const std::string& id, const std::string& path)
     {
-        return load<CSoundAsset>(id, path);
+        return loadAsset<CSoundAsset>(id, path);
     }
 
     std::shared_ptr<CFontAsset> CAssetCache::loadFont(const std::string& id, const std::string& path)
     {
-        return load<CFontAsset>(id, path);
+        return loadAsset<CFontAsset>(id, path);
     }
 
     std::shared_ptr<IAssetData> CAssetCache::getAsset(const std::string& id)
@@ -26,6 +26,7 @@ namespace tails
         if (get().m_data.contains(id))
             return get().m_data[id].lock();
 
+        CDebug::print("Failed to get asset, ID \"", id, "\" does not exist");
         return nullptr;
     }
 
@@ -47,7 +48,16 @@ namespace tails
         }
         
         if (get().m_data.contains(id))
+        {
+            if (!get().m_data[id].expired() || get().m_data[id].lock())
+            {
+                CDebug::print("Asset \"", id, "\" already exists, returning it as {type: ", get().m_data[id].lock()->getType(), "}");
+                return get().m_data[id].lock();
+            }
+
+            // Contains the ID, but the data is invalid or null
             get().m_data[id] = data;
+        }
         else
             get().m_data.try_emplace(id, data);
 

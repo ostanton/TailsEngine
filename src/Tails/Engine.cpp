@@ -139,8 +139,6 @@ namespace tails
 
     CEngine::~CEngine()
     {
-        CDebug::print("Engine destructing");
-        CDebug::print("Engine alive for ", m_lifeTime, " seconds");
     }
 
     void CEngine::run()
@@ -212,6 +210,7 @@ namespace tails
         }
 
         CDebug::print("Main loop ended");
+        CDebug::print("Engine alive for ", m_lifeTime, " seconds");
         CDebug::print();
     }
 
@@ -271,7 +270,7 @@ namespace tails
 
     void CEngine::initWorldLevel(std::string path)
     {
-        m_world.openLevel(std::move(path), &m_settings->getLevelSettings());
+        m_world.openLevel(std::move(path), m_settings->createLevelSettings());
     }
 
     void CEngine::calculateInternalAspectRatio(sf::Vector2u windowSize)

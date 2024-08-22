@@ -56,15 +56,28 @@ namespace tails
 
         [[nodiscard]] sf::RenderTarget& getRenderTarget() const {return *m_renderTarget;}
         [[nodiscard]] const sf::RenderStates& getRenderState() const {return m_renderStates;}
+
         [[nodiscard]] sf::RenderTexture& getInternalRenderTexture() {return m_renderTextureInternal;}
         [[nodiscard]] const sf::RenderTexture& getInternalRenderTexture() const {return m_renderTextureInternal;}
+
         [[nodiscard]] sf::View& getRenderView() {return m_renderView;}
         [[nodiscard]] const sf::View& getRenderView() const {return m_renderView;}
+
         [[nodiscard]] CWorld& getWorld() {return m_world;}
         [[nodiscard]] const CWorld& getWorld() const {return m_world;}
+
         [[nodiscard]] SEngineSettings& getSettings() const {return *m_settings;}
+
         [[nodiscard]] WViewport& getViewport() {return m_viewport;}
         [[nodiscard]] const WViewport& getViewport() const {return m_viewport;}
+
+        [[nodiscard]] SRenderProperties& getRenderProperties() {return m_renderProperties;}
+        [[nodiscard]] const SRenderProperties& getRenderProperties() const {return m_renderProperties;}
+
+        [[nodiscard]] SWindowProperties& getWindowProperties() {return m_windowProperties;}
+        [[nodiscard]] const SWindowProperties& getWindowProperties() const {return m_windowProperties;}
+
+        [[nodiscard]] float getCurrentLifeTime() const {return m_lifeTime;}
 
     protected:
         void preTick() override;
