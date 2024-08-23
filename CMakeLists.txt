@@ -33,13 +33,25 @@ CPMAddPackage("gh:SFML/SFML#2.6.1")
 # Add nlohmann/json
 CPMAddPackage("gh:nlohmann/json@3.11.3")
 
-#if (CMAKE_CXX_COMPILER_ID STREQUALS "MSVC")
-#    target_compile_definitions(TailsEngine TAILS_COMP_MSVC)
-#elseif (CMAKE_CXX_COMPILER_ID STREQUALS "GNU")
-#    target_compile_definitions(TailsEngine TAILS_COMP_GNU)
-#elseif (CMAKE_CXX_COMPILER_ID STREQUALS "Clang")
-#    target_compile_definitions(TailsEngine TAILS_COMP_CLANG)
-#endif ()
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_MSVC)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_GNU)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_CLANG)
+else()
+    target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_UNKNOWN)
+endif ()
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_OS_WIN32)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_OS_APPLE)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_OS_LINUX)
+else ()
+    target_compile_definitions(TailsEngine PUBLIC TAILS_OS_UNKNOWN)
+endif ()
 
 target_link_libraries(
     TailsEngine
