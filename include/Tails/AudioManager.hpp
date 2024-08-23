@@ -16,6 +16,7 @@ namespace tails
     class TAILS_API CAudioManager final
     {
     public:
+        static void playSound();
         static void playSound(const std::string& assetID);
         static void playSound(std::shared_ptr<CSoundAsset> asset);
 
@@ -29,6 +30,7 @@ namespace tails
         // what about .mod, .it, etc. files? Tracker stuff, and/or midi stuff??
         sf::Sound m_sound;
         sf::Music m_music;
+        std::shared_ptr<CSoundAsset> m_currentSound;
     };
 }
 

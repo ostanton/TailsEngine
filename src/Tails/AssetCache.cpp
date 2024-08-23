@@ -39,7 +39,6 @@ namespace tails
     std::shared_ptr<IAssetData> CAssetCache::loadImpl(
         const std::string& id, const std::string& path, const std::shared_ptr<IAssetData>& data)
     {
-        // TODO - debug print on fail load
         if (!data->load(CDirectories::getDirectory(data->getType()) + path))
         {
             // SFML has a print for this already, we're ok to not print this I think

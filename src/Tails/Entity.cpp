@@ -32,7 +32,6 @@ namespace tails
 
     sf::FloatRect CEntity::getGlobalBounds() const
     {
-        // TODO - TEST
         return getTransform().transformRect(m_vertices.getBounds());
     }
 

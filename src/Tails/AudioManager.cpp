@@ -4,6 +4,12 @@
 
 namespace tails
 {
+    void CAudioManager::playSound()
+    {
+        if (get().m_sound.getBuffer())
+            get().m_sound.play();
+    }
+
     void CAudioManager::playSound(const std::string& assetID)
     {
         playSound(CAssetCache::getAsset<CSoundAsset>(assetID));
@@ -11,8 +17,11 @@ namespace tails
 
     void CAudioManager::playSound(std::shared_ptr<CSoundAsset> asset)
     {
-        if (asset) get().m_sound.setBuffer(*asset);
-        get().m_sound.play();
+        if (asset) get().m_currentSound = asset;
+
+        get().m_sound.setBuffer(*get().m_currentSound);
+
+        playSound();
     }
 
     void CAudioManager::playMusic(const std::string& path)

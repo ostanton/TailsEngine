@@ -26,21 +26,21 @@ namespace tails
          * @param id The asset's unique identifier
          * @param path Where to find the asset in relation to CDirectories' set directories
          */
-        static std::shared_ptr<CTextureAsset> loadTexture(const std::string& id, const std::string& path);
+        [[nodiscard]] static std::shared_ptr<CTextureAsset> loadTexture(const std::string& id, const std::string& path);
 
         /**
          * Loads a sound (one shot, not music) asset from file, or gets it if the ID exists and the asset is valid.
          * @param id The asset's unique identifier
          * @param path Where to find the asset in relation to CDirectories' set directories
          */
-        static std::shared_ptr<CSoundAsset> loadSound(const std::string& id, const std::string& path);
+        [[nodiscard]] static std::shared_ptr<CSoundAsset> loadSound(const std::string& id, const std::string& path);
 
         /**
          * Loads a font asset from file, or gets it if the ID exists and the asset is valid.
          * @param id The asset's unique identifier
          * @param path Where to find the asset in relation to CDirectories' set directories
          */
-        static std::shared_ptr<CFontAsset> loadFont(const std::string& id, const std::string& path);
+        [[nodiscard]] static std::shared_ptr<CFontAsset> loadFont(const std::string& id, const std::string& path);
 
         /**
          * Loads an asset from file, or gets it if the ID exists and the asset is valid.
@@ -49,11 +49,15 @@ namespace tails
          * @tparam T The asset type to load
          */
         template<typename T>
-        static std::shared_ptr<T> loadAsset(const std::string& id, const std::string& path)
+        [[nodiscard]] static std::shared_ptr<T> loadAsset(const std::string& id, const std::string& path)
         {
-            static_assert(std::is_base_of_v<IAssetData, T>, "Failed to load asset, it does not derive IAssetData.");
+            static_assert(std::is_base_of_v<IAssetData, T>,
+                          "Failed to load asset, it does not derive IAssetData.");
 
             // Asset deleter, erases the map entry when the last shared_ptr is deleted.
+            // TODO - currently, if loading an asset, it must be used immediately, or the shared_ptr
+            // goes out of scope, is deleted, and the map entry is erased, making it useless!
+            // Somehow get a way to not have it deleted immediately??
             auto deleter = [&](const std::string& name)
             {
                 if (!get().m_data.contains(name)) return;
