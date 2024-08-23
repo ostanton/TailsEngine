@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
+#include <Tails/Serialisable.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -19,13 +20,14 @@ namespace tails
 
     /**
      * Base class for all widgets. Derived classes from this are encouraged to prefix
-     * with 'W' (e.g. WText), as to avoid naming (like with a potential CText entity)
+     * with 'W' (e.g. WText), as to avoid naming clashes (like with a potential CText entity)
      */
     class TAILS_API CWidget :
         public CObject,
         public ITickable,
         public sf::Drawable,
-        public sf::Transformable
+        public sf::Transformable,
+        public ISerialisable
     {
         friend WContainer;
         friend WViewport;
@@ -48,6 +50,10 @@ namespace tails
          * @return Possibly valid size
          */
         [[nodiscard]] virtual std::optional<sf::Vector2f> getSize() const {return std::nullopt;}
+
+    protected:
+        nlohmann::json serialise() const override;
+        void deserialise(const nlohmann::json& obj) override;
     };
 }
 

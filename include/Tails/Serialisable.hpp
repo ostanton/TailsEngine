@@ -34,7 +34,7 @@ namespace tails
                 "Failed to clone, specified type does not derive ISerialisable.");
 
             // TODO - test! Dunno if this kinda thing is intended or not
-            return {static_cast<T*>(clone().release())};
+            return std::make_unique<T>(static_cast<T*>(clone().release()));
         }
 
         [[nodiscard]] const std::string& getClassName() const {return m_className;}

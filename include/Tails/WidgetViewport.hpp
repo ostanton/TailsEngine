@@ -14,6 +14,7 @@ namespace tails
     class TAILS_API WViewport : public WContainer
     {
         void drawChild(size_t childIndex) const override {}
+        std::unique_ptr<ISerialisable> clone() const override {return std::make_unique<WViewport>();}
     };
 }
 

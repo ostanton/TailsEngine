@@ -117,4 +117,9 @@ namespace tails
     {
         return std::make_optional(m_text.getGlobalBounds().getSize());
     }
+
+    std::unique_ptr<ISerialisable> WText::clone() const
+    {
+        return std::make_unique<WText>();
+    }
 }

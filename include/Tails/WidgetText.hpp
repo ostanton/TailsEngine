@@ -20,7 +20,7 @@ namespace tails
     /**
      * Possibly could switch sf::Text to glyphs and textures.
      */
-    class TAILS_API WText : public CWidget
+    class TAILS_API WText final : public CWidget
     {
     public:
         WText();
@@ -55,11 +55,12 @@ namespace tails
         void setSize(const sf::Vector2f& size) override;
         std::optional<sf::Vector2f> getSize() const override;
 
-    protected:
+    private:
         void tick(float deltaTime) override {}
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    private:
+        std::unique_ptr<ISerialisable> clone() const override;
+
         sf::Text m_text;
         std::shared_ptr<CFontAsset> m_font;
     };
