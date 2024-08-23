@@ -33,6 +33,14 @@ CPMAddPackage("gh:SFML/SFML#2.6.1")
 # Add nlohmann/json
 CPMAddPackage("gh:nlohmann/json@3.11.3")
 
+if (CMAKE_CXX_COMPILER_ID STREQUALS "MSVC")
+    target_compile_definitions(TailsEngine TAILS_COMP_MSVC)
+elseif (CMAKE_CXX_COMPILER_ID STREQUALS "GNU")
+    target_compile_definitions(TailsEngine TAILS_COMP_GNU)
+elseif (CMAKE_CXX_COMPILER_ID STREQUALS "Clang")
+    target_compile_definitions(TailsEngine TAILS_COMP_CLANG)
+endif ()
+
 target_link_libraries(
     TailsEngine
     PUBLIC
