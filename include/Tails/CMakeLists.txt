@@ -30,4 +30,5 @@ target_sources(
     WidgetText.hpp
     VerticalContainer.hpp
     Padding.hpp
+    Assert.hpp
 )

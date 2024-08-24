@@ -87,3 +87,65 @@ engine.json
     }
 }
 ///////////////////////////////////////////////
+
+Entity:
+- Array of asset IDs
+
+Level:
+- Local asset cache
+- With each entity spawned, load/get asset via value in engine.json found at entity's key
+
+Asset Cache:
+- Either base class or final class used with composition that just holds loaded assets
+
+enum class EAssetCategory : uint
+{
+    Texture,
+    Sound,
+    Font
+}
+
+struct SAssetHandle
+{
+    string id;
+    string path;
+    EAssetCategory category;
+}
+
+class CAssetCache
+{
+    unordered_map<SAssetHandle, unique_ptr<IAssetResource>> m_assets;
+}
+
+class CLevel : CAssetCache
+{
+    void loadFromFile(string path)
+    {
+        for (auto& entity : m_entities)
+        {
+            for (auto& entityAsset : entity->getRequiredAssets())
+            {
+                loadAsset(entityAsset);
+            }
+        }
+    }
+}
+
+getLevel().loadAsset(EAssetCategory::Texture, "player_sprite");
+getLevel().getAssetCache().load(EAssetCategory::Texture, "player_sprite");
+
+class Entity
+{
+    vector<string> m_requiredAssets;
+}
+
+// assets.json or something
+{
+    "assets": [
+        {
+            "id": "player_sprite",
+            "path": "res/textures/player_sprite.png",
+            "type": "texture"
+        }
+    ]
+}
