@@ -55,6 +55,7 @@ namespace tails
         void kill();
 
         [[nodiscard]] sf::RenderTarget& getRenderTarget() const {return *m_renderTarget;}
+        
         [[nodiscard]] const sf::RenderStates& getRenderState() const {return m_renderStates;}
 
         [[nodiscard]] sf::RenderTexture& getInternalRenderTexture() {return m_renderTextureInternal;}

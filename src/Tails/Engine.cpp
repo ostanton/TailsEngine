@@ -139,6 +139,8 @@ namespace tails
 
     CEngine::~CEngine()
     {
+        CDebug::print("Engine destructing");
+        CDebug::print("Engine alive for ", m_lifeTime, " seconds");
     }
 
     void CEngine::run()
@@ -210,7 +212,6 @@ namespace tails
         }
 
         CDebug::print("Main loop ended");
-        CDebug::print("Engine alive for ", m_lifeTime, " seconds");
         CDebug::print();
     }
 

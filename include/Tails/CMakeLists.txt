@@ -31,4 +31,5 @@ target_sources(
     VerticalContainer.hpp
     Padding.hpp
     Assert.hpp
+    LevelSettings.hpp
 )
