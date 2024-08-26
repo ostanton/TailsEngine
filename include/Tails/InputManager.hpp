@@ -62,13 +62,10 @@ namespace tails
      * SKey moveRightButton {Device::Keyboard, Key::Right, 1.f};
      * SKey moveLeftButton {Device::Keyboard, Key::Left, -1.f};
      */
-    struct TAILS_API SKey final
+    struct TAILS_API SKey
     {
         SKey(EInputDevice inDevice, int inCode);
-        // separate constructors for each enum mapping. Could have them not be enum class and instead wrap in a
-        // namespace or static class, but that just ain't fun is it?
         SKey(EInputDevice inDevice, EXboxButton button);
-        SKey(EInputDevice inDevice, EXboxAxis axis);
 
         /**
          * The key type, normally set via EInputDevice, i.e. keyboard, mouse, etc.
@@ -81,34 +78,28 @@ namespace tails
          */
         int code {0};
 
-        /**
-         * Whether this key is a scalar value (controller trigger, thumbstick axis, etc.)
-         */
-        bool scalar {false};
-
-        /**
-         * Scalar amount deadzone. The key is only active if the amount is >= this
-         */
-        float deadzone {0.1f};
-
         void setDevice(EInputDevice inDevice);
 
         [[nodiscard]] bool isPressed() const;
-        
-        /**
-         * Gets the key's scalar amount normalised to -1..1
-         * @return Scalar amount
-         */
-        [[nodiscard]] float getScalarAmount() const;
-
-        /**
-         * Checks whether the scalar's amount is beyond the deadzone, making it "active"
-         * @return Active
-         */
-        [[nodiscard]] bool isScalarActive() const;
 
         static EInputDevice inputDeviceFromString(const std::string& device);
         static std::string stringFromInputDevice(EInputDevice device);
+    };
+
+    struct TAILS_API SKeyAxis : SKey
+    {
+        SKeyAxis(EInputDevice inDevice, int inCode, float inScaleMultiplier);
+        SKeyAxis(EInputDevice inDevice, EXboxAxis axis, float inScaleMultiplier);
+        SKeyAxis(EInputDevice inDevice, EXboxButton button, float inScaleMultiplier);
+        
+        float scaleMultiplier {1.f};
+        float deadZone {0.1f};
+
+        // hack to stop A (= 0) from being isPressed when we want LeftThumbstickX (= 0) scalar value
+        bool isScalar {false};
+
+        [[nodiscard]] float getScalarAmount() const;
+        [[nodiscard]] bool isActive() const;
     };
 
     class TAILS_API CInputManager final
@@ -120,35 +111,25 @@ namespace tails
          * @param action The action to check
          * @return If any key bound to the action is "active"
          */
-        static bool isActionActive(const std::string& action);
+        [[nodiscard]] static bool isActionPressed(const std::string& action);
 
-        static void addAction(std::string name, SKey key);
-        static void addAction(std::string name, const std::vector<SKey>& keys);
+        [[nodiscard]] static bool isAxisActive(const std::string& axis);
+        [[nodiscard]] static float getAxisValue(const std::string& axis);
 
-        static void addKeyToAction(const std::string& action, const SKey key);
+        static void addActionMapping(std::string name, SKey key);
+        static void addActionMapping(std::string name, const std::vector<SKey>& keys);
 
-        static bool actionExists(const std::string& action);
+        static void addAxisMapping(std::string name, SKeyAxis key);
+        static void addAxisMapping(std::string name, const std::vector<SKeyAxis>& keys);
 
-        [[nodiscard]] static float getActionScalarAmount(const std::string& action);
+        [[nodiscard]] static bool actionExists(const std::string& action);
+        [[nodiscard]] static bool axisExists(const std::string& axis);
         
     private:
         static CInputManager& get();
 
-        /**
-         * Checks whether any of the bound buttons (ignores scalars) are pressed
-         * @param action The action to check
-         * @return Success
-         */
-        static bool isActionPressed(const std::string& action);
-
-        /**
-         * Checks whether any key's scalar amount in a given action is beyond the specified deadzone for it (ignores buttons)
-         * @param action The action to check
-         * @return If the scalar amount is beyond the deadzone
-         */
-        static bool isActionScalarActive(const std::string& action);
-
         std::unordered_map<std::string, std::vector<SKey>> m_actions;
+        std::unordered_map<std::string, std::vector<SKeyAxis>> m_axes;
     };
 }
 

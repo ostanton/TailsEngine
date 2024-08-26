@@ -15,11 +15,6 @@ namespace tails
     {
     }
 
-    SKey::SKey(EInputDevice inDevice, EXboxAxis axis)
-        : device(static_cast<int>(inDevice)), code(static_cast<int>(axis)), scalar(true)
-    {
-    }
-
     void SKey::setDevice(EInputDevice inDevice)
     {
         device = static_cast<int>(inDevice);
@@ -35,22 +30,12 @@ namespace tails
             return sf::Mouse::isButtonPressed(static_cast<sf::Mouse::Button>(code));
         case static_cast<int>(EInputDevice::Controller):
             // support multiple controllers?? Probably not!
-            return sf::Joystick::isButtonPressed(0, code);
+                return sf::Joystick::isButtonPressed(0, code);
         default:
             break;
         }
 
         return false;
-    }
-
-    float SKey::getScalarAmount() const
-    {
-        return sf::Joystick::getAxisPosition(0, static_cast<sf::Joystick::Axis>(code)) * 0.01f;
-    }
-
-    bool SKey::isScalarActive() const
-    {
-        return getScalarAmount() >= deadzone || getScalarAmount() <= -deadzone;
     }
 
     EInputDevice SKey::inputDeviceFromString(const std::string& device)
@@ -82,54 +67,33 @@ namespace tails
         return "Unknown";
     }
 
-    bool CInputManager::isActionActive(const std::string& action)
+    SKeyAxis::SKeyAxis(EInputDevice inDevice, int inCode, float inScaleMultiplier)
+        : SKey(inDevice, inCode)
     {
-        return isActionPressed(action) || isActionScalarActive(action);
+        scaleMultiplier = inScaleMultiplier;
     }
 
-    void CInputManager::addAction(std::string name, SKey key)
+    SKeyAxis::SKeyAxis(EInputDevice inDevice, EXboxAxis axis, float inScaleMultiplier)
+        : SKeyAxis(inDevice, static_cast<int>(axis), inScaleMultiplier)
     {
-        addAction(std::move(name), std::vector({key}));
+        isScalar = true;
     }
 
-    void CInputManager::addAction(std::string name, const std::vector<SKey>& keys)
+    SKeyAxis::SKeyAxis(EInputDevice inDevice, EXboxButton button, float inScaleMultiplier)
+        : SKeyAxis(inDevice, static_cast<int>(button), inScaleMultiplier)
     {
-        if (get().m_actions.contains(name))
-            get().m_actions[name] = keys;
-        else
-            get().m_actions.try_emplace(std::move(name), keys);
     }
 
-    void CInputManager::addKeyToAction(const std::string& action, const SKey key)
+    float SKeyAxis::getScalarAmount() const
     {
-        if (actionExists(action))
-            get().m_actions[action].push_back(key);
+        if (isPressed() && !isScalar) return scaleMultiplier;
+        
+        return sf::Joystick::getAxisPosition(0, static_cast<sf::Joystick::Axis>(code)) * scaleMultiplier * 0.01f;
     }
 
-    bool CInputManager::actionExists(const std::string& action)
+    bool SKeyAxis::isActive() const
     {
-        return get().m_actions.contains(action);
-    }
-
-    float CInputManager::getActionScalarAmount(const std::string& action)
-    {
-        if (!actionExists(action)) return 0.f;
-
-        float amount {0.f};
-
-        for (auto& key : get().m_actions[action])
-        {
-            if (std::abs(key.getScalarAmount()) > amount)
-                amount = key.getScalarAmount();
-        }
-
-        return amount;
-    }
-
-    CInputManager& CInputManager::get()
-    {
-        static CInputManager instance;
-        return instance;
+        return std::abs(getScalarAmount()) >= deadZone;
     }
 
     bool CInputManager::isActionPressed(const std::string& action)
@@ -149,20 +113,84 @@ namespace tails
         return false;
     }
 
-    bool CInputManager::isActionScalarActive(const std::string& action)
+    bool CInputManager::isAxisActive(const std::string& axis)
     {
-        for (auto& [actionName, values] : get().m_actions)
+        if (!axisExists(axis)) return false;
+
+        for (auto& axisKey : get().m_axes[axis])
         {
-            if (actionName == action)
-            {
-                for (auto& key : values)
-                {
-                    if (key.isScalarActive())
-                        return true;
-                }
-            }
+            if (axisKey.isActive())
+                return true;
         }
 
         return false;
+    }
+
+    float CInputManager::getAxisValue(const std::string& axis)
+    {
+        if (!axisExists(axis)) return 0.f;
+
+        float result {0.f};
+        SKeyAxis* axisPtr {nullptr};
+
+        /**
+         * TODO - instead of getting highest result, get a sum of all of them?
+         * To stop right favouring left, etc. and instead just returning 0 if right and left are both down
+         */
+
+        for (auto& axisKey : get().m_axes[axis])
+        {
+            if (const float newResult {std::abs(axisKey.getScalarAmount())}; newResult > result)
+            {
+                result = newResult;
+                axisPtr = &axisKey;
+            }
+        }
+
+        if (!axisPtr) return 0.f;
+
+        return axisPtr->getScalarAmount();
+    }
+
+    void CInputManager::addActionMapping(std::string name, SKey key)
+    {
+        addActionMapping(std::move(name), std::vector({key}));
+    }
+
+    void CInputManager::addActionMapping(std::string name, const std::vector<SKey>& keys)
+    {
+        if (actionExists(name))
+            get().m_actions[name] = keys;
+        else
+            get().m_actions.try_emplace(std::move(name), keys);
+    }
+
+    void CInputManager::addAxisMapping(std::string name, SKeyAxis key)
+    {
+        addAxisMapping(std::move(name), std::vector({key}));
+    }
+
+    void CInputManager::addAxisMapping(std::string name, const std::vector<SKeyAxis>& keys)
+    {
+        if (axisExists(name))
+            get().m_axes[name] = keys;
+        else
+            get().m_axes.try_emplace(std::move(name), keys);
+    }
+
+    bool CInputManager::actionExists(const std::string& action)
+    {
+        return get().m_actions.contains(action);
+    }
+
+    bool CInputManager::axisExists(const std::string& axis)
+    {
+        return get().m_axes.contains(axis);
+    }
+
+    CInputManager& CInputManager::get()
+    {
+        static CInputManager instance;
+        return instance;
     }
 }
