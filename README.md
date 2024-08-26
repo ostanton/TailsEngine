@@ -49,7 +49,7 @@ The dependent libraries are downloaded by CMake automatically via [CPM](https://
 
 I mainly use MSVC and GCC to compile this project. MSVC because my main machine is running Windows, and GCC because the laptop I use to also work on this project is running Linux. Both compilers compile this project just fine.
 
-I have tested with Clang, but it does not compile unfortunately. I am unsure why specifically, but it was unfortunate enough for me to just ignore Clang support (for now, maybe).
+I have tested with Clang, but it does not compile due to an issue with the standard library (I think). It would be nice if there was information online about it!
 
 ## Integration
 
