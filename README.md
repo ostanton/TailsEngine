@@ -69,3 +69,16 @@ add_executable(TestGame main.cpp)
 
 target_link_libraries(TestGame PRIVATE TailsEngine)
 ```
+
+An example of a `main.cpp` could be:
+```cpp
+#include <Tails/Engine.hpp>
+
+int main()
+{
+    tails::CEngine engine;
+    engine.run();
+    return 0;
+}
+```
+This will produce a blank window on your screen with an empty, default, level.
