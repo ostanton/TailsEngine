@@ -89,9 +89,6 @@ namespace tails
         }
 
         initInternalRender();
-
-        CDebug::print(m_renderProperties.toString());
-        CDebug::print();
         
         /* WORLD AND LEVEL */
         
@@ -188,17 +185,23 @@ namespace tails
                         calculateInternalAspectRatio(window->getSize());
                         CDebug::print("Resized window size: ", ev.size.width, "x", ev.size.height);
                         break;
+                    case sf::Event::JoystickConnected:
+                        std::cout << "Joystick connected ID: " << ev.joystickConnect.joystickId << "\n";
+                        break;
+                    case sf::Event::JoystickDisconnected:
+                        std::cout << "Joystick disconnected ID: " << ev.joystickConnect.joystickId << "\n";
+                        break;
                     }
                 }
             }
 
             tick(time.asSeconds());
             
-            m_renderTextureInternal.clear();
+            m_renderTextureInternal.clear(m_renderTextureInternalClearColour);
             draw(m_renderTextureInternal, m_renderStates);
             m_renderTextureInternal.display();
 
-            m_renderTarget->clear();
+            m_renderTarget->clear(m_renderTargetClearColour);
             m_renderTarget->setView(m_renderView);
             m_renderTarget->draw(sf::Sprite(internalRenderTexture));
             m_renderTarget->setView(m_renderTarget->getDefaultView());
@@ -218,6 +221,16 @@ namespace tails
     void CEngine::kill()
     {
         m_running = false;
+    }
+
+    void CEngine::setRenderTargetClearColour(const sf::Color& colour)
+    {
+        m_renderTargetClearColour = colour;
+    }
+
+    void CEngine::setRenderTextureInternalClearColour(const sf::Color& colour)
+    {
+        m_renderTextureInternalClearColour = colour;
     }
 
     void CEngine::preTick()
@@ -253,6 +266,8 @@ namespace tails
     {
         initInternalRender();
         initWorldLevel("");
+        CDebug::print(m_windowProperties.toString());
+        CDebug::print();
     }
 
     void CEngine::initInternalRender()
@@ -267,6 +282,8 @@ namespace tails
             static_cast<float>(m_renderProperties.resolution.y)
         );
         m_renderView.setCenter(m_renderView.getSize() * 0.5f);
+
+        CDebug::print(m_renderProperties.toString());
     }
 
     void CEngine::initWorldLevel(std::string path)

@@ -1,8 +1,7 @@
 #include <Tails/InputManager.hpp>
 
-#include "SFML/Window/Joystick.hpp"
-#include "SFML/Window/Keyboard.hpp"
-#include "SFML/Window/Mouse.hpp"
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
 
 namespace tails
 {
@@ -11,12 +10,22 @@ namespace tails
     {
     }
 
+    SKey::SKey(EInputDevice inDevice, EXboxButton button)
+        : SKey(inDevice, static_cast<int>(button))
+    {
+    }
+
+    SKey::SKey(EInputDevice inDevice, EXboxAxis axis)
+        : device(static_cast<int>(inDevice)), code(static_cast<int>(axis)), scalar(true)
+    {
+    }
+
     void SKey::setDevice(EInputDevice inDevice)
     {
         device = static_cast<int>(inDevice);
     }
 
-    bool SKey::isPressed()
+    bool SKey::isPressed() const
     {
         switch (device)
         {
@@ -32,6 +41,16 @@ namespace tails
         }
 
         return false;
+    }
+
+    float SKey::getScalarAmount() const
+    {
+        return sf::Joystick::getAxisPosition(0, static_cast<sf::Joystick::Axis>(code)) * 0.01f;
+    }
+
+    bool SKey::isScalarActive() const
+    {
+        return getScalarAmount() >= deadzone || getScalarAmount() <= -deadzone;
     }
 
     EInputDevice SKey::inputDeviceFromString(const std::string& device)
@@ -63,6 +82,56 @@ namespace tails
         return "Unknown";
     }
 
+    bool CInputManager::isActionActive(const std::string& action)
+    {
+        return isActionPressed(action) || isActionScalarActive(action);
+    }
+
+    void CInputManager::addAction(std::string name, SKey key)
+    {
+        addAction(std::move(name), std::vector({key}));
+    }
+
+    void CInputManager::addAction(std::string name, const std::vector<SKey>& keys)
+    {
+        if (get().m_actions.contains(name))
+            get().m_actions[name] = keys;
+        else
+            get().m_actions.try_emplace(std::move(name), keys);
+    }
+
+    void CInputManager::addKeyToAction(const std::string& action, const SKey key)
+    {
+        if (actionExists(action))
+            get().m_actions[action].push_back(key);
+    }
+
+    bool CInputManager::actionExists(const std::string& action)
+    {
+        return get().m_actions.contains(action);
+    }
+
+    float CInputManager::getActionScalarAmount(const std::string& action)
+    {
+        if (!actionExists(action)) return 0.f;
+
+        float amount {0.f};
+
+        for (auto& key : get().m_actions[action])
+        {
+            if (std::abs(key.getScalarAmount()) > amount)
+                amount = key.getScalarAmount();
+        }
+
+        return amount;
+    }
+
+    CInputManager& CInputManager::get()
+    {
+        static CInputManager instance;
+        return instance;
+    }
+
     bool CInputManager::isActionPressed(const std::string& action)
     {
         for (auto& [actionName, values] : get().m_actions)
@@ -80,22 +149,20 @@ namespace tails
         return false;
     }
 
-    void CInputManager::addAction(std::string name, SKey key)
+    bool CInputManager::isActionScalarActive(const std::string& action)
     {
-        addAction(std::move(name), std::vector({key}));
-    }
+        for (auto& [actionName, values] : get().m_actions)
+        {
+            if (actionName == action)
+            {
+                for (auto& key : values)
+                {
+                    if (key.isScalarActive())
+                        return true;
+                }
+            }
+        }
 
-    void CInputManager::addAction(std::string name, const std::vector<SKey>& keys)
-    {
-        if (get().m_actions.contains(name))
-            get().m_actions[name] = keys;
-        else
-            get().m_actions.try_emplace(std::move(name), keys);
-    }
-
-    CInputManager& CInputManager::get()
-    {
-        static CInputManager instance;
-        return instance;
+        return false;
     }
 }

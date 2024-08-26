@@ -21,6 +21,7 @@ namespace tails
         friend CEngine;
 
         SEngineSettings();
+        virtual ~SEngineSettings() = default;
 
         [[nodiscard]] virtual std::string getSetupFilePath() const {return "engine.json";}
 

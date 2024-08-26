@@ -80,6 +80,12 @@ namespace tails
 
         [[nodiscard]] float getCurrentLifeTime() const {return m_lifeTime;}
 
+        void setRenderTargetClearColour(const sf::Color& colour);
+        [[nodiscard]] const sf::Color& getRenderTargetClearColour() const {return m_renderTargetClearColour;}
+        
+        void setRenderTextureInternalClearColour(const sf::Color& colour);
+        [[nodiscard]] const sf::Color& getRenderTextureInternalClearColour() const {return m_renderTextureInternalClearColour;}
+
     protected:
         void preTick() override;
         void tick(float deltaTime) override;
@@ -132,6 +138,9 @@ namespace tails
         std::unique_ptr<SEngineSettings> m_settings;
 
         float m_lifeTime {0.f};
+
+        sf::Color m_renderTargetClearColour {0, 0, 0, 255};
+        sf::Color m_renderTextureInternalClearColour {0, 0, 0, 255};
     };
 }
 
