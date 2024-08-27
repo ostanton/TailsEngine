@@ -3,8 +3,6 @@
 
 #include <Tails/Config.hpp>
 
-#include <cstdint>
-
 namespace tails
 {
     class TAILS_API CObject
@@ -41,7 +39,7 @@ namespace tails
         [[nodiscard]] bool pendingDestroy() const;
 
     private:
-        uint8_t m_flags {PendingCreate};
+        uint8 m_flags {PendingCreate};
     };
 }
 

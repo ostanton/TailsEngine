@@ -18,7 +18,7 @@ namespace tails
         template<typename... Args>
         static void print(Args&&... args)
         {
-#ifndef NDEBUG
+#ifdef TAILS_DEBUG
             // TODO - test for args == 0 isntead of separate overload?
             ((std::cout << std::forward<Args>(args)), ...) << "\n";
 #endif // NDEBUG
@@ -29,7 +29,7 @@ namespace tails
          */
         static void print()
         {
-#ifndef NDEBUG
+#ifdef TAILS_DEBUG
             std::cout << "\n";
 #endif // NDEBUG
         }
@@ -41,7 +41,7 @@ namespace tails
         template<typename... Args>
         static void error(Args&&... args)
         {
-#ifndef NDEBUG
+#ifdef TAILS_DEBUG
             std::cerr << "Error: ";
             ((std::cerr << std::forward<Args>(args)), ...) << "\n";
 #endif // NDEBUG
