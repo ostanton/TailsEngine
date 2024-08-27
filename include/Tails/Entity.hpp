@@ -51,8 +51,8 @@ namespace tails
         void setSize(const sf::Vector2f& size);
         [[nodiscard]] const sf::Vector2f& getSize() const;
 
-        void setColour(sf::Color colour);
-        [[nodiscard]] sf::Color getColour() const;
+        void setColour(const sf::Color& colour);
+        [[nodiscard]] const sf::Color& getColour() const;
         
     protected:
         /**

@@ -72,7 +72,7 @@ namespace tails
         return m_vertices[3].position;
     }
 
-    void CEntity::setColour(sf::Color colour)
+    void CEntity::setColour(const sf::Color& colour)
     {
         for (size_t i {0}; i < m_vertices.getVertexCount(); i++)
         {
@@ -80,7 +80,7 @@ namespace tails
         }
     }
 
-    sf::Color CEntity::getColour() const
+    const sf::Color& CEntity::getColour() const
     {
         return m_vertices[0].color;
     }
