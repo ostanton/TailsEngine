@@ -1,4 +1,9 @@
 ///////////////////////////////////////////////
+Debug::print -> rename to println and allow std::format_string input
+also have different overloads, one with format_string, one without, etc.
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
 Asset loading/mapping via plain json file
 
 "assets.json"
