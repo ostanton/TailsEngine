@@ -43,7 +43,7 @@ make
 
 The dependent libraries are downloaded by CMake automatically via [CPM](https://github.com/cpm-cmake/CPM.cmake). This means you must have an internet connection for the first build generation. You do not require one for subsequent builds.
 
-- [SFML](https://www.sfml-dev.org/)
+- [SFML 3](https://www.sfml-dev.org/)
 - [nlohmann/json](https://github.com/nlohmann/json)
 
 ### Compilers
