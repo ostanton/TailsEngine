@@ -147,10 +147,10 @@ namespace tails
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
             setRenderTarget<sf::RenderWindow>(
-                sf::VideoMode(
+                sf::VideoMode({
                     m_windowProperties.resolution.x,
                     m_windowProperties.resolution.y
-                ),
+                }),
                 m_windowProperties.title
             );
         CDebug::print();
@@ -171,26 +171,16 @@ namespace tails
             
             if (window)
             {
-                sf::Event ev;
-                while (window->pollEvent(ev))
+                while (const auto ev = window->pollEvent())
                 {
-                    switch (ev.type)
+                    if (ev->is<sf::Event::Closed>())
                     {
-                    default:
-                        break;
-                    case sf::Event::Closed:
                         kill();
-                        break;
-                    case sf::Event::Resized:
-                        calculateInternalAspectRatio(window->getSize());
-                        CDebug::print("Resized window size: ", ev.size.width, "x", ev.size.height);
-                        break;
-                    case sf::Event::JoystickConnected:
-                        std::cout << "Joystick connected ID: " << ev.joystickConnect.joystickId << "\n";
-                        break;
-                    case sf::Event::JoystickDisconnected:
-                        std::cout << "Joystick disconnected ID: " << ev.joystickConnect.joystickId << "\n";
-                        break;
+                    }
+                    else if (const auto* resize = ev->getIf<sf::Event::Resized>())
+                    {
+                        calculateInternalAspectRatio(resize->size);
+                        CDebug::print("Resized window size: ", resize->size.x, "x", resize->size.y);
                     }
                 }
             }
@@ -274,13 +264,14 @@ namespace tails
     {
         CDebug::print("Initialising internal render target");
         // Setup internal render texture
-        m_renderTextureInternal.create(m_renderProperties.resolution.x, m_renderProperties.resolution.y);
+        if (!m_renderTextureInternal.resize({m_renderProperties.resolution.x, m_renderProperties.resolution.y}))
+            CDebug::error("Failed to resize internal render texture!");
 
         // Set the size and center of the camera initially
-        m_renderView.setSize(
+        m_renderView.setSize({
             static_cast<float>(m_renderProperties.resolution.x),
             static_cast<float>(m_renderProperties.resolution.y)
-        );
+        });
         m_renderView.setCenter(m_renderView.getSize() * 0.5f);
 
         CDebug::print(m_renderProperties.toString());
@@ -300,17 +291,17 @@ namespace tails
             static_cast<float>(windowSize.y) / static_cast<float>(m_renderProperties.resolution.y)
         };
 
-        sf::FloatRect viewportRect {0.f, 0.f, 1.f, 1.f};
+        sf::FloatRect viewportRect {{0.f, 0.f}, {1.f, 1.f}};
 
         if (ratio.x > ratio.y)
         {
-            viewportRect.width = ratio.y / ratio.x;
-            viewportRect.left = (1.f - viewportRect.width) / 2.f;
+            viewportRect.size.x = ratio.y / ratio.x;
+            viewportRect.position.x = (1.f - viewportRect.size.x) / 2.f;
         }
         else if (ratio.x < ratio.y)
         {
-            viewportRect.height = ratio.x / ratio.y;
-            viewportRect.top = (1.f - viewportRect.height) / 2.f;
+            viewportRect.size.y = ratio.x / ratio.y;
+            viewportRect.position.y = (1.f - viewportRect.size.y) / 2.f;
         }
         
         m_renderView.setViewport(viewportRect);

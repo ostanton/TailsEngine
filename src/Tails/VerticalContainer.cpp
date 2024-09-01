@@ -24,7 +24,10 @@ namespace tails
             return;
         }
 
-        child->setPosition(getPosition().x + m_childPadding.left, lastChild->getPosition().y + lastChild->getSize().value().y + m_childPadding.top);
+        child->setPosition({
+            getPosition().x + m_childPadding.left,
+            lastChild->getPosition().y + lastChild->getSize().value().y + m_childPadding.top
+        });
     }
 
     std::unique_ptr<ISerialisable>WVerticalContainer::clone() const

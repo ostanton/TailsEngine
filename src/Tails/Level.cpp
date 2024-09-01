@@ -14,7 +14,7 @@ namespace tails
 {
     CLevel::~CLevel() = default;
 
-    CEntity* CLevel::spawnEntity(const std::string& className, const sf::Vector2f& position, float rotation, const sf::Vector2f& scale)
+    CEntity* CLevel::spawnEntity(const std::string& className, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
     {
         return spawnEntityImpl(
             getEngine().getSettings().getRegistry<CEngineRegistry>()->instantiateClass<CEntity>(className),
@@ -148,7 +148,7 @@ namespace tails
         }
     }
 
-    CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, float rotation, const sf::Vector2f& scale)
+    CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
     {
         entity->setPosition(position);
         entity->setRotation(rotation);

@@ -3,7 +3,7 @@
 namespace tails
 {
     SPadding::SPadding(const sf::FloatRect& floatRect)
-        : top(floatRect.top), left(floatRect.left), bottom(floatRect.height), right(floatRect.width)
+        : top(floatRect.position.y), left(floatRect.position.x), bottom(floatRect.size.y), right(floatRect.size.x)
     {
     }
 }

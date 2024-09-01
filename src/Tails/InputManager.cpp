@@ -5,13 +5,29 @@
 
 namespace tails
 {
-    SKey::SKey(EInputDevice inDevice, int inCode)
-        : device(static_cast<int>(inDevice)), code(inCode)
+    SKey::SKey(EInputDevice inDevice, int inCode, float inScaleMultiplier)
+        : device(static_cast<int>(inDevice)), code(inCode), scaleMultiplier(inScaleMultiplier)
     {
     }
 
-    SKey::SKey(EInputDevice inDevice, EXboxButton button)
-        : SKey(inDevice, static_cast<int>(button))
+    SKey::SKey(EInputDevice inDevice, EXboxButton button, float inScaleMultiplier)
+        : SKey(inDevice, static_cast<int>(button), inScaleMultiplier)
+    {
+    }
+
+    SKey::SKey(EInputDevice inDevice, EXboxAxis axis, float inScaleMultiplier)
+        : SKey(inDevice, static_cast<int>(axis), inScaleMultiplier)
+    {
+        isScalar = true;
+    }
+
+    SKey::SKey(EInputDevice inDevice, sf::Keyboard::Key key, float inScaleMultiplier)
+        : SKey(inDevice, static_cast<int>(key), inScaleMultiplier)
+    {
+    }
+
+    SKey::SKey(EInputDevice inDevice, sf::Mouse::Button button, float inScaleMultiplier)
+        : SKey(inDevice, static_cast<int>(button), inScaleMultiplier)
     {
     }
 
@@ -20,22 +36,31 @@ namespace tails
         device = static_cast<int>(inDevice);
     }
 
-    bool SKey::isPressed() const
+    float SKey::getScalarAmount() const
     {
         switch (device)
         {
         case static_cast<int>(EInputDevice::Keyboard):
-            return sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(code));
+            if (isKeyPressed(static_cast<sf::Keyboard::Key>(code))) return scaleMultiplier;
+            break;
         case static_cast<int>(EInputDevice::Mouse):
-            return sf::Mouse::isButtonPressed(static_cast<sf::Mouse::Button>(code));
+            if (isButtonPressed(static_cast<sf::Mouse::Button>(code))) return scaleMultiplier;
+            break;
         case static_cast<int>(EInputDevice::Controller):
-            // support multiple controllers?? Probably not!
-                return sf::Joystick::isButtonPressed(0, code);
+            if (isScalar)
+                return getAxisPosition(0, static_cast<sf::Joystick::Axis>(code)) * 0.01f * scaleMultiplier;
+            if (sf::Joystick::isButtonPressed(0, code)) return scaleMultiplier;
+            break;
         default:
             break;
         }
 
-        return false;
+        return 0.f;
+    }
+
+    bool SKey::isActive() const
+    {
+        return std::abs(getScalarAmount()) >= deadZone;
     }
 
     EInputDevice SKey::inputDeviceFromString(const std::string& device)
@@ -67,36 +92,7 @@ namespace tails
         return "Unknown";
     }
 
-    SKeyAxis::SKeyAxis(EInputDevice inDevice, int inCode, float inScaleMultiplier)
-        : SKey(inDevice, inCode)
-    {
-        scaleMultiplier = inScaleMultiplier;
-    }
-
-    SKeyAxis::SKeyAxis(EInputDevice inDevice, EXboxAxis axis, float inScaleMultiplier)
-        : SKeyAxis(inDevice, static_cast<int>(axis), inScaleMultiplier)
-    {
-        isScalar = true;
-    }
-
-    SKeyAxis::SKeyAxis(EInputDevice inDevice, EXboxButton button, float inScaleMultiplier)
-        : SKeyAxis(inDevice, static_cast<int>(button), inScaleMultiplier)
-    {
-    }
-
-    float SKeyAxis::getScalarAmount() const
-    {
-        if (isPressed() && !isScalar) return scaleMultiplier;
-        
-        return sf::Joystick::getAxisPosition(0, static_cast<sf::Joystick::Axis>(code)) * scaleMultiplier * 0.01f;
-    }
-
-    bool SKeyAxis::isActive() const
-    {
-        return std::abs(getScalarAmount()) >= deadZone;
-    }
-
-    bool CInputManager::isActionPressed(const std::string& action)
+    bool CInputManager::isActionActive(const std::string& action)
     {
         for (auto& [actionName, values] : get().m_actions)
         {
@@ -104,7 +100,7 @@ namespace tails
             {
                 for (auto& key : values)
                 {
-                    if (key.isPressed())
+                    if (key.isActive())
                         return true;
                 }
             }
@@ -113,43 +109,30 @@ namespace tails
         return false;
     }
 
-    bool CInputManager::isAxisActive(const std::string& axis)
+    float CInputManager::getActionScalarValue(const std::string& action)
     {
-        if (!axisExists(axis)) return false;
-
-        for (auto& axisKey : get().m_axes[axis])
-        {
-            if (axisKey.isActive())
-                return true;
-        }
-
-        return false;
-    }
-
-    float CInputManager::getAxisValue(const std::string& axis)
-    {
-        if (!axisExists(axis)) return 0.f;
+        if (!actionExists(action)) return 0.f;
 
         float result {0.f};
-        SKeyAxis* axisPtr {nullptr};
+        SKey* actionPtr {nullptr};
 
         /**
          * TODO - instead of getting highest result, get a sum of all of them?
          * To stop right favouring left, etc. and instead just returning 0 if right and left are both down
          */
 
-        for (auto& axisKey : get().m_axes[axis])
+        for (auto& axisKey : get().m_actions[action])
         {
             if (const float newResult {std::abs(axisKey.getScalarAmount())}; newResult > result)
             {
                 result = newResult;
-                axisPtr = &axisKey;
+                actionPtr = &axisKey;
             }
         }
 
-        if (!axisPtr) return 0.f;
+        if (!actionPtr) return 0.f;
 
-        return axisPtr->getScalarAmount();
+        return actionPtr->getScalarAmount();
     }
 
     void CInputManager::addActionMapping(std::string name, SKey key)
@@ -165,27 +148,9 @@ namespace tails
             get().m_actions.try_emplace(std::move(name), keys);
     }
 
-    void CInputManager::addAxisMapping(std::string name, SKeyAxis key)
-    {
-        addAxisMapping(std::move(name), std::vector({key}));
-    }
-
-    void CInputManager::addAxisMapping(std::string name, const std::vector<SKeyAxis>& keys)
-    {
-        if (axisExists(name))
-            get().m_axes[name] = keys;
-        else
-            get().m_axes.try_emplace(std::move(name), keys);
-    }
-
     bool CInputManager::actionExists(const std::string& action)
     {
         return get().m_actions.contains(action);
-    }
-
-    bool CInputManager::axisExists(const std::string& axis)
-    {
-        return get().m_axes.contains(axis);
     }
 
     CInputManager& CInputManager::get()

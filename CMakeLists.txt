@@ -20,6 +20,10 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 add_subdirectory(src/Tails)
 add_subdirectory(include/Tails)
 
+# Use static RuntimeLibrary in MSVC instead of DLL
+set_property(TARGET TailsEngine PROPERTY
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 # Don't need to check if these are downloaded, CPM seems to do it for us
 # Could check on the user's PC elsewhere, but having a clean clone is good I think
 
@@ -28,7 +32,7 @@ set(BUILD_SHARED_LIBS OFF)
 set(SFML_USE_STATIC_STD_LIBS ON)
 
 # Add SFML
-CPMAddPackage("gh:SFML/SFML#2.6.1")
+CPMAddPackage("gh:SFML/SFML#master")
 
 # Add nlohmann/json
 CPMAddPackage("gh:nlohmann/json@3.11.3")
@@ -56,8 +60,8 @@ endif ()
 target_link_libraries(
     TailsEngine
     PUBLIC
-        sfml-graphics
-        sfml-audio
+        SFML::Graphics
+        SFML::Audio
         nlohmann_json::nlohmann_json
 )
 

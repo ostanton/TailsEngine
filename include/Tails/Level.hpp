@@ -35,7 +35,7 @@ namespace tails
          * Spawn an entity from its class.
          */
         template<typename T>
-        T* spawnEntity(const sf::Vector2f& position = {0.f, 0.f}, float rotation = 0.f, const sf::Vector2f& scale = {1.f, 1.f})
+        T* spawnEntity(const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f})
         {
             static_assert(std::is_base_of_v<CEntity, T>, "Failed to spawn entity, it does not derive CEntity.");
             return static_cast<T*>(spawnEntityImpl(std::make_unique<T>(), position, rotation, scale));
@@ -44,7 +44,7 @@ namespace tails
         /**
          * Spawn an entity from its "reflected" class name.
          */
-        CEntity* spawnEntity(const std::string& className, const sf::Vector2f& position = {0.f, 0.f}, float rotation = 0.f, const sf::Vector2f& scale = {1.f, 1.f});
+        CEntity* spawnEntity(const std::string& className, const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f});
 
         static void destroyEntity(CEntity* entity);
 
@@ -77,7 +77,7 @@ namespace tails
 
         void checkCollision(CEntity* entity) const;
 
-        CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, float rotation, const sf::Vector2f& scale);
+        CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale);
 
         std::string m_path;
 

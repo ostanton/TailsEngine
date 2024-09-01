@@ -12,7 +12,7 @@
 namespace tails
 {
     class CSoundAsset;
-
+/*
     class TAILS_API CAudioManager final
     {
     public:
@@ -31,7 +31,7 @@ namespace tails
         sf::Sound m_sound;
         sf::Music m_music;
         std::shared_ptr<CSoundAsset> m_currentSound;
-    };
+    };*/
 }
 
 #endif // TAILS_AUDIOMANAGER_HPP

@@ -4,7 +4,7 @@ namespace tails
 {
     bool CFontAsset::load(const std::string& path)
     {
-        return loadFromFile(path);
+        return openFromFile(path);
     }
 
     std::string CFontAsset::getType() const

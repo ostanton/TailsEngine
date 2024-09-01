@@ -3,7 +3,7 @@
 #include <Tails/SoundAsset.hpp>
 
 namespace tails
-{
+{/*
     void CAudioManager::playSound()
     {
         if (get().m_sound.getBuffer())
@@ -34,5 +34,5 @@ namespace tails
     {
         static CAudioManager instance;
         return instance;
-    }
+    }*/
 }

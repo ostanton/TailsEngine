@@ -89,7 +89,7 @@ namespace tails
         
         void initSpawn(CLevel* level);
         
-        sf::VertexArray m_vertices {sf::TriangleStrip, 4};
+        sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};
         std::shared_ptr<CTextureAsset> m_texture;
     };
 }

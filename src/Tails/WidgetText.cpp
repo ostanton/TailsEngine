@@ -5,26 +5,24 @@
 
 namespace tails
 {
-    WText::WText()
+    WText::WText(const sf::String& text, unsigned int characterSize)
+        : m_string(text), m_characterSize(characterSize)
     {
-        m_text.setString("Text");
-        m_text.setCharacterSize(8);
     }
 
     void WText::setText(const sf::String& text)
     {
-        m_text.setString(text);
+        m_string = text;
     }
 
     const sf::String& WText::getText() const
     {
-        return m_text.getString();
+        return m_string;
     }
 
     void WText::setFont(std::shared_ptr<CFontAsset> font)
     {
         m_font = font;
-        m_text.setFont(*font);
     }
 
     std::shared_ptr<CFontAsset> WText::getFont() const
@@ -34,78 +32,63 @@ namespace tails
 
     void WText::setCharacterSize(unsigned int size)
     {
-        m_text.setCharacterSize(size);
+        m_characterSize = size;
     }
 
     unsigned int WText::getCharacterSize() const
     {
-        return m_text.getCharacterSize();
-    }
-
-    void WText::setLineSpacing(float factor)
-    {
-        m_text.setLineSpacing(factor);
-    }
-
-    float WText::getLineSpacing() const
-    {
-        return m_text.getLineSpacing();
-    }
-
-    void WText::setLetterSpacing(float factor)
-    {
-        m_text.setLetterSpacing(factor);
-    }
-
-    float WText::getLetterSpacing() const
-    {
-        return m_text.getLetterSpacing();
+        return m_characterSize;
     }
 
     void WText::setFillColour(const sf::Color& colour)
     {
-        m_text.setFillColor(colour);
+        m_colour = colour;
     }
 
     const sf::Color& WText::getFillColour() const
     {
-        return m_text.getFillColor();
+        return m_colour;
     }
-
-    void WText::setOutlineColour(const sf::Color& colour)
-    {
-        m_text.setOutlineColor(colour);
-    }
-
-    const sf::Color& WText::getOutlineColour() const
-    {
-        return m_text.getOutlineColor();
-    }
-
+    
     void WText::setOutlineThickness(float thickness)
     {
-        m_text.setOutlineThickness(thickness);
+        m_outlineThickness = thickness;
     }
 
     float WText::getOutlineThickness() const
     {
-        return m_text.getOutlineThickness();
+        return m_outlineThickness;
     }
 
-    void WText::setStyle(sf::Text::Style style)
+    void WText::setBold(bool bold)
     {
-        m_text.setStyle(style);
+        m_bold = bold;
     }
 
-    unsigned int WText::getStyle() const
+    unsigned int WText::getBold() const
     {
-        return m_text.getStyle();
+        return m_bold;
     }
 
     void WText::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        if (!m_font) return;
+        
         states.transform *= getTransform();
-        target.draw(m_text, states);
+        
+        for (auto stringChar : m_string)
+        {
+            auto& glyph = m_font->getGlyph(stringChar, m_characterSize, m_bold, m_outlineThickness);
+            sf::VertexArray character {sf::PrimitiveType::TriangleStrip, 4};
+            character[1].texCoords = {0.f, static_cast<float>(glyph.textureRect.size.y)};
+            character[2].texCoords = {static_cast<float>(glyph.textureRect.size.x), 0.f};
+            character[3].texCoords = {
+                static_cast<float>(glyph.textureRect.size.x),
+                static_cast<float>(glyph.textureRect.size.y)
+            };
+            //states.texture = m_font.get();
+            target.draw(character, states);
+        }
     }
 
     void WText::setSize(const sf::Vector2f& size)
@@ -115,7 +98,16 @@ namespace tails
 
     std::optional<sf::Vector2f> WText::getSize() const
     {
-        return std::make_optional(m_text.getGlobalBounds().getSize());
+        if (!m_font) return std::nullopt;
+        
+        sf::Vector2f size;
+        
+        for (auto stringChar : m_string)
+        {
+            size += m_font->getGlyph(stringChar, m_characterSize, m_bold, m_outlineThickness).bounds.size;
+        }
+        
+        return std::make_optional(size);
     }
 
     std::unique_ptr<ISerialisable> WText::clone() const

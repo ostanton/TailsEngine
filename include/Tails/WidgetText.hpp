@@ -23,7 +23,8 @@ namespace tails
     class TAILS_API WText final : public CWidget
     {
     public:
-        WText();
+        WText() = default;
+        WText(const sf::String& text, unsigned int characterSize = 8);
         
         void setText(const sf::String& text);
         [[nodiscard]] const sf::String& getText() const;
@@ -34,23 +35,14 @@ namespace tails
         void setCharacterSize(unsigned int size);
         [[nodiscard]] unsigned int getCharacterSize() const;
 
-        void setLineSpacing(float factor);
-        [[nodiscard]] float getLineSpacing() const;
-
-        void setLetterSpacing(float factor);
-        [[nodiscard]] float getLetterSpacing() const;
-
         void setFillColour(const sf::Color& colour);
         [[nodiscard]] const sf::Color& getFillColour() const;
-
-        void setOutlineColour(const sf::Color& colour);
-        [[nodiscard]] const sf::Color& getOutlineColour() const;
 
         void setOutlineThickness(float thickness);
         [[nodiscard]] float getOutlineThickness() const;
 
-        void setStyle(sf::Text::Style style);
-        [[nodiscard]] unsigned int getStyle() const;
+        void setBold(bool bold);
+        [[nodiscard]] unsigned int getBold() const;
 
         void setSize(const sf::Vector2f& size) override;
         std::optional<sf::Vector2f> getSize() const override;
@@ -61,7 +53,11 @@ namespace tails
 
         std::unique_ptr<ISerialisable> clone() const override;
 
-        sf::Text m_text;
+        sf::String m_string {"Text"};
+        unsigned int m_characterSize {8};
+        float m_outlineThickness {0.f};
+        bool m_bold {false};
+        sf::Color m_colour {sf::Color::White};
         std::shared_ptr<CFontAsset> m_font;
     };
 }

@@ -26,8 +26,11 @@ namespace tails
     bool CEntity::colliding(const CEntity* entity) const
     {
         if (!entity) return false;
-        
-        return getGlobalBounds().intersects(entity->getGlobalBounds());
+
+        if (getGlobalBounds().findIntersection(entity->getGlobalBounds()))
+            return true;
+
+        return false;
     }
 
     sf::FloatRect CEntity::getGlobalBounds() const
@@ -114,7 +117,7 @@ namespace tails
         obj["position"].push_back(SVector2f::toJSON(getPosition()));
 
         obj.push_back({"rotation"});
-        obj["rotation"] = getRotation();
+        obj["rotation"] = getRotation().asDegrees();
 
         obj.push_back({"scale"});
         obj["scale"].push_back(SVector2f::toJSON(getScale()));
@@ -128,7 +131,7 @@ namespace tails
     void CEntity::deserialise(const nlohmann::json& obj)
     {
         setPosition(SVector2f::fromJSON(obj["position"]));
-        setRotation(obj["rotation"].get<float>());
+        setRotation(sf::degrees(obj["rotation"].get<float>()));
         setScale(SVector2f::fromJSON(obj["scale"]));
         setSize(SVector2f::fromJSON(obj["size"]));
 
