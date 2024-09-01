@@ -4,6 +4,61 @@ also have different overloads, one with format_string, one without, etc.
 ///////////////////////////////////////////////
 
 ///////////////////////////////////////////////
+Predefine SKey objects with default input device, button, etc. e.g.:
+
+// very well could have these defined in json, and query that when loading so these
+// aren't always loaded in-game
+unordered_map<std::string, SKey> defaultKeys;
+
+const SKey& getKey(const std::string& key)
+{
+    return defaultKeys[key];
+}
+
+// could have the keys just be static members of a class or something,
+// and treat them like an enum, but then a manual string->key & key->string
+// conversion stuff would be required, vs a map or json where the keys are mapped to strings
+
+Example keys definition json:
+{
+    "keys": {
+        "A": {
+            "device": "keyboard",
+            "code": "A",
+            "scalar": false
+        },
+        "LeftTrigger": {
+            "device": "controller",
+            "code": "LeftTrigger",
+            "scalar": true
+        },
+        "LeftMouseButton": {
+            "device": "mouse",
+            "code": "Left",
+            "scalar": false
+        }
+    }
+}
+
+It takes a user-friendly name and maps to what should be default for that key (like unreal kinda).
+
+Then, in C++:
+
+void setupInput()
+{
+    string pathToJson;
+    json keys {pathToJson};
+    
+    // get used keys
+    // populate keys being used or something
+    
+    // close json, etc.
+}
+
+You get it.
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
 Asset loading/mapping via plain json file
 
 "assets.json"
