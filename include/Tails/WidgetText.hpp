@@ -4,7 +4,8 @@
 #include <Tails/Config.hpp>
 #include <Tails/Widget.hpp>
 
-#include <SFML/Graphics/Text.hpp>
+#include <SFML/System/String.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 #include <memory>
 

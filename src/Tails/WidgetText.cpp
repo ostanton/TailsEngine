@@ -2,6 +2,7 @@
 #include <Tails/FontAsset.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
 namespace tails
 {
@@ -86,7 +87,9 @@ namespace tails
                 static_cast<float>(glyph.textureRect.size.x),
                 static_cast<float>(glyph.textureRect.size.y)
             };
-            //states.texture = m_font.get();
+            
+            states.texture = &m_font->getTexture(m_characterSize);
+            
             target.draw(character, states);
         }
     }
