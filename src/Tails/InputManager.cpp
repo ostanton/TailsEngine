@@ -114,25 +114,13 @@ namespace tails
         if (!actionExists(action)) return 0.f;
 
         float result {0.f};
-        SKey* actionPtr {nullptr};
-
-        /**
-         * TODO - instead of getting highest result, get a sum of all of them?
-         * To stop right favouring left, etc. and instead just returning 0 if right and left are both down
-         */
 
         for (auto& axisKey : get().m_actions[action])
         {
-            if (const float newResult {std::abs(axisKey.getScalarAmount())}; newResult > result)
-            {
-                result = newResult;
-                actionPtr = &axisKey;
-            }
+            result += axisKey.getScalarAmount();
         }
 
-        if (!actionPtr) return 0.f;
-
-        return actionPtr->getScalarAmount();
+        return result;
     }
 
     void CInputManager::addActionMapping(std::string name, SKey key)

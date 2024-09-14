@@ -11,11 +11,7 @@ target_sources(
     Level.hpp
     InputManager.hpp
     Entity.hpp
-    AssetData.hpp
-    AssetCache.hpp
-    TextureAsset.hpp
-    SoundAsset.hpp
-    FontAsset.hpp
+    ResourceManager.hpp
     AudioManager.hpp
     Directories.hpp
     ClassRegistry.hpp

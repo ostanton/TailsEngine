@@ -150,11 +150,14 @@ namespace tails
 
     CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
     {
+        entity->outer = this;
+        
         entity->setPosition(position);
         entity->setRotation(rotation);
         entity->setScale(scale);
 
-        entity->initSpawn(this);
+        entity->loadResources(resourceManager);
+        entity->spawn();
 
         m_entities.emplace_back(std::move(entity));
 

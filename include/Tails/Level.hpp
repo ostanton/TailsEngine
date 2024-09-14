@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
+#include <Tails/ResourceManager.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -26,10 +27,10 @@ namespace tails
     public:
         CLevel() = delete;
         CLevel(const CLevel&) = delete;
-        CLevel(CLevel&&) = default;
-        ~CLevel() override;
+        CLevel(CLevel&&) noexcept = default;
         CLevel& operator=(const CLevel&) = delete;
-        CLevel& operator=(CLevel&&) = default;
+        CLevel& operator=(CLevel&&) noexcept = default;
+        ~CLevel() override;
         
         /**
          * Spawn an entity from its class.
@@ -58,6 +59,8 @@ namespace tails
 
         [[nodiscard]] sf::View& getCameraView() {return m_camera;}
         [[nodiscard]] const sf::View& getCameraView() const {return m_camera;}
+
+        CResourceManager resourceManager;
         
     private:
         CLevel(std::string path);

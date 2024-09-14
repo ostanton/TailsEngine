@@ -1,6 +1,4 @@
 #include <Tails/AudioManager.hpp>
-#include <Tails/AssetCache.hpp>
-#include <Tails/SoundAsset.hpp>
 
 namespace tails
 {/*

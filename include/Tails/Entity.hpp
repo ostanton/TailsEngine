@@ -16,7 +16,7 @@ namespace tails
 {
     class CLevel;
     class CEngine;
-    class CTextureAsset;
+    class CResourceManager;
     
     class TAILS_API CEntity :
         public CObject,
@@ -44,8 +44,8 @@ namespace tails
 
         sf::FloatRect getGlobalBounds() const;
 
-        void setTexture(const std::shared_ptr<CTextureAsset>& texture);
-        [[nodiscard]] std::shared_ptr<CTextureAsset> getTexture() const;
+        void setTexture(sf::Texture* texture);
+        [[nodiscard]] sf::Texture* getTexture() const;
         
         void setSize(float x, float y);
         void setSize(const sf::Vector2f& size);
@@ -55,6 +55,12 @@ namespace tails
         [[nodiscard]] const sf::Color& getColour() const;
         
     protected:
+        /**
+         * A place to load all the resources that this entity requires/depends on
+         * @param resourceManager The resource manager associated with the level this entity is spawned in
+         */
+        virtual void loadResources(CResourceManager& resourceManager) {}
+        
         /**
          * Called the same frame as this entity is spawned.
          */
@@ -87,10 +93,8 @@ namespace tails
         void deserialise(const nlohmann::json& obj) override;
         std::unique_ptr<ISerialisable> clone() const override;
         
-        void initSpawn(CLevel* level);
-        
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};
-        std::shared_ptr<CTextureAsset> m_texture;
+        sf::Texture* m_texture {nullptr};
     };
 }
 

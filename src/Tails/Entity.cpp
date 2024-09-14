@@ -1,11 +1,10 @@
 #include <Tails/Entity.hpp>
 #include <Tails/Level.hpp>
-#include <Tails/TextureAsset.hpp>
-#include <Tails/AssetCache.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/Directories.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace tails
 {
@@ -38,7 +37,7 @@ namespace tails
         return getTransform().transformRect(m_vertices.getBounds());
     }
 
-    void CEntity::setTexture(const std::shared_ptr<CTextureAsset>& texture)
+    void CEntity::setTexture(sf::Texture* texture)
     {
         m_texture = texture;
         if (!texture) return;
@@ -52,7 +51,7 @@ namespace tails
         };
     }
 
-    std::shared_ptr<CTextureAsset> CEntity::getTexture() const
+    sf::Texture* CEntity::getTexture() const
     {
         return m_texture;
     }
@@ -96,7 +95,7 @@ namespace tails
     void CEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform *= getTransform();
-        states.texture = m_texture.get();
+        states.texture = m_texture;
         target.draw(m_vertices, states);
     }
 
@@ -137,7 +136,7 @@ namespace tails
 
         // textures
         // TODO - something something to get the texture id from json I dunno???
-        setTexture(CAssetCache::loadTexture(obj["texture"].get<std::string>(), CDirectories::getDirectory("texture")));
+        setTexture(getLevel().resourceManager.createTexture(obj["texture"].get<std::string>(), CDirectories::getDirectory("texture")));
     }
 
     std::unique_ptr<ISerialisable> CEntity::clone() const
@@ -151,11 +150,5 @@ namespace tails
         obj->setTexture(getTexture());
 
         return obj;
-    }
-
-    void CEntity::initSpawn(CLevel* level)
-    {
-        outer = level;
-        spawn();
     }
 }

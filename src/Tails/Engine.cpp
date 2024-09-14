@@ -65,7 +65,7 @@ namespace tails
 
         /* DIRECTORIES */
 
-        if (const auto& dirJson = setupJson["dirs"]; !dirJson.is_null())
+        if (const auto& dirJson = setupJson["directories"]; !dirJson.is_null())
             CDirectories::loadDirectories(dirJson);
         else
             CDebug::print("Failed to load directories, using default");

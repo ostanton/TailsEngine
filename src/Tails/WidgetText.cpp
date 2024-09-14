@@ -1,8 +1,8 @@
 #include <Tails/WidgetText.hpp>
-#include <Tails/FontAsset.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/Font.hpp>
 
 namespace tails
 {
@@ -21,12 +21,12 @@ namespace tails
         return m_string;
     }
 
-    void WText::setFont(std::shared_ptr<CFontAsset> font)
+    void WText::setFont(sf::Font* font)
     {
         m_font = font;
     }
 
-    std::shared_ptr<CFontAsset> WText::getFont() const
+    sf::Font* WText::getFont() const
     {
         return m_font;
     }

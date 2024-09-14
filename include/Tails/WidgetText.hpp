@@ -12,6 +12,7 @@
 namespace sf
 {
     class Color;
+    class Font;
 }
 
 namespace tails
@@ -30,8 +31,8 @@ namespace tails
         void setText(const sf::String& text);
         [[nodiscard]] const sf::String& getText() const;
 
-        void setFont(std::shared_ptr<CFontAsset> font);
-        [[nodiscard]] std::shared_ptr<CFontAsset> getFont() const;
+        void setFont(sf::Font* font);
+        [[nodiscard]] sf::Font* getFont() const;
 
         void setCharacterSize(unsigned int size);
         [[nodiscard]] unsigned int getCharacterSize() const;
@@ -59,7 +60,7 @@ namespace tails
         float m_outlineThickness {0.f};
         bool m_bold {false};
         sf::Color m_colour {sf::Color::White};
-        std::shared_ptr<CFontAsset> m_font;
+        sf::Font* m_font {nullptr};
     };
 }
 

@@ -9,10 +9,7 @@ add_library(
     Level.cpp
     InputManager.cpp
     Entity.cpp
-    AssetCache.cpp
-    TextureAsset.cpp
-    SoundAsset.cpp
-    FontAsset.cpp
+    ResourceManager.cpp
     AudioManager.cpp
     Directories.cpp
     ClassRegistry.cpp
