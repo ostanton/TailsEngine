@@ -18,7 +18,7 @@ The *Tails Engine* is a simple, 2D library intended to somewhat mimic the style 
 
 - Locked internal resolution that maintains its aspect ratio (black bars!)
 - Clearly named classes and structures (classes prefixed with 'C', structures prefixed with 'S', interfaces prefixed with 'I', etc.)
-- Centralised asset cache to load and get assets via a string handle (and `shared_ptr`s with `weak_ptr`s for automatic asset destruction)
+- "Context-specific" resource manager (per-level/any object) that owns its resources via `unique_ptr`s
 - Input manager with support for keyboard, mouse, and Xbox controllers (currently only tested with an Xbox 1 controller)
 
 ## How to compile
