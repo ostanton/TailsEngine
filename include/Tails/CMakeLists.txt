@@ -14,9 +14,7 @@ target_sources(
     ResourceManager.hpp
     AudioManager.hpp
     Directories.hpp
-    ClassRegistry.hpp
     Serialisable.hpp
-    EngineRegistry.hpp
     Debug.hpp
     Vector2.hpp
     EngineSettings.hpp
@@ -28,4 +26,9 @@ target_sources(
     Padding.hpp
     Assert.hpp
     LevelSettings.hpp
+    Localisation.hpp
+    LocaleString.hpp
+    Exception.hpp
 )
+
+add_subdirectory(priv)

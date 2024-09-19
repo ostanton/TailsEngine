@@ -82,6 +82,9 @@ namespace tails
 
         CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale);
 
+        nlohmann::json serialise() const override;
+        void deserialise(const nlohmann::json& obj) override;
+        
         std::string m_path;
 
         /**

@@ -12,8 +12,6 @@ add_library(
     ResourceManager.cpp
     AudioManager.cpp
     Directories.cpp
-    ClassRegistry.cpp
-    EngineRegistry.cpp
     Debug.cpp
     EngineSettings.cpp
     Widget.cpp
@@ -23,4 +21,7 @@ add_library(
     LevelSettings.cpp
     VerticalContainer.cpp
     Padding.cpp
+    Localisation.cpp
+    LocaleString.cpp
+    Exception.cpp
 )

@@ -2,12 +2,14 @@
 #define TAILS_OBJECT_HPP
 
 #include <Tails/Config.hpp>
+#include <Tails/Serialisable.hpp>
 
 #include <cstdint>
+#include <string>
 
 namespace tails
 {
-    class TAILS_API CObject
+    class TAILS_API CObject : public ISerialisable
     {
         enum EObjectFlags
         {
@@ -16,8 +18,6 @@ namespace tails
         };
         
     public:
-        virtual ~CObject() = default;
-        
         CObject* outer {nullptr};
 
         template<typename T>
@@ -43,6 +43,28 @@ namespace tails
     private:
         uint8_t m_flags {PendingCreate};
     };
+
+    template<typename T>
+    using TUniqueObject = std::unique_ptr<T, void(*)(CObject*)>;
+
+    CObject* newObject(std::string_view name, CObject* outer);
+    TUniqueObject<CObject> newObjectUnique(std::string_view name, CObject* outer);
+    void deleteObject(CObject* obj);
+
+    template<typename T>
+    T* newObjectOfType(std::string_view name, CObject* outer)
+    {
+        static_assert(std::is_base_of_v<CObject, T>,
+            "Cannot create object, template type does not derive CObject.");
+        
+        return dynamic_cast<T*>(newObject(name, outer));
+    }
+    
+    template<typename T>
+    TUniqueObject<T> newObjectUniqueOfType(std::string_view name, CObject* outer)
+    {
+        return {newObjectOfType<T>(name, outer), deleteObject};
+    }
 }
 
 #endif // TAILS_OBJECT_HPP

@@ -1,11 +1,9 @@
 #include <Tails/Level.hpp>
 #include <Tails/World.hpp>
 #include <Tails/Entity.hpp>
-#include <Tails/EngineRegistry.hpp>
 #include <Tails/Engine.hpp>
 #include <Tails/LevelSettings.hpp>
 #include <Tails/Vector2.hpp>
-#include <Tails/EngineSettings.hpp>
 #include <Tails/Debug.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -16,8 +14,12 @@ namespace tails
 
     CEntity* CLevel::spawnEntity(const std::string& className, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
     {
+        std::unique_ptr<CEntity> result {newObjectOfType<CEntity>(className, this)};
+        
+        if (!result) return nullptr;
+        
         return spawnEntityImpl(
-            getEngine().getSettings().getRegistry<CEngineRegistry>()->instantiateClass<CEntity>(className),
+            std::move(result),
             position, rotation, scale
         );
     }
@@ -162,5 +164,15 @@ namespace tails
         m_entities.emplace_back(std::move(entity));
 
         return m_entities.back().get();
+    }
+
+    nlohmann::json CLevel::serialise() const
+    {
+        return {};
+    }
+
+    void CLevel::deserialise(const nlohmann::json& obj)
+    {
+        
     }
 }

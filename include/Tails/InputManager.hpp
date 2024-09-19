@@ -33,12 +33,12 @@ namespace tails
         B,
         X,
         Y,
-        LB,
-        RB,
+        LeftThumbstickButton,
+        RightThumbstickButton,
         Select,
         Start,
-        LS,
-        RS
+        LeftShoulder,
+        RightShoulder
     };
 
     /**
@@ -48,8 +48,8 @@ namespace tails
     {
         DPadX = sf::Joystick::Axis::PovX,
         DPadY = sf::Joystick::Axis::PovY,
-        LT = sf::Joystick::Axis::Z,
-        RT = sf::Joystick::Axis::Z,
+        LeftTrigger = sf::Joystick::Axis::Z,
+        RightTrigger = sf::Joystick::Axis::Z,
         LeftThumbstickX = sf::Joystick::Axis::X,
         LeftThumbstickY = sf::Joystick::Axis::Y,
         RightThumbstickX = sf::Joystick::Axis::U,
@@ -71,11 +71,12 @@ namespace tails
         SKey(EInputDevice inDevice, EXboxAxis axis, float inScaleMultiplier = 1.f);
         SKey(EInputDevice inDevice, sf::Keyboard::Key key, float inScaleMultiplier = 1.f);
         SKey(EInputDevice inDevice, sf::Mouse::Button button, float inScaleMultiplier = 1.f);
+        SKey(EInputDevice inDevice, int inCode, float inScaleMultiplier, float inDeadZone, bool inIsScaler);
 
         /**
          * The key type, normally set via EInputDevice, i.e. keyboard, mouse, etc.
          */
-        int device {0};
+        EInputDevice device {0};
 
         /**
          * The button itself, i.e. on keyboard: 0 = A, 1 = B, etc.
@@ -86,8 +87,6 @@ namespace tails
         float scaleMultiplier {1.f};
         float deadZone {0.1f};
         bool isScalar {false};
-
-        void setDevice(EInputDevice inDevice);
 
         [[nodiscard]] float getScalarAmount() const;
         [[nodiscard]] bool isActive() const;
@@ -112,6 +111,8 @@ namespace tails
         static void addActionMapping(std::string name, const std::vector<SKey>& keys);
 
         [[nodiscard]] static bool actionExists(const std::string& action);
+
+        static bool loadFromFile(const std::string& filename);
         
     private:
         static CInputManager& get();

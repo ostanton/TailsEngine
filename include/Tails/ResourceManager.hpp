@@ -2,6 +2,9 @@
 #define TAILS_RESOURCEMANAGER_HPP
 
 #include <Tails/Config.hpp>
+#include <Tails/Debug.hpp>
+
+#include <SFML/System/Exception.hpp>
 
 #include <memory>
 #include <unordered_map>
@@ -46,7 +49,14 @@ namespace tails
         T* createResource(const std::string& id, const std::string& path, TResourceMap<T>& dataMap)
         {
             if (!dataMap.contains(id))
-                dataMap.try_emplace(id, std::make_unique<T>(path));
+            {
+                try {dataMap.try_emplace(id, std::make_unique<T>(path));}
+                catch (const sf::Exception& e)
+                {
+                    CDebug::error("Failed to create resource, exception: ", e.what());
+                    return nullptr;
+                }
+            }
             
             return dataMap[id].get();
         }

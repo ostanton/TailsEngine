@@ -37,6 +37,9 @@ namespace tails
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
 
+        nlohmann::json serialise() const override;
+        void deserialise(const nlohmann::json& obj) override;
+
         // could make automatically allocated? Would including level header here be very bad??
         std::vector<std::unique_ptr<CLevel>> m_openLevels;
     };

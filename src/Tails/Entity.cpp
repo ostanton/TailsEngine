@@ -138,17 +138,4 @@ namespace tails
         // TODO - something something to get the texture id from json I dunno???
         setTexture(getLevel().resourceManager.createTexture(obj["texture"].get<std::string>(), CDirectories::getDirectory("texture")));
     }
-
-    std::unique_ptr<ISerialisable> CEntity::clone() const
-    {
-        auto obj = std::make_unique<CEntity>();
-        obj->setPosition(getPosition());
-        obj->setRotation(getRotation());
-        obj->setScale(getScale());
-        obj->setSize(getSize());
-
-        obj->setTexture(getTexture());
-
-        return obj;
-    }
 }

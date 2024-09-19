@@ -17,8 +17,6 @@ namespace tails
     private:
         void drawChild(size_t childIndex) const override;
 
-        std::unique_ptr<ISerialisable> clone() const override;
-
         SPadding m_childPadding;
     };
 }

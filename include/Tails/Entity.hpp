@@ -10,8 +10,6 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include <memory>
-
 namespace tails
 {
     class CLevel;
@@ -21,7 +19,6 @@ namespace tails
     class TAILS_API CEntity :
         public CObject,
         public ITickable,
-        public ISerialisable,
         public sf::Drawable,
         public sf::Transformable
     {
@@ -91,11 +88,11 @@ namespace tails
     private:
         nlohmann::json serialise() const override;
         void deserialise(const nlohmann::json& obj) override;
-        std::unique_ptr<ISerialisable> clone() const override;
         
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};
         sf::Texture* m_texture {nullptr};
     };
 }
+TAILS_REGISTER_CLASS(CEntity)
 
 #endif // TAILS_ENTITY_HPP

@@ -3,10 +3,13 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 
+#include <fstream>
+#include <nlohmann/json.hpp>
+
 namespace tails
 {
     SKey::SKey(EInputDevice inDevice, int inCode, float inScaleMultiplier)
-        : device(static_cast<int>(inDevice)), code(inCode), scaleMultiplier(inScaleMultiplier)
+        : device(inDevice), code(inCode), scaleMultiplier(inScaleMultiplier)
     {
     }
 
@@ -31,22 +34,22 @@ namespace tails
     {
     }
 
-    void SKey::setDevice(EInputDevice inDevice)
+    SKey::SKey(EInputDevice inDevice, int inCode, float inScaleMultiplier, float inDeadZone, bool inIsScaler)
+        : device(inDevice), code(inCode), scaleMultiplier(inScaleMultiplier), deadZone(inDeadZone), isScalar(inIsScaler)
     {
-        device = static_cast<int>(inDevice);
     }
 
     float SKey::getScalarAmount() const
     {
         switch (device)
         {
-        case static_cast<int>(EInputDevice::Keyboard):
+        case EInputDevice::Keyboard:
             if (isKeyPressed(static_cast<sf::Keyboard::Key>(code))) return scaleMultiplier;
             break;
-        case static_cast<int>(EInputDevice::Mouse):
+        case EInputDevice::Mouse:
             if (isButtonPressed(static_cast<sf::Mouse::Button>(code))) return scaleMultiplier;
             break;
-        case static_cast<int>(EInputDevice::Controller):
+        case EInputDevice::Controller:
             if (isScalar)
                 return getAxisPosition(0, static_cast<sf::Joystick::Axis>(code)) * 0.01f * scaleMultiplier;
             if (sf::Joystick::isButtonPressed(0, code)) return scaleMultiplier;
@@ -139,6 +142,36 @@ namespace tails
     bool CInputManager::actionExists(const std::string& action)
     {
         return get().m_actions.contains(action);
+    }
+
+    bool CInputManager::loadFromFile(const std::string& filename)
+    {
+        std::ifstream file {filename};
+
+        if (!file.is_open()) return false;
+        
+        nlohmann::json inputObj = nlohmann::json::parse(file);
+
+        if (inputObj.is_null()) return false;
+
+        for (auto& [actionName, mappingArr] : inputObj.items())
+        {
+            std::vector<SKey> keys;
+            
+            for (auto& mappingObj : mappingArr)
+            {
+                keys.emplace_back(
+                    SKey::inputDeviceFromString(mappingObj["device"].get<std::string>()),
+                    0,
+                    mappingObj["scale_multiplier"].get<float>(),
+                    mappingObj["dead_zone"].get<float>(),
+                    mappingObj["is_scalar"].get<bool>());
+            }
+            
+            addActionMapping(actionName, keys);
+        }
+
+        return true;
     }
 
     CInputManager& CInputManager::get()

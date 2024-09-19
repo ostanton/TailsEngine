@@ -6,17 +6,17 @@
 
 namespace tails
 {
-    WText::WText(const sf::String& text, unsigned int characterSize)
-        : m_string(text), m_characterSize(characterSize)
+    WText::WText(CLocaleString text, unsigned int characterSize)
+        : m_string(std::move(text)), m_characterSize(characterSize)
     {
     }
 
-    void WText::setText(const sf::String& text)
+    void WText::setText(const CLocaleString& text)
     {
         m_string = text;
     }
 
-    const sf::String& WText::getText() const
+    const CLocaleString& WText::getText() const
     {
         return m_string;
     }
@@ -111,10 +111,5 @@ namespace tails
         }
         
         return std::make_optional(size);
-    }
-
-    std::unique_ptr<ISerialisable> WText::clone() const
-    {
-        return std::make_unique<WText>();
     }
 }

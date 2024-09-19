@@ -26,8 +26,7 @@ namespace tails
         public CObject,
         public ITickable,
         public sf::Drawable,
-        public sf::Transformable,
-        public ISerialisable
+        public sf::Transformable
     {
         friend WContainer;
         friend WViewport;

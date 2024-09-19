@@ -1,7 +1,6 @@
 #include <Tails/Engine.hpp>
 #include <Tails/Level.hpp>
 #include <Tails/Directories.hpp>
-#include <Tails/EngineRegistry.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/LevelSettings.hpp>
@@ -305,5 +304,15 @@ namespace tails
         }
         
         m_renderView.setViewport(viewportRect);
+    }
+
+    nlohmann::json CEngine::serialise() const
+    {
+        return {};
+    }
+
+    void CEngine::deserialise(const nlohmann::json& obj)
+    {
+        
     }
 }

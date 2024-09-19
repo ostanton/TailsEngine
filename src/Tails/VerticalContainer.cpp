@@ -29,18 +29,4 @@ namespace tails
             lastChild->getPosition().y + lastChild->getSize().value().y + m_childPadding.top
         });
     }
-
-    std::unique_ptr<ISerialisable>WVerticalContainer::clone() const
-    {
-        auto result = std::make_unique<WVerticalContainer>();
-        result->m_childPadding = m_childPadding;
-
-        for (auto& child : getChildren())
-        {
-            // TODO - can't do this because CWidget is abstract!
-            //result->addChild(child->clone<CWidget>());
-        }
-
-        return result;
-    }
 }

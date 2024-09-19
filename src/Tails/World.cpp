@@ -103,4 +103,14 @@ namespace tails
                 ++it;
         }
     }
+
+    nlohmann::json CWorld::serialise() const
+    {
+        return {};
+    }
+
+    void CWorld::deserialise(const nlohmann::json& obj)
+    {
+        
+    }
 }
