@@ -87,7 +87,7 @@ namespace tails
         [[nodiscard]] const char* getData() const;
         
     private:
-        int m_id;
+        int m_id {-1};
         std::string m_string;
     };
 
