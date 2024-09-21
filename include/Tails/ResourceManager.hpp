@@ -4,11 +4,10 @@
 #include <Tails/Config.hpp>
 #include <Tails/Debug.hpp>
 
-#include <SFML/System/Exception.hpp>
-
 #include <memory>
 #include <unordered_map>
 #include <string>
+#include <exception>
 
 namespace sf
 {
@@ -51,7 +50,7 @@ namespace tails
             if (!dataMap.contains(id))
             {
                 try {dataMap.try_emplace(id, std::make_unique<T>(path));}
-                catch (const sf::Exception& e)
+                catch (const std::exception& e)
                 {
                     CDebug::error("Failed to create resource, exception: ", e.what());
                     return nullptr;
