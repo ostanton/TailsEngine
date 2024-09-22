@@ -3,6 +3,8 @@
 
 #include <Tails/Config.hpp>
 
+#include <string_view>
+
 #ifdef TAILS_DEBUG
 #include <Tails/Concepts.hpp>
 
