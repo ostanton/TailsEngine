@@ -6,14 +6,29 @@
 #ifdef TAILS_DEBUG
 #include <iostream>
 
-#define TailsAssert(condition, message) \
+#define TAILS_ASSERT(condition, message) \
     (!static_cast<bool>(condition)) ? \
         (std::cerr << "Assertion failed: " << #condition << "\n" \
-        << "Context: " << TAILS_FUNCTION << "\n" \
-        << "In file \"" << __FILE__ << "\" on line " << __LINE__ << "\n" \
+        << "Context: " << tails::getFunctionName() << "\n" \
+        << "In file \"" << tails::getFileName() << "\" on line " << tails::getLine() << "\n" \
         << "Message: " << (message) << "\n", abort(), 0) : 1;
 #else // TAILS_DEBUG
-#define TailsAssert(condition, message)
+#define TAILS_ASSERT(condition, message)
 #endif // TAILS_DEBUG
+
+namespace tails
+{
+    // future possible assert function
+    /*
+    template<typename Pred, typename T>
+    constexpr void assert(Pred predicate, T msg)
+    {
+        if (!predicate())
+        {
+            
+        }
+    }
+    */
+}
 
 #endif // TAILS_ASSERT_HPP

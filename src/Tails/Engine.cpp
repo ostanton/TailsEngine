@@ -18,12 +18,12 @@ namespace tails
 {
     std::string SWindowProperties::toString() const
     {
-        return "Window properties:\nTitle - \"" + title + "\"\nResolution - " + SVector2u::toString(resolution);
+        return "Window properties:\n  Title - \"" + title + "\"\n  Resolution - " + SVector2u::toString(resolution);
     }
 
     std::string SRenderProperties::toString() const
     {
-        return "Render properties:\nResolution - " + SVector2u::toString(resolution);
+        return "Render properties:\n  Resolution - " + SVector2u::toString(resolution);
     }
 
     CEngine::CEngine() : CEngine(nullptr)
@@ -33,6 +33,9 @@ namespace tails
     CEngine::CEngine(std::unique_ptr<SEngineSettings> engineSettings)
             : m_settings(std::move(engineSettings))
     {
+        // engine should not be pending create
+        unmarkForCreate();
+        
         // If input engine settings is null, use default
         if (!engineSettings)
             m_settings = std::make_unique<SEngineSettings>();
@@ -100,7 +103,7 @@ namespace tails
         }
 
         if (const auto level = m_world.getLevel(0))
-            CDebug::print("Opened level - \"", level->getSettings().name, "\"");
+            CDebug::print("  Opened level - \"", level->getSettings().name, "\"");
         else
             CDebug::error("Created level is invalid!");
         CDebug::print();
@@ -141,7 +144,6 @@ namespace tails
 
     void CEngine::run()
     {
-        CDebug::print();
         CDebug::print("Initialising final render target");
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
@@ -274,6 +276,7 @@ namespace tails
         m_renderView.setCenter(m_renderView.getSize() * 0.5f);
 
         CDebug::print(m_renderProperties.toString());
+        CDebug::print();
     }
 
     void CEngine::initWorldLevel(std::string path)
@@ -304,15 +307,5 @@ namespace tails
         }
         
         m_renderView.setViewport(viewportRect);
-    }
-
-    nlohmann::json CEngine::serialise() const
-    {
-        return {};
-    }
-
-    void CEngine::deserialise(const nlohmann::json& obj)
-    {
-        
     }
 }

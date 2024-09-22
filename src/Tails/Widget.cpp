@@ -23,16 +23,4 @@ namespace tails
     {
         return *getTypedOuter<CEngine>();
     }
-
-    nlohmann::json CWidget::serialise() const
-    {
-        // TODO - serial stuff
-        nlohmann::json obj;
-        return obj;
-    }
-
-    void CWidget::deserialise(const nlohmann::json& obj)
-    {
-        // TODO - deserial things
-    }
 }

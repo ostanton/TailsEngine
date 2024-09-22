@@ -20,6 +20,8 @@ namespace tails
 
         result->open();
 
+        CDebug::printf("Opened level path \"{}\"", path);
+
         return result;
     }
 
@@ -102,15 +104,5 @@ namespace tails
             else
                 ++it;
         }
-    }
-
-    nlohmann::json CWorld::serialise() const
-    {
-        return {};
-    }
-
-    void CWorld::deserialise(const nlohmann::json& obj)
-    {
-        
     }
 }

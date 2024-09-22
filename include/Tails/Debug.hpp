@@ -3,9 +3,12 @@
 
 #include <Tails/Config.hpp>
 
-#ifndef NDEBUG
+#ifdef TAILS_DEBUG
+#include <Tails/Concepts.hpp>
+
 #include <iostream>
-#endif // NDEBUG
+#include <format>
+#endif // TAILS_DEBUG
 
 namespace tails
 {
@@ -15,13 +18,19 @@ namespace tails
         /**
          * Prints arguments via a comma-separated list to cout
          */
-        template<typename... Args>
+        template<
+#ifdef TAILS_DEBUG
+                PrintableStreamAll
+#else // TAILS_DEBUG
+                typename
+#endif // TAILS_DEBUG
+                ... Args>
         static void print(Args&&... args)
         {
 #ifdef TAILS_DEBUG
             // TODO - test for args == 0 isntead of separate overload?
             ((std::cout << std::forward<Args>(args)), ...) << "\n";
-#endif // NDEBUG
+#endif // TAILS_DEBUG
         }
 
         /**
@@ -30,21 +39,35 @@ namespace tails
         static void print()
         {
 #ifdef TAILS_DEBUG
-            std::cout << "\n";
-#endif // NDEBUG
+            std::cout << std::endl;
+#endif // TAILS_DEBUG
         }
 
         /**
          * Prints arguments via a comma-separated list to cerr,
          * with the line prefix "Error: "
          */
-        template<typename... Args>
+        template<
+#ifdef TAILS_DEBUG
+                PrintableStreamAll
+#else // TAILS_DEBUG
+                typename
+#endif // TAILS_DEBUG
+                ... Args>
         static void error(Args&&... args)
         {
 #ifdef TAILS_DEBUG
             std::cerr << "Error: ";
             ((std::cerr << std::forward<Args>(args)), ...) << "\n";
-#endif // NDEBUG
+#endif // TAILS_DEBUG
+        }
+
+        template<typename... ArgsT>
+        static void printf(std::string_view string, ArgsT&&... args)
+        {
+#ifdef TAILS_DEBUG
+            std::cout << std::vformat(string, std::make_format_args(args...)) << std::endl;
+#endif // TAILS_DEBUG
         }
     };
 }

@@ -5,6 +5,7 @@
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 #include <Tails/Serialisable.hpp>
+#include <Tails/ClassRegistry.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -19,6 +20,7 @@ namespace tails
     class TAILS_API CEntity :
         public CObject,
         public ITickable,
+        public ISerialisable,
         public sf::Drawable,
         public sf::Transformable
     {
@@ -86,7 +88,7 @@ namespace tails
         [[nodiscard]] CEngine& getEngine() const;
 
     private:
-        nlohmann::json serialise() const override;
+        void serialise(nlohmann::json& obj) const override;
         void deserialise(const nlohmann::json& obj) override;
         
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};

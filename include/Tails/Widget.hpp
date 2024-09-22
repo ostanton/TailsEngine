@@ -49,10 +49,6 @@ namespace tails
          * @return Possibly valid size
          */
         [[nodiscard]] virtual std::optional<sf::Vector2f> getSize() const {return std::nullopt;}
-
-    protected:
-        nlohmann::json serialise() const override;
-        void deserialise(const nlohmann::json& obj) override;
     };
 }
 

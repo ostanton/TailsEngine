@@ -29,6 +29,6 @@ target_sources(
     Localisation.hpp
     LocaleString.hpp
     Exception.hpp
+    ClassRegistry.hpp
+    Concepts.hpp
 )
-
-add_subdirectory(priv)

@@ -5,6 +5,7 @@
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 #include <Tails/ResourceManager.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -33,19 +34,33 @@ namespace tails
         ~CLevel() override;
         
         /**
-         * Spawn an entity from its class.
+         * Spawn an entity from its class. The entity in question does not need to be registered in the class registry.
          */
-        template<typename T>
+        template<DerivesEntity T>
         T* spawnEntity(const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f})
         {
-            static_assert(std::is_base_of_v<CEntity, T>, "Failed to spawn entity, it does not derive CEntity.");
-            return static_cast<T*>(spawnEntityImpl(std::make_unique<T>(), position, rotation, scale));
+            return static_cast<T*>(spawnEntityImpl(std::unique_ptr<T>(newObject<T>(this)), position, rotation, scale));
         }
 
         /**
-         * Spawn an entity from its "reflected" class name.
+         * Spawns an entity from its class name and casts it to the specified type
+         * @tparam T Entity class
+         * @param className Registered class name
+         * @param position Initial position
+         * @param rotation Initial rotation
+         * @param scale Initial scale
+         * @return Pointer to spawned entity
          */
-        CEntity* spawnEntity(const std::string& className, const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f});
+        template<DerivesEntity T>
+        T* spawnEntity(std::string_view className, const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f})
+        {
+            return spawnEntityImpl(std::unique_ptr<T>(newObject<T>(className, this)), position, rotation, scale);
+        }
+
+        /**
+         * Spawn an entity from its registered class name.
+         */
+        CEntity* spawnEntity(std::string_view className, const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f});
 
         static void destroyEntity(CEntity* entity);
 
@@ -81,9 +96,6 @@ namespace tails
         void checkCollision(CEntity* entity) const;
 
         CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale);
-
-        nlohmann::json serialise() const override;
-        void deserialise(const nlohmann::json& obj) override;
         
         std::string m_path;
 

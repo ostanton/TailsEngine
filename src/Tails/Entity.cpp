@@ -109,9 +109,8 @@ namespace tails
         return getLevel().getEngine();
     }
 
-    nlohmann::json CEntity::serialise() const
+    void CEntity::serialise(nlohmann::json& obj) const
     {
-        nlohmann::json obj;
         obj.push_back({"position"});
         obj["position"].push_back(SVector2f::toJSON(getPosition()));
 
@@ -123,10 +122,8 @@ namespace tails
 
         obj.push_back({"size"});
         obj["size"].push_back(SVector2f::toJSON(getSize()));
-        
-        return obj;
     }
-
+    
     void CEntity::deserialise(const nlohmann::json& obj)
     {
         setPosition(SVector2f::fromJSON(obj["position"]));

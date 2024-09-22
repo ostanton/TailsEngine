@@ -4,7 +4,6 @@
 #include <Tails/Engine.hpp>
 #include <Tails/LevelSettings.hpp>
 #include <Tails/Vector2.hpp>
-#include <Tails/Debug.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -12,16 +11,9 @@ namespace tails
 {
     CLevel::~CLevel() = default;
 
-    CEntity* CLevel::spawnEntity(const std::string& className, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
+    CEntity* CLevel::spawnEntity(std::string_view className, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
     {
-        std::unique_ptr<CEntity> result {newObjectOfType<CEntity>(className, this)};
-        
-        if (!result) return nullptr;
-        
-        return spawnEntityImpl(
-            std::move(result),
-            position, rotation, scale
-        );
+        return spawnEntity<CEntity>(className, position, rotation, scale);
     }
 
     void CLevel::destroyEntity(CEntity* entity)
@@ -152,8 +144,6 @@ namespace tails
 
     CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
     {
-        entity->outer = this;
-        
         entity->setPosition(position);
         entity->setRotation(rotation);
         entity->setScale(scale);
@@ -164,15 +154,5 @@ namespace tails
         m_entities.emplace_back(std::move(entity));
 
         return m_entities.back().get();
-    }
-
-    nlohmann::json CLevel::serialise() const
-    {
-        return {};
-    }
-
-    void CLevel::deserialise(const nlohmann::json& obj)
-    {
-        
     }
 }

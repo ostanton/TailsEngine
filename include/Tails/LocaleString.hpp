@@ -23,7 +23,7 @@ namespace tails
         CLocaleString(int id, ArgsT&&... args)
             :
             m_id(id),
-            m_string(std::vformat(CLocalisation::getLocalisedString(id), std::make_format_args(args...))) {}
+            m_string(std::format(CLocalisation::getLocalisedString(id), std::forward<ArgsT>(args)...)) {}
 
         CLocaleString(const CLocaleString&) = default;
         CLocaleString(CLocaleString&&) = default;
@@ -53,7 +53,7 @@ namespace tails
         template<typename... ArgsT>
         void format(ArgsT&&... args)
         {
-            m_string = std::vformat(m_string, std::make_format_args(args...));
+            m_string = std::format(m_string, std::forward<ArgsT>(args)...);
         }
 
         [[nodiscard]] bool localised() const {return m_id >= 0;}

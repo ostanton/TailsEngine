@@ -97,9 +97,6 @@ namespace tails
         void initInternalRender();
         void initWorldLevel(std::string path);
         void calculateInternalAspectRatio(sf::Vector2u windowSize);
-
-        nlohmann::json serialise() const override;
-        void deserialise(const nlohmann::json& obj) override;
         
         /**
          * The final render output

@@ -14,7 +14,7 @@ namespace tails
         CDebug::print("Looping directories");
         for (auto& [dirKey, dirValue] : json.items())
         {
-            CDebug::print("Added ", dirKey, " directory as ", dirValue.get<std::string>());
+            CDebug::print("  Added ", dirKey, " directory as ", dirValue.get<std::string>());
             get().m_dirs.try_emplace(dirKey, dirValue.get<std::string>());
         }
 

@@ -2,14 +2,14 @@
 #define TAILS_OBJECT_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Serialisable.hpp>
+#include <Tails/Concepts.hpp>
+#include <Tails/ClassRegistry.hpp>
 
 #include <cstdint>
-#include <string>
 
 namespace tails
 {
-    class TAILS_API CObject : public ISerialisable
+    class TAILS_API CObject
     {
         enum EObjectFlags
         {
@@ -18,6 +18,8 @@ namespace tails
         };
         
     public:
+        virtual ~CObject() = default;
+        
         CObject* outer {nullptr};
 
         template<typename T>
@@ -44,26 +46,28 @@ namespace tails
         uint8_t m_flags {PendingCreate};
     };
 
-    template<typename T>
-    using TUniqueObject = std::unique_ptr<T, void(*)(CObject*)>;
+    // Functions for creating children of CObject specifically
 
     CObject* newObject(std::string_view name, CObject* outer);
-    TUniqueObject<CObject> newObjectUnique(std::string_view name, CObject* outer);
-    void deleteObject(CObject* obj);
 
-    template<typename T>
-    T* newObjectOfType(std::string_view name, CObject* outer)
+    template<DerivesObject T>
+    T* newObject(std::string_view name, CObject* outer)
     {
-        static_assert(std::is_base_of_v<CObject, T>,
-            "Cannot create object, template type does not derive CObject.");
+        if (auto obj = constructClass<T>(name))
+        {
+            obj->outer = outer;
+            return obj;
+        }
         
-        return dynamic_cast<T*>(newObject(name, outer));
+        return nullptr;
     }
-    
-    template<typename T>
-    TUniqueObject<T> newObjectUniqueOfType(std::string_view name, CObject* outer)
+
+    template<DerivesObject T>
+    T* newObject(CObject* outer)
     {
-        return {newObjectOfType<T>(name, outer), deleteObject};
+        auto obj = new T;
+        obj->outer = outer;
+        return obj;
     }
 }
 
