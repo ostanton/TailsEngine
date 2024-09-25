@@ -65,7 +65,7 @@ project(TestGameProj)
 
 # download CPM, look here (https://github.com/cpm-cmake/CPM.cmake/wiki/Downloading-CPM.cmake-in-CMake) or view CMakeLists.txt in TailsEngine root directory
 
-CPMAddPackage("gh:ostanton/TailsEngine@0.0.3")
+CPMAddPackage("gh:ostanton/TailsEngine#master")
 
 add_executable(TestGame main.cpp)
 
