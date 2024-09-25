@@ -46,14 +46,14 @@ namespace tails
      */
     enum class TAILS_API EXboxAxis : int
     {
-        DPadX = sf::Joystick::Axis::PovX,
-        DPadY = sf::Joystick::Axis::PovY,
-        LeftTrigger = sf::Joystick::Axis::Z,
-        RightTrigger = sf::Joystick::Axis::Z,
-        LeftThumbstickX = sf::Joystick::Axis::X,
-        LeftThumbstickY = sf::Joystick::Axis::Y,
-        RightThumbstickX = sf::Joystick::Axis::U,
-        RightThumbstickY = sf::Joystick::Axis::V
+        DPadX = static_cast<int>(sf::Joystick::Axis::PovX),
+        DPadY = static_cast<int>(sf::Joystick::Axis::PovY),
+        LeftTrigger = static_cast<int>(sf::Joystick::Axis::Z),
+        RightTrigger = static_cast<int>(sf::Joystick::Axis::Z),
+        LeftThumbstickX = static_cast<int>(sf::Joystick::Axis::X),
+        LeftThumbstickY = static_cast<int>(sf::Joystick::Axis::Y),
+        RightThumbstickX = static_cast<int>(sf::Joystick::Axis::U),
+        RightThumbstickY = static_cast<int>(sf::Joystick::Axis::V)
     };
 
     /**

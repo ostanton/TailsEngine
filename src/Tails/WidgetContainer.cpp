@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <algorithm>
+
 namespace tails
 {
     CWidget* WContainer::addChild(std::unique_ptr<CWidget> widget)

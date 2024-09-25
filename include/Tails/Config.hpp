@@ -8,6 +8,7 @@
 #endif // NDEBUG
 
 #include <source_location>
+#include <cstdint>
 
 namespace tails
 {
