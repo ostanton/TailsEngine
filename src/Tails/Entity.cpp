@@ -2,18 +2,14 @@
 #include <Tails/Level.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/Directories.hpp>
+#include <Tails/Component.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
 namespace tails
 {
-    CEntity::CEntity()
-    {
-        setSize(16.f, 16.f);
-        setOrigin(getSize() * 0.5f);
-    }
-
+    CEntity::CEntity() = default;
     CEntity::~CEntity() = default;
 
     void CEntity::destroy()
@@ -26,77 +22,103 @@ namespace tails
     {
         if (!entity) return false;
 
-        if (getGlobalBounds().findIntersection(entity->getGlobalBounds()))
-            return true;
+        for (auto& comp : m_components)
+        {
+            if (comp->getGlobalBounds() == sf::FloatRect())
+                continue;
+
+            for (auto& otherComp : entity->m_components)
+            {
+                if (otherComp->getGlobalBounds() == sf::FloatRect())
+                    continue;
+
+                if (comp->getGlobalBounds().findIntersection(otherComp->getGlobalBounds()))
+                    return true;
+            }
+        }
 
         return false;
     }
 
     sf::FloatRect CEntity::getGlobalBounds() const
     {
-        return getTransform().transformRect(m_vertices.getBounds());
-    }
-
-    void CEntity::setTexture(sf::Texture* texture)
-    {
-        m_texture = texture;
-        if (!texture) return;
-
-        m_vertices[0].texCoords = {0.f, 0.f};
-        m_vertices[1].texCoords = {0.f, static_cast<float>(texture->getSize().y)};
-        m_vertices[2].texCoords = {static_cast<float>(texture->getSize().x), 0.f};
-        m_vertices[3].texCoords = {
-            static_cast<float>(texture->getSize().x),
-            static_cast<float>(texture->getSize().y)
-        };
-    }
-
-    sf::Texture* CEntity::getTexture() const
-    {
-        return m_texture;
-    }
-
-    void CEntity::setSize(float x, float y)
-    {
-        m_vertices[0].position = {0.f, 0.f};
-        m_vertices[1].position = {0.f, y};
-        m_vertices[2].position = {x, 0.f};
-        m_vertices[3].position = {x, y};
-    }
-
-    void CEntity::setSize(const sf::Vector2f& size)
-    {
-        setSize(size.x, size.y);
-    }
-
-    const sf::Vector2f& CEntity::getSize() const
-    {
-        return m_vertices[3].position;
-    }
-
-    void CEntity::setColour(const sf::Color& colour)
-    {
-        for (size_t i {0}; i < m_vertices.getVertexCount(); i++)
+        sf::FloatRect bounds;
+        
+        for (auto& comp : m_components)
         {
-            m_vertices[i].color = colour;
+            if (comp->getGlobalBounds().size.x > bounds.size.x)
+                bounds.size.x = comp->getGlobalBounds().size.x;
+            if (comp->getGlobalBounds().size.y > bounds.size.y)
+                bounds.size.y = comp->getGlobalBounds().size.y;
+            if (comp->getGlobalBounds().position.x < bounds.position.x)
+                bounds.position.x = comp->getGlobalBounds().position.x;
+            if (comp->getGlobalBounds().position.y < bounds.position.y)
+                bounds.position.y = comp->getGlobalBounds().position.y;
         }
+        
+        return bounds;
     }
 
-    const sf::Color& CEntity::getColour() const
+    CComponent* CEntity::createComponent(std::string_view className)
     {
-        return m_vertices[0].color;
+        return setupComponent(
+            std::unique_ptr<CComponent>(dynamic_cast<CComponent*>(newObject(className, this)))
+        );
+    }
+
+    void CEntity::destroyComponent(CComponent* component)
+    {
+        if (!component) return;
+        
+        component->markForDestroy();
+        component->destroy();
+    }
+
+    void CEntity::preTick()
+    {
+        ITickable::preTick();
+
+        for (const auto& comp : m_components)
+        {
+            comp->preTick();
+            
+            if (comp->pendingCreate())
+                comp->unmarkForCreate();
+        }
     }
 
     void CEntity::tick(float deltaTime)
     {
-        
+        for (const auto& comp : m_components)
+        {
+            if (!comp->pendingCreate())
+                comp->tick(deltaTime);
+        }
     }
 
     void CEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform *= getTransform();
-        states.texture = m_texture;
-        target.draw(m_vertices, states);
+        
+        for (auto& comp : m_components)
+        {
+            target.draw(*comp, states);
+        }
+    }
+
+    void CEntity::postTick()
+    {
+        ITickable::postTick();
+
+        for (auto it = m_components.rbegin(); it != m_components.rend();)
+        {
+            it->get()->postTick();
+
+            if (it->get()->pendingDestroy())
+                it = decltype(it)(m_components.erase(std::next(it).base()));
+            else
+                ++it;
+        }
     }
 
     CLevel& CEntity::getLevel() const
@@ -109,6 +131,14 @@ namespace tails
         return getLevel().getEngine();
     }
 
+    CComponent* CEntity::setupComponent(std::unique_ptr<CComponent> comp)
+    {
+        m_components.emplace_back(std::move(comp));
+        auto result = m_components.back().get();
+        result->create();
+        return result;
+    }
+
     void CEntity::serialise(nlohmann::json& obj) const
     {
         obj.push_back({"position"});
@@ -119,9 +149,6 @@ namespace tails
 
         obj.push_back({"scale"});
         obj["scale"].push_back(SVector2f::toJSON(getScale()));
-
-        obj.push_back({"size"});
-        obj["size"].push_back(SVector2f::toJSON(getSize()));
     }
     
     void CEntity::deserialise(const nlohmann::json& obj)
@@ -129,10 +156,5 @@ namespace tails
         setPosition(SVector2f::fromJSON(obj["position"]));
         setRotation(sf::degrees(obj["rotation"].get<float>()));
         setScale(SVector2f::fromJSON(obj["scale"]));
-        setSize(SVector2f::fromJSON(obj["size"]));
-
-        // textures
-        // TODO - something something to get the texture id from json I dunno???
-        setTexture(getLevel().resourceManager.createTexture(obj["texture"].get<std::string>(), CDirectories::getDirectory("texture")));
     }
 }

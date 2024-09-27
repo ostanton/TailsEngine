@@ -15,8 +15,8 @@ namespace tails
         CLevel* result {m_openLevels.back().get()};
         result->outer = this;
         result->setSettings(std::move(settings));
-        result->m_camera.setCenter(getEngine().getRenderView().getCenter());
-        result->m_camera.setSize(getEngine().getRenderView().getSize());
+        result->m_defaultView.setCenter(getEngine().getRenderView().getCenter());
+        result->m_defaultView.setSize(getEngine().getRenderView().getSize());
 
         result->open();
 

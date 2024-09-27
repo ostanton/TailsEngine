@@ -31,4 +31,7 @@ target_sources(
     Exception.hpp
     ClassRegistry.hpp
     Concepts.hpp
+    Component.hpp
+    SpriteComponent.hpp
+    CameraComponent.hpp
 )

@@ -4,6 +4,7 @@
 #include <Tails/Engine.hpp>
 #include <Tails/LevelSettings.hpp>
 #include <Tails/Vector2.hpp>
+#include <Tails/CameraComponent.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -38,6 +39,29 @@ namespace tails
         if (!entity1) return false;
         
         return entity1->colliding(entity2);
+    }
+
+    void CLevel::setActiveCamera(CCameraComponent* camera)
+    {
+        if (!camera) return;
+
+        m_view = &camera->getCameraView();
+    }
+
+    void CLevel::setActiveCameraView(sf::View& view)
+    {
+        m_view = &view;
+    }
+
+    const sf::View& CLevel::getActiveCameraView() const
+    {
+        return *m_view;
+    }
+
+    bool CLevel::isCameraActive(const CCameraComponent* camera) const
+    {
+        // TODO - test equality of views
+        return &camera->getCameraView() == m_view;
     }
 
     CLevel::CLevel(std::string path)
@@ -91,7 +115,7 @@ namespace tails
 
     void CLevel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        target.setView(m_camera);
+        target.setView(getActiveCameraView());
         for (auto& entity : m_entities)
         {
             // TODO - round position to integer??
@@ -148,6 +172,7 @@ namespace tails
         entity->setRotation(rotation);
         entity->setScale(scale);
 
+        entity->initComponents();
         entity->loadResources(resourceManager);
         entity->spawn();
 

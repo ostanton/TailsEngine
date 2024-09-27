@@ -24,4 +24,7 @@ add_library(
     Localisation.cpp
     LocaleString.cpp
     Exception.cpp
+    Component.cpp
+    SpriteComponent.cpp
+    CameraComponent.cpp
 )

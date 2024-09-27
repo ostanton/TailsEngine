@@ -20,6 +20,7 @@ namespace tails
     class CEntity;
     class CEngine;
     struct SLevelSettings;
+    class CCameraComponent;
     
     class TAILS_API CLevel final : public CObject, public ITickable, public sf::Drawable
     {
@@ -69,11 +70,13 @@ namespace tails
 
         static bool entitiesColliding(const CEntity* entity1, const CEntity* entity2);
 
+        void setActiveCamera(CCameraComponent* camera);
+        void setActiveCameraView(sf::View& view);
+        [[nodiscard]] const sf::View& getActiveCameraView() const;
+        [[nodiscard]] bool isCameraActive(const CCameraComponent* camera) const;
+
         [[nodiscard]] const std::string& getPath() const {return m_path;}
         [[nodiscard]] SLevelSettings& getSettings() const {return *m_settings;}
-
-        [[nodiscard]] sf::View& getCameraView() {return m_camera;}
-        [[nodiscard]] const sf::View& getCameraView() const {return m_camera;}
 
         CResourceManager resourceManager;
         
@@ -106,7 +109,8 @@ namespace tails
 
         std::vector<std::unique_ptr<CEntity>> m_entities;
 
-        sf::View m_camera;
+        sf::View m_defaultView;
+        sf::View* m_view {&m_defaultView};
     };
 }
 
