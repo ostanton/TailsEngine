@@ -28,9 +28,6 @@ namespace tails
         [[nodiscard]] sf::Color getColour() const;
 
     protected:
-        void serialise(nlohmann::json& obj) const override;
-        void deserialise(const nlohmann::json& obj) override;
-
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         

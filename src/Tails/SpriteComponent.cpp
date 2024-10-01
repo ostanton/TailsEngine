@@ -50,16 +50,6 @@ namespace tails
         return m_vertices[0].color;
     }
 
-    void CSpriteComponent::serialise(nlohmann::json& obj) const
-    {
-        
-    }
-
-    void CSpriteComponent::deserialise(const nlohmann::json& obj)
-    {
-        
-    }
-
     void CSpriteComponent::tick(float deltaTime)
     {
         

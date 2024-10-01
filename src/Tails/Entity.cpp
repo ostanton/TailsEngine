@@ -74,6 +74,14 @@ namespace tails
         component->destroy();
     }
 
+    void CEntity::initComponents()
+    {
+        for (const auto& comp : m_components)
+        {
+            comp->create();
+        }
+    }
+
     void CEntity::preTick()
     {
         ITickable::preTick();
@@ -135,7 +143,6 @@ namespace tails
     {
         m_components.emplace_back(std::move(comp));
         auto result = m_components.back().get();
-        result->create();
         return result;
     }
 

@@ -4,7 +4,6 @@
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
-#include <Tails/Serialisable.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -17,7 +16,6 @@ namespace tails
     class TAILS_API CComponent :
         public CObject,
         public ITickable,
-        public ISerialisable,
         public sf::Drawable,
         public sf::Transformable
     {
@@ -26,7 +24,11 @@ namespace tails
     public:
         [[nodiscard]] virtual sf::FloatRect getGlobalBounds() const {return {};}
 
-        [[nodiscard]] CEntity* getOwningEntity() const;
+        [[nodiscard]] CEntity& getOwningEntity() const;
+
+        [[nodiscard]] sf::Vector2f getGlobalPosition() const;
+        [[nodiscard]] sf::Angle getGlobalRotation() const;
+        [[nodiscard]] sf::Vector2f getGlobalScale() const;
 
     protected:
         virtual void create() {}

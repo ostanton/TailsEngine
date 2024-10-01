@@ -27,4 +27,5 @@ add_library(
     Component.cpp
     SpriteComponent.cpp
     CameraComponent.cpp
+    Key.cpp
 )

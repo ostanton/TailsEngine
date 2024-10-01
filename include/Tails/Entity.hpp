@@ -91,7 +91,7 @@ namespace tails
         /**
          * Called before spawn(), used to initialise this entity's components
          */
-        virtual void initComponents() {}
+        virtual void initComponents();
         
         /**
          * Called the same frame as this entity is spawned.

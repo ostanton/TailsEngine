@@ -34,4 +34,5 @@ target_sources(
     Component.hpp
     SpriteComponent.hpp
     CameraComponent.hpp
+    Key.hpp
 )

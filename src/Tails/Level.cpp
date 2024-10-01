@@ -115,12 +115,19 @@ namespace tails
 
     void CLevel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        sf::FloatRect viewport {
+            {getActiveCameraView().getCenter() - getActiveCameraView().getSize() / 2.f},
+            {getActiveCameraView().getSize()}
+        };
+        
         target.setView(getActiveCameraView());
         for (auto& entity : m_entities)
         {
             // TODO - round position to integer??
-            if (!entity->pendingCreate())
+            if (!entity->pendingCreate()) //&& viewport.findIntersection(entity->getGlobalBounds()))
+            {
                 target.draw(*entity, states);
+            }
         }
         target.setView(target.getDefaultView());
     }
