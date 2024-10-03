@@ -10,7 +10,7 @@ namespace tails
         setSize({16.f, 16.f});
     }
 
-    void CSpriteComponent::setTexture(sf::Texture* texture)
+    void CSpriteComponent::setTexture(const sf::Texture* texture)
     {
         m_texture = texture;
         if (!texture) return;

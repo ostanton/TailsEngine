@@ -18,8 +18,8 @@ namespace tails
     public:
         CSpriteComponent();
         
-        void setTexture(sf::Texture* texture);
-        [[nodiscard]] sf::Texture* getTexture() const {return m_texture;}
+        void setTexture(const sf::Texture* texture);
+        [[nodiscard]] const sf::Texture* getTexture() const {return m_texture;}
 
         void setTextureCoords(const sf::Rect<unsigned int>& coords);
         [[nodiscard]] sf::Rect<unsigned int> getTextureCoords() const;
@@ -37,7 +37,7 @@ namespace tails
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};
-        sf::Texture* m_texture {nullptr};
+        const sf::Texture* m_texture {nullptr};
     };
 }
 TAILS_REGISTER_CLASS(CSpriteComponent)

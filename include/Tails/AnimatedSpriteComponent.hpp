@@ -72,7 +72,6 @@ namespace tails
     /**
      * Treats the associated texture as a sprite-sheet, and allows frames to be created using rectangles
      * on that sprite-sheet, forming animations that can be played, paused, and stopped.
-     * TODO - weird access violation going on with key val when inserting into map
      */
     class TAILS_API CAnimatedSpriteComponent final : public CSpriteComponent
     {

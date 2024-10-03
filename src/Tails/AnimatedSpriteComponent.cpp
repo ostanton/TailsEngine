@@ -62,6 +62,7 @@ namespace tails
 
     void CAnimatedSpriteComponent::addAnimation(const std::string& name, const SAnimation& animation)
     {
+        // TODO - weird access violation going on with key val when inserting into map
         m_animations.insert(AnimationMap::value_type(name, animation));
     }
 

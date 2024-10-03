@@ -32,4 +32,5 @@ add_library(
     CircleShapeComponent.cpp
     ConvexShapeComponent.cpp
     AnimatedSpriteComponent.cpp
+    TileMapComponent.cpp
 )
