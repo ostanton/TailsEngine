@@ -1,5 +1,5 @@
-#ifndef TAILS_RESOURCEMANAGER_HPP
-#define TAILS_RESOURCEMANAGER_HPP
+#ifndef TAILS_RESOURCE_MANAGER_HPP
+#define TAILS_RESOURCE_MANAGER_HPP
 
 #include <Tails/Config.hpp>
 #include <Tails/Debug.hpp>
@@ -18,6 +18,10 @@ namespace sf
 
 namespace tails
 {
+    /**
+     * Owns resources for various classes to have pointers to.
+     * This allows SFML classes to be used with it (raw pointers to the resources that are managed by this manager)
+     */
     class TAILS_API CResourceManager final
     {
     public:
@@ -55,6 +59,12 @@ namespace tails
                     CDebug::error("Failed to create resource, exception: ", e.what());
                     return nullptr;
                 }
+                
+                CDebug::print("Created \"", id, "\" resource at \"", path, "\"");
+            }
+            else
+            {
+                CDebug::print("Resource \"", id, "\" already exists, getting it");
             }
             
             return dataMap[id].get();
@@ -63,7 +73,11 @@ namespace tails
         template<typename T>
         [[nodiscard]] T* getResource(const std::string& id, const TResourceMap<T>& dataMap) const
         {
-            if (!dataMap.contains(id)) return nullptr;
+            if (!dataMap.contains(id))
+            {
+                CDebug::error("Failed to find \"", id, "\" resource");
+                return nullptr;
+            }
 
             return dataMap.at(id).get();
         }
@@ -74,4 +88,4 @@ namespace tails
     };
 }
 
-#endif // TAILS_RESOURCEMANAGER_HPP
+#endif // TAILS_RESOURCE_MANAGER_HPP

@@ -32,6 +32,7 @@ namespace tails
 
     protected:
         virtual void create() {}
+        virtual void postCreate() {}
         virtual void destroy() {}
     };
 }

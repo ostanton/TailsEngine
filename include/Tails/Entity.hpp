@@ -9,7 +9,6 @@
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
 
 #include <vector>
 #include <memory>
@@ -51,21 +50,46 @@ namespace tails
 
         sf::FloatRect getGlobalBounds() const;
 
+        /**
+         * Gets the level that this entity belongs to
+         * @return Owning level
+         */
         [[nodiscard]] CLevel& getLevel() const;
+        [[nodiscard]] CEngine& getEngine() const;
 
-        template<DerivesComponent T>
-        T* createComponent()
+        /**
+         * Creates a component regardless of if it is registered
+         * @tparam T Component type
+         * @tparam ArgsT Constructor argument types
+         * @param args Component constructor arguments
+         * @return Created component
+         */
+        template<DerivesComponent T, typename... ArgsT>
+        requires ConstructibleUserType<T, ArgsT...>
+        T* createComponent(ArgsT&&... args)
         {
-            return static_cast<T*>(setupComponent(std::unique_ptr<T>(newObject<T>(this))));
+            return static_cast<T*>(setupComponent(std::unique_ptr<T>(newObject<T>(this, std::forward<ArgsT>(args)...))));
         }
 
+        /**
+         * Creates a component that is registered in the class registry, and casts it to the desired type
+         * @tparam T Component type
+         * @param className Component registered class name
+         * @return Created component
+         */
         template<DerivesComponent T>
-        T* createComponent(std::string_view className)
+        T* createRegisteredComponent(std::string_view className)
         {
             return static_cast<T*>(setupComponent(std::unique_ptr<T>(newObject<T>(className, this))));
         }
 
-        CComponent* createComponent(std::string_view className);
+        /**
+         * Creates a component that is registered in the class registry
+         * @tparam ArgsT Constructor argument types
+         * @param className Component registered class name
+         * @return Created component
+         */
+        CComponent* createRegisteredComponent(std::string_view className);
 
         template<DerivesComponent T>
         T* getComponent()
@@ -118,8 +142,6 @@ namespace tails
          * @param other The entity we are colliding against
          */
         virtual void collision(CEntity& other) {}
-        
-        [[nodiscard]] CEngine& getEngine() const;
 
         CComponent* setupComponent(std::unique_ptr<CComponent> comp);
 

@@ -22,17 +22,20 @@ namespace tails
             return registryMap;
         }
 
-        template<typename  T>
+        template<typename T>
         void* createObjectImpl()
         {
             return new T;
         }
 
         template<typename T>
-        struct SRegistryEntry
+        struct SRegistryEntry final
         {
             SRegistryEntry(const SRegistryEntry&) = delete;
+            SRegistryEntry(SRegistryEntry&&) = delete;
             SRegistryEntry& operator=(const SRegistryEntry&) = delete;
+            SRegistryEntry& operator=(SRegistryEntry&&) = delete;
+            ~SRegistryEntry() = default;
 
             static SRegistryEntry& get(const std::string& name)
             {

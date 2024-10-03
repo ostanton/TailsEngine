@@ -21,17 +21,20 @@ namespace tails
         void setTexture(sf::Texture* texture);
         [[nodiscard]] sf::Texture* getTexture() const {return m_texture;}
 
+        void setTextureCoords(const sf::Rect<unsigned int>& coords);
+        [[nodiscard]] sf::Rect<unsigned int> getTextureCoords() const;
+
         void setSize(const sf::Vector2f& size);
         [[nodiscard]] const sf::Vector2f& getSize() const;
 
         void setColour(sf::Color colour);
         [[nodiscard]] sf::Color getColour() const;
+        
+        [[nodiscard]] sf::FloatRect getGlobalBounds() const override;
 
     protected:
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-        
-        [[nodiscard]] sf::FloatRect getGlobalBounds() const override;
         
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};
         sf::Texture* m_texture {nullptr};

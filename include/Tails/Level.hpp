@@ -36,6 +36,11 @@ namespace tails
         
         /**
          * Spawn an entity from its class. The entity in question does not need to be registered in the class registry.
+         * @tparam T Entity class
+         * @param position Initial position
+         * @param rotation Initial rotation
+         * @param scale Initial scale
+         * @return Pointer to spawned entity
          */
         template<DerivesEntity T>
         T* spawnEntity(const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f})
@@ -60,11 +65,20 @@ namespace tails
 
         /**
          * Spawn an entity from its registered class name.
+         * @param className Registered class name
+         * @param position Initial position
+         * @param rotation Initial rotation
+         * @param scale Initial scale
+         * @return Pointer to spawned entity
          */
         CEntity* spawnEntity(std::string_view className, const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f});
 
         static void destroyEntity(CEntity* entity);
 
+        /**
+         * Gets the world that this level belongs to
+         * @return Owning world
+         */
         [[nodiscard]] CWorld& getWorld() const;
         [[nodiscard]] CEngine& getEngine() const;
 

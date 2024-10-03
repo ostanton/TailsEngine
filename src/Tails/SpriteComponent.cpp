@@ -15,13 +15,41 @@ namespace tails
         m_texture = texture;
         if (!texture) return;
 
-        m_vertices[0].texCoords = {0.f, 0.f};
-        m_vertices[1].texCoords = {0.f, static_cast<float>(texture->getSize().y)};
-        m_vertices[2].texCoords = {static_cast<float>(texture->getSize().x), 0.f};
-        m_vertices[3].texCoords = {
-            static_cast<float>(texture->getSize().x),
-            static_cast<float>(texture->getSize().y)
+        setTextureCoords({{0, 0}, {texture->getSize().x, texture->getSize().y}});
+    }
+
+    void CSpriteComponent::setTextureCoords(const sf::Rect<unsigned int>& coords)
+    {
+        m_vertices[0].texCoords = {
+            static_cast<float>(coords.position.x),
+            static_cast<float>(coords.position.y)
         };
+        m_vertices[1].texCoords = {
+            static_cast<float>(coords.position.x),
+            static_cast<float>(coords.size.y)
+        };
+        m_vertices[2].texCoords = {
+            static_cast<float>(coords.size.x),
+            static_cast<float>(coords.position.y)
+        };
+        m_vertices[3].texCoords = {
+            static_cast<float>(coords.size.x),
+            static_cast<float>(coords.size.y)
+        };
+    }
+
+    sf::Rect<unsigned int> CSpriteComponent::getTextureCoords() const
+    {
+        return sf::Rect<unsigned int>({
+            {
+                static_cast<unsigned int>(m_vertices[0].texCoords.x),
+                static_cast<unsigned int>(m_vertices[0].texCoords.y)
+            },
+            {
+                static_cast<unsigned int>(m_vertices[3].texCoords.x),
+                static_cast<unsigned int>(m_vertices[3].texCoords.y)
+            }
+        });
     }
 
     void CSpriteComponent::setSize(const sf::Vector2f& size)

@@ -59,10 +59,10 @@ namespace tails
         return bounds;
     }
 
-    CComponent* CEntity::createComponent(std::string_view className)
+    CComponent* CEntity::createRegisteredComponent(std::string_view className)
     {
         return setupComponent(
-            std::unique_ptr<CComponent>(dynamic_cast<CComponent*>(newObject(className, this)))
+            std::unique_ptr<CComponent>(newObject<CComponent>(className, this))
         );
     }
 
@@ -91,7 +91,10 @@ namespace tails
             comp->preTick();
             
             if (comp->pendingCreate())
+            {
                 comp->unmarkForCreate();
+                comp->postCreate();
+            }
         }
     }
 

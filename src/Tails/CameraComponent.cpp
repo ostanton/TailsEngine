@@ -2,6 +2,8 @@
 #include <Tails/Level.hpp>
 #include <Tails/Entity.hpp>
 
+#include <SFML/Graphics/RenderStates.hpp>
+
 namespace tails
 {
     void CCameraComponent::setActive()

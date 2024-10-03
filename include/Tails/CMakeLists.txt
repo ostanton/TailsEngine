@@ -35,4 +35,8 @@ target_sources(
     SpriteComponent.hpp
     CameraComponent.hpp
     Key.hpp
+    ShapeComponent.hpp
+    CircleShapeComponent.hpp
+    ConvexShapeComponent.hpp
+    AnimatedSpriteComponent.hpp
 )

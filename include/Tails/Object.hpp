@@ -48,8 +48,13 @@ namespace tails
 
     // Functions for creating children of CObject specifically
 
-    CObject* newObject(std::string_view name, CObject* outer);
-
+    /**
+     * Creates a new object that is registered in the class registry, then casts it to the specified CObject subclass
+     * @tparam T Object type
+     * @param name Registered class name
+     * @param outer The object this new object will reside in
+     * @return Created object of specified type
+     */
     template<DerivesObject T>
     T* newObject(std::string_view name, CObject* outer)
     {
@@ -62,10 +67,30 @@ namespace tails
         return nullptr;
     }
 
-    template<DerivesObject T>
-    T* newObject(CObject* outer)
+    /**
+     * Creates a new object that is registered in the class registry
+     * @param name Registered class name
+     * @param outer The object this new object will reside in
+     * @return Created object
+     */
+    inline CObject* newObject(std::string_view name, CObject* outer)
     {
-        auto obj = new T;
+        return newObject<CObject>(name, outer);
+    }
+
+    /**
+     * Creates a new object, regardless of if it is registered in the class registry
+     * @tparam T Object type
+     * @tparam ArgsT Constructor argument types
+     * @param outer The object this new object will reside in
+     * @param args Constructor arguments
+     * @return Created object
+     */
+    template<DerivesObject T, typename... ArgsT>
+    requires ConstructibleUserType<T, ArgsT...>
+    T* newObject(CObject* outer, ArgsT&&... args)
+    {
+        auto obj = new T(std::forward<ArgsT>(args)...);
         obj->outer = outer;
         return obj;
     }

@@ -9,9 +9,16 @@ namespace tails
     class CObject;
     class CEntity;
     class CComponent;
-    
+
     template<typename T>
     concept UserType = std::is_class_v<T>;
+    
+    template<typename T, typename... Ts>
+    concept ConstructibleUserType = requires(T obj)
+    {
+        std::is_class_v<T>;
+        std::constructible_from<T, Ts...>;
+    };
 
     /**
      * Checks if a type can be printed via streams

@@ -28,4 +28,8 @@ add_library(
     SpriteComponent.cpp
     CameraComponent.cpp
     Key.cpp
+    ShapeComponent.cpp
+    CircleShapeComponent.cpp
+    ConvexShapeComponent.cpp
+    AnimatedSpriteComponent.cpp
 )

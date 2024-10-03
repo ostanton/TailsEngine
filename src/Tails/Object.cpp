@@ -32,9 +32,4 @@ namespace tails
     {
         return (m_flags & PendingDestroy) == PendingDestroy;
     }
-
-    CObject* newObject(std::string_view name, CObject* outer)
-    {
-        return newObject<CObject>(name, outer);
-    }
 }
