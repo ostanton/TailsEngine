@@ -17,13 +17,13 @@ namespace tails
         using ConstIterator = std::string::const_iterator;
         
         CLocaleString() = default;
-        CLocaleString(std::string string) : m_id(-1), m_string(std::move(string)) {}
+        CLocaleString(std::string string) : m_string(std::move(string)) {}
         CLocaleString(const char* string) : CLocaleString(std::string(string)) {}
 
         template<typename... ArgsT>
         CLocaleString(size_t id, ArgsT&&... args)
             :
-            m_id(id),
+            m_id(std::make_optional(id)),
             m_string(std::format(CLocalisation::getLocalisedString(id), std::forward<ArgsT>(args)...)) {}
 
         CLocaleString(const CLocaleString&) = default;
@@ -36,7 +36,7 @@ namespace tails
         template<typename... ArgsT>
         size_t setLocaleID(std::string_view id, ArgsT&&... args)
         {
-            m_id = CLocalisation::hash(id);
+            m_id = std::make_optional(CLocalisation::hash(id));
             updateLocale(std::forward<ArgsT>(args)...);
             return m_id.value();
         }
@@ -88,7 +88,7 @@ namespace tails
         [[nodiscard]] const char* getData() const;
         
     private:
-        std::optional<size_t> m_id {-1};
+        std::optional<size_t> m_id {std::nullopt};
         std::string m_string;
     };
 
