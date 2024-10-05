@@ -62,7 +62,7 @@ namespace tails
 
     void CAnimatedSpriteComponent::addAnimation(const std::string& name, const SAnimation& animation)
     {
-        // TODO - weird access violation going on with key val when emplacing into map
+        // This has inconsistent behaviour, it threw access violations before, but now it doesn't??
         m_animations.try_emplace(name, animation);
     }
 
@@ -139,6 +139,8 @@ namespace tails
             // return, as there is nothing to do while waiting for the next frame
             return;
         }
+
+        m_currentAnim->getCurrentFrame().playbackTimer = 0.f;
 
         if (m_currentAnim->currentFrameIndex + 1 >= m_currentAnim->frames.size())
         {

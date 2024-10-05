@@ -26,15 +26,15 @@ namespace tails
         };
         m_vertices[1].texCoords = {
             static_cast<float>(coords.position.x),
-            static_cast<float>(coords.size.y)
+            static_cast<float>(coords.position.y) + static_cast<float>(coords.size.y)
         };
         m_vertices[2].texCoords = {
-            static_cast<float>(coords.size.x),
+            static_cast<float>(coords.position.x) + static_cast<float>(coords.size.x),
             static_cast<float>(coords.position.y)
         };
         m_vertices[3].texCoords = {
-            static_cast<float>(coords.size.x),
-            static_cast<float>(coords.size.y)
+            static_cast<float>(coords.position.x) + static_cast<float>(coords.size.x),
+            static_cast<float>(coords.position.y) + static_cast<float>(coords.size.y)
         };
     }
 

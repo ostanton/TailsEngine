@@ -6,7 +6,7 @@
 
 namespace tails
 {
-    void CTileMapComponent::setTiles(std::vector<TileType> tiles, bool updateMap)
+    void CTileMapComponent::setTiles(std::vector<TileType> tiles, bool updateMap /* = true */)
     {
         m_tiles.clear();
         m_tiles.insert(m_tiles.end(), tiles.begin(), tiles.end());
@@ -14,21 +14,21 @@ namespace tails
             update();
     }
 
-    void CTileMapComponent::setMapSize(const sf::Vector2u& size, bool updateMap)
+    void CTileMapComponent::setMapSize(const sf::Vector2u& size, bool updateMap /* = false */)
     {
         m_mapSize = size;
         if (updateMap)
             update();
     }
 
-    void CTileMapComponent::setMapTexture(const sf::Texture* tileMap, bool updateMap)
+    void CTileMapComponent::setMapTexture(const sf::Texture* tileMap, bool updateMap /* = false */)
     {
         m_texture = tileMap;
         if (updateMap)
             update();
     }
 
-    void CTileMapComponent::setTileSize(size_t size, bool updateMap)
+    void CTileMapComponent::setTileSize(size_t size, bool updateMap /* = false */)
     {
         m_tileSize = size;
         if (updateMap)
@@ -49,12 +49,12 @@ namespace tails
             static_cast<size_t>(m_mapSize.x) * static_cast<size_t>(m_mapSize.y) * 4
         );
         
-        for (size_t y {0}; y < m_mapSize.y; y++)
+        for (size_t x {0}; x < m_mapSize.x; x++)
         {
-            for (size_t x {0}; x < m_mapSize.x; x++)
+            for (size_t y {0}; y < m_mapSize.y; y++)
             {
-                size_t tileNum = m_tiles[y * m_mapSize.y + x];
-
+                size_t tileNum = m_tiles[x + y * m_mapSize.x];
+                
                 size_t textureU {tileNum % (m_texture->getSize().x / m_tileSize)};
                 size_t textureV {tileNum / (m_texture->getSize().x / m_tileSize)};
 
