@@ -41,10 +41,10 @@ namespace tails
         SAnimation() = default;
         SAnimation(
             const std::vector<SFrame>& inFrames,
-            size_t initialFrameIndex = 0,
-            bool startPlaying = false,
             float inPlaybackSpeed = 1.f,
-            bool inLoop = true
+            bool inLoop = true,
+            size_t initialFrameIndex = 0,
+            bool startPlaying = false
         );
         SAnimation(const SAnimation&) = default;
         SAnimation(SAnimation&&) = default;
@@ -53,10 +53,10 @@ namespace tails
         ~SAnimation() = default;
         
         std::vector<SFrame> frames;
-        size_t currentFrameIndex {0};
-        bool playing {false};
         float playbackSpeed {1.f};
         bool loop {true};
+        size_t currentFrameIndex {0};
+        bool playing {false};
 
         void addFrame(const SFrame& frame);
         void addFrames(const std::vector<SFrame>& inFrames);

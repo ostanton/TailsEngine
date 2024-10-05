@@ -16,15 +16,15 @@ namespace tails
 
     SAnimation::SAnimation(
         const std::vector<SFrame>& inFrames,
-        size_t initialFrameIndex,
-        bool startPlaying,
         float inPlaybackSpeed,
-        bool inLoop
+        bool inLoop,
+        size_t initialFrameIndex,
+        bool startPlaying
     ) : frames(inFrames),
-        currentFrameIndex(initialFrameIndex),
-        playing(startPlaying),
         playbackSpeed(inPlaybackSpeed),
-        loop(inLoop)
+        loop(inLoop),
+        currentFrameIndex(initialFrameIndex),
+        playing(startPlaying)
     {
     }
 
@@ -134,7 +134,7 @@ namespace tails
         m_currentAnim->getCurrentFrame().playbackTimer += deltaTime;
 
         if (m_currentAnim->getCurrentFrame().playbackTimer <
-            1.f * m_currentAnim->getCurrentFrame().playbackSpeed * m_currentAnim->playbackSpeed)
+            1.f * (1.f / m_currentAnim->getCurrentFrame().playbackSpeed) * (1.f / m_currentAnim->playbackSpeed))
         {
             // return, as there is nothing to do while waiting for the next frame
             return;
