@@ -76,16 +76,23 @@ namespace tails
 
         void setLocalise(bool localise);
 
-        Iterator begin();
-        ConstIterator begin() const;
-        Iterator end();
-        ConstIterator end() const;
+        [[nodiscard]] Iterator begin();
+        [[nodiscard]] ConstIterator begin() const;
+        [[nodiscard]] Iterator end();
+        [[nodiscard]] ConstIterator end() const;
 
         [[nodiscard]] char operator[](size_t index) const;
         [[nodiscard]] size_t getSize() const;
         [[nodiscard]] bool isEmpty() const;
         [[nodiscard]] char* getData();
         [[nodiscard]] const char* getData() const;
+
+        /**
+         * Used instead of char& operator[] so we can only allow it if the string is not localised
+         * @param index Character position in string
+         * @param character New character
+         */
+        void setCharacter(size_t index, char character);
         
     private:
         std::optional<size_t> m_id {std::nullopt};

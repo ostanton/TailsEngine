@@ -1,4 +1,5 @@
 #include <Tails/LocaleString.hpp>
+#include <Tails/Assert.hpp>
 
 #include <iostream>
 
@@ -50,6 +51,7 @@ namespace tails
 
     char CLocaleString::operator[](size_t index) const
     {
+        TAILS_ASSERT(index < m_string.size(), "Index to string is out of bounds");
         return m_string[index];
     }
 
@@ -71,6 +73,12 @@ namespace tails
     const char* CLocaleString::getData() const
     {
         return m_string.data();
+    }
+
+    void CLocaleString::setCharacter(size_t index, char character)
+    {
+        if (!localised() && index < m_string.size())
+            m_string[index] = character;
     }
 
     std::ostream& operator<<(std::ostream& stream, const CLocaleString& locString)

@@ -11,7 +11,7 @@
         (std::cerr << "Assertion failed: " << #condition << "\n" \
         << "Context: " << tails::getFunctionName() << "\n" \
         << "In file \"" << tails::getFileName() << "\" on line " << tails::getLine() << "\n" \
-        << "Message: " << (message) << "\n", abort(), 0) : 1;
+        << "Message: " << (message) << "\n", abort(), 0) : 1
 #else // TAILS_DEBUG
 #define TAILS_ASSERT(condition, message)
 #endif // TAILS_DEBUG
