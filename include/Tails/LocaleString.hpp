@@ -6,6 +6,7 @@
 
 #include <string>
 #include <format>
+#include <optional>
 
 namespace tails
 {
@@ -20,7 +21,7 @@ namespace tails
         CLocaleString(const char* string) : CLocaleString(std::string(string)) {}
 
         template<typename... ArgsT>
-        CLocaleString(int id, ArgsT&&... args)
+        CLocaleString(size_t id, ArgsT&&... args)
             :
             m_id(id),
             m_string(std::format(CLocalisation::getLocalisedString(id), std::forward<ArgsT>(args)...)) {}
@@ -33,18 +34,18 @@ namespace tails
         ~CLocaleString() = default;
 
         template<typename... ArgsT>
-        int setLocaleID(std::string_view id, ArgsT&&... args)
+        size_t setLocaleID(std::string_view id, ArgsT&&... args)
         {
             m_id = CLocalisation::hash(id);
             updateLocale(std::forward<ArgsT>(args)...);
-            return m_id;
+            return m_id.value();
         }
 
         template<typename... ArgsT>
         void updateLocale(ArgsT&&... args)
         {
             if (localised())
-                m_string = CLocalisation::getLocalisedString(m_id);
+                m_string = CLocalisation::getLocalisedString(m_id.value());
 
             if (sizeof...(args) > 0)
                 format(std::forward<ArgsT>(args)...);
@@ -56,10 +57,10 @@ namespace tails
             m_string = std::format(m_string, std::forward<ArgsT>(args)...);
         }
 
-        [[nodiscard]] bool localised() const {return m_id >= 0;}
+        [[nodiscard]] bool localised() const {return m_id.has_value();}
 
         [[nodiscard]] const std::string& getString() const {return m_string;}
-        [[nodiscard]] int getLocaleID() const {return m_id;}
+        [[nodiscard]] std::optional<size_t> getLocaleID() const {return m_id;}
 
         template<typename... ArgsT>
         void setString(std::string_view string, ArgsT&&... args)
@@ -87,7 +88,7 @@ namespace tails
         [[nodiscard]] const char* getData() const;
         
     private:
-        int m_id {-1};
+        std::optional<size_t> m_id {-1};
         std::string m_string;
     };
 

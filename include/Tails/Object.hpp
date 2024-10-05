@@ -43,7 +43,7 @@ namespace tails
         [[nodiscard]] bool pendingDestroy() const;
 
     private:
-        uint8_t m_flags {PendingCreate};
+        std::uint8_t m_flags {PendingCreate};
     };
 
     // Functions for creating children of CObject specifically

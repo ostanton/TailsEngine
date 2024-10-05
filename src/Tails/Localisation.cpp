@@ -10,7 +10,7 @@ namespace tails
         return get().m_localeMap;
     }
 
-    const std::string& CLocalisation::getLocalisedString(int id)
+    const std::string& CLocalisation::getLocalisedString(size_t id)
     {
         return getLocaleMap().at(id);
     }

@@ -11,16 +11,22 @@ namespace tails
     class TAILS_API CLocalisation final
     {
     public:
-        using LocaleMap = std::unordered_map<int, std::string>;
+        using LocaleMap = std::unordered_map<size_t, std::string>;
 
         static LocaleMap& getLocaleMap();
 
-        static const std::string& getLocalisedString(int id);
+        static const std::string& getLocalisedString(size_t id);
         static const std::string& getLocalisedString(std::string_view id);
 
-        static constexpr int hash(std::string_view id)
+        static constexpr size_t hash(std::string_view id)
         {
-            return 0;
+            // djb2 algorithm
+            size_t result {5381};
+            for (const char c : id)
+            {
+                result = (result << 5) + result + c;
+            }
+            return result;
         }
 
         static bool loadLocalisedStrings(const std::string& filename);
