@@ -60,6 +60,11 @@ namespace tails
         m_letterSpacing = spacing;
     }
 
+    sf::FloatRect CTextComponent::getGlobalBounds() const
+    {
+        return CComponent::getGlobalBounds();
+    }
+
     void CTextComponent::tick(float deltaTime)
     {
         
@@ -73,12 +78,48 @@ namespace tails
         states.texture = &m_font->getTexture(m_characterSize);
         states.coordinateType = sf::CoordinateType::Pixels;
 
-        sf::VertexArray vertices {sf::PrimitiveType::TriangleStrip, m_string.getSize()};
+        // TODO - optimise or something idk
+        sf::VertexArray vertices {sf::PrimitiveType::TriangleStrip};
+        float x {0.f};
+        float y {0.f};
         
         for (const auto strChar : m_string)
         {
             auto& glyph = m_font->getGlyph(strChar, m_characterSize, isBold());
-            // TODO - add glyph to vertex array!
+            // TODO - support multi-line, etc.
+            
+            float left {glyph.bounds.position.x};
+            float top {glyph.bounds.position.y};
+            float right {left + glyph.bounds.size.x};
+            float bottom {top + glyph.bounds.size.y};
+            
+            float u1 {static_cast<float>(glyph.textureRect.position.x)};
+            float v1 {static_cast<float>(glyph.textureRect.position.y)};
+            float u2 {u1 + static_cast<float>(glyph.textureRect.size.x)};
+            float v2 {v1 + static_cast<float>(glyph.textureRect.size.y)};
+
+            vertices.append({
+                {x + left, y + top},
+                m_colour,
+                {u1, v1}
+            });
+            vertices.append({
+                {x + right, y + top},
+                m_colour,
+                {u2, v1}
+            });
+            vertices.append({
+                {x + right, y + bottom},
+                m_colour,
+                {u2, v2}
+            });
+            vertices.append({
+                {x + left, y + bottom},
+                m_colour,
+                {u1, v2}
+            });
+
+            x += glyph.advance;
         }
 
         target.draw(vertices, states);

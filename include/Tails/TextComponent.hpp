@@ -67,6 +67,8 @@ namespace tails
 
         void setLetterSpacing(float spacing);
         [[nodiscard]] constexpr float getLetterSpacing() const {return m_letterSpacing;}
+
+        [[nodiscard]] sf::FloatRect getGlobalBounds() const override;
         
     private:
         void tick(float deltaTime) override;
