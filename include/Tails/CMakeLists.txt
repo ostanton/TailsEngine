@@ -40,4 +40,5 @@ target_sources(
     ConvexShapeComponent.hpp
     AnimatedSpriteComponent.hpp
     TileMapComponent.hpp
+    TextComponent.hpp
 )

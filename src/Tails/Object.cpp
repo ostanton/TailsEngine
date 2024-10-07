@@ -23,13 +23,8 @@ namespace tails
         m_flags &= ~PendingDestroy;
     }
 
-    bool CObject::pendingCreate() const
+    void CObject::clearFlags()
     {
-        return (m_flags & PendingCreate) == PendingCreate;
-    }
-
-    bool CObject::pendingDestroy() const
-    {
-        return (m_flags & PendingDestroy) == PendingDestroy;
+        m_flags = 0;
     }
 }

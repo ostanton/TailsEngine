@@ -33,4 +33,5 @@ add_library(
     ConvexShapeComponent.cpp
     AnimatedSpriteComponent.cpp
     TileMapComponent.cpp
+    TextComponent.cpp
 )

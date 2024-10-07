@@ -11,13 +11,18 @@ namespace tails
 {
     class TAILS_API CObject
     {
-        enum EObjectFlags
+        enum EFlags
         {
             PendingCreate = 1 << 0,
             PendingDestroy = 1 << 1
         };
         
     public:
+        CObject() = default;
+        CObject(const CObject&) = default;
+        CObject(CObject&&) = default;
+        CObject& operator=(const CObject&) = default;
+        CObject& operator=(CObject&&) = default;
         virtual ~CObject() = default;
         
         CObject* outer {nullptr};
@@ -39,8 +44,10 @@ namespace tails
         void markForDestroy();
         void unmarkForDestroy();
 
-        [[nodiscard]] bool pendingCreate() const;
-        [[nodiscard]] bool pendingDestroy() const;
+        void clearFlags();
+
+        [[nodiscard]] constexpr bool pendingCreate() const {return (m_flags & PendingCreate) == PendingCreate;}
+        [[nodiscard]] constexpr bool pendingDestroy() const {return (m_flags & PendingDestroy) == PendingDestroy;}
 
     private:
         std::uint8_t m_flags {PendingCreate};
