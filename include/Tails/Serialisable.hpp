@@ -19,17 +19,9 @@ namespace tails
         ISerialisable& operator=(const ISerialisable&) = default;
         ISerialisable& operator=(ISerialisable&&) noexcept = default;
 
-        [[nodiscard]] const std::string& getClassName() const {return m_className;}
-        
     protected:
         virtual void serialise(nlohmann::json& obj) const = 0;
         virtual void deserialise(const nlohmann::json& obj) = 0;
-        
-        /**
-         * "Reflectable" class name. If this class is not registered in a
-         * class registry subclass, set this in the constructor instead.
-         */
-        std::string m_className;
     };
 }
 

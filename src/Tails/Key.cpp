@@ -123,7 +123,7 @@ namespace tails
         if (name == "=" || name == "Equal") return {EInputDevice::Keyboard, sf::Keyboard::Key::Equal};
         if (name == "-" || name == "Hyphen") return {EInputDevice::Keyboard, sf::Keyboard::Key::Hyphen};
         
-        if (name == "Space") return {EInputDevice::Keyboard, sf::Keyboard::Key::Space};
+        if (name == "Space" || name == "Space bar") return {EInputDevice::Keyboard, sf::Keyboard::Key::Space};
         if (name == "Enter" || name == "Return") return {EInputDevice::Keyboard, sf::Keyboard::Key::Enter};
         if (name == "Backspace") return {EInputDevice::Keyboard, sf::Keyboard::Key::Backspace};
         if (name == "Tab") return {EInputDevice::Keyboard, sf::Keyboard::Key::Tab};

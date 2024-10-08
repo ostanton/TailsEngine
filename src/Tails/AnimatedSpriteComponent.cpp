@@ -81,6 +81,12 @@ namespace tails
             return;
         }
 
+        if (m_currentAnim)
+        {
+            // stop the last animation before playing the next
+            m_currentAnim->stop();
+        }
+        
         m_currentAnim = &m_animations[name.data()];
         m_currentAnim->play();
     }
@@ -121,6 +127,15 @@ namespace tails
         {
             if (animation.playing) return true;
         }
+
+        return false;
+    }
+
+    bool CAnimatedSpriteComponent::animationPlaying(std::string_view name) const
+    {
+        for (auto& [animName, animation] : m_animations)
+            if (animName == name)
+                return animation.playing;
 
         return false;
     }

@@ -102,13 +102,15 @@ namespace tails
 
     void CLevel::tick(float deltaTime)
     {
-        for (auto& entity : m_entities)
+        // normal for loop instead of range-based because I think the iterator gets invalidated when emplacing
+        // for spawning entities whilst iterating! This works, however.
+        for (size_t i {0}; i < m_entities.size(); i++)
         {
-            if (!entity->pendingCreate())
+            if (!m_entities[i]->pendingCreate())
             {
-                entity->tick(deltaTime);
+                m_entities[i]->tick(deltaTime);
 
-                checkCollision(entity.get());
+                checkCollision(m_entities[i].get());
             }
         }
     }

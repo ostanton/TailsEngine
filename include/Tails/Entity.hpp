@@ -91,17 +91,39 @@ namespace tails
          */
         CComponent* createRegisteredComponent(std::string_view className);
 
+        /**
+         * Finds and returns the found component of the specified type
+         * @tparam T Component type
+         * @return Found component
+         */
         template<DerivesComponent T>
         T* getComponent()
         {
             for (auto& comp : m_components)
-            {
                 if (auto castedComp = dynamic_cast<T*>(comp.get()))
                     return castedComp;
-            }
 
             return nullptr;
         }
+
+        /**
+         * Finds and returns all components of the specified type
+         * @tparam T Component type
+         * @return Found components
+         */
+        template<DerivesComponent T>
+        std::vector<T*> getAllComponents() const
+        {
+            std::vector<T*> result;
+            
+            for (auto& comp : m_components)
+                if (auto castedComp = dynamic_cast<T*>(comp.get()))
+                    result.emplace_back(castedComp);
+
+            return result;
+        }
+
+        std::vector<CComponent*> getAllComponents() const;
 
         void destroyComponent(CComponent* component);
         

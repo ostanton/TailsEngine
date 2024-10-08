@@ -66,6 +66,16 @@ namespace tails
         );
     }
 
+    std::vector<CComponent*> CEntity::getAllComponents() const
+    {
+        std::vector<CComponent*> result {m_components.size()};
+
+        for (auto& comp : m_components)
+            result.emplace_back(comp.get());
+
+        return result;
+    }
+
     void CEntity::destroyComponent(CComponent* component)
     {
         if (!component) return;

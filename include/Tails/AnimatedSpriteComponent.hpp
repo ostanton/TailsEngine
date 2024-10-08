@@ -127,6 +127,13 @@ namespace tails
          */
         [[nodiscard]] bool anyAnimationPlaying() const;
 
+        /**
+         * Checks if the desired animation is playing
+         * @param name Animation name
+         * @return Is animation playing
+         */
+        [[nodiscard]] bool animationPlaying(std::string_view name) const;
+
     private:
         void tick(float deltaTime) override;
 
