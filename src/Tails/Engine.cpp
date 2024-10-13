@@ -26,13 +26,16 @@ namespace tails
         return "Render properties:\n  Resolution - " + SVector2u::toString(resolution);
     }
 
-    CEngine::CEngine() : CEngine(nullptr)
+    CEngine::CEngine() : CEngine(std::make_unique<SEngineSettings>())
     {
+        CDebug::print("Empty engine constructor");
     }
 
     CEngine::CEngine(std::unique_ptr<SEngineSettings> engineSettings)
             : m_settings(std::move(engineSettings))
     {
+        CDebug::print("Initialising Engine");
+        
         // engine should not be pending create
         unmarkForCreate();
         

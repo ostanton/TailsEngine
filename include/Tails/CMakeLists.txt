@@ -41,4 +41,6 @@ target_sources(
     AnimatedSpriteComponent.hpp
     TileMapComponent.hpp
     TextComponent.hpp
+    Bus.hpp
+    SoundBus.hpp
 )

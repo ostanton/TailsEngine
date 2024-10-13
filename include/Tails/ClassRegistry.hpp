@@ -46,6 +46,7 @@ namespace tails
         private:
             SRegistryEntry(const std::string& name)
             {
+                CDebug::print("Trying to register ", name);
                 ClassRegistryMap& registry {getClassRegistry()};
                 CreateObjectFunc func {createObjectImpl<T>};
 

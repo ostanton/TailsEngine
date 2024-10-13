@@ -1,37 +1,37 @@
-#ifndef TAILS_AUDIOMANAGER_HPP
-#define TAILS_AUDIOMANAGER_HPP
+#ifndef TAILS_AUDIO_MANAGER_HPP
+#define TAILS_AUDIO_MANAGER_HPP
 
 #include <Tails/Config.hpp>
+#include <Tails/Concepts.hpp>
 
-#include <SFML/Audio/Sound.hpp>
-#include <SFML/Audio/Music.hpp>
-
-#include <string>
+#include <unordered_map>
 #include <memory>
+#include <string>
 
 namespace tails
 {
-    class CSoundAsset;
-/*
+    class IBus;
+    
     class TAILS_API CAudioManager final
     {
     public:
-        static void playSound();
-        static void playSound(const std::string& assetID);
-        static void playSound(std::shared_ptr<CSoundAsset> asset);
+        template<DerivesBus T, typename... ArgsT>
+        requires ConstructibleUserType<T, ArgsT...>
+        static IBus* createBus(const std::string& busName, ArgsT&&... args)
+        {
+            return addBus(busName, std::make_unique<T>(std::forward<ArgsT>(args)...));
+        }
 
-        static void playMusic(const std::string& path);
+        [[nodiscard]] static IBus* getBus(std::string_view busName);
 
+        [[nodiscard]] static bool busExists(size_t bus);
+        
     private:
+        static IBus* addBus(const std::string& busName, std::unique_ptr<IBus> bus);
         static CAudioManager& get();
 
-        // TODO - sort out whatever is happening here
-        // how many channels do we support, what are the limitations?
-        // what about .mod, .it, etc. files? Tracker stuff, and/or midi stuff??
-        sf::Sound m_sound;
-        sf::Music m_music;
-        std::shared_ptr<CSoundAsset> m_currentSound;
-    };*/
+        std::unordered_map<std::string, std::unique_ptr<IBus>> m_buses;
+    };
 }
 
-#endif // TAILS_AUDIOMANAGER_HPP
+#endif // TAILS_AUDIO_MANAGER_HPP

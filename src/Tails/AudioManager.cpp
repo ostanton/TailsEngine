@@ -1,36 +1,42 @@
 #include <Tails/AudioManager.hpp>
+#include <Tails/Bus.hpp>
+#include <Tails/Debug.hpp>
 
 namespace tails
-{/*
-    void CAudioManager::playSound()
+{
+    IBus* CAudioManager::addBus(const std::string& busName, std::unique_ptr<IBus> bus)
     {
-        if (get().m_sound.getBuffer())
-            get().m_sound.play();
+        if (get().m_buses.contains(busName)) return getBus(busName);
+        
+        auto result = get().m_buses.try_emplace(busName, std::move(bus));
+        if (!result.second)
+        {
+            CDebug::error("Failed to add ", busName, " bus.");
+            return nullptr;
+        }
+        
+        return get().m_buses.at(busName).get();
     }
 
-    void CAudioManager::playSound(const std::string& assetID)
+    IBus* CAudioManager::getBus(std::string_view busName)
     {
-        playSound(CAssetCache::getAsset<CSoundAsset>(assetID));
+        if (!get().m_buses.contains(busName.data()))
+        {
+            CDebug::error(busName, " bus does not exist");
+            return nullptr;
+        }
+
+        return get().m_buses.at(busName.data()).get();
     }
 
-    void CAudioManager::playSound(std::shared_ptr<CSoundAsset> asset)
+    bool CAudioManager::busExists(size_t bus)
     {
-        if (asset) get().m_currentSound = asset;
-
-        get().m_sound.setBuffer(*get().m_currentSound);
-
-        playSound();
+        return bus < get().m_buses.size();
     }
 
-    void CAudioManager::playMusic(const std::string& path)
-    {
-        get().m_music.openFromFile(path);
-        get().m_music.play();
-    }
-    
     CAudioManager& CAudioManager::get()
     {
         static CAudioManager instance;
         return instance;
-    }*/
+    }
 }

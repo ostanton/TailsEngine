@@ -9,6 +9,7 @@ namespace tails
     class CObject;
     class CEntity;
     class CComponent;
+    class IBus;
 
     template<typename T>
     concept UserType = std::is_class_v<T>;
@@ -40,6 +41,9 @@ namespace tails
 
     template<typename T>
     concept DerivesComponent = std::derived_from<T, CComponent>;
+
+    template<typename T>
+    concept DerivesBus = std::derived_from<T, IBus>;
 }
 
 #endif // TAILS_CONCEPTS_HPP

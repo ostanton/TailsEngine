@@ -34,4 +34,5 @@ add_library(
     AnimatedSpriteComponent.cpp
     TileMapComponent.cpp
     TextComponent.cpp
+    SoundBus.cpp
 )
