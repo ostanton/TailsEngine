@@ -24,7 +24,7 @@ namespace tails
 
         [[nodiscard]] static IBus* getBus(std::string_view busName);
 
-        [[nodiscard]] static bool busExists(size_t bus);
+        [[nodiscard]] static bool busExists(std::string_view busName);
         
     private:
         static IBus* addBus(const std::string& busName, std::unique_ptr<IBus> bus);

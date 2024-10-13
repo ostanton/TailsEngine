@@ -29,9 +29,9 @@ namespace tails
         return get().m_buses.at(busName.data()).get();
     }
 
-    bool CAudioManager::busExists(size_t bus)
+    bool CAudioManager::busExists(std::string_view busName)
     {
-        return bus < get().m_buses.size();
+        return get().m_buses.contains(busName.data());
     }
 
     CAudioManager& CAudioManager::get()
