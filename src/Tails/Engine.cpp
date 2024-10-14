@@ -28,7 +28,6 @@ namespace tails
 
     CEngine::CEngine() : CEngine(std::make_unique<SEngineSettings>())
     {
-        CDebug::print("Empty engine constructor");
     }
 
     CEngine::CEngine(std::unique_ptr<SEngineSettings> engineSettings)
@@ -40,7 +39,7 @@ namespace tails
         unmarkForCreate();
         
         // If input engine settings is null, use default
-        if (!engineSettings)
+        if (!m_settings)
             m_settings = std::make_unique<SEngineSettings>();
         
         // Setup world
@@ -161,6 +160,11 @@ namespace tails
         
         sf::Clock clock;
         const auto window = dynamic_cast<sf::RenderWindow*>(m_renderTarget.get());
+        if (window)
+        {
+            window->setFramerateLimit(m_settings->framerateLimit);
+        }
+        
         const auto& internalRenderTexture = m_renderTextureInternal.getTexture();
         
         calculateInternalAspectRatio(m_renderTarget->getSize());

@@ -4,11 +4,7 @@
 
 namespace tails
 {
-    SEngineSettings::SEngineSettings()
-    {
-        CDebug::print("Created default engine settings");
-    }
-
+    SEngineSettings::SEngineSettings() = default;
     SEngineSettings::SEngineSettings(const SEngineSettings&) = default;
     SEngineSettings::SEngineSettings(SEngineSettings&&) noexcept = default;
     SEngineSettings& SEngineSettings::operator=(const SEngineSettings&) = default;

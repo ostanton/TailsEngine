@@ -26,8 +26,9 @@ namespace tails
         virtual ~SEngineSettings();
 
         [[nodiscard]] virtual std::string getSetupFilePath() const {return "engine.json";}
-
         [[nodiscard]] virtual std::unique_ptr<SLevelSettings> createLevelSettings() const;
+
+        unsigned int framerateLimit {60};
     };
 }
 

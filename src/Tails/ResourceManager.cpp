@@ -10,33 +10,33 @@ namespace tails
     CResourceManager::CResourceManager() = default;
     CResourceManager::~CResourceManager() = default;
 
-    sf::Texture* CResourceManager::createTexture(const std::string& id, const std::string& filename)
+    sf::Texture* CResourceManager::createTexture(const std::string& id, const std::filesystem::path& filename)
     {
-        return createResource(id, CDirectories::getDirectory("textures") + filename, m_textures);
+        return createResource<sf::Texture>(id, CDirectories::getDirectory("textures") + filename.string());
     }
 
-    sf::Texture* CResourceManager::getTexture(const std::string& id) const
+    sf::Texture* CResourceManager::getTexture(std::string_view id) const
     {
-        return getResource(id, m_textures);
+        return getResource<sf::Texture>(id);
     }
 
-    sf::SoundBuffer* CResourceManager::createSound(const std::string& id, const std::string& filename)
+    sf::SoundBuffer* CResourceManager::createSound(const std::string& id, const std::filesystem::path& filename)
     {
-        return createResource(id, CDirectories::getDirectory("sounds") + filename, m_sounds);
+        return createResource<sf::SoundBuffer>(id, CDirectories::getDirectory("sounds") + filename.string());
     }
 
-    sf::SoundBuffer* CResourceManager::getSound(const std::string& id) const
+    sf::SoundBuffer* CResourceManager::getSound(std::string_view id) const
     {
-        return getResource(id, m_sounds);
+        return getResource<sf::SoundBuffer>(id);
     }
 
-    sf::Font* CResourceManager::createFont(const std::string& id, const std::string& filename)
+    sf::Font* CResourceManager::createFont(const std::string& id, const std::filesystem::path& filename)
     {
-        return createResource(id, CDirectories::getDirectory("fonts") + filename, m_fonts);
+        return createResource<sf::Font>(id, CDirectories::getDirectory("fonts") + filename.string());
     }
 
     sf::Font* CResourceManager::getFont(const std::string& id) const
     {
-        return getResource(id, m_fonts);
+        return getResource<sf::Font>(id);
     }
 }

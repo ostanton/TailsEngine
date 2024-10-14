@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <string>
 #include <exception>
+#include <filesystem>
 
 namespace sf
 {
@@ -20,7 +21,8 @@ namespace tails
 {
     /**
      * Owns resources for various classes to have pointers to.
-     * This allows SFML classes to be used with it (raw pointers to the resources that are managed by this manager)
+     * This allows SFML classes to be used with it (raw pointers to the resources that are managed by this manager).
+     * It implements a type-erased unique_ptr, so is 16 bits instead of 8 bits.
      */
     class TAILS_API CResourceManager final
     {
@@ -32,59 +34,66 @@ namespace tails
         CResourceManager& operator=(CResourceManager&&) noexcept = default;
         ~CResourceManager();
         
-        template<typename T>
-        using TResource = std::unique_ptr<T>;
+        using ResourcePtr = std::unique_ptr<void, void(*)(const void*)>;
+        using ResourceMap = std::unordered_map<std::string, ResourcePtr>;
 
-        template<typename T>
-        using TResourceMap = std::unordered_map<std::string, TResource<T>>;
+        sf::Texture* createTexture(const std::string& id, const std::filesystem::path& filename);
+        [[nodiscard]] sf::Texture* getTexture(std::string_view id) const;
 
-        sf::Texture* createTexture(const std::string& id, const std::string& filename);
-        [[nodiscard]] sf::Texture* getTexture(const std::string& id) const;
+        sf::SoundBuffer* createSound(const std::string& id, const std::filesystem::path& filename);
+        [[nodiscard]] sf::SoundBuffer* getSound(std::string_view id) const;
 
-        sf::SoundBuffer* createSound(const std::string& id, const std::string& filename);
-        [[nodiscard]] sf::SoundBuffer* getSound(const std::string& id) const;
-
-        sf::Font* createFont(const std::string& id, const std::string& filename);
+        sf::Font* createFont(const std::string& id, const std::filesystem::path& filename);
         [[nodiscard]] sf::Font* getFont(const std::string& id) const;
 
-    private:
         template<typename T>
-        T* createResource(const std::string& id, const std::string& path, TResourceMap<T>& dataMap)
+        T* createResource(const std::string& id, const std::filesystem::path& filename)
         {
-            if (!dataMap.contains(id))
+            if (!m_resources.contains(id))
             {
-                try {dataMap.try_emplace(id, std::make_unique<T>(path));}
+                try {m_resources.try_emplace(id, makeResourcePtr<T>(filename));}
                 catch (const std::exception& e)
                 {
-                    CDebug::error("Failed to create resource, exception: ", e.what());
+                    CDebug::exception("Failed to create ", id, " resource: ", e.what());
                     return nullptr;
                 }
-                
-                CDebug::print("Created \"", id, "\" resource at \"", path, "\"");
+                catch (...)
+                {
+                    CDebug::exception("Unknown exception while creating resource ", id);
+                    return nullptr;
+                }
+
+                CDebug::print("Created \"", id, "\" resource at ", filename);
             }
             else
-            {
                 CDebug::print("Resource \"", id, "\" already exists, getting it");
-            }
-            
-            return dataMap[id].get();
+
+            return static_cast<T*>(m_resources.at(id).get());
         }
 
         template<typename T>
-        [[nodiscard]] T* getResource(const std::string& id, const TResourceMap<T>& dataMap) const
+        [[nodiscard]] T* getResource(std::string_view id) const
         {
-            if (!dataMap.contains(id))
+            if (!m_resources.contains(id.data()))
             {
                 CDebug::error("Failed to find \"", id, "\" resource");
                 return nullptr;
             }
 
-            return dataMap.at(id).get();
+            return static_cast<T*>(m_resources.at(id.data()).get());
+        }
+
+    private:
+        template<typename T, typename... ArgsT>
+        [[nodiscard]] ResourcePtr makeResourcePtr(ArgsT&&... args) const
+        {
+            return ResourcePtr(new T(std::forward<ArgsT>(args)...), [](const void* data)
+            {
+                delete static_cast<const T*>(data);
+            });
         }
         
-        TResourceMap<sf::Texture> m_textures;
-        TResourceMap<sf::SoundBuffer> m_sounds;
-        TResourceMap<sf::Font> m_fonts;
+        ResourceMap m_resources;
     };
 }
 

@@ -8,6 +8,9 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <nlohmann/json.hpp>
+#include <fstream>
+
 namespace tails
 {
     CLevel::~CLevel() = default;
@@ -76,7 +79,20 @@ namespace tails
 
         // TODO - use default settings if level settings does not exist!!
         if (m_path.empty())
+        {
             getSettings().name = "none";
+            return;
+        }
+
+        std::ifstream stream {m_path};
+        const auto levelObj = nlohmann::json::parse(stream);
+
+        for (auto& [entityClass, entityObj] : levelObj.items())
+        {
+            spawnEntity(entityClass)->deserialise(entityObj);
+        }
+
+        getSettings().name = levelObj["name"].get<std::string>();
     }
 
     void CLevel::setSettings(std::unique_ptr<SLevelSettings> settings)

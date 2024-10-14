@@ -26,12 +26,12 @@ namespace tails
 #else // TAILS_DEBUG
                 typename
 #endif // TAILS_DEBUG
-                ... Args>
-        static void print(Args&&... args)
+                ... ArgsT>
+        static void print(ArgsT&&... args)
         {
 #ifdef TAILS_DEBUG
-            // TODO - test for args == 0 isntead of separate overload?
-            ((std::cout << std::forward<Args>(args)), ...) << "\n";
+            // TODO - check sizeof args?
+            ((std::cout << std::forward<ArgsT>(args)), ...) << std::endl;
 #endif // TAILS_DEBUG
         }
 
@@ -55,12 +55,12 @@ namespace tails
 #else // TAILS_DEBUG
                 typename
 #endif // TAILS_DEBUG
-                ... Args>
-        static void error(Args&&... args)
+                ... ArgsT>
+        static void error(ArgsT&&... args)
         {
 #ifdef TAILS_DEBUG
             std::cerr << "Error: ";
-            ((std::cerr << std::forward<Args>(args)), ...) << "\n";
+            ((std::cerr << std::forward<ArgsT>(args)), ...) << std::endl;
 #endif // TAILS_DEBUG
         }
 
@@ -69,6 +69,21 @@ namespace tails
         {
 #ifdef TAILS_DEBUG
             std::cout << std::vformat(string, std::make_format_args(args...)) << std::endl;
+#endif // TAILS_DEBUG
+        }
+
+        template<
+#ifdef TAILS_DEBUG
+                PrintableStreamAll
+#else // TAILS_DEBUG
+                typename
+#endif // TAILS_DEBUG
+                ... ArgsT>
+        static void exception(ArgsT&&... args)
+        {
+#ifdef TAILS_DEBUG
+            std::cerr << "Exception: ";
+            ((std::cerr << std::forward<ArgsT>(args)), ...) << std::endl;
 #endif // TAILS_DEBUG
         }
     };
