@@ -18,7 +18,7 @@ namespace tails
     concept ConstructibleUserType = requires(T obj)
     {
         std::is_class_v<T>;
-        std::constructible_from<T, Ts...>;
+        requires std::constructible_from<T, Ts...>;
     };
 
     /**
