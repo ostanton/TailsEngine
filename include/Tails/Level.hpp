@@ -42,7 +42,7 @@ namespace tails
          * @param scale Initial scale
          * @return Pointer to spawned entity
          */
-        template<DerivesEntity T>
+        template<Derives<CEntity> T>
         T* spawnEntity(const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f})
         {
             return static_cast<T*>(spawnEntityImpl(std::unique_ptr<T>(newObject<T>(this)), position, rotation, scale));
@@ -57,7 +57,7 @@ namespace tails
          * @param scale Initial scale
          * @return Pointer to spawned entity
          */
-        template<DerivesEntity T>
+        template<Derives<CEntity> T>
         T* spawnEntity(std::string_view className, const sf::Vector2f& position = {0.f, 0.f}, sf::Angle rotation = sf::degrees(0.f), const sf::Vector2f& scale = {1.f, 1.f})
         {
             return static_cast<T*>(spawnEntityImpl(std::unique_ptr<T>(newObject<T>(className, this)), position, rotation, scale));

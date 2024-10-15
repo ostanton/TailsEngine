@@ -46,7 +46,7 @@ namespace tails
         sf::Font* createFont(const std::string& id, const std::filesystem::path& filename);
         [[nodiscard]] sf::Font* getFont(const std::string& id) const;
 
-        template<typename T>
+        template<ResourceType T>
         T* createResource(const std::string& id, const std::filesystem::path& filename)
         {
             if (!m_resources.contains(id))
@@ -71,7 +71,7 @@ namespace tails
             return static_cast<T*>(m_resources.at(id).get());
         }
 
-        template<typename T>
+        template<ResourceType T>
         [[nodiscard]] T* getResource(std::string_view id) const
         {
             if (!m_resources.contains(id.data()))
@@ -85,6 +85,7 @@ namespace tails
 
     private:
         template<typename T, typename... ArgsT>
+        requires ConstructibleUserType<T, ArgsT...>
         [[nodiscard]] ResourcePtr makeResourcePtr(ArgsT&&... args) const
         {
             return ResourcePtr(new T(std::forward<ArgsT>(args)...), [](const void* data)

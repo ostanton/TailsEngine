@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <ostream>
+#include <filesystem>
 
 namespace tails
 {
@@ -15,11 +16,9 @@ namespace tails
     concept UserType = std::is_class_v<T>;
     
     template<typename T, typename... Ts>
-    concept ConstructibleUserType = requires(T obj)
-    {
-        std::is_class_v<T>;
-        requires std::constructible_from<T, Ts...>;
-    };
+    concept ConstructibleUserType =
+        std::is_class_v<T> &&
+        std::constructible_from<T, Ts...>;
 
     /**
      * Checks if a type can be printed via streams
@@ -33,17 +32,20 @@ namespace tails
     template<typename... Ts>
     concept PrintableStreamAll = (PrintableStream<Ts> && ...);
 
-    template<typename T>
-    concept DerivesObject = std::derived_from<T, CObject>;
+    /**
+     * Wrapper for std::derived_from
+     */
+    template<typename Derived, typename Base>
+    concept Derives = std::derived_from<Derived, Base>;
 
+    /**
+     * To be a resource type, it must have a constructor that takes a const-ref filesystem::path,
+     * and must be movable
+     */
     template<typename T>
-    concept DerivesEntity = std::derived_from<T, CEntity>;
-
-    template<typename T>
-    concept DerivesComponent = std::derived_from<T, CComponent>;
-
-    template<typename T>
-    concept DerivesBus = std::derived_from<T, IBus>;
+    concept ResourceType =
+        std::constructible_from<T, const std::filesystem::path&> &&
+        std::movable<T>;
 }
 
 #endif // TAILS_CONCEPTS_HPP

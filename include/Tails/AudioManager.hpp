@@ -15,7 +15,7 @@ namespace tails
     class TAILS_API CAudioManager final
     {
     public:
-        template<DerivesBus T, typename... ArgsT>
+        template<Derives<IBus> T, typename... ArgsT>
         requires ConstructibleUserType<T, ArgsT...>
         static IBus* createBus(const std::string& busName, ArgsT&&... args)
         {

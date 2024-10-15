@@ -62,7 +62,7 @@ namespace tails
      * @param outer The object this new object will reside in
      * @return Created object of specified type
      */
-    template<DerivesObject T>
+    template<Derives<CObject> T>
     T* newObject(std::string_view name, CObject* outer)
     {
         if (auto obj = constructClass<T>(name))
@@ -93,7 +93,7 @@ namespace tails
      * @param args Constructor arguments
      * @return Created object
      */
-    template<DerivesObject T, typename... ArgsT>
+    template<Derives<CObject> T, typename... ArgsT>
     requires ConstructibleUserType<T, ArgsT...>
     T* newObject(CObject* outer, ArgsT&&... args)
     {

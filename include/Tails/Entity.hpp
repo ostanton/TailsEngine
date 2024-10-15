@@ -64,7 +64,7 @@ namespace tails
          * @param args Component constructor arguments
          * @return Created component
          */
-        template<DerivesComponent T, typename... ArgsT>
+        template<Derives<CComponent> T, typename... ArgsT>
         requires ConstructibleUserType<T, ArgsT...>
         T* createComponent(ArgsT&&... args)
         {
@@ -77,7 +77,7 @@ namespace tails
          * @param className Component registered class name
          * @return Created component
          */
-        template<DerivesComponent T>
+        template<Derives<CComponent> T>
         T* createRegisteredComponent(std::string_view className)
         {
             return static_cast<T*>(setupComponent(std::unique_ptr<T>(newObject<T>(className, this))));
@@ -96,7 +96,7 @@ namespace tails
          * @tparam T Component type
          * @return Found component
          */
-        template<DerivesComponent T>
+        template<Derives<CComponent> T>
         T* getComponent()
         {
             for (auto& comp : m_components)
@@ -111,7 +111,7 @@ namespace tails
          * @tparam T Component type
          * @return Found components
          */
-        template<DerivesComponent T>
+        template<Derives<CComponent> T>
         std::vector<T*> getAllComponents() const
         {
             std::vector<T*> result;
