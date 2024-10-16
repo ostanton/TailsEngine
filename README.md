@@ -55,24 +55,34 @@ I have tested with Clang, but it does not compile due to an issue with the stand
 
 ## Integration
 
-It *should* work just fine if you download the repo via `FetchContent` or CPM, and just link against `TailsEngine`. I have not yet tested this, as I test the engine with a local project (with the engine added as a subdirectory of that project). I'm not amazing at CMake, but that just seems to work for me :)
+It *should* work just fine if you download the repo via `FetchContent` or CPM, and just link against `TailsEngine`.
 
-For example (untested):
+For example:
 
 ```cmake
 cmake_minimum_required(VERSION 3.28.3)
 project(TestGameProj)
 
-# download CPM, look here (https://github.com/cpm-cmake/CPM.cmake/wiki/Downloading-CPM.cmake-in-CMake) or view CMakeLists.txt in TailsEngine root directory
-
+# CPM:
 CPMAddPackage("gh:ostanton/TailsEngine#master")
+
+# FetchContent
+include(FetchContent)
+FetchContent_Declare(
+    TailsEngine
+    GIT_REPOSITORY https://github.com/ostanton/TailsEngine.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(TailsEngine)
 
 add_executable(TestGame main.cpp)
 
 target_link_libraries(TestGame PRIVATE TailsEngine)
 ```
 
-An example of a `main.cpp` could be:
+> If you get errors in MSVC about runtime libraries, set your target's `MSVC_RUNTIME_LIBRARY` property to `"MultiThreaded$<$<CONFIG:Debug>:Debug>"`, like so: `set_property(TARGET <target> PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")`
+
+`main.cpp`:
 ```cpp
 #include <Tails/Engine.hpp>
 
@@ -83,4 +93,4 @@ int main()
     return 0;
 }
 ```
-This will produce a blank window on your screen with an empty, default, level.
+This will produce a blank window on your screen with an empty level.
