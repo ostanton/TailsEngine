@@ -63,7 +63,7 @@ For example:
 cmake_minimum_required(VERSION 3.28.3)
 project(TestGameProj)
 
-# CPM:
+# CPM
 CPMAddPackage("gh:ostanton/TailsEngine#master")
 
 # FetchContent
@@ -80,7 +80,10 @@ add_executable(TestGame main.cpp)
 target_link_libraries(TestGame PRIVATE TailsEngine)
 ```
 
-> If you get errors in MSVC about runtime libraries, set your target's `MSVC_RUNTIME_LIBRARY` property to `"MultiThreaded$<$<CONFIG:Debug>:Debug>"`, like so: `set_property(TARGET <target> PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")`
+> If you get errors in MSVC about runtime libraries, set your target's `MSVC_RUNTIME_LIBRARY` property to `"MultiThreaded$<$<CONFIG:Debug>:Debug>"`, like so:
+> ```cmake
+> set_property(TARGET <target> PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+> ```
 
 `main.cpp`:
 ```cpp
