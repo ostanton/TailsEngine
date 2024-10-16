@@ -84,7 +84,7 @@ namespace tails
         }
 
     private:
-        template<typename T, typename... ArgsT>
+        template<ResourceType T, typename... ArgsT>
         requires ConstructibleUserType<T, ArgsT...>
         [[nodiscard]] ResourcePtr makeResourcePtr(ArgsT&&... args) const
         {
