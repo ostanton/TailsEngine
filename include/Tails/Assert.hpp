@@ -5,6 +5,7 @@
 
 #ifdef TAILS_DEBUG
 #include <iostream>
+#include <Tails/Concepts.hpp>
 
 #define TAILS_ASSERT(condition, message) \
     (!static_cast<bool>(condition)) ? \
@@ -18,17 +19,44 @@
 
 namespace tails
 {
-    // future possible assert function
-    /*
-    template<typename Pred, typename T>
-    constexpr void assert(Pred predicate, T msg)
+#ifdef TAILS_DEBUG
+    namespace priv
     {
-        if (!predicate())
+        template<PrintableStream MsgT>
+        constexpr void invokeAssert(const MsgT& msg, const std::source_location& loc = std::source_location::current())
         {
-            
+            std::cerr << "Assertion failed!\n"
+                << "Context: " << getFunctionName(loc) << "\n"
+                << "In file \"" << getFileName(loc) << "\" on line " << getLine(loc) << "\n"
+                << "Message: " << msg << "\n";
+            abort();
         }
+    } // priv
+#endif // TAILS_DEBUG
+
+#ifdef TAILS_DEBUG
+    template<std::predicate<> PredT, PrintableStream MsgT>
+#else
+    template<typename PredT, typename MsgT>
+#endif // TAILS_DEBUG
+    constexpr void runtimeAssert(PredT predicate, MsgT&& msg, const std::source_location& loc = std::source_location::current())
+    {
+#ifdef TAILS_DEBUG
+        if (!predicate()) priv::invokeAssert(std::forward<MsgT>(msg), loc);
+#endif // TAILS_DEBUG
     }
-    */
-}
+
+#ifdef TAILS_DEBUG
+    template<PrintableStream MsgT>
+#else
+    template<typename MsgT>
+#endif // TAILS_DEBUG
+    constexpr void runtimeAssert(bool condition, MsgT&& msg, const std::source_location& loc = std::source_location::current())
+    {
+#ifdef TAILS_DEBUG
+        if (!condition) priv::invokeAssert(std::forward<MsgT>(msg), loc);
+#endif // TAILS_DEBUG
+    }
+} // tails
 
 #endif // TAILS_ASSERT_HPP

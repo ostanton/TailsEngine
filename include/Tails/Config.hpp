@@ -31,6 +31,6 @@ namespace tails
     {
         return loc.column();
     }
-}
+} // tails
 
 #endif // TAILS_CONFIG_HPP
