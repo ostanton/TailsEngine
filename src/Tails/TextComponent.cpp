@@ -65,13 +65,10 @@ namespace tails
         return CComponent::getGlobalBounds();
     }
 
-    void CTextComponent::tick(float deltaTime)
-    {
-        
-    }
-
     void CTextComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        CComponent::draw(target, states);
+        
         if (!m_font || m_string.isEmpty()) return;
 
         states.transform *= getTransform();

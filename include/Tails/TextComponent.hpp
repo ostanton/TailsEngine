@@ -71,7 +71,6 @@ namespace tails
         [[nodiscard]] sf::FloatRect getGlobalBounds() const override;
         
     private:
-        void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         CLocaleString m_string {"Text"};

@@ -64,14 +64,11 @@ namespace tails
         return m_circleShape.getTextureRect();
     }
 
-    void CCircleShapeComponent::tick(float deltaTime)
-    {
-        
-    }
-
     void CCircleShapeComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform *= getTransform();
         target.draw(m_circleShape, states);
+
+        CComponent::draw(target, states);
     }
 }

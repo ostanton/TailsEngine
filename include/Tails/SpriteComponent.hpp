@@ -33,7 +33,6 @@ namespace tails
         [[nodiscard]] sf::FloatRect getGlobalBounds() const override;
 
     protected:
-        void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};

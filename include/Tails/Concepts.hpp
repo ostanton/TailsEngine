@@ -37,15 +37,6 @@ namespace tails
      */
     template<typename Derived, typename Base>
     concept Derives = std::derived_from<Derived, Base>;
-
-    /**
-     * To be a resource type, it must have a constructor that takes a const-ref filesystem::path,
-     * and must be movable
-     */
-    template<typename T>
-    concept ResourceType =
-        std::constructible_from<T, const std::filesystem::path&> &&
-        std::movable<T>;
 }
 
 #endif // TAILS_CONCEPTS_HPP

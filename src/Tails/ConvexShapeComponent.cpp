@@ -54,14 +54,11 @@ namespace tails
         return m_convexShape.getTextureRect();
     }
 
-    void CConvexShapeComponent::tick(float deltaTime)
-    {
-        
-    }
-
     void CConvexShapeComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform *= getTransform();
         target.draw(m_convexShape, states);
+
+        CComponent::draw(target, states);
     }
 }

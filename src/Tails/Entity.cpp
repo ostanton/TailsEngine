@@ -9,7 +9,7 @@
 
 namespace tails
 {
-    CEntity::CEntity() = default;
+    CEntity::CEntity() : m_rootComponent(newObject<CComponent>(this)) {}
     CEntity::~CEntity() = default;
 
     void CEntity::destroy()
@@ -22,29 +22,36 @@ namespace tails
     {
         if (!entity) return false;
 
-        for (auto& comp : m_components)
+        bool colliding {false};
+        auto testCollision = [entity, &colliding](const std::unique_ptr<CComponent>& comp)
         {
             if (comp->getGlobalBounds() == sf::FloatRect())
-                continue;
+                return;
 
-            for (auto& otherComp : entity->m_components)
+            auto testCollision2 = [&comp, &colliding](const std::unique_ptr<CComponent>& comp2)
             {
-                if (otherComp->getGlobalBounds() == sf::FloatRect())
-                    continue;
+                if (comp2->getGlobalBounds() == sf::FloatRect())
+                    return;
 
-                if (comp->getGlobalBounds().findIntersection(otherComp->getGlobalBounds()))
-                    return true;
-            }
-        }
+                if (comp->getGlobalBounds().findIntersection(comp2->getGlobalBounds()))
+                    colliding = true;
+            };
 
-        return false;
+            testCollision2(entity->m_rootComponent);
+            entity->m_rootComponent->forEachChild(testCollision2, true);
+        };
+
+        testCollision(m_rootComponent);
+        m_rootComponent->forEachChild(testCollision, true);
+
+        return colliding;
     }
 
     sf::FloatRect CEntity::getGlobalBounds() const
     {
         sf::FloatRect bounds;
-        
-        for (auto& comp : m_components)
+
+        auto setBounds = [&bounds](const std::unique_ptr<CComponent>& comp)
         {
             if (comp->getGlobalBounds().size.x > bounds.size.x)
                 bounds.size.x = comp->getGlobalBounds().size.x;
@@ -54,91 +61,56 @@ namespace tails
                 bounds.position.x = comp->getGlobalBounds().position.x;
             if (comp->getGlobalBounds().position.y < bounds.position.y)
                 bounds.position.y = comp->getGlobalBounds().position.y;
-        }
+        };
+
+        setBounds(m_rootComponent);
+        m_rootComponent->forEachChild(setBounds, true);
         
         return bounds;
     }
-
-    CComponent* CEntity::createRegisteredComponent(std::string_view className)
-    {
-        return setupComponent(
-            std::unique_ptr<CComponent>(newObject<CComponent>(className, this))
-        );
-    }
-
-    std::vector<CComponent*> CEntity::getAllComponents() const
-    {
-        std::vector<CComponent*> result {m_components.size()};
-
-        for (auto& comp : m_components)
-            result.emplace_back(comp.get());
-
-        return result;
-    }
-
-    void CEntity::destroyComponent(CComponent* component)
-    {
-        if (!component) return;
-        
-        component->markForDestroy();
-        component->destroy();
-    }
-
+    
     void CEntity::initComponents()
     {
-        for (const auto& comp : m_components)
-        {
-            comp->create();
-        }
+        // root component must always be valid
+        if (!m_rootComponent)
+            setRootComponent<CComponent>();
+
+        m_rootComponent->create();
+        m_rootComponent->forEachChild([](auto& compChild) {compChild->create();}, true);
     }
 
     void CEntity::preTick()
     {
         ITickable::preTick();
+        
+        m_rootComponent->preTick();
 
-        for (const auto& comp : m_components)
-        {
-            comp->preTick();
-            
-            if (comp->pendingCreate())
-            {
-                comp->unmarkForCreate();
-                comp->postCreate();
-            }
-        }
+        if (m_rootComponent->pendingCreate())
+            m_rootComponent->unmarkForCreate();
     }
 
     void CEntity::tick(float deltaTime)
     {
-        for (const auto& comp : m_components)
-        {
-            if (!comp->pendingCreate())
-                comp->tick(deltaTime);
-        }
+        if (!m_rootComponent->pendingCreate())
+            m_rootComponent->tick(deltaTime);
     }
 
     void CEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform *= getTransform();
-        
-        for (auto& comp : m_components)
-        {
-            target.draw(*comp, states);
-        }
+        if (!m_rootComponent->pendingCreate())
+            target.draw(*m_rootComponent, states);
     }
 
     void CEntity::postTick()
     {
         ITickable::postTick();
 
-        for (auto it = m_components.rbegin(); it != m_components.rend();)
-        {
-            it->get()->postTick();
+        m_rootComponent->postTick();
 
-            if (it->get()->pendingDestroy())
-                it = decltype(it)(m_components.erase(std::next(it).base()));
-            else
-                ++it;
+        if (m_rootComponent->pendingDestroy())
+        {
+            // destroy current root and replace with new, default, root
+            m_rootComponent = std::make_unique<CComponent>();
         }
     }
 
@@ -152,29 +124,55 @@ namespace tails
         return getLevel().getEngine();
     }
 
-    CComponent* CEntity::setupComponent(std::unique_ptr<CComponent> comp)
+    std::vector<CComponent*> CEntity::getComponents() const
     {
-        m_components.emplace_back(std::move(comp));
-        auto result = m_components.back().get();
+        auto result = m_rootComponent->getAllChildren(true);
+        result.insert(result.begin(), m_rootComponent.get());
         return result;
+    }
+
+    void CEntity::setPosition(const sf::Vector2f& position) const
+    {
+        m_rootComponent->setPosition(position);
+    }
+
+    void CEntity::setRotation(const sf::Angle& angle) const
+    {
+        m_rootComponent->setRotation(angle);
+    }
+
+    void CEntity::setScale(const sf::Vector2f& scale) const
+    {
+        m_rootComponent->setScale(scale);
+    }
+
+    void CEntity::move(const sf::Vector2f& offset) const
+    {
+        m_rootComponent->move(offset);
+    }
+
+    sf::Vector2f CEntity::getPosition() const
+    {
+        return m_rootComponent->getPosition();
+    }
+
+    sf::Angle CEntity::getRotation() const
+    {
+        return m_rootComponent->getRotation();
+    }
+
+    sf::Vector2f CEntity::getScale() const
+    {
+        return m_rootComponent->getScale();
     }
 
     void CEntity::serialise(nlohmann::json& obj) const
     {
-        obj.push_back({"position"});
-        obj["position"].push_back(SVector2f::toJSON(getPosition()));
-
-        obj.push_back({"rotation"});
-        obj["rotation"] = getRotation().asDegrees();
-
-        obj.push_back({"scale"});
-        obj["scale"].push_back(SVector2f::toJSON(getScale()));
+        
     }
     
     void CEntity::deserialise(const nlohmann::json& obj)
     {
-        setPosition(SVector2f::fromJSON(obj["position"]));
-        setRotation(sf::degrees(obj["rotation"].get<float>()));
-        setScale(SVector2f::fromJSON(obj["scale"]));
+        
     }
 }

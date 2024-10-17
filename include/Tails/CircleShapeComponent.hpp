@@ -37,7 +37,6 @@ namespace tails
         [[nodiscard]] const sf::Shape& getShape() const override {return m_circleShape;}
         
     private:
-        void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         sf::CircleShape m_circleShape;

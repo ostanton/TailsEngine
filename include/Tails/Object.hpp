@@ -30,6 +30,12 @@ namespace tails
         template<typename T>
         T* getTypedOuter() const
         {
+            if (!outer) return nullptr;
+            
+            if (auto typedOuter = dynamic_cast<T*>(outer))
+                return typedOuter;
+
+            // if we're looking for an outer that is not our direct outer and our direct outer is valid
             for (CObject* p_outer {outer}; p_outer; p_outer = p_outer->outer)
             {
                 if (auto typedOuter = dynamic_cast<T*>(p_outer))

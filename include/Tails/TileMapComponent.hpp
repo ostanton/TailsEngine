@@ -38,7 +38,6 @@ namespace tails
     private:
         void update();
 
-        void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         std::vector<TileType> m_tiles;

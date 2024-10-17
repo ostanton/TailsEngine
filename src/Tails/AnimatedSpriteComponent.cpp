@@ -142,6 +142,8 @@ namespace tails
 
     void CAnimatedSpriteComponent::tick(float deltaTime)
     {
+        CComponent::tick(deltaTime);
+        
         if (!m_currentAnim || !m_currentAnim->playing) return;
 
         setTextureCoords(m_currentAnim->getCurrentFrame().rect);

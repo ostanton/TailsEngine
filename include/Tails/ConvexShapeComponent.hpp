@@ -34,7 +34,6 @@ namespace tails
         [[nodiscard]] const sf::Shape& getShape() const override {return m_convexShape;}
         
     private:
-        void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         sf::ConvexShape m_convexShape;

@@ -25,11 +25,7 @@ namespace tails
 
     void CCameraComponent::tick(float deltaTime)
     {
+        CComponent::tick(deltaTime);
         m_view.setCenter(getOwningEntity().getPosition());
-    }
-
-    void CCameraComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        
     }
 }

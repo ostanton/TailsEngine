@@ -20,6 +20,15 @@ namespace sf
 namespace tails
 {
     /**
+     * To be a resource type, it must have a constructor that takes a const-ref filesystem::path,
+     * and must be movable
+     */
+    template<typename T>
+    concept ResourceType =
+        std::constructible_from<T, const std::filesystem::path&> &&
+        std::movable<T>;
+    
+    /**
      * Owns resources for various classes to have pointers to.
      * This allows SFML classes to be used with it (raw pointers to the resources that are managed by this manager).
      * It implements a type-erased unique_ptr, so is 16 bits instead of 8 bits.

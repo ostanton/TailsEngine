@@ -97,13 +97,10 @@ namespace tails
         }
     }
 
-    void CTileMapComponent::tick(float deltaTime)
-    {
-        
-    }
-
     void CTileMapComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        CComponent::draw(target, states);
+        
         states.transform *= getTransform();
         states.texture = m_texture;
         target.draw(m_vertices, states);

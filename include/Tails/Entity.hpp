@@ -19,13 +19,15 @@ namespace tails
     class CEngine;
     class CResourceManager;
     class CComponent;
-    
+
+    /**
+     * A class that can be spawned in a CLevel. Its root component is its transform representation.
+     */
     class TAILS_API CEntity :
         public CObject,
         public ITickable,
         public ISerialisable,
-        public sf::Drawable,
-        public sf::Transformable
+        public sf::Drawable
     {
         friend CLevel;
 
@@ -57,75 +59,57 @@ namespace tails
         [[nodiscard]] CLevel& getLevel() const;
         [[nodiscard]] CEngine& getEngine() const;
 
-        /**
-         * Creates a component regardless of if it is registered
-         * @tparam T Component type
-         * @tparam ArgsT Constructor argument types
-         * @param args Component constructor arguments
-         * @return Created component
-         */
-        template<Derives<CComponent> T, typename... ArgsT>
-        requires ConstructibleUserType<T, ArgsT...>
-        T* createComponent(ArgsT&&... args)
-        {
-            return static_cast<T*>(setupComponent(std::unique_ptr<T>(newObject<T>(this, std::forward<ArgsT>(args)...))));
-        }
+        [[nodiscard]] std::vector<CComponent*> getComponents() const;
 
         /**
-         * Creates a component that is registered in the class registry, and casts it to the desired type
-         * @tparam T Component type
-         * @param className Component registered class name
-         * @return Created component
+         * Sets the position of this entity's root component
+         * @param position New position
          */
+        void setPosition(const sf::Vector2f& position) const;
+
+        /**
+         * Sets the rotation of this entity's root component
+         * @param angle New rotation
+         */
+        void setRotation(const sf::Angle& angle) const;
+
+        /**
+         * Sets the scale of this entity's root component
+         * @param scale New scale
+         */
+        void setScale(const sf::Vector2f& scale) const;
+
+        void move(const sf::Vector2f& offset) const;
+
+        /**
+         * Gets the position of this entity's root component
+         * @return Entity position
+         */
+        [[nodiscard]] sf::Vector2f getPosition() const;
+        
+        /**
+         * Gets the rotation of this entity's root component
+         * @return Entity rotation
+         */
+        [[nodiscard]] sf::Angle getRotation() const;
+        
+        /**
+         * Gets the scale of this entity's root component
+         * @return Entity scale
+         */
+        [[nodiscard]] sf::Vector2f getScale() const;
+
         template<Derives<CComponent> T>
-        T* createRegisteredComponent(std::string_view className)
+        T* setRootComponent()
         {
-            return static_cast<T*>(setupComponent(std::unique_ptr<T>(newObject<T>(className, this))));
+            m_rootComponent.reset(newObject<T>(this));
+            return static_cast<T*>(m_rootComponent.get());
         }
 
-        /**
-         * Creates a component that is registered in the class registry
-         * @tparam ArgsT Constructor argument types
-         * @param className Component registered class name
-         * @return Created component
-         */
-        CComponent* createRegisteredComponent(std::string_view className);
+        [[nodiscard]] CComponent& getRootComponent() const {return *m_rootComponent;}
 
-        /**
-         * Finds and returns the found component of the specified type
-         * @tparam T Component type
-         * @return Found component
-         */
         template<Derives<CComponent> T>
-        T* getComponent()
-        {
-            for (auto& comp : m_components)
-                if (auto castedComp = dynamic_cast<T*>(comp.get()))
-                    return castedComp;
-
-            return nullptr;
-        }
-
-        /**
-         * Finds and returns all components of the specified type
-         * @tparam T Component type
-         * @return Found components
-         */
-        template<Derives<CComponent> T>
-        std::vector<T*> getAllComponents() const
-        {
-            std::vector<T*> result;
-            
-            for (auto& comp : m_components)
-                if (auto castedComp = dynamic_cast<T*>(comp.get()))
-                    result.emplace_back(castedComp);
-
-            return result;
-        }
-
-        std::vector<CComponent*> getAllComponents() const;
-
-        void destroyComponent(CComponent* component);
+        [[nodiscard]] T& getRootComponent() const {return *static_cast<T*>(m_rootComponent.get());}
         
     protected:
         /**
@@ -165,13 +149,11 @@ namespace tails
          */
         virtual void collision(CEntity& other) {}
 
-        CComponent* setupComponent(std::unique_ptr<CComponent> comp);
-
     private:
         void serialise(nlohmann::json& obj) const override;
         void deserialise(const nlohmann::json& obj) override;
 
-        std::vector<std::unique_ptr<CComponent>> m_components;
+        std::unique_ptr<CComponent> m_rootComponent;
     };
 }
 TAILS_REGISTER_CLASS(CEntity)

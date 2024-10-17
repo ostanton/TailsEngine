@@ -78,13 +78,10 @@ namespace tails
         return m_vertices[0].color;
     }
 
-    void CSpriteComponent::tick(float deltaTime)
-    {
-        
-    }
-
     void CSpriteComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        CComponent::draw(target, states);
+        
         states.transform *= getTransform();
         states.texture = m_texture;
         target.draw(m_vertices, states);
