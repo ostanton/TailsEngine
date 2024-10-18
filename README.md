@@ -2,7 +2,7 @@
 
 [Devlogs on the development of this engine](https://www.youtube.com/playlist?list=PL8y2eQUFF8A-a4O3URQ2i6lYfzapD0ouc).
 
-The *Tails Engine* is a simple, 2D library intended to somewhat mimic the style of Gameboy Advance games. It uses C++, with SFML as the windowing, drawing, etc. library, and nlohmann's json library to read and write JSON. CMake is also used as a build system, with [CPM](https://github.com/cpm-cmake/CPM.cmake) to download the "packages". It is not at all production ready, and isn't intended to be used for anything large, or even anything outside my own personal uses, but you are free to use it for whatever, provided it falls within the bounds of the licenses of SFML, etc.
+The *Tails Engine* is a simple, 2D library intended to somewhat mimic the style of Gameboy Advance games. It uses C++, with SFML as the windowing, drawing, etc. library, and nlohmann's json library to read and write JSON. CMake is also used as a build system, with [CPM](https://github.com/cpm-cmake/CPM.cmake) to download the "packages". It is not at all production ready (it's both an ever-changing codebase/API, and is not very stable), and isn't intended to be used for anything large, or even anything outside my own personal uses, but you are free to use it for whatever, provided it falls within the bounds of the licenses of SFML, etc.
 
 > Documentation and examples will be held in separate places. Documentation will be on the wiki part of this repository (when I get around to writing it), and examples will be in a separate repository.
 
@@ -16,11 +16,12 @@ The *Tails Engine* is a simple, 2D library intended to somewhat mimic the style 
 
 ## Features
 
-- Locked internal resolution that maintains its aspect ratio (black bars!)
-- Clearly named classes and structures (classes prefixed with 'C', structures prefixed with 'S', interfaces prefixed with 'I', etc.)
-- "Context-specific" resource manager (per-level/any object) that owns its resources via `unique_ptr`s
-- Input manager with support for keyboard, mouse, and Xbox controllers (currently only tested with an Xbox 1 controller)
-- Class registry, allowing support of allocating a new object of the correct type just from a string ID value (generally just its class name as a string)
+- Locked internal resolution that maintains its aspect ratio (black bars!),
+- Clearly named classes and structures (classes prefixed with 'C', structures prefixed with 'S', interfaces prefixed with 'I', etc.),
+- "Context-specific" resource manager (per-level/any object) that owns its resources via `unique_ptr`s, capable of holding any `ResourceType` concept compliant object,
+- Input manager with support for keyboard, mouse, and Xbox controllers (currently only tested with an Xbox 1 controller),
+- Class registry, allowing support of allocating a new object of the correct type just from a string ID value (generally just its class name as a string),
+- Unreal Engine-style entities (actors) and components (*not* an ECS).
 
 ## How to compile
 
