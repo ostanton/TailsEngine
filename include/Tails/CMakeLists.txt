@@ -43,4 +43,5 @@ target_sources(
     TextComponent.hpp
     Bus.hpp
     SoundBus.hpp
+    Maths.hpp
 )

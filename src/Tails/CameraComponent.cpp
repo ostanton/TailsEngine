@@ -1,12 +1,11 @@
 #include <Tails/CameraComponent.hpp>
 #include <Tails/Level.hpp>
 #include <Tails/Entity.hpp>
-
-#include <SFML/Graphics/RenderStates.hpp>
+#include <Tails/Maths.hpp>
 
 namespace tails
 {
-    void CCameraComponent::setActive()
+    void CCameraComponent::activate()
     {
         getOwningEntity().getLevel().setActiveCamera(this);
     }
@@ -14,6 +13,11 @@ namespace tails
     bool CCameraComponent::isActive() const
     {
         return getOwningEntity().getLevel().isCameraActive(this);
+    }
+
+    void CCameraComponent::setLag(float lag)
+    {
+        m_lag = lag;
     }
 
     void CCameraComponent::create()
@@ -26,6 +30,17 @@ namespace tails
     void CCameraComponent::tick(float deltaTime)
     {
         CComponent::tick(deltaTime);
-        m_view.setCenter(getOwningEntity().getPosition());
+
+        const sf::Vector2f newCentre {
+            m_lag == 0.f ?
+            getOwningEntity().getPosition() :
+            lerp(
+                m_view.getCenter(),
+                getOwningEntity().getPosition(),
+                deltaTime * m_lag
+            )
+        };
+
+        m_view.setCenter(newCentre);
     }
 }

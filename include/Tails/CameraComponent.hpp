@@ -14,9 +14,12 @@ namespace tails
         [[nodiscard]] sf::View& getCameraView() {return m_view;}
         [[nodiscard]] const sf::View& getCameraView() const {return m_view;}
         
-        void setActive();
+        void activate();
 
         [[nodiscard]] bool isActive() const;
+
+        void setLag(float lag);
+        [[nodiscard]] float getLag() const {return m_lag;}
         
     private:
         void create() override;
@@ -24,6 +27,7 @@ namespace tails
         void tick(float deltaTime) override;
         
         sf::View m_view;
+        float m_lag {0.f};
     };
 }
 TAILS_REGISTER_CLASS(CCameraComponent)

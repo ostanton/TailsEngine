@@ -3,6 +3,7 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/Debug.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <memory>
 #include <unordered_map>

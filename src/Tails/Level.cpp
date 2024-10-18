@@ -63,7 +63,7 @@ namespace tails
 
     bool CLevel::isCameraActive(const CCameraComponent* camera) const
     {
-        // TODO - test equality of views
+        // test pointers, not values (two different cameras with same centre and size, etc. would be the same)
         return &camera->getCameraView() == m_view;
     }
 

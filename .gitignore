@@ -49,5 +49,6 @@ TailsEngine.kdev4
 build/
 .idea/
 cmake-build-debug/
+cmake-build-release/
 .kdev4/
 .cache/
