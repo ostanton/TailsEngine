@@ -7,11 +7,6 @@
 
 namespace tails
 {
-    class CObject;
-    class CEntity;
-    class CComponent;
-    class IBus;
-
     template<typename T>
     concept UserType = std::is_class_v<T>;
     

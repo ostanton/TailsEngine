@@ -35,4 +35,6 @@ add_library(
     TileMapComponent.cpp
     TextComponent.cpp
     SoundBus.cpp
+    Client.cpp
+    Server.cpp
 )

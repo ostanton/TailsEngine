@@ -62,6 +62,7 @@ target_link_libraries(
     PUBLIC
         SFML::Graphics
         SFML::Audio
+        SFML::Network
         nlohmann_json::nlohmann_json
 )
 

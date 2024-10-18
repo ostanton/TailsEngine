@@ -44,4 +44,6 @@ target_sources(
     Bus.hpp
     SoundBus.hpp
     Maths.hpp
+    Client.hpp
+    Server.hpp
 )
