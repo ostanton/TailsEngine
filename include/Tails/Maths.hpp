@@ -1,5 +1,5 @@
-#ifndef TAILS_MATHS_H
-#define TAILS_MATHS_H
+#ifndef TAILS_MATHS_HPP
+#define TAILS_MATHS_HPP
 
 namespace tails
 {
@@ -10,4 +10,4 @@ namespace tails
     }
 }
 
-#endif // TAILS_MATHS_H
+#endif // TAILS_MATHS_HPP
