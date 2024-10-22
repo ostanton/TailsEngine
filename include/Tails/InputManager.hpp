@@ -30,6 +30,8 @@ namespace tails
         static bool loadFromFile(const std::string& filename);
         
     private:
+        CInputManager() = default;
+        
         static CInputManager& get();
 
         std::unordered_map<std::string, std::vector<SUserKey>> m_actions;

@@ -27,6 +27,8 @@ namespace tails
         [[nodiscard]] static bool busExists(std::string_view busName);
         
     private:
+        CAudioManager() = default;
+        
         static IBus* addBus(const std::string& busName, std::unique_ptr<IBus> bus);
         static CAudioManager& get();
 
