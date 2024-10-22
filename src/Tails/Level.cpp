@@ -135,14 +135,18 @@ namespace tails
     {
         sf::FloatRect viewport {
             {getActiveCameraView().getCenter() - getActiveCameraView().getSize() / 2.f},
-            {getActiveCameraView().getSize()}
+            {getActiveCameraView().getSize() * 2.f}
         };
         
         target.setView(getActiveCameraView());
+        //CDebug::print("Viewport left: ", viewport.position.x,
+        //    ", top: ", viewport.position.y,
+        //    ", right: ", viewport.size.x,
+        //    ", bottom: ", viewport.size.y);
         for (auto& entity : m_entities)
         {
             // TODO - round position to integer??
-            if (!entity->pendingCreate()) //&& viewport.findIntersection(entity->getGlobalBounds()))
+            if (!entity->pendingCreate() && viewport.findIntersection(entity->getGlobalBounds()))
             {
                 target.draw(*entity, states);
             }

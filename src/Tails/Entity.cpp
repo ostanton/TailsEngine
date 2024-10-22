@@ -47,7 +47,7 @@ namespace tails
         return colliding;
     }
 
-    sf::FloatRect CEntity::getGlobalBounds() const
+    sf::FloatRect CEntity::getLocalBounds() const
     {
         sf::FloatRect bounds;
 
@@ -65,8 +65,15 @@ namespace tails
 
         setBounds(m_rootComponent);
         m_rootComponent->forEachChild(setBounds, true);
+
+        bounds = m_rootComponent->getTransform().transformRect(bounds);
         
         return bounds;
+    }
+
+    sf::FloatRect CEntity::getGlobalBounds() const
+    {
+        return m_rootComponent->getTransform().transformRect(getLocalBounds());
     }
     
     void CEntity::initComponents()
@@ -99,6 +106,9 @@ namespace tails
     {
         if (!m_rootComponent->pendingCreate())
             target.draw(*m_rootComponent, states);
+
+        //CDebug::print("Entity left: ", getGlobalBounds().position.x, ", top: ", getGlobalBounds().position.y,
+        //    ", right: ", getGlobalBounds().size.x, ", bottom: ", getGlobalBounds().size.y);
     }
 
     void CEntity::postTick()
