@@ -46,4 +46,5 @@ target_sources(
     Maths.hpp
     Client.hpp
     Server.hpp
+    ParticleComponent.hpp
 )

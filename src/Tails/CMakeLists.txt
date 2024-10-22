@@ -37,4 +37,5 @@ add_library(
     SoundBus.cpp
     Client.cpp
     Server.cpp
+    ParticleComponent.cpp
 )
