@@ -13,7 +13,7 @@ namespace tails
 
     /**
      * Hashes an object into a size_t
-     * @param str Must implement begin and end functions with char
+     * @param str Must implement size and operator[] which returns a char
      * @return Hashed number
      */
     template<typename T>
