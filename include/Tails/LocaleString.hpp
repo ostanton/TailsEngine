@@ -3,6 +3,7 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/Localisation.hpp>
+#include <Tails/Maths.hpp>
 
 #include <string>
 #include <format>
@@ -36,7 +37,7 @@ namespace tails
         template<typename... ArgsT>
         size_t setLocaleID(std::string_view id, ArgsT&&... args)
         {
-            m_id = std::make_optional(CLocalisation::hash(id));
+            m_id = std::make_optional(hash(id));
             updateLocale(std::forward<ArgsT>(args)...);
             return m_id.value();
         }
@@ -102,6 +103,6 @@ namespace tails
     TAILS_API std::ostream& operator<<(std::ostream& stream, const CLocaleString& locString);
 }
 
-#define TAILS_LOC_STR(STR_ID, ...) tails::CLocaleString(tails::CLocalisation::hash(#STR_ID), __VA_ARGS__)
+#define TAILS_LOC_STR(STR_ID, ...) ::tails::CLocaleString(::tails::hash(#STR_ID), __VA_ARGS__)
 
 #endif // TAILS_LOCALE_STRING_HPP

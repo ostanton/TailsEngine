@@ -1,4 +1,5 @@
 #include <Tails/Localisation.hpp>
+#include <Tails/Maths.hpp>
 
 #include <fstream>
 #include <nlohmann/json.hpp>

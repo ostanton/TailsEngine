@@ -18,16 +18,16 @@ namespace tails
         static const std::string& getLocalisedString(size_t id);
         static const std::string& getLocalisedString(std::string_view id);
 
-        static constexpr size_t hash(std::string_view id)
-        {
+        //static constexpr size_t hash(std::string_view id)
+        //{
             // djb2 algorithm
-            size_t result {5381};
-            for (const char c : id)
-            {
-                result = (result << 5) + result + c;
-            }
-            return result;
-        }
+        //    size_t result {5381};
+        //   for (const char c : id)
+        //    {
+        //        result = (result << 5) + result + c;
+        //    }
+        //    return result;
+        //}
 
         static bool loadLocalisedStrings(const std::string& filename);
 
