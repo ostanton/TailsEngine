@@ -11,27 +11,19 @@ namespace tails
         return a + (b - a) * t;
     }
 
+    template<typename T>
+    concept Hashable =
+        requires(T str) {{str.size()} -> std::same_as<size_t>;} && (
+        requires(T str) {{str[0]} -> std::same_as<char>;} ||
+        requires(T str) {{str[0]} -> std::same_as<char&>;} ||
+        requires(T str) {{str[0]} -> std::same_as<const char&>;});
+
     /**
      * Hashes an object into a size_t
      * @param str Must implement size and operator[] which returns a char
      * @return Hashed number
      */
-    template<typename T>
-    // TODO - make these requirements nicer
-    requires
-    requires (T str) {{str.size()} -> std::same_as<size_t>;} &&
-    requires (T str)
-    {
-        {str[0]} -> std::same_as<const char&>;
-    } ||
-    requires (T str)
-    {
-        {str[0]} -> std::same_as<char>;
-    } ||
-    requires (T str)
-    {
-        {str[0]} -> std::same_as<char&>;
-    }
+    template<Hashable T>
     [[nodiscard]] constexpr size_t hash(T str) noexcept
     {
         // djb2 algorithm
