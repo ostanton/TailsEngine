@@ -1,15 +1,16 @@
 #include <Tails/InputManager.hpp>
+#include <Tails/Maths.hpp>
 
 #include <fstream>
 #include <nlohmann/json.hpp>
 
 namespace tails
 {
-    bool CInputManager::isActionActive(const std::string& action)
+    bool CInputManager::isActionActive(std::string_view action)
     {
-        for (auto& [actionName, values] : get().m_actions)
+        for (const auto& [actionName, values] : get().m_actions)
         {
-            if (actionName == action)
+            if (actionName == hash(action))
             {
                 for (auto& key : values)
                 {
@@ -22,13 +23,13 @@ namespace tails
         return false;
     }
 
-    float CInputManager::getActionScalarValue(const std::string& action)
+    float CInputManager::getActionScalarValue(std::string_view action)
     {
         if (!actionExists(action)) return 0.f;
 
         float result {0.f};
 
-        for (auto& axisKey : get().m_actions[action])
+        for (auto& axisKey : get().m_actions[hash(action)])
         {
             result += axisKey.getScalarAmount();
         }
@@ -36,25 +37,22 @@ namespace tails
         return result;
     }
 
-    void CInputManager::addActionMapping(std::string name, SUserKey key)
+    void CInputManager::addActionMapping(std::string_view name, SUserKey key)
     {
-        addActionMapping(std::move(name), std::vector({key}));
+        addActionMapping(hash(name), std::vector({key}));
     }
 
-    void CInputManager::addActionMapping(std::string name, const std::vector<SUserKey>& keys)
+    void CInputManager::addActionMapping(std::string_view name, const std::vector<SUserKey>& keys)
     {
-        if (actionExists(name))
-            get().m_actions[name] = keys;
-        else
-            get().m_actions.try_emplace(std::move(name), keys);
+        addActionMapping(hash(name), keys);
     }
 
-    bool CInputManager::actionExists(const std::string& action)
+    bool CInputManager::actionExists(std::string_view action)
     {
-        return get().m_actions.contains(action);
+        return actionExists(hash(action));
     }
 
-    bool CInputManager::loadFromFile(const std::string& filename)
+    bool CInputManager::loadFromFile(const std::filesystem::path& filename)
     {
         std::ifstream file {filename};
 
@@ -86,5 +84,18 @@ namespace tails
     {
         static CInputManager instance;
         return instance;
+    }
+
+    void CInputManager::addActionMapping(size_t id, const std::vector<SUserKey>& keys)
+    {
+        if (actionExists(id))
+            get().m_actions[id] = keys;
+        else
+            get().m_actions.try_emplace(id, keys);
+    }
+
+    bool CInputManager::actionExists(size_t id)
+    {
+        return get().m_actions.contains(id);
     }
 }

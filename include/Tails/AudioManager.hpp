@@ -17,7 +17,7 @@ namespace tails
     public:
         template<Derives<IBus> T, typename... ArgsT>
         requires ConstructibleUserType<T, ArgsT...>
-        static IBus* createBus(const std::string& busName, ArgsT&&... args)
+        static IBus* createBus(std::string_view busName, ArgsT&&... args)
         {
             return addBus(busName, std::make_unique<T>(std::forward<ArgsT>(args)...));
         }
@@ -29,10 +29,10 @@ namespace tails
     private:
         CAudioManager() = default;
         
-        static IBus* addBus(const std::string& busName, std::unique_ptr<IBus> bus);
+        static IBus* addBus(std::string_view busName, std::unique_ptr<IBus> bus);
         static CAudioManager& get();
 
-        std::unordered_map<std::string, std::unique_ptr<IBus>> m_buses;
+        std::unordered_map<size_t, std::unique_ptr<IBus>> m_buses;
     };
 }
 

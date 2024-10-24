@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Concepts.hpp>
+#include <Tails/Maths.hpp>
 
 #include <memory>
 #include <unordered_map>
@@ -45,23 +46,23 @@ namespace tails
         ~CResourceManager();
         
         using ResourcePtr = std::unique_ptr<void, void(*)(const void*)>;
-        using ResourceMap = std::unordered_map<std::string, ResourcePtr>;
+        using ResourceMap = std::unordered_map<size_t, ResourcePtr>;
 
-        sf::Texture* createTexture(const std::string& id, const std::filesystem::path& filename);
+        sf::Texture* createTexture(std::string_view id, const std::filesystem::path& filename);
         [[nodiscard]] sf::Texture* getTexture(std::string_view id) const;
 
-        sf::SoundBuffer* createSound(const std::string& id, const std::filesystem::path& filename);
+        sf::SoundBuffer* createSound(std::string_view id, const std::filesystem::path& filename);
         [[nodiscard]] sf::SoundBuffer* getSound(std::string_view id) const;
 
-        sf::Font* createFont(const std::string& id, const std::filesystem::path& filename);
+        sf::Font* createFont(std::string_view id, const std::filesystem::path& filename);
         [[nodiscard]] sf::Font* getFont(const std::string& id) const;
 
         template<ResourceType T>
-        T* createResource(const std::string& id, const std::filesystem::path& filename)
+        T* createResource(std::string_view id, const std::filesystem::path& filename)
         {
-            if (!m_resources.contains(id))
+            if (!m_resources.contains(hash(id)))
             {
-                try {m_resources.try_emplace(id, makeResourcePtr<T>(filename));}
+                try {m_resources.try_emplace(hash(id), makeResourcePtr<T>(filename));}
                 catch (const std::exception& e)
                 {
                     CDebug::exception("Failed to create ", id, " resource: ", e.what());
@@ -78,19 +79,19 @@ namespace tails
             else
                 CDebug::print("Resource \"", id, "\" already exists, getting it");
 
-            return static_cast<T*>(m_resources.at(id).get());
+            return static_cast<T*>(m_resources.at(hash(id)).get());
         }
 
         template<ResourceType T>
         [[nodiscard]] T* getResource(std::string_view id) const
         {
-            if (!m_resources.contains(id.data()))
+            if (!m_resources.contains(hash(id)))
             {
                 CDebug::error("Failed to find \"", id, "\" resource");
                 return nullptr;
             }
 
-            return static_cast<T*>(m_resources.at(id.data()).get());
+            return static_cast<T*>(m_resources.at(hash(id)).get());
         }
 
     private:
@@ -103,7 +104,7 @@ namespace tails
                 delete static_cast<const T*>(data);
             });
         }
-        
+
         ResourceMap m_resources;
     };
 }

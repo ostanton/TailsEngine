@@ -5,8 +5,9 @@
 #include <Tails/Key.hpp>
 
 #include <vector>
-#include <string>
+#include <string_view>
 #include <unordered_map>
+#include <filesystem>
 
 namespace tails
 {
@@ -19,22 +20,25 @@ namespace tails
          * @param action The action to check
          * @return If any key bound to the action is "active"
          */
-        [[nodiscard]] static bool isActionActive(const std::string& action);
-        [[nodiscard]] static float getActionScalarValue(const std::string& action);
+        [[nodiscard]] static bool isActionActive(std::string_view action);
+        [[nodiscard]] static float getActionScalarValue(std::string_view action);
 
-        static void addActionMapping(std::string name, SUserKey key);
-        static void addActionMapping(std::string name, const std::vector<SUserKey>& keys);
+        static void addActionMapping(std::string_view name, SUserKey key);
+        static void addActionMapping(std::string_view name, const std::vector<SUserKey>& keys);
 
-        [[nodiscard]] static bool actionExists(const std::string& action);
+        [[nodiscard]] static bool actionExists(std::string_view action);
 
-        static bool loadFromFile(const std::string& filename);
+        static bool loadFromFile(const std::filesystem::path& filename);
         
     private:
         CInputManager() = default;
         
         static CInputManager& get();
 
-        std::unordered_map<std::string, std::vector<SUserKey>> m_actions;
+        static void addActionMapping(size_t id, const std::vector<SUserKey>& keys);
+        [[nodiscard]] static bool actionExists(size_t id);
+
+        std::unordered_map<size_t, std::vector<SUserKey>> m_actions;
     };
 }
 

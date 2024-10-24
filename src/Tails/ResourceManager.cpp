@@ -10,7 +10,7 @@ namespace tails
     CResourceManager::CResourceManager() = default;
     CResourceManager::~CResourceManager() = default;
 
-    sf::Texture* CResourceManager::createTexture(const std::string& id, const std::filesystem::path& filename)
+    sf::Texture* CResourceManager::createTexture(std::string_view id, const std::filesystem::path& filename)
     {
         return createResource<sf::Texture>(id, CDirectories::getDirectory("textures") + filename.string());
     }
@@ -20,7 +20,7 @@ namespace tails
         return getResource<sf::Texture>(id);
     }
 
-    sf::SoundBuffer* CResourceManager::createSound(const std::string& id, const std::filesystem::path& filename)
+    sf::SoundBuffer* CResourceManager::createSound(std::string_view id, const std::filesystem::path& filename)
     {
         return createResource<sf::SoundBuffer>(id, CDirectories::getDirectory("sounds") + filename.string());
     }
@@ -30,7 +30,7 @@ namespace tails
         return getResource<sf::SoundBuffer>(id);
     }
 
-    sf::Font* CResourceManager::createFont(const std::string& id, const std::filesystem::path& filename)
+    sf::Font* CResourceManager::createFont(std::string_view id, const std::filesystem::path& filename)
     {
         return createResource<sf::Font>(id, CDirectories::getDirectory("fonts") + filename.string());
     }
