@@ -8,7 +8,7 @@
 
 #include <memory>
 #include <unordered_map>
-#include <string>
+#include <string_view>
 #include <exception>
 #include <filesystem>
 
@@ -55,7 +55,7 @@ namespace tails
         [[nodiscard]] sf::SoundBuffer* getSound(std::string_view id) const;
 
         sf::Font* createFont(std::string_view id, const std::filesystem::path& filename);
-        [[nodiscard]] sf::Font* getFont(const std::string& id) const;
+        [[nodiscard]] sf::Font* getFont(std::string_view id) const;
 
         template<ResourceType T>
         T* createResource(std::string_view id, const std::filesystem::path& filename)

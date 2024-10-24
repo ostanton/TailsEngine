@@ -35,7 +35,7 @@ namespace tails
         return createResource<sf::Font>(id, CDirectories::getDirectory("fonts") + filename.string());
     }
 
-    sf::Font* CResourceManager::getFont(const std::string& id) const
+    sf::Font* CResourceManager::getFont(std::string_view id) const
     {
         return getResource<sf::Font>(id);
     }
