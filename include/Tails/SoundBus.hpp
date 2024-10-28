@@ -19,6 +19,8 @@ namespace tails
         void pause() override;
         
     private:
+        // TODO - can just have this be unique_ptr instead?
+        // not amazing but beats making my own sound
         sf::Sound m_sound;
     };
 }
