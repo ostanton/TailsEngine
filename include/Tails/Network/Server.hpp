@@ -2,7 +2,7 @@
 #define TAILS_NETWORK_SERVER_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Client.hpp>
+#include <Tails/Network/Client.hpp>
 
 #include <SFML/Network/TcpListener.hpp>
 

@@ -11,7 +11,6 @@ add_library(
     InputManager.cpp
     Entity.cpp
     ResourceManager.cpp
-    AudioManager.cpp
     Directories.cpp
     Debug.cpp
     EngineSettings.cpp
@@ -19,10 +18,9 @@ add_library(
     LocaleString.cpp
     Exception.cpp
     Key.cpp
-    SoundBus.cpp
-    Client.cpp
-    Server.cpp
 )
 
+add_subdirectory(Audio)
 add_subdirectory(Components)
+add_subdirectory(Network)
 add_subdirectory(UI)

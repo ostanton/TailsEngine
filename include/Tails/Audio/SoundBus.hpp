@@ -2,7 +2,7 @@
 #define TAILS_SOUND_BUS_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Bus.hpp>
+#include <Tails/Audio/Bus.hpp>
 
 #include <memory>
 

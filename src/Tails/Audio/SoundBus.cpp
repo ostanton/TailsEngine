@@ -1,4 +1,4 @@
-#include <Tails/SoundBus.hpp>
+#include <Tails/Audio/SoundBus.hpp>
 #include <Tails/Debug.hpp>
 
 #include <SFML/Audio/Sound.hpp>

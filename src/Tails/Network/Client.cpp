@@ -1,4 +1,4 @@
-#include <Tails/Client.hpp>
+#include <Tails/Network/Client.hpp>
 #include <Tails/Debug.hpp>
 
 #include <SFML/Network/IpAddress.hpp>

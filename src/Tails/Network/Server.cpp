@@ -1,4 +1,4 @@
-#include <Tails/Server.hpp>
+#include <Tails/Network/Server.hpp>
 #include <Tails/Debug.hpp>
 
 #include <SFML/Network/TcpSocket.hpp>

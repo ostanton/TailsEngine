@@ -1,5 +1,5 @@
-#include <Tails/AudioManager.hpp>
-#include <Tails/Bus.hpp>
+#include <Tails/Audio/AudioManager.hpp>
+#include <Tails/Audio/Bus.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Maths.hpp>
 

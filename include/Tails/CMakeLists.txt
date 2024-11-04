@@ -12,7 +12,6 @@ target_sources(
     InputManager.hpp
     Entity.hpp
     ResourceManager.hpp
-    AudioManager.hpp
     Directories.hpp
     Serialisable.hpp
     Debug.hpp
@@ -26,12 +25,10 @@ target_sources(
     ClassRegistry.hpp
     Concepts.hpp
     Key.hpp
-    Bus.hpp
-    SoundBus.hpp
     Maths.hpp
-    Client.hpp
-    Server.hpp
 )
 
+add_subdirectory(Audio)
 add_subdirectory(Components)
+add_subdirectory(Network)
 add_subdirectory(UI)
