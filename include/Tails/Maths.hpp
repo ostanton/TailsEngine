@@ -20,19 +20,19 @@ namespace tails
 
     /**
      * Hashes an object into a size_t
-     * @param str Must implement size and operator[] which returns a char
+     * @param in Must implement size and operator[] which returns a char
      * @return Hashed number
      */
     template<Hashable T>
-    [[nodiscard]] constexpr size_t hash(T str) noexcept
+    [[nodiscard]] constexpr size_t hash(T in) noexcept
     {
         // djb2 algorithm
         size_t result {5381};
         // could change to range-based loop
         // but idk how to check for char in iterator
-        for (size_t i {0}; i < str.size(); i++)
+        for (size_t i {0}; i < in.size(); i++)
         {
-            result = (result << 5) + result + str[i];
+            result = (result << 5) + result + in[i];
         }
         return result;
     }

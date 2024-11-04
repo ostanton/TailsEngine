@@ -5,7 +5,7 @@
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 #include <Tails/World.hpp>
-#include <Tails/WidgetViewport.hpp>
+#include <Tails/UI/WidgetViewport.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>

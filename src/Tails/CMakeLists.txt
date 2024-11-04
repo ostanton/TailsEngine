@@ -7,6 +7,7 @@ add_library(
     Engine.cpp
     World.cpp
     Level.cpp
+    LevelSettings.cpp
     InputManager.cpp
     Entity.cpp
     ResourceManager.cpp
@@ -14,28 +15,14 @@ add_library(
     Directories.cpp
     Debug.cpp
     EngineSettings.cpp
-    Widget.cpp
-    WidgetContainer.cpp
-    WidgetViewport.cpp
-    WidgetText.cpp
-    LevelSettings.cpp
-    VerticalContainer.cpp
-    Padding.cpp
     Localisation.cpp
     LocaleString.cpp
     Exception.cpp
-    Component.cpp
-    SpriteComponent.cpp
-    CameraComponent.cpp
     Key.cpp
-    ShapeComponent.cpp
-    CircleShapeComponent.cpp
-    ConvexShapeComponent.cpp
-    AnimatedSpriteComponent.cpp
-    TileMapComponent.cpp
-    TextComponent.cpp
     SoundBus.cpp
     Client.cpp
     Server.cpp
-    ParticleComponent.cpp
 )
+
+add_subdirectory(Components)
+add_subdirectory(UI)

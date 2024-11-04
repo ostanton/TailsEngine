@@ -24,8 +24,6 @@ namespace tails
         CObject& operator=(const CObject&) = default;
         CObject& operator=(CObject&&) = default;
         virtual ~CObject() = default;
-        
-        CObject* outer {nullptr};
 
         template<typename T>
         T* getTypedOuter() const
@@ -54,6 +52,8 @@ namespace tails
 
         [[nodiscard]] constexpr bool pendingCreate() const {return (m_flags & PendingCreate) == PendingCreate;}
         [[nodiscard]] constexpr bool pendingDestroy() const {return (m_flags & PendingDestroy) == PendingDestroy;}
+
+        CObject* outer {nullptr};
 
     private:
         std::uint8_t m_flags {PendingCreate};

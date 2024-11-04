@@ -4,7 +4,7 @@
 #include <Tails/Engine.hpp>
 #include <Tails/LevelSettings.hpp>
 #include <Tails/Vector2.hpp>
-#include <Tails/CameraComponent.hpp>
+#include <Tails/Components/CameraComponent.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

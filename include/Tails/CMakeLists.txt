@@ -18,12 +18,6 @@ target_sources(
     Debug.hpp
     Vector2.hpp
     EngineSettings.hpp
-    Widget.hpp
-    WidgetContainer.hpp
-    WidgetViewport.hpp
-    WidgetText.hpp
-    VerticalContainer.hpp
-    Padding.hpp
     Assert.hpp
     LevelSettings.hpp
     Localisation.hpp
@@ -31,20 +25,13 @@ target_sources(
     Exception.hpp
     ClassRegistry.hpp
     Concepts.hpp
-    Component.hpp
-    SpriteComponent.hpp
-    CameraComponent.hpp
     Key.hpp
-    ShapeComponent.hpp
-    CircleShapeComponent.hpp
-    ConvexShapeComponent.hpp
-    AnimatedSpriteComponent.hpp
-    TileMapComponent.hpp
-    TextComponent.hpp
     Bus.hpp
     SoundBus.hpp
     Maths.hpp
     Client.hpp
     Server.hpp
-    ParticleComponent.hpp
 )
+
+add_subdirectory(Components)
+add_subdirectory(UI)

@@ -2,7 +2,7 @@
 #include <Tails/Level.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/Directories.hpp>
-#include <Tails/Component.hpp>
+#include <Tails/Components/Component.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
