@@ -24,7 +24,7 @@ namespace tails
     public:
         CLevel* openLevel(std::string path, std::unique_ptr<SLevelSettings> settings = nullptr);
         bool closeLevel(CLevel* level);
-        bool closeLevel(size_t index);
+        bool closeLevel(size_t index) const;
 
         [[nodiscard]] CEngine& getEngine() const;
         [[nodiscard]] CLevel* getLevel(size_t index) const;

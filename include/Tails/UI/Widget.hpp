@@ -1,55 +1,65 @@
-#ifndef TAILS_WIDGET_HPP
-#define TAILS_WIDGET_HPP
+#ifndef TAILS_UI_WIDGET_HPP
+#define TAILS_UI_WIDGET_HPP
 
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
-#include <Tails/Serialisable.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
-#include <optional>
+namespace sf
+{
+    class Event;
+}
 
 namespace tails
 {
-    class WContainer;
-    class WViewport;
     class CEngine;
+}
 
+namespace tails::ui
+{
+    class CSlot;
+    class CPanel;
+    class CUIManager;
+    
     /**
-     * Base class for all widgets. Derived classes from this are encouraged to prefix
-     * with 'W' (e.g. WText), as to avoid naming clashes (like with a potential CText entity)
+     * Base class for all widgets.
+     * 
+     * TODO - either have private parent Transformable class, or find a way to get a widget's location to then
+     * be used by the next panel's child's slot for an offset. Because how would it offset otherwise?? I think it
+     * should be inherited, as then the widget can provide its own bounds, the transform set by its slot, and
+     * the additive transform on top of that. It won't know about its slot-set bounds otherwise
+     * (unless set some other way)
      */
     class TAILS_API CWidget :
         public CObject,
         public ITickable,
-        public sf::Drawable,
-        public sf::Transformable
+        public sf::Drawable
     {
-        friend WContainer;
-        friend WViewport;
-
+        friend CPanel;
+        friend CUIManager;
+        
     public:
-        [[nodiscard]] WContainer* getParent() const;
-        void destroy();
         [[nodiscard]] CEngine& getEngine() const;
-
-        /*
-         * Sizing widgets is implemented in their derived classes, allowing for each child
-         * to specify how they size (e.g. a sprite doing it via a VertexArray, containers
-         * maybe via the sum of its children's sizes, etc.).
-         */
-
-        virtual void setSize(const sf::Vector2f& size) {}
+        [[nodiscard]] CPanel* getParent() const;
+        [[nodiscard]] CSlot* getSlot() const;
+        
+        void destroy();
 
         /**
-         * Get the size of the widget.
-         * @return Possibly valid size
+         * Additive transform for this widget
          */
-        [[nodiscard]] virtual std::optional<sf::Vector2f> getSize() const {return std::nullopt;}
+        sf::Transform transform;
+        
+    protected:
+        /**
+         * The window input event
+         * @param ev SFML window event
+         */
+        virtual void eventInput(const sf::Event& ev) {}
     };
 }
 
-#endif // TAILS_WIDGET_HPP
+#endif // TAILS_UI_WIDGET_HPP

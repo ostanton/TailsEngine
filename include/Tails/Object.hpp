@@ -20,9 +20,9 @@ namespace tails
     public:
         CObject() = default;
         CObject(const CObject&) = default;
-        CObject(CObject&&) = default;
+        CObject(CObject&&) noexcept = default;
         CObject& operator=(const CObject&) = default;
-        CObject& operator=(CObject&&) = default;
+        CObject& operator=(CObject&&) noexcept = default;
         virtual ~CObject() = default;
 
         template<typename T>

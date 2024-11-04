@@ -4,8 +4,9 @@
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
+#include <Tails/Concepts.hpp>
 #include <Tails/World.hpp>
-#include <Tails/UI/WidgetViewport.hpp>
+#include <Tails/UI/UIManager.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -40,15 +41,17 @@ namespace tails
     public:
         CEngine();
         explicit CEngine(std::unique_ptr<SEngineSettings> engineSettings);
+        CEngine(const CEngine&) = delete;
+        CEngine(CEngine&&) noexcept;
+        CEngine& operator=(const CEngine&) = delete;
+        CEngine& operator=(CEngine&&) noexcept;
         ~CEngine() override;
     
-        template<typename T, typename... Args>
-        void setRenderTarget(Args&&... args)
+        template<Derives<sf::RenderTarget> T, typename... ArgsT>
+        requires ConstructibleUserType<T, ArgsT...>
+        void setRenderTarget(ArgsT&&... args)
         {
-            static_assert(std::is_base_of_v<sf::RenderTarget, T>,
-                "Failed to set engine render target, type does not derive sf::RenderTarget.");
-            
-            m_renderTarget = std::make_unique<T>(std::forward<Args>(args)...);
+            m_renderTarget = std::make_unique<T>(std::forward<ArgsT>(args)...);
         }
 
         void run();
@@ -56,35 +59,35 @@ namespace tails
 
         [[nodiscard]] sf::RenderTarget& getRenderTarget() const {return *m_renderTarget;}
         
-        [[nodiscard]] const sf::RenderStates& getRenderState() const {return m_renderStates;}
+        [[nodiscard]] const sf::RenderStates& getRenderState() const noexcept {return m_renderStates;}
 
-        [[nodiscard]] sf::RenderTexture& getInternalRenderTexture() {return m_renderTextureInternal;}
-        [[nodiscard]] const sf::RenderTexture& getInternalRenderTexture() const {return m_renderTextureInternal;}
+        [[nodiscard]] sf::RenderTexture& getInternalRenderTexture() noexcept {return m_renderTextureInternal;}
+        [[nodiscard]] const sf::RenderTexture& getInternalRenderTexture() const noexcept {return m_renderTextureInternal;}
 
-        [[nodiscard]] sf::View& getRenderView() {return m_renderView;}
-        [[nodiscard]] const sf::View& getRenderView() const {return m_renderView;}
+        [[nodiscard]] sf::View& getRenderView() noexcept {return m_renderView;}
+        [[nodiscard]] const sf::View& getRenderView() const noexcept {return m_renderView;}
 
-        [[nodiscard]] CWorld& getWorld() {return m_world;}
-        [[nodiscard]] const CWorld& getWorld() const {return m_world;}
+        [[nodiscard]] CWorld& getWorld() noexcept {return m_world;}
+        [[nodiscard]] const CWorld& getWorld() const noexcept {return m_world;}
+
+        [[nodiscard]] ui::CUIManager& getUIManager() noexcept {return m_uiManager;}
+        [[nodiscard]] const ui::CUIManager& getUIManager() const noexcept {return m_uiManager;}
 
         [[nodiscard]] SEngineSettings& getSettings() const {return *m_settings;}
 
-        [[nodiscard]] WViewport& getViewport() {return m_viewport;}
-        [[nodiscard]] const WViewport& getViewport() const {return m_viewport;}
+        [[nodiscard]] SRenderProperties& getRenderProperties() noexcept {return m_renderProperties;}
+        [[nodiscard]] const SRenderProperties& getRenderProperties() const noexcept {return m_renderProperties;}
 
-        [[nodiscard]] SRenderProperties& getRenderProperties() {return m_renderProperties;}
-        [[nodiscard]] const SRenderProperties& getRenderProperties() const {return m_renderProperties;}
+        [[nodiscard]] SWindowProperties& getWindowProperties() noexcept {return m_windowProperties;}
+        [[nodiscard]] const SWindowProperties& getWindowProperties() const noexcept {return m_windowProperties;}
 
-        [[nodiscard]] SWindowProperties& getWindowProperties() {return m_windowProperties;}
-        [[nodiscard]] const SWindowProperties& getWindowProperties() const {return m_windowProperties;}
+        [[nodiscard]] float getCurrentLifeTime() const noexcept {return m_lifeTime;}
 
-        [[nodiscard]] float getCurrentLifeTime() const {return m_lifeTime;}
-
-        void setRenderTargetClearColour(const sf::Color& colour);
-        [[nodiscard]] const sf::Color& getRenderTargetClearColour() const {return m_renderTargetClearColour;}
+        void setRenderTargetClearColour(sf::Color colour);
+        [[nodiscard]] sf::Color getRenderTargetClearColour() const noexcept {return m_renderTargetClearColour;}
         
-        void setRenderTextureInternalClearColour(const sf::Color& colour);
-        [[nodiscard]] const sf::Color& getRenderTextureInternalClearColour() const {return m_renderTextureInternalClearColour;}
+        void setRenderTextureInternalClearColour(sf::Color colour);
+        [[nodiscard]] sf::Color getRenderTextureInternalClearColour() const noexcept {return m_renderTextureInternalClearColour;}
 
     protected:
         void preTick() override;
@@ -127,11 +130,7 @@ namespace tails
          */
         CWorld m_world;
 
-        /**
-         * The container for widgets. Might replace with pointer so client and decide
-         * what class to use (their own viewport kind thing).
-         */
-        WViewport m_viewport;
+        ui::CUIManager m_uiManager;
 
         SRenderProperties m_renderProperties;
         SWindowProperties m_windowProperties;

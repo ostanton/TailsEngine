@@ -36,7 +36,7 @@ namespace tails
 
 #ifdef TAILS_DEBUG
     template<std::predicate<> PredT, PrintableStream MsgT>
-#else
+#else // TAILS_DEBUG
     template<typename PredT, typename MsgT>
 #endif // TAILS_DEBUG
     constexpr void runtimeAssert(PredT predicate, MsgT&& msg, const std::source_location& loc = std::source_location::current())
@@ -48,7 +48,7 @@ namespace tails
 
 #ifdef TAILS_DEBUG
     template<PrintableStream MsgT>
-#else
+#else // TAILS_DEBUG
     template<typename MsgT>
 #endif // TAILS_DEBUG
     constexpr void runtimeAssert(bool condition, MsgT&& msg, const std::source_location& loc = std::source_location::current())

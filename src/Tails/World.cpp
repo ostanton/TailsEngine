@@ -27,7 +27,7 @@ namespace tails
 
     bool CWorld::closeLevel(CLevel* level)
     {
-        if (auto it = std::find_if(m_openLevels.begin(), m_openLevels.end(),
+        if (const auto it = std::find_if(m_openLevels.begin(), m_openLevels.end(),
             [&](auto& uniqueLevel)
             {
                 return uniqueLevel.get() == level;
@@ -41,7 +41,7 @@ namespace tails
         return false;
     }
 
-    bool CWorld::closeLevel(size_t index)
+    bool CWorld::closeLevel(size_t index) const
     {
         if (index >= m_openLevels.size())
             return false;

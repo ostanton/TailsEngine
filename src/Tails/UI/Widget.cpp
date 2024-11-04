@@ -1,26 +1,29 @@
 #include <Tails/UI/Widget.hpp>
-#include <Tails/UI/WidgetContainer.hpp>
 #include <Tails/Engine.hpp>
+#include <Tails/UI/Slot.hpp>
 
-namespace tails
+namespace tails::ui
 {
-    WContainer* CWidget::getParent() const
+    CEngine& CWidget::getEngine() const
     {
-        if (!outer) return nullptr;
+        return *getTypedOuter<CEngine>();
+    }
 
-        if (auto parent = dynamic_cast<WContainer*>(outer))
-            return parent;
-
+    CPanel* CWidget::getParent() const
+    {
+        if (const auto slot = getSlot())
+            return slot->getOwner();
+        
         return nullptr;
+    }
+
+    CSlot* CWidget::getSlot() const
+    {
+        return getTypedOuter<CSlot>();
     }
 
     void CWidget::destroy()
     {
         markForDestroy();
-    }
-
-    CEngine& CWidget::getEngine() const
-    {
-        return *getTypedOuter<CEngine>();
     }
 }

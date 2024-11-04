@@ -138,6 +138,9 @@ namespace tails
         CDebug::print();
     }
 
+    CEngine::CEngine(CEngine&&) noexcept = default;
+    CEngine& CEngine::operator=(CEngine&&) noexcept = default;
+    
     CEngine::~CEngine()
     {
         CDebug::print("Engine destructing");
@@ -181,6 +184,8 @@ namespace tails
             {
                 while (const auto ev = window->pollEvent())
                 {
+                    m_uiManager.eventInput(ev.value());
+                    
                     if (ev->is<sf::Event::Closed>())
                     {
                         kill();
@@ -221,12 +226,12 @@ namespace tails
         m_running = false;
     }
 
-    void CEngine::setRenderTargetClearColour(const sf::Color& colour)
+    void CEngine::setRenderTargetClearColour(const sf::Color colour)
     {
         m_renderTargetClearColour = colour;
     }
 
-    void CEngine::setRenderTextureInternalClearColour(const sf::Color& colour)
+    void CEngine::setRenderTextureInternalClearColour(const sf::Color colour)
     {
         m_renderTextureInternalClearColour = colour;
     }
@@ -236,20 +241,20 @@ namespace tails
         ITickable::preTick();
 
         m_world.preTick();
-        m_viewport.preTick();
+        m_uiManager.postTick();
     }
 
-    void CEngine::tick(float deltaTime)
+    void CEngine::tick(const float deltaTime)
     {
         m_lifeTime += deltaTime;
         m_world.tick(deltaTime);
-        m_viewport.tick(deltaTime);
+        m_uiManager.tick(deltaTime);
     }
 
-    void CEngine::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void CEngine::draw(sf::RenderTarget& target, const sf::RenderStates states) const
     {
         target.draw(m_world, states);
-        target.draw(m_viewport, states);
+        target.draw(m_uiManager, states);
     }
 
     void CEngine::postTick()
@@ -257,7 +262,7 @@ namespace tails
         ITickable::postTick();
 
         m_world.postTick();
-        m_viewport.postTick();
+        m_uiManager.postTick();
     }
 
     void CEngine::initMembers()

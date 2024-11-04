@@ -71,7 +71,7 @@ namespace tails
     inline void* constructClass(std::string_view name)
     {
         auto& reg = priv::getClassRegistry();
-        auto it = reg.find(name.data());
+        const auto it = reg.find(name.data());
 
         if (it == reg.end())
         {

@@ -4,9 +4,12 @@ target_sources(
     TailsEngine
     PRIVATE
     Widget.hpp
-    WidgetContainer.hpp
-    WidgetViewport.hpp
-    WidgetText.hpp
-    VerticalContainer.hpp
     Padding.hpp
+    Panel.hpp
+    Slot.hpp
+    StackPanel.hpp
+    StackPanelSlot.hpp
+    Alignment.hpp
+    Navigation.hpp
+    UIManager.hpp
 )
