@@ -18,10 +18,11 @@ The *Tails Engine* is a simple, 2D library intended to somewhat mimic the style 
 
 - Locked internal resolution that maintains its aspect ratio (black bars!),
 - Clearly named classes and structures (classes prefixed with 'C', structures prefixed with 'S', interfaces prefixed with 'I', etc.),
-- "Context-specific" resource manager (per-level/any object) that owns its resources via `unique_ptr`s, capable of holding any `ResourceType` concept compliant object,
+- "Context-specific" resource manager (per-level/any object) that owns its resources via `unique_ptr`s, capable of holding any `ResourceType` concept-compliant object,
 - Input manager with support for keyboard, mouse, and Xbox controllers (currently only tested with an Xbox 1 controller),
 - Class registry, allowing support of allocating a new object of the correct type just from a string ID value (generally just its class name as a string),
 - Unreal Engine-style entities (actors) and components (*not* an ECS).
+- Unreal Engine-style slot-based UI framework (WIP)
 
 ## How to compile
 
@@ -64,7 +65,7 @@ For example:
 cmake_minimum_required(VERSION 3.28.3)
 project(TestGameProj)
 
-# CPM
+# CPM (download/install CPM first!)
 CPMAddPackage("gh:ostanton/TailsEngine#master")
 
 # FetchContent
