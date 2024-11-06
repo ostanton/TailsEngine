@@ -5,7 +5,7 @@
 
 namespace tails::ui
 {
-    class CUIManager;
+    class CUISubsystem;
     
     /**
      * Dictates how focus moves around.
@@ -15,13 +15,13 @@ namespace tails::ui
     {
     public:
         CNavigation() = delete;
-        explicit CNavigation(CUIManager* manager);
+        explicit CNavigation(CUISubsystem* subsystem);
 
-        [[nodiscard]] CUIManager& getUIManager() noexcept {return *m_uiManager;}
-        [[nodiscard]] const CUIManager& getUIManager() const noexcept {return *m_uiManager;}
+        [[nodiscard]] CUISubsystem& getUISubsystem() noexcept {return *m_uiSubsystem;}
+        [[nodiscard]] const CUISubsystem& getUISubsystem() const noexcept {return *m_uiSubsystem;}
 
     private:
-        CUIManager* m_uiManager {nullptr};
+        CUISubsystem* m_uiSubsystem {nullptr};
     };
 }
 

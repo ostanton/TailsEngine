@@ -10,5 +10,5 @@ target_sources(
     StackPanel.cpp
     StackPanelSlot.cpp
     Navigation.cpp
-    UIManager.cpp
+    UISubsystem.cpp
 )

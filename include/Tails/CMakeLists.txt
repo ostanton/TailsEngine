@@ -26,6 +26,7 @@ target_sources(
     Concepts.hpp
     Key.hpp
     Maths.hpp
+    Subsystem.hpp
 )
 
 add_subdirectory(Audio)

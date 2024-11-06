@@ -22,7 +22,7 @@ namespace tails::ui
 {
     class CSlot;
     class CPanel;
-    class CUIManager;
+    class CUISubsystem;
     
     /**
      * Base class for all widgets.
@@ -39,7 +39,7 @@ namespace tails::ui
         public sf::Drawable
     {
         friend CPanel;
-        friend CUIManager;
+        friend CUISubsystem;
         
     public:
         [[nodiscard]] CEngine& getEngine() const;

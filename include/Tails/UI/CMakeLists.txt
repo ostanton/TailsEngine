@@ -11,5 +11,5 @@ target_sources(
     StackPanelSlot.hpp
     Alignment.hpp
     Navigation.hpp
-    UIManager.hpp
+    UISubsystem.hpp
 )

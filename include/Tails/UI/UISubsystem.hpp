@@ -2,11 +2,8 @@
 #define TAILS_UI_MANAGER_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Object.hpp>
-#include <Tails/Tickable.hpp>
+#include <Tails/Subsystem.hpp>
 #include <Tails/Concepts.hpp>
-
-#include <SFML/Graphics/Drawable.hpp>
 
 #include <memory>
 
@@ -32,14 +29,15 @@ namespace tails::ui
      * This class receives window inputs before anything else, so for that fraction of time you receive the input,
      * you can do whatever, even if the input is to close the window.
      */
-    class TAILS_API CUIManager final : public CObject, public ITickable, public sf::Drawable
+    class TAILS_API CUISubsystem final : public CSubsystem
     {
         friend CEngine;
         
     public:
-        CUIManager(const CUIManager&) = delete;
-        CUIManager& operator=(const CUIManager&) = delete;
-        ~CUIManager() override;
+        CUISubsystem();
+        CUISubsystem(const CUISubsystem&) = delete;
+        CUISubsystem& operator=(const CUISubsystem&) = delete;
+        ~CUISubsystem() override;
         
         template<Derives<CWidget> WidgetT, typename... ArgsT>
         requires ConstructibleUserType<WidgetT, ArgsT...>
@@ -61,9 +59,10 @@ namespace tails::ui
         [[nodiscard]] const CNavigation& getNavigation() const noexcept {return *m_navigation;}
         
     private:
-        CUIManager();
-        CUIManager(CUIManager&&) noexcept;
-        CUIManager& operator=(CUIManager&&) noexcept;
+        CUISubsystem(CUISubsystem&&) noexcept;
+        CUISubsystem& operator=(CUISubsystem&&) noexcept;
+
+        void init() override;
         
         CWidget* setRootWidgetImpl(std::unique_ptr<CWidget> widget);
 

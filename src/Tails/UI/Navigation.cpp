@@ -2,8 +2,8 @@
 
 namespace tails::ui
 {
-    CNavigation::CNavigation(CUIManager* manager)
-        : m_uiManager(manager)
+    CNavigation::CNavigation(CUISubsystem* subsystem)
+        : m_uiSubsystem(subsystem)
     {
     }
 }

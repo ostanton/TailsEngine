@@ -6,7 +6,7 @@
 #include <Tails/Tickable.hpp>
 #include <Tails/Concepts.hpp>
 #include <Tails/World.hpp>
-#include <Tails/UI/UIManager.hpp>
+#include <Tails/Maths.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -15,11 +15,19 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <ranges>
 
 namespace tails
 {
     class CClassRegistry;
     struct SEngineSettings;
+    class CSubsystem;
+
+    namespace ui
+    {
+        class CUISubsystem;
+    }
 
     struct TAILS_API SWindowProperties final
     {
@@ -32,6 +40,7 @@ namespace tails
     struct TAILS_API SRenderProperties final
     {
         sf::Vector2u resolution {240, 160};
+        bool maintainAspectRatio {true};
 
         [[nodiscard]] std::string toString() const;
     };
@@ -54,6 +63,37 @@ namespace tails
             m_renderTarget = std::make_unique<T>(std::forward<ArgsT>(args)...);
         }
 
+        template<Derives<CSubsystem> T, typename... ArgsT>
+        requires ConstructibleUserType<T, ArgsT...>
+        void registerSubsystem(const std::string_view id, ArgsT&&... args)
+        {
+            const std::size_t hashed {hash(id)};
+            if (m_subsystems.contains(hashed))
+            {
+                CDebug::print("  Subsystem ", id, " is already registered");
+                return;
+            }
+
+            registerSubsystemImpl(hashed, std::make_unique<T>(std::forward<ArgsT>(args)...));
+            CDebug::print("  Registered ", id, " subsystem");
+        }
+
+        [[nodiscard]] CSubsystem* getSubsystem(std::string_view id) const;
+
+        template<Derives<CSubsystem> T>
+        T* getSubsystemOfType() const
+        {
+            if (m_subsystems.empty()) return nullptr;
+
+            for (auto& subsystem : std::ranges::views::values(m_subsystems))
+            {
+                if (auto castedSubsystem = dynamic_cast<T*>(subsystem.get()))
+                    return castedSubsystem;
+            }
+
+            return nullptr;
+        }
+
         void run();
         void kill();
 
@@ -70,8 +110,8 @@ namespace tails
         [[nodiscard]] CWorld& getWorld() noexcept {return m_world;}
         [[nodiscard]] const CWorld& getWorld() const noexcept {return m_world;}
 
-        [[nodiscard]] ui::CUIManager& getUIManager() noexcept {return m_uiManager;}
-        [[nodiscard]] const ui::CUIManager& getUIManager() const noexcept {return m_uiManager;}
+        [[nodiscard]] ui::CUISubsystem& getUISubsystem() noexcept;
+        [[nodiscard]] const ui::CUISubsystem& getUISubsystem() const noexcept;
 
         [[nodiscard]] SEngineSettings& getSettings() const {return *m_settings;}
 
@@ -89,13 +129,16 @@ namespace tails
         void setRenderTextureInternalClearColour(sf::Color colour);
         [[nodiscard]] sf::Color getRenderTextureInternalClearColour() const noexcept {return m_renderTextureInternalClearColour;}
 
-    protected:
+    private:
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
         
-    private:
+        void registerSubsystemImpl(std::size_t id, std::unique_ptr<CSubsystem> subsystem);
+        void setupDefaultSubsystems();
+        void initSubsystems();
+        
         void initMembers();
         void initInternalRender();
         void initWorldLevel(std::string path);
@@ -130,7 +173,7 @@ namespace tails
          */
         CWorld m_world;
 
-        ui::CUIManager m_uiManager;
+        std::unordered_map<std::size_t, std::unique_ptr<CSubsystem>> m_subsystems;
 
         SRenderProperties m_renderProperties;
         SWindowProperties m_windowProperties;

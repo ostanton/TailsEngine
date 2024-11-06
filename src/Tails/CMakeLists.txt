@@ -18,6 +18,7 @@ add_library(
     LocaleString.cpp
     Exception.cpp
     Key.cpp
+    Subsystem.cpp
 )
 
 add_subdirectory(Audio)

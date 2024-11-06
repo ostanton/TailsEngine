@@ -5,6 +5,8 @@
 #include <Tails/Vector2.hpp>
 #include <Tails/LevelSettings.hpp>
 #include <Tails/EngineSettings.hpp>
+#include <Tails/Subsystem.hpp>
+#include <Tails/UI/UISubsystem.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -63,6 +65,8 @@ namespace tails
             initMembers();
             return;
         }
+
+        setupDefaultSubsystems();
 
         CDebug::print(std::string("JSON is a valid "), setupJson.type_name());
         CDebug::print();
@@ -147,8 +151,22 @@ namespace tails
         CDebug::print("Engine alive for ", m_lifeTime, " seconds");
     }
 
+    CSubsystem* CEngine::getSubsystem(std::string_view id) const
+    {
+        const std::size_t hashed {hash(id)};
+        if (!m_subsystems.contains(hashed))
+        {
+            CDebug::error("Failed to find ", id, " subsystem.");
+            return nullptr;
+        }
+
+        return m_subsystems.at(hashed).get();
+    }
+
     void CEngine::run()
     {
+        initSubsystems();
+        
         CDebug::print("Initialising final render target");
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
@@ -169,8 +187,9 @@ namespace tails
         }
         
         const auto& internalRenderTexture = m_renderTextureInternal.getTexture();
-        
-        calculateInternalAspectRatio(m_renderTarget->getSize());
+
+        if (m_renderProperties.maintainAspectRatio)
+            calculateInternalAspectRatio(m_renderTarget->getSize());
 
         CDebug::print("Main loop started");
         
@@ -184,7 +203,7 @@ namespace tails
             {
                 while (const auto ev = window->pollEvent())
                 {
-                    m_uiManager.eventInput(ev.value());
+                    getUISubsystem().eventInput(ev.value());
                     
                     if (ev->is<sf::Event::Closed>())
                     {
@@ -192,7 +211,8 @@ namespace tails
                     }
                     else if (const auto* resize = ev->getIf<sf::Event::Resized>())
                     {
-                        calculateInternalAspectRatio(resize->size);
+                        if (m_renderProperties.maintainAspectRatio)
+                            calculateInternalAspectRatio(resize->size);
                         CDebug::print("Resized window size: ", resize->size.x, "x", resize->size.y);
                     }
                 }
@@ -226,6 +246,16 @@ namespace tails
         m_running = false;
     }
 
+    ui::CUISubsystem& CEngine::getUISubsystem() noexcept
+    {
+        return *getSubsystemOfType<ui::CUISubsystem>();
+    }
+
+    const ui::CUISubsystem& CEngine::getUISubsystem() const noexcept
+    {
+        return *getSubsystemOfType<ui::CUISubsystem>();
+    }
+
     void CEngine::setRenderTargetClearColour(const sf::Color colour)
     {
         m_renderTargetClearColour = colour;
@@ -241,20 +271,32 @@ namespace tails
         ITickable::preTick();
 
         m_world.preTick();
-        m_uiManager.postTick();
+        getUISubsystem().postTick();
+        for (const auto& subsystem : std::ranges::views::values(m_subsystems))
+        {
+            subsystem->postTick();
+        }
     }
 
     void CEngine::tick(const float deltaTime)
     {
         m_lifeTime += deltaTime;
         m_world.tick(deltaTime);
-        m_uiManager.tick(deltaTime);
+        getUISubsystem().tick(deltaTime);
+        for (const auto& subsystem : std::ranges::views::values(m_subsystems))
+        {
+            subsystem->tick(deltaTime);
+        }
     }
 
     void CEngine::draw(sf::RenderTarget& target, const sf::RenderStates states) const
     {
         target.draw(m_world, states);
-        target.draw(m_uiManager, states);
+        target.draw(getUISubsystem(), states);
+        for (const auto& subsystem : std::ranges::views::values(m_subsystems))
+        {
+            target.draw(*subsystem, states);
+        }
     }
 
     void CEngine::postTick()
@@ -262,11 +304,40 @@ namespace tails
         ITickable::postTick();
 
         m_world.postTick();
-        m_uiManager.postTick();
+        getUISubsystem().postTick();
+        for (const auto& subsystem : std::ranges::views::values(m_subsystems))
+        {
+            subsystem->postTick();
+        }
+    }
+
+    void CEngine::registerSubsystemImpl(const std::size_t id, std::unique_ptr<CSubsystem> subsystem)
+    {
+        subsystem->outer = this;
+        m_subsystems.try_emplace(id, std::move(subsystem));
+    }
+
+    void CEngine::setupDefaultSubsystems()
+    {
+        CDebug::print("Registering default subsystems");
+        registerSubsystem<ui::CUISubsystem>("ui");
+        CDebug::print("Registered default subsystems");
+        CDebug::print();
+    }
+
+    void CEngine::initSubsystems()
+    {
+        CDebug::print("Initialising subsystems");
+        for (const auto& subsystem : std::ranges::views::values(m_subsystems))
+        {
+            subsystem->init();
+        }
+        CDebug::print("Subsystems initialised");
     }
 
     void CEngine::initMembers()
     {
+        setupDefaultSubsystems();
         initInternalRender();
         initWorldLevel("");
         CDebug::print(m_windowProperties.toString());
