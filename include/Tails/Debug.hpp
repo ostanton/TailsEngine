@@ -57,7 +57,7 @@ namespace tails
         }
 
         template<typename... ArgsT>
-        static void printf(std::string_view string, ArgsT&&... args)
+        static void printf(const std::string_view string, ArgsT&&... args)
         {
 #ifdef TAILS_DEBUG
             std::cout << std::vformat(string, std::make_format_args(args...)) << '\n';

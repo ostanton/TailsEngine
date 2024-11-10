@@ -13,6 +13,13 @@
 
 namespace tails
 {
+    CLevel::CLevel(std::string path)
+        : m_path(std::move(path))
+    {
+    }
+
+    CLevel::CLevel(CLevel&&) noexcept = default;
+    CLevel& CLevel::operator=(CLevel&&) noexcept = default;
     CLevel::~CLevel() = default;
 
     CEntity* CLevel::spawnEntity(std::string_view className, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
@@ -67,11 +74,6 @@ namespace tails
         
         // test pointers, not values (two different cameras with same centre and size, etc. would be the same)
         return &camera->getCameraView() == m_view;
-    }
-
-    CLevel::CLevel(std::string path)
-        : m_path(std::move(path))
-    {
     }
 
     void CLevel::open()

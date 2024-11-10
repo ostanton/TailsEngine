@@ -22,12 +22,19 @@ namespace tails
         friend CEngine;
 
     public:
-        CLevel* openLevel(std::string path, std::unique_ptr<SLevelSettings> settings = nullptr);
+        CWorld(const CWorld&) = delete;
+        CWorld(CWorld&&) noexcept = default;
+        CWorld& operator=(const CWorld&) = delete;
+        CWorld& operator=(CWorld&&) noexcept = default;
+        ~CWorld() override;
+        
+        CLevel& openLevel(std::string path, std::unique_ptr<SLevelSettings> settings = nullptr);
         bool closeLevel(CLevel* level);
-        bool closeLevel(size_t index) const;
+        bool closeLevel(size_t index);
 
         [[nodiscard]] CEngine& getEngine() const;
-        [[nodiscard]] CLevel* getLevel(size_t index) const;
+        [[nodiscard]] CLevel* getLevel(size_t index);
+        [[nodiscard]] const CLevel* getLevel(size_t index) const;
         
     private:
         CWorld() = default;
@@ -37,8 +44,7 @@ namespace tails
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
 
-        // could make automatically allocated? Would including level header here be very bad??
-        std::vector<std::unique_ptr<CLevel>> m_openLevels;
+        std::vector<CLevel> m_openLevels;
     };
 }
 

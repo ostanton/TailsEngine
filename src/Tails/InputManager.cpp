@@ -6,24 +6,23 @@
 
 namespace tails
 {
-    bool CInputManager::isActionActive(std::string_view action)
+    bool CInputManager::isActionActive(const std::string_view action)
     {
         for (const auto& [actionName, values] : get().m_actions)
         {
-            if (actionName == hash(action))
+            if (actionName != hash(action)) continue;
+
+            for (auto& key : values)
             {
-                for (auto& key : values)
-                {
-                    if (key.isActive())
-                        return true;
-                }
+                if (key.isActive())
+                    return true;
             }
         }
 
         return false;
     }
 
-    float CInputManager::getActionScalarValue(std::string_view action)
+    float CInputManager::getActionScalarValue(const std::string_view action)
     {
         if (!actionExists(action)) return 0.f;
 
@@ -37,17 +36,17 @@ namespace tails
         return result;
     }
 
-    void CInputManager::addActionMapping(std::string_view name, SUserKey key)
+    void CInputManager::addActionMapping(const std::string_view name, SUserKey key)
     {
         addActionMapping(hash(name), std::vector({key}));
     }
 
-    void CInputManager::addActionMapping(std::string_view name, const std::vector<SUserKey>& keys)
+    void CInputManager::addActionMapping(const std::string_view name, const std::vector<SUserKey>& keys)
     {
         addActionMapping(hash(name), keys);
     }
 
-    bool CInputManager::actionExists(std::string_view action)
+    bool CInputManager::actionExists(const std::string_view action)
     {
         return actionExists(hash(action));
     }
@@ -86,7 +85,7 @@ namespace tails
         return instance;
     }
 
-    void CInputManager::addActionMapping(size_t id, const std::vector<SUserKey>& keys)
+    void CInputManager::addActionMapping(const size_t id, const std::vector<SUserKey>& keys)
     {
         if (actionExists(id))
             get().m_actions[id] = keys;
@@ -94,7 +93,7 @@ namespace tails
             get().m_actions.try_emplace(id, keys);
     }
 
-    bool CInputManager::actionExists(size_t id)
+    bool CInputManager::actionExists(const size_t id)
     {
         return get().m_actions.contains(id);
     }

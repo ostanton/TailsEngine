@@ -12,7 +12,7 @@ namespace tails
     
     template<typename T, typename... Ts>
     concept ConstructibleUserType =
-        std::is_class_v<T> &&
+        UserType<T> &&
         std::constructible_from<T, Ts...>;
 
     /**

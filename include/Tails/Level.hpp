@@ -28,10 +28,11 @@ namespace tails
         
     public:
         CLevel() = delete;
+        explicit CLevel(std::string path);
         CLevel(const CLevel&) = delete;
-        CLevel(CLevel&&) noexcept = default;
+        CLevel(CLevel&&) noexcept;
         CLevel& operator=(const CLevel&) = delete;
-        CLevel& operator=(CLevel&&) noexcept = default;
+        CLevel& operator=(CLevel&&) noexcept;
         ~CLevel() override;
         
         /**
@@ -95,8 +96,6 @@ namespace tails
         CResourceManager resourceManager;
         
     private:
-        CLevel(std::string path);
-
         void open();
         void setSettings(std::unique_ptr<SLevelSettings> settings);
 

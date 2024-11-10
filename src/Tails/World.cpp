@@ -7,18 +7,22 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <algorithm>
+
 namespace tails
 {
-    CLevel* CWorld::openLevel(std::string path, std::unique_ptr<SLevelSettings> settings)
-    {
-        m_openLevels.emplace_back(new CLevel(std::move(path)));
-        CLevel* result {m_openLevels.back().get()};
-        result->outer = this;
-        result->setSettings(std::move(settings));
-        result->m_defaultView.setCenter(getEngine().getRenderView().getCenter());
-        result->m_defaultView.setSize(getEngine().getRenderView().getSize());
+    CWorld::~CWorld() = default;
 
-        result->open();
+    CLevel& CWorld::openLevel(std::string path, std::unique_ptr<SLevelSettings> settings)
+    {
+        m_openLevels.emplace_back(std::move(path));
+        CLevel& result {m_openLevels.back()};
+        result.outer = this;
+        result.setSettings(std::move(settings));
+        result.m_defaultView.setCenter(getEngine().getRenderView().getCenter());
+        result.m_defaultView.setSize(getEngine().getRenderView().getSize());
+
+        result.open();
 
         CDebug::printf("Opened level path \"{}\"", path);
 
@@ -27,10 +31,10 @@ namespace tails
 
     bool CWorld::closeLevel(CLevel* level)
     {
-        if (const auto it = std::find_if(m_openLevels.begin(), m_openLevels.end(),
+        if (const auto it = std::ranges::find_if(m_openLevels.begin(), m_openLevels.end(),
             [&](auto& uniqueLevel)
             {
-                return uniqueLevel.get() == level;
+                return &uniqueLevel == level;
             }); it != m_openLevels.end())
         {
             level->markForDestroy();
@@ -41,13 +45,13 @@ namespace tails
         return false;
     }
 
-    bool CWorld::closeLevel(size_t index) const
+    bool CWorld::closeLevel(const size_t index)
     {
         if (index >= m_openLevels.size())
             return false;
 
-        m_openLevels[index]->markForDestroy();
-        m_openLevels[index]->close();
+        m_openLevels[index].markForDestroy();
+        m_openLevels[index].close();
         return true;
     }
 
@@ -56,11 +60,18 @@ namespace tails
         return *dynamic_cast<CEngine*>(outer);
     }
 
-    CLevel* CWorld::getLevel(size_t index) const
+    CLevel* CWorld::getLevel(const size_t index)
     {
         if (index >= m_openLevels.size()) return nullptr;
         
-        return m_openLevels[index].get();
+        return &m_openLevels[index];
+    }
+
+    const CLevel* CWorld::getLevel(const size_t index) const
+    {
+        if (index >= m_openLevels.size()) return nullptr;
+        
+        return &m_openLevels[index];
     }
 
     void CWorld::preTick()
@@ -69,7 +80,7 @@ namespace tails
 
         for (auto& level : m_openLevels)
         {
-            level->preTick();
+            level.preTick();
         }
     }
 
@@ -77,15 +88,15 @@ namespace tails
     {
         for (auto& level : m_openLevels)
         {
-            level->tick(deltaTime);
+            level.tick(deltaTime);
         }
     }
 
-    void CWorld::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void CWorld::draw(sf::RenderTarget& target, const sf::RenderStates states) const
     {
         for (auto& level : m_openLevels)
         {
-            target.draw(*level, states);
+            target.draw(level, states);
         }
     }
 
@@ -95,9 +106,9 @@ namespace tails
 
         for (auto it = m_openLevels.rbegin(); it != m_openLevels.rend();)
         {
-            (*it)->postTick();
+            it->postTick();
 
-            if ((*it)->pendingDestroy())
+            if (it->pendingDestroy())
             {
                 it = decltype(it)(m_openLevels.erase(std::next(it).base()));
             }

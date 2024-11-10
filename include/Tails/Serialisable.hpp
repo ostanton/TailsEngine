@@ -5,8 +5,6 @@
 
 #include <nlohmann/json_fwd.hpp>
 
-#include <string>
-
 namespace tails
 {
     class TAILS_API ISerialisable
