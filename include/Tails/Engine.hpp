@@ -39,7 +39,23 @@ namespace tails
 
     struct TAILS_API SRenderProperties final
     {
+        // these don't work well when false :(
+        /**
+         * If true, the game draws to an "internal" target at the specified resolution,
+         * then draws that to the "final" target.
+         * If false, it just draws it straight to the "final" target like most engines have by default
+         */
+        bool useInternalResolution {true};
+
+        /**
+         * The "internal" target resolution
+         */
         sf::Vector2u resolution {240, 160};
+
+        /**
+         * Whether to preserve the "internal" target's resolution at its aspect ratio when scaled
+         * up to the window resolution size
+         */
         bool maintainAspectRatio {true};
 
         [[nodiscard]] std::string toString() const;

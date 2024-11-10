@@ -185,11 +185,10 @@ namespace tails
         {
             window->setFramerateLimit(m_settings->framerateLimit);
         }
-        
+
         const auto& internalRenderTexture = m_renderTextureInternal.getTexture();
 
-        if (m_renderProperties.maintainAspectRatio)
-            calculateInternalAspectRatio(m_renderTarget->getSize());
+        calculateInternalAspectRatio(m_renderTarget->getSize());
 
         CDebug::print("Main loop started");
         
@@ -211,22 +210,29 @@ namespace tails
                     }
                     else if (const auto* resize = ev->getIf<sf::Event::Resized>())
                     {
-                        if (m_renderProperties.maintainAspectRatio)
-                            calculateInternalAspectRatio(resize->size);
+                        calculateInternalAspectRatio(resize->size);
                         CDebug::print("Resized window size: ", resize->size.x, "x", resize->size.y);
                     }
                 }
             }
 
             tick(time.asSeconds());
-            
-            m_renderTextureInternal.clear(m_renderTextureInternalClearColour);
-            draw(m_renderTextureInternal, m_renderStates);
-            m_renderTextureInternal.display();
+
+            if (m_renderProperties.useInternalResolution)
+            {
+                m_renderTextureInternal.clear(m_renderTextureInternalClearColour);
+                draw(m_renderTextureInternal, m_renderStates);
+                m_renderTextureInternal.display();
+            }
 
             m_renderTarget->clear(m_renderTargetClearColour);
             m_renderTarget->setView(m_renderView);
-            m_renderTarget->draw(sf::Sprite(internalRenderTexture));
+            
+            if (m_renderProperties.useInternalResolution)
+                m_renderTarget->draw(sf::Sprite(internalRenderTexture));
+            else
+                draw(*m_renderTarget, m_renderStates);
+            
             m_renderTarget->setView(m_renderTarget->getDefaultView());
 
             if (window)
@@ -367,8 +373,22 @@ namespace tails
         m_world.openLevel(std::move(path), m_settings->createLevelSettings());
     }
 
-    void CEngine::calculateInternalAspectRatio(sf::Vector2u windowSize)
+    void CEngine::calculateInternalAspectRatio(const sf::Vector2u windowSize)
     {
+        if (!m_renderProperties.maintainAspectRatio)
+        {
+            // TODO - doesn't work :(
+            m_renderView = sf::View(sf::FloatRect({0.f, 0.f},{
+                    static_cast<float>(windowSize.x),
+                    static_cast<float>(windowSize.y)
+            }));
+            if (!m_renderTextureInternal.resize(windowSize))
+            {
+                CDebug::print("Failed to resize internal render target to final render target size.");
+            }
+            return;
+        }
+        
         // TODO - support integer scaling so we never get half pixels on weird window sizes
         // would be nice to have a toggle so you can enable/disable for each game or even game settings?
         const sf::Vector2f ratio {
