@@ -47,6 +47,6 @@ namespace tails
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip};
     };
 }
-TAILS_REGISTER_CLASS(CTileMapComponent)
+TAILS_REGISTER_CLASS_CUSTOM_NAME(CTileMapComponent, "TileMapComponent")
 
 #endif // TAILS_TILE_MAP_COMPONENT_HPP

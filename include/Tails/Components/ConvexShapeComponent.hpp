@@ -39,6 +39,6 @@ namespace tails
         sf::ConvexShape m_convexShape;
     };
 }
-TAILS_REGISTER_CLASS(CConvexShapeComponent)
+TAILS_REGISTER_CLASS_CUSTOM_NAME(CConvexShapeComponent, "ConvexShapeComponent")
 
 #endif // TAILS_CONVEX_SHAPE_COMPONENT_HPP

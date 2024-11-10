@@ -82,6 +82,6 @@ namespace tails
         float m_italicShear {12.f};
     };
 }
-TAILS_REGISTER_CLASS(CTextComponent)
+TAILS_REGISTER_CLASS_CUSTOM_NAME(CTextComponent, "TextComponent")
 
 #endif // TAILS_TEXT_COMPONENT_HPP

@@ -42,6 +42,6 @@ namespace tails
         sf::CircleShape m_circleShape;
     };
 }
-TAILS_REGISTER_CLASS(CCircleShapeComponent)
+TAILS_REGISTER_CLASS_CUSTOM_NAME(CCircleShapeComponent, "CircleShapeComponent")
 
 #endif // TAILS_CIRCLE_SHAPE_COMPONENT_HPP

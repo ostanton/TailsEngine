@@ -141,6 +141,6 @@ namespace tails
         SAnimation* m_currentAnim {nullptr};
     };
 }
-TAILS_REGISTER_CLASS(CAnimatedSpriteComponent)
+TAILS_REGISTER_CLASS_CUSTOM_NAME(CAnimatedSpriteComponent, "AnimatedSpriteComponent")
 
 #endif // TAILS_ANIMATED_SPRITE_COMPONENT_HPP

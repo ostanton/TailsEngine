@@ -8,10 +8,15 @@
 #include <Tails/ClassRegistry.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include <vector>
 #include <memory>
+
+namespace sf
+{
+    class Transform;
+}
 
 namespace tails
 {
@@ -100,6 +105,18 @@ namespace tails
          */
         [[nodiscard]] sf::Vector2f getScale() const;
 
+        /**
+         * Gets the transform of this entity's root component
+         * @return Entity transform
+         */
+        [[nodiscard]] const sf::Transform& getTransform() const;
+
+        /**
+         * Gets the inverse transform of this entity's root component
+         * @return Entity inverse transform
+         */
+        [[nodiscard]] const sf::Transform& getInverseTransform() const;
+
         template<Derives<CComponent> T>
         T* setRootComponent()
         {
@@ -157,6 +174,6 @@ namespace tails
         std::unique_ptr<CComponent> m_rootComponent;
     };
 }
-TAILS_REGISTER_CLASS(CEntity)
+TAILS_REGISTER_CLASS_CUSTOM_NAME(CEntity, "Entity")
 
 #endif // TAILS_ENTITY_HPP

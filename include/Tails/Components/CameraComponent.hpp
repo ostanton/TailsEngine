@@ -30,6 +30,6 @@ namespace tails
         float m_lag {0.f};
     };
 }
-TAILS_REGISTER_CLASS(CCameraComponent)
+TAILS_REGISTER_CLASS_CUSTOM_NAME(CCameraComponent, "CameraComponent")
 
 #endif // TAILS_CAMERA_COMPONENT_HPP

@@ -5,7 +5,6 @@
 #include <Tails/Components/Component.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Texture.hpp>
 
 namespace tails
 {
@@ -174,6 +173,16 @@ namespace tails
     sf::Vector2f CEntity::getScale() const
     {
         return m_rootComponent->getScale();
+    }
+
+    const sf::Transform& CEntity::getTransform() const
+    {
+        return m_rootComponent->getTransform();
+    }
+
+    const sf::Transform& CEntity::getInverseTransform() const
+    {
+        return m_rootComponent->getInverseTransform();
     }
 
     void CEntity::serialise(nlohmann::json& obj) const

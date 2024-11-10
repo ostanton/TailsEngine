@@ -39,6 +39,6 @@ namespace tails
         const sf::Texture* m_texture {nullptr};
     };
 }
-TAILS_REGISTER_CLASS(CSpriteComponent)
+TAILS_REGISTER_CLASS_CUSTOM_NAME(CSpriteComponent, "SpriteComponent")
 
 #endif // TAILS_SPRITE_COMPONENT_HPP
