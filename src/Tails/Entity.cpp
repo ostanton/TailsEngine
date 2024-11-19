@@ -185,6 +185,11 @@ namespace tails
         return m_rootComponent->getInverseTransform();
     }
 
+    CComponent* CEntity::addComponent(std::unique_ptr<CComponent> component) const
+    {
+        return m_rootComponent->addChild(std::move(component));
+    }
+
     void CEntity::serialise(nlohmann::json& obj) const
     {
         

@@ -76,6 +76,36 @@ namespace tails
         return &camera->getCameraView() == m_view;
     }
 
+    std::optional<SHitResult> CLevel::rectangleTrace(
+        const sf::FloatRect globalBounds,
+        const std::span<CEntity*> entitiesToIgnore
+    )
+    {
+        if (globalBounds.size == sf::Vector2f{0.f, 0.f})
+            return std::nullopt;
+
+        for (auto& entity : m_entities)
+        {
+            if (!entitiesToIgnore.empty())
+            {
+                if (std::ranges::find_if(
+                    entitiesToIgnore.begin(),
+                    entitiesToIgnore.end(),
+                    [&entity](auto& ignoreEntity)
+                    {
+                        return entity.get() == ignoreEntity;
+                    }) != entitiesToIgnore.end()
+                ) continue;
+            }
+
+            if (globalBounds.findIntersection(entity->getGlobalBounds()))
+                // no idea what to do with the hit component atm so just use the entity's root component
+                return std::make_optional(SHitResult{entity.get(), &entity->getRootComponent()});
+        }
+
+        return std::nullopt;
+    }
+
     void CLevel::open()
     {
         // TODO - replace with loading from json, the name specified there.

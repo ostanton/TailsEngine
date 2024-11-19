@@ -13,6 +13,8 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <span>
+#include <optional>
 
 namespace tails
 {
@@ -21,6 +23,13 @@ namespace tails
     class CEngine;
     struct SLevelSettings;
     class CCameraComponent;
+    class CComponent;
+
+    struct TAILS_API SHitResult final
+    {
+        CEntity* hitEntity;
+        CComponent* hitComponent;
+    };
     
     class TAILS_API CLevel final : public CObject, public ITickable, public sf::Drawable
     {
@@ -92,6 +101,11 @@ namespace tails
 
         [[nodiscard]] const std::string& getPath() const {return m_path;}
         [[nodiscard]] SLevelSettings& getSettings() const {return *m_settings;}
+
+        [[nodiscard]] std::optional<SHitResult> rectangleTrace(
+            sf::FloatRect globalBounds,
+            std::span<CEntity*> entitiesToIgnore
+        );
 
         CResourceManager resourceManager;
         

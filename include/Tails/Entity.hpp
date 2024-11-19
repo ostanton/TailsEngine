@@ -128,6 +128,14 @@ namespace tails
 
         template<Derives<CComponent> T>
         [[nodiscard]] T& getRootComponent() const {return *static_cast<T*>(m_rootComponent.get());}
+
+        template<Derives<CComponent> T>
+        T* createComponent()
+        {
+            if (!m_rootComponent) return setRootComponent<T>();
+
+            return static_cast<T*>(addComponent(std::unique_ptr<T>(newObject<T>(this))));
+        }
         
     protected:
         /**
@@ -166,6 +174,8 @@ namespace tails
          * @param other The entity we are colliding against
          */
         virtual void collision(CEntity& other) {}
+
+        [[nodiscard]] CComponent* addComponent(std::unique_ptr<CComponent> component) const;
 
     private:
         void serialise(nlohmann::json& obj) const override;
