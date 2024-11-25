@@ -1,30 +1,31 @@
 #include <Tails/World.hpp>
 #include <Tails/Level.hpp>
 #include <Tails/Engine.hpp>
-#include <Tails/LevelSettings.hpp>
-#include <Tails/Debug.hpp>
 #include <Tails/Vector2.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include <algorithm>
+#include <LDtkLoader/World.hpp>
 
 namespace tails
 {
     CWorld::~CWorld() = default;
 
-    CLevel& CWorld::openLevel(std::string path, std::unique_ptr<SLevelSettings> settings)
+    CLevel& CWorld::openLevel(const std::string& name, const bool closePrevious /* = true */)
     {
-        m_openLevels.emplace_back(std::move(path));
+        if (m_openLevels.empty() || !closePrevious)
+        {
+            m_openLevels.emplace_back(m_world ? &m_world->getLevel(name) : nullptr);
+        }
+        else if (closePrevious)
+        {
+            m_openLevels[m_openLevels.size() - 1] = CLevel(nullptr);
+        }
+        
         CLevel& result {m_openLevels.back()};
         result.outer = this;
-        result.setSettings(std::move(settings));
         result.m_defaultView.setCenter(getEngine().getRenderView().getCenter());
         result.m_defaultView.setSize(getEngine().getRenderView().getSize());
-
-        result.open();
-
-        CDebug::printf("Opened level path \"{}\"", path);
 
         return result;
     }
@@ -57,7 +58,7 @@ namespace tails
 
     CEngine& CWorld::getEngine() const
     {
-        return *dynamic_cast<CEngine*>(outer);
+        return *getTypedOuter<CEngine>();
     }
 
     CLevel* CWorld::getLevel(const size_t index)
@@ -74,6 +75,35 @@ namespace tails
         return &m_openLevels[index];
     }
 
+    CLevel* CWorld::getLevel(const std::string_view name)
+    {
+        for (auto& level : m_openLevels)
+        {
+            if (level.getName() == name)
+                return &level;
+        }
+
+        return nullptr;
+    }
+
+    const CLevel* CWorld::getLevel(const std::string_view name) const
+    {
+        for (auto& level : m_openLevels)
+        {
+            if (level.getName() == name)
+                return &level;
+        }
+
+        return nullptr;
+    }
+
+    CWorld::CWorld() = default;
+
+    void CWorld::setLDtkWorld(const ldtk::World* world)
+    {
+        m_world = world;
+    }
+
     void CWorld::preTick()
     {
         ITickable::preTick();
@@ -84,7 +114,7 @@ namespace tails
         }
     }
 
-    void CWorld::tick(float deltaTime)
+    void CWorld::tick(const float deltaTime)
     {
         for (auto& level : m_openLevels)
         {

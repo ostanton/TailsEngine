@@ -9,19 +9,23 @@
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/View.hpp>
+#include <SFML/Graphics/Transformable.hpp>
 
-#include <string>
 #include <memory>
 #include <vector>
 #include <span>
 #include <optional>
+
+namespace ldtk
+{
+    class Level;
+}
 
 namespace tails
 {
     class CWorld;
     class CEntity;
     class CEngine;
-    struct SLevelSettings;
     class CCameraComponent;
     class CComponent;
 
@@ -31,13 +35,13 @@ namespace tails
         CComponent* hitComponent;
     };
     
-    class TAILS_API CLevel final : public CObject, public ITickable, public sf::Drawable
+    class TAILS_API CLevel final : public CObject, public ITickable, public sf::Drawable, public sf::Transformable
     {
         friend CWorld;
         
     public:
         CLevel() = delete;
-        explicit CLevel(std::string path);
+        explicit CLevel(const ldtk::Level* level);
         CLevel(const CLevel&) = delete;
         CLevel(CLevel&&) noexcept;
         CLevel& operator=(const CLevel&) = delete;
@@ -99,20 +103,16 @@ namespace tails
         [[nodiscard]] const sf::View& getActiveCameraView() const;
         [[nodiscard]] bool isCameraActive(const CCameraComponent* camera) const;
 
-        [[nodiscard]] const std::string& getPath() const {return m_path;}
-        [[nodiscard]] SLevelSettings& getSettings() const {return *m_settings;}
-
         [[nodiscard]] std::optional<SHitResult> rectangleTrace(
             sf::FloatRect globalBounds,
             std::span<CEntity*> entitiesToIgnore
         );
 
+        [[nodiscard]] const std::string& getName() const;
+
         CResourceManager resourceManager;
         
     private:
-        void open();
-        void setSettings(std::unique_ptr<SLevelSettings> settings);
-
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -127,12 +127,7 @@ namespace tails
 
         CEntity* spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale);
         
-        std::string m_path;
-
-        /**
-         * Resets with each new level load, it is not persistent.
-         */
-        std::unique_ptr<SLevelSettings> m_settings;
+        const ldtk::Level* m_level {nullptr};
 
         std::vector<std::unique_ptr<CEntity>> m_entities;
 

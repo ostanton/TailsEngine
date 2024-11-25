@@ -1,33 +1,27 @@
 #include <Tails/Directories.hpp>
 #include <Tails/Debug.hpp>
+#include <Tails/Maths.hpp>
 
 #include <nlohmann/json.hpp>
 
 namespace tails
 {
-    bool CDirectories::loadDirectories(const nlohmann::json& json)
+    void CDirectories::addDirectory(const std::string_view id, std::filesystem::path&& path)
     {
-        if (json.is_null())
-            // failed to load json file
-            return false;
+        if (containsDirectory(id))
+            return;
 
-        CDebug::print("Looping directories");
-        for (auto& [dirKey, dirValue] : json.items())
-        {
-            CDebug::print("  Added ", dirKey, " directory as ", dirValue.get<std::string>());
-            get().m_dirs.try_emplace(dirKey, dirValue.get<std::string>());
-        }
-
-        CDebug::print();
-        return true;
+        get().m_dirs.try_emplace(hash(id), std::move(path));
     }
-    
-    std::string CDirectories::getDirectory(const std::string& id)
-    {
-        if (get().m_dirs.contains(id))
-            return get().m_dirs[id];
 
-        return "";
+    bool CDirectories::containsDirectory(const std::string_view id)
+    {
+        return get().m_dirs.contains(hash(id));
+    }
+
+    const std::filesystem::path& CDirectories::getDirectory(const std::string_view id)
+    {
+        return get().m_dirs[hash(id)];
     }
 
     CDirectories& CDirectories::get()

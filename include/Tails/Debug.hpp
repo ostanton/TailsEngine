@@ -51,8 +51,13 @@ namespace tails
         static constexpr void error(ArgsT&&... args)
         {
 #ifdef TAILS_DEBUG
-            std::cerr << "Error: ";
-            ((std::cerr << std::forward<ArgsT>(args)), ...) << '\n';
+            if constexpr (sizeof...(ArgsT) > 0)
+            {
+                std::cerr << "Error: ";
+                ((std::cerr << std::forward<ArgsT>(args)), ...) << '\n';
+            }
+            else
+                std::cerr << "Error (unexplained)" << '\n';
 #endif // TAILS_DEBUG
         }
 
@@ -76,6 +81,20 @@ namespace tails
 #ifdef TAILS_DEBUG
             std::cerr << "Exception: ";
             ((std::cerr << std::forward<ArgsT>(args)), ...) << '\n';
+#endif // TAILS_DEBUG
+        }
+
+        static void flush()
+        {
+#ifdef TAILS_DEBUG
+            std::flush(std::cout);
+#endif // TAILS_DEBUG
+        }
+
+        static void flushErr()
+        {
+#ifdef TAILS_DEBUG
+            std::flush(std::cerr);
 #endif // TAILS_DEBUG
         }
     };

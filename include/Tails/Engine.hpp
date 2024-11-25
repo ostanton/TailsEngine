@@ -21,8 +21,8 @@
 namespace tails
 {
     class CClassRegistry;
-    struct SEngineSettings;
     class CSubsystem;
+    class CWorldSubsystem;
 
     namespace ui
     {
@@ -33,9 +33,9 @@ namespace tails
     {
         std::string title {"Tails Engine"};
         sf::Vector2u resolution {1280, 720};
-
-        [[nodiscard]] std::string toString() const;
     };
+
+    std::ostream& operator<<(std::ostream& os, const SWindowProperties& windowProperties);
 
     struct TAILS_API SRenderProperties final
     {
@@ -57,15 +57,14 @@ namespace tails
          * up to the window resolution size
          */
         bool maintainAspectRatio {true};
-
-        [[nodiscard]] std::string toString() const;
     };
+
+    std::ostream& operator<<(std::ostream& os, const SRenderProperties renderProperties);
     
     class TAILS_API CEngine final : public CObject, public ITickable, public sf::Drawable
     {
     public:
         CEngine();
-        explicit CEngine(std::unique_ptr<SEngineSettings> engineSettings);
         CEngine(const CEngine&) = delete;
         CEngine(CEngine&&) noexcept;
         CEngine& operator=(const CEngine&) = delete;
@@ -123,13 +122,11 @@ namespace tails
         [[nodiscard]] sf::View& getRenderView() noexcept {return m_renderView;}
         [[nodiscard]] const sf::View& getRenderView() const noexcept {return m_renderView;}
 
-        [[nodiscard]] CWorld& getWorld() noexcept {return m_world;}
-        [[nodiscard]] const CWorld& getWorld() const noexcept {return m_world;}
+        [[nodiscard]] CWorldSubsystem& getWorldSubsystem() noexcept;
+        [[nodiscard]] const CWorldSubsystem& getWorldSubsystem() const noexcept;
 
         [[nodiscard]] ui::CUISubsystem& getUISubsystem() noexcept;
         [[nodiscard]] const ui::CUISubsystem& getUISubsystem() const noexcept;
-
-        [[nodiscard]] SEngineSettings& getSettings() const {return *m_settings;}
 
         [[nodiscard]] SRenderProperties& getRenderProperties() noexcept {return m_renderProperties;}
         [[nodiscard]] const SRenderProperties& getRenderProperties() const noexcept {return m_renderProperties;}
@@ -153,11 +150,10 @@ namespace tails
         
         void registerSubsystemImpl(std::size_t id, std::unique_ptr<CSubsystem> subsystem);
         void setupDefaultSubsystems();
-        void initSubsystems();
         
-        void initMembers();
+        void initSubsystems();
         void initInternalRender();
-        void initWorldLevel(std::string path);
+        
         void calculateInternalAspectRatio(sf::Vector2u windowSize);
         
         /**
@@ -184,16 +180,10 @@ namespace tails
          */
         bool m_running {true};
 
-        /**
-         * The world associated with the engine.
-         */
-        CWorld m_world;
-
         std::unordered_map<std::size_t, std::unique_ptr<CSubsystem>> m_subsystems;
 
         SRenderProperties m_renderProperties;
         SWindowProperties m_windowProperties;
-        std::unique_ptr<SEngineSettings> m_settings;
 
         float m_lifeTime {0.f};
 

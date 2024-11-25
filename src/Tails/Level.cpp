@@ -2,28 +2,34 @@
 #include <Tails/World.hpp>
 #include <Tails/Entity.hpp>
 #include <Tails/Engine.hpp>
-#include <Tails/LevelSettings.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/Components/CameraComponent.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include <nlohmann/json.hpp>
-#include <fstream>
+#include <LDtkLoader/Level.hpp>
 
 namespace tails
 {
-    CLevel::CLevel(std::string path)
-        : m_path(std::move(path))
+    CLevel::CLevel(const ldtk::Level* level)
+        : m_level(level)
     {
+        if (level)
+            setPosition({static_cast<float>(level->position.x), static_cast<float>(level->position.y)});
     }
 
     CLevel::CLevel(CLevel&&) noexcept = default;
     CLevel& CLevel::operator=(CLevel&&) noexcept = default;
     CLevel::~CLevel() = default;
 
-    CEntity* CLevel::spawnEntity(std::string_view className, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
+    CEntity* CLevel::spawnEntity(
+        const std::string_view className,
+        const sf::Vector2f& position,
+        const sf::Angle rotation,
+        const sf::Vector2f& scale
+    )
     {
+        CDebug::print("Spawning ", className);
         return spawnEntity<CEntity>(className, position, rotation, scale);
     }
 
@@ -106,39 +112,16 @@ namespace tails
         return std::nullopt;
     }
 
-    void CLevel::open()
+    const std::string& CLevel::getName() const
     {
-        // TODO - replace with loading from json, the name specified there.
-        // If not specified, the file name or something.
-
-        // TODO - use default settings if level settings does not exist!!
-        if (m_path.empty())
-        {
-            getSettings().name = "none";
-            return;
-        }
-
-        std::ifstream stream {m_path};
-        const auto levelObj = nlohmann::json::parse(stream);
-
-        for (auto& [entityClass, entityObj] : levelObj.items())
-        {
-            spawnEntity(entityClass)->deserialise(entityObj);
-        }
-
-        getSettings().name = levelObj["name"].get<std::string>();
-    }
-
-    void CLevel::setSettings(std::unique_ptr<SLevelSettings> settings)
-    {
-        m_settings = std::move(settings);
+        return m_level->name;
     }
 
     void CLevel::preTick()
     {
         ITickable::preTick();
 
-        for (auto& entity : m_entities)
+        for (const auto& entity : m_entities)
         {
             entity->preTick();
 
@@ -150,7 +133,7 @@ namespace tails
         }
     }
 
-    void CLevel::tick(float deltaTime)
+    void CLevel::tick(const float deltaTime)
     {
         // normal for loop instead of range-based because I think the iterator gets invalidated when emplacing
         // for spawning entities whilst iterating! This works, however.
@@ -167,10 +150,12 @@ namespace tails
 
     void CLevel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        sf::FloatRect viewport {
+        const sf::FloatRect viewport {
             {getActiveCameraView().getCenter() - getActiveCameraView().getSize() / 2.f},
             {getActiveCameraView().getSize() * 2.f}
         };
+
+        states.transform *= getTransform();
         
         target.setView(getActiveCameraView());
         //CDebug::print("Viewport left: ", viewport.position.x,
@@ -231,6 +216,7 @@ namespace tails
 
     CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
     {
+        entity->outer = this;
         entity->setPosition(position);
         entity->setRotation(rotation);
         entity->setScale(scale);

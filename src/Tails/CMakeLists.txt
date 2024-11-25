@@ -7,18 +7,17 @@ add_library(
     Engine.cpp
     World.cpp
     Level.cpp
-    LevelSettings.cpp
     InputManager.cpp
     Entity.cpp
     ResourceManager.cpp
     Directories.cpp
     Debug.cpp
-    EngineSettings.cpp
     Localisation.cpp
     LocaleString.cpp
     Exception.cpp
     Key.cpp
     Subsystem.cpp
+    WorldSubsystem.cpp
 )
 
 add_subdirectory(Audio)

@@ -122,6 +122,13 @@ namespace tails
         T y;
     };
 
+    template<typename T>
+    std::ostream& operator<<(std::ostream& os, const TVector2<T>& vector)
+    {
+        os << vector.x << "x" << vector.y;
+        return os;
+    }
+
     using SVector2f = TVector2<float>;
     using SVector2i = TVector2<int>;
     using SVector2u = TVector2<unsigned int>;

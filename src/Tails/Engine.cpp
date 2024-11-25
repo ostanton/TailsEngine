@@ -3,143 +3,43 @@
 #include <Tails/Directories.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Vector2.hpp>
-#include <Tails/LevelSettings.hpp>
-#include <Tails/EngineSettings.hpp>
 #include <Tails/Subsystem.hpp>
+#include <Tails/WorldSubsystem.hpp>
 #include <Tails/UI/UISubsystem.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
-#include <nlohmann/json.hpp>
-
-#include <fstream>
-
 namespace tails
 {
-    std::string SWindowProperties::toString() const
+    std::ostream& operator<<(std::ostream& os, const SWindowProperties& windowProperties)
     {
-        return "Window properties:\n  Title - \"" + title + "\"\n  Resolution - " + SVector2u::toString(resolution);
+        os << "Window properties:\n" <<
+            "  Title - \"" << windowProperties.title << "\"\n" <<
+            "  Resolution - " << SVector2u::toString(windowProperties.resolution);
+        return os;
     }
 
-    std::string SRenderProperties::toString() const
+    std::ostream& operator<<(std::ostream& os, const SRenderProperties renderProperties)
     {
-        return "Render properties:\n  Resolution - " + SVector2u::toString(resolution);
+        os << "Render properties:\n" <<
+            "  Resolution - " << SVector2u::toString(renderProperties.resolution) << "\n" <<
+            "  Use Internal Resolution - " << std::boolalpha << renderProperties.useInternalResolution << "\n" <<
+            "  Maintain Aspect Ratio - " << renderProperties.maintainAspectRatio << std::noboolalpha;
+        return os;
     }
 
-    CEngine::CEngine() : CEngine(std::make_unique<SEngineSettings>())
+    CEngine::CEngine()
     {
-    }
-
-    CEngine::CEngine(std::unique_ptr<SEngineSettings> engineSettings)
-            : m_settings(std::move(engineSettings))
-    {
+        CDebug::flush();
         CDebug::print("Initialising Engine");
         
         // engine should not be pending create
         unmarkForCreate();
         
-        // If input engine settings is null, use default
-        if (!m_settings)
-            m_settings = std::make_unique<SEngineSettings>();
-        
-        // Setup world
-        m_world.outer = this;
-        
-        CDebug::print("Loading ", m_settings->getSetupFilePath());
-
-        std::ifstream setupFile {m_settings->getSetupFilePath()};
-        if (!setupFile.is_open())
-        {
-            CDebug::print("Failed to find ", m_settings->getSetupFilePath());
-            initMembers();
-            return;
-        }
-
-        nlohmann::json setupJson = nlohmann::json::parse(setupFile);
-
-        if (setupJson.is_null())
-        {
-            CDebug::print("Failed to load ", m_settings->getSetupFilePath());
-            initMembers();
-            return;
-        }
-
         setupDefaultSubsystems();
-
-        CDebug::print(std::string("JSON is a valid "), setupJson.type_name());
-        CDebug::print();
-
-        /* DIRECTORIES */
-
-        if (const auto& dirJson = setupJson["directories"]; !dirJson.is_null())
-            CDirectories::loadDirectories(dirJson);
-        else
-            CDebug::print("Failed to load directories, using default");
-        CDebug::print();
-
-        /* RENDER SETTINGS */
-
-        if (const auto& renderJson = setupJson["render"]; !renderJson.is_null())
-        {
-            if (const auto& resolutionJson = renderJson["resolution"]; !resolutionJson.is_null())
-                m_renderProperties.resolution = {
-                    resolutionJson["x"].get<unsigned int>(),
-                    resolutionJson["y"].get<unsigned int>()
-                };
-            else
-                CDebug::print("Failed to load render resolution, using default");
-        }
-        else
-        {
-            CDebug::print("Failed to load render settings, using default");
-        }
-
-        initInternalRender();
-        
-        /* WORLD AND LEVEL */
-        
-        if (const auto& defaultLevelJson = setupJson["default_level"]; !defaultLevelJson.is_null())
-            initWorldLevel(defaultLevelJson.get<std::string>());
-        else
-        {
-            CDebug::print("Failed to open default level, opening blank level");
-            initWorldLevel("");
-        }
-
-        if (const auto level = m_world.getLevel(0))
-            CDebug::print("  Opened level - \"", level->getSettings().name, "\"");
-        else
-            CDebug::error("Created level is invalid!");
-        CDebug::print();
-
-        /* WINDOW SETTINGS */
-
-        if (const auto& windowJson = setupJson["window"]; !windowJson.is_null())
-        {
-            if (const auto& titleJson = windowJson["title"]; !titleJson.is_null())
-                m_windowProperties.title = titleJson.get<std::string>();
-            else
-                CDebug::print("Failed to load window title, using default");
-
-            // TODO - change this for some user settings json?
-            if (const auto& sizeJson = windowJson["resolution"]; !sizeJson.is_null())
-            {
-                m_windowProperties.resolution.x = sizeJson["x"].get<unsigned int>();
-                m_windowProperties.resolution.y = sizeJson["y"].get<unsigned int>();
-            }
-            else
-                CDebug::print("Failed to load window resolution, using default");
-        }
-        else
-            CDebug::print("Failed to load window settings, using default");
-        
-        CDebug::print(m_windowProperties.toString());
-        CDebug::print();
-
-        CDebug::print(m_settings->getSetupFilePath(), " loaded");
-        CDebug::print();
+        CDebug::flush();
     }
 
     CEngine::CEngine(CEngine&&) noexcept = default;
@@ -147,8 +47,9 @@ namespace tails
     
     CEngine::~CEngine()
     {
-        CDebug::print("Engine destructing");
+        CDebug::flush();
         CDebug::print("Engine alive for ", m_lifeTime, " seconds");
+        CDebug::print("Engine destructing");
     }
 
     CSubsystem* CEngine::getSubsystem(std::string_view id) const
@@ -165,7 +66,9 @@ namespace tails
 
     void CEngine::run()
     {
+        CDebug::flush();
         initSubsystems();
+        initInternalRender();
         
         CDebug::print("Initialising final render target");
         // Set default render target as window if it has not already been set
@@ -177,14 +80,11 @@ namespace tails
                 }),
                 m_windowProperties.title
             );
+        CDebug::print(m_windowProperties);
         CDebug::print();
         
         sf::Clock clock;
         const auto window = dynamic_cast<sf::RenderWindow*>(m_renderTarget.get());
-        if (window)
-        {
-            window->setFramerateLimit(m_settings->framerateLimit);
-        }
 
         const auto& internalRenderTexture = m_renderTextureInternal.getTexture();
 
@@ -245,11 +145,22 @@ namespace tails
 
         CDebug::print("Main loop ended");
         CDebug::print();
+        CDebug::flush();
     }
 
     void CEngine::kill()
     {
         m_running = false;
+    }
+
+    CWorldSubsystem& CEngine::getWorldSubsystem() noexcept
+    {
+        return *getSubsystemOfType<CWorldSubsystem>();
+    }
+
+    const CWorldSubsystem& CEngine::getWorldSubsystem() const noexcept
+    {
+        return *getSubsystemOfType<CWorldSubsystem>();
     }
 
     ui::CUISubsystem& CEngine::getUISubsystem() noexcept
@@ -276,19 +187,16 @@ namespace tails
     {
         ITickable::preTick();
 
-        m_world.preTick();
-        getUISubsystem().postTick();
         for (const auto& subsystem : std::ranges::views::values(m_subsystems))
         {
-            subsystem->postTick();
+            subsystem->preTick();
         }
     }
 
     void CEngine::tick(const float deltaTime)
     {
         m_lifeTime += deltaTime;
-        m_world.tick(deltaTime);
-        getUISubsystem().tick(deltaTime);
+        
         for (const auto& subsystem : std::ranges::views::values(m_subsystems))
         {
             subsystem->tick(deltaTime);
@@ -297,8 +205,6 @@ namespace tails
 
     void CEngine::draw(sf::RenderTarget& target, const sf::RenderStates states) const
     {
-        target.draw(m_world, states);
-        target.draw(getUISubsystem(), states);
         for (const auto& subsystem : std::ranges::views::values(m_subsystems))
         {
             target.draw(*subsystem, states);
@@ -309,8 +215,6 @@ namespace tails
     {
         ITickable::postTick();
 
-        m_world.postTick();
-        getUISubsystem().postTick();
         for (const auto& subsystem : std::ranges::views::values(m_subsystems))
         {
             subsystem->postTick();
@@ -326,6 +230,7 @@ namespace tails
     void CEngine::setupDefaultSubsystems()
     {
         CDebug::print("Registering default subsystems");
+        registerSubsystem<CWorldSubsystem>("world");
         registerSubsystem<ui::CUISubsystem>("ui");
         CDebug::print("Registered default subsystems");
         CDebug::print();
@@ -339,15 +244,6 @@ namespace tails
             subsystem->init();
         }
         CDebug::print("Subsystems initialised");
-    }
-
-    void CEngine::initMembers()
-    {
-        setupDefaultSubsystems();
-        initInternalRender();
-        initWorldLevel("");
-        CDebug::print(m_windowProperties.toString());
-        CDebug::print();
     }
 
     void CEngine::initInternalRender()
@@ -364,13 +260,8 @@ namespace tails
         });
         m_renderView.setCenter(m_renderView.getSize() * 0.5f);
 
-        CDebug::print(m_renderProperties.toString());
+        CDebug::print(m_renderProperties);
         CDebug::print();
-    }
-
-    void CEngine::initWorldLevel(std::string path)
-    {
-        m_world.openLevel(std::move(path), m_settings->createLevelSettings());
     }
 
     void CEngine::calculateInternalAspectRatio(const sf::Vector2u windowSize)

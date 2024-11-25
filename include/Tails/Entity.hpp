@@ -39,9 +39,9 @@ namespace tails
     public:
         CEntity();
         CEntity(const CEntity&) = delete;
-        CEntity(CEntity&&) = default;
+        CEntity(CEntity&&) noexcept = default;
         CEntity& operator=(const CEntity&) = delete;
-        CEntity& operator=(CEntity&&) = default;
+        CEntity& operator=(CEntity&&) noexcept = default;
         ~CEntity() override;
         
         /**

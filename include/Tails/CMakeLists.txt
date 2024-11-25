@@ -16,9 +16,7 @@ target_sources(
     Serialisable.hpp
     Debug.hpp
     Vector2.hpp
-    EngineSettings.hpp
     Assert.hpp
-    LevelSettings.hpp
     Localisation.hpp
     LocaleString.hpp
     Exception.hpp
@@ -27,6 +25,7 @@ target_sources(
     Key.hpp
     Maths.hpp
     Subsystem.hpp
+    WorldSubsystem.hpp
 )
 
 add_subdirectory(Audio)

@@ -3,9 +3,8 @@
 
 #include <Tails/Config.hpp>
 
-#include <nlohmann/json_fwd.hpp>
-
-#include <string>
+#include <filesystem>
+#include <string_view>
 #include <unordered_map>
 
 namespace tails
@@ -19,20 +18,25 @@ namespace tails
     {
     public:
         /**
-         * Loads and populates the map with the specified directories in the file at the specified path.
-         *
-         * This is required before accessing directories via ID. They will not exist if this is not called before
-         * (this is done automatically in CEngine's constructor).
-         * @param json JSON object containing the directories
+         * Adds the specified directory. Does nothing if that ID already exists
+         * @param id Identifier for directory
+         * @param path Directory mapped to specified ID
          */
-        static bool loadDirectories(const nlohmann::json& json);
+        static void addDirectory(std::string_view id, std::filesystem::path&& path);
+
+        /**
+         * Checks whether a directory with the specified ID exists
+         * @param id Identifier for directory
+         * @return Valid ID
+         */
+        [[nodiscard]] static bool containsDirectory(std::string_view id);
         
         /**
          * Get the directory from its ID.
          * @param id Identifier for directory
          * @return Directory mapped to specified ID
          */
-        static std::string getDirectory(const std::string& id);
+        [[nodiscard]] static const std::filesystem::path& getDirectory(std::string_view id);
         
     private:
         static CDirectories& get();
@@ -42,7 +46,7 @@ namespace tails
          * 
          * This is used in things like the asset cache, for it to know where to look for a file.
          */
-        std::unordered_map<std::string, std::string> m_dirs;
+        std::unordered_map<std::size_t, std::filesystem::path> m_dirs;
     };
 }
 

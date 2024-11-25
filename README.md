@@ -48,6 +48,7 @@ The dependent libraries are downloaded by CMake automatically via [CPM](https://
 
 - [SFML 3](https://www.sfml-dev.org/)
 - [nlohmann/json](https://github.com/nlohmann/json)
+- [LDtkLoader](https://github.com/Madour/LDtkLoader)
 
 ### Compilers
 

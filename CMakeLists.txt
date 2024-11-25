@@ -37,6 +37,9 @@ CPMAddPackage("gh:SFML/SFML#master")
 # Add nlohmann/json
 CPMAddPackage("gh:nlohmann/json@3.11.3")
 
+# Add LDtkLoader
+CPMAddPackage("gh:Madour/LDtkLoader#1.5.3.1")
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_MSVC)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -64,6 +67,7 @@ target_link_libraries(
         SFML::Audio
         SFML::Network
         nlohmann_json::nlohmann_json
+        LDtkLoader::LDtkLoader
 )
 
 target_include_directories(

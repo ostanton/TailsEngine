@@ -10,29 +10,32 @@ namespace tails
     CResourceManager::CResourceManager() = default;
     CResourceManager::~CResourceManager() = default;
 
-    sf::Texture* CResourceManager::createTexture(std::string_view id, const std::filesystem::path& filename)
+    sf::Texture* CResourceManager::createTexture(const std::string_view id, const std::filesystem::path& filename)
     {
-        return createResource<sf::Texture>(id, CDirectories::getDirectory("textures") + filename.string());
+        auto dir = CDirectories::getDirectory("textures");
+        return createResource<sf::Texture>(id, dir.append(filename.c_str()));
     }
 
-    sf::Texture* CResourceManager::getTexture(std::string_view id) const
+    sf::Texture* CResourceManager::getTexture(const std::string_view id) const
     {
         return getResource<sf::Texture>(id);
     }
 
-    sf::SoundBuffer* CResourceManager::createSound(std::string_view id, const std::filesystem::path& filename)
+    sf::SoundBuffer* CResourceManager::createSound(const std::string_view id, const std::filesystem::path& filename)
     {
-        return createResource<sf::SoundBuffer>(id, CDirectories::getDirectory("sounds") + filename.string());
+        auto dir = CDirectories::getDirectory("sounds");
+        return createResource<sf::SoundBuffer>(id, dir.append(filename.c_str()));
     }
 
-    sf::SoundBuffer* CResourceManager::getSound(std::string_view id) const
+    sf::SoundBuffer* CResourceManager::getSound(const std::string_view id) const
     {
         return getResource<sf::SoundBuffer>(id);
     }
 
-    sf::Font* CResourceManager::createFont(std::string_view id, const std::filesystem::path& filename)
+    sf::Font* CResourceManager::createFont(const std::string_view id, const std::filesystem::path& filename)
     {
-        return createResource<sf::Font>(id, CDirectories::getDirectory("fonts") + filename.string());
+        auto dir = CDirectories::getDirectory("fonts");
+        return createResource<sf::Font>(id, dir.append(filename.c_str()));
     }
 
     sf::Font* CResourceManager::getFont(std::string_view id) const
