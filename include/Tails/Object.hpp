@@ -9,6 +9,11 @@
 
 namespace tails
 {
+    /**
+     * Base object class for any object that requires an outer, and can be created & destroyed.
+     *
+     * TODO - Should pending create/destroy be in ITickable instead, since they're closely coupled?
+     */
     class TAILS_API CObject
     {
         enum EFlags

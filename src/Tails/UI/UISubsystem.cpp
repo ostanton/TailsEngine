@@ -1,31 +1,34 @@
 #include <Tails/UI/UISubsystem.hpp>
-#include <Tails/UI/Widget.hpp>
+#include <Tails/UI/Panel.hpp>
 #include <Tails/UI/Navigation.hpp>
+#include <Tails/Exception.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace tails::ui
 {
     CUISubsystem::CUISubsystem()
-        : m_navigation(std::make_unique<CNavigation>(this))
+        : m_rootWidget(std::make_unique<CPanel>()), m_navigation(std::make_unique<CNavigation>(this))
     {
+        if (!m_rootWidget) // TODO - can this just be tested against a bad_alloc exception in the init list?
+            throw CException("UI Subsystem root widget is invalid. It must be valid!");
+        m_rootWidget->outer = this;
+
+        if (!m_navigation)
+            throw CException("UI Subsystem navigation is invalid. It must be valid!");
     }
 
     CUISubsystem::CUISubsystem(CUISubsystem&&) noexcept = default;
     CUISubsystem& CUISubsystem::operator=(CUISubsystem&&) noexcept = default;
+    CUISubsystem::~CUISubsystem() = default;
+
+    CPanel& CUISubsystem::getRootWidget() const noexcept
+    {
+        return *m_rootWidget;
+    }
 
     void CUISubsystem::init()
     {
-        
-    }
-
-    CUISubsystem::~CUISubsystem() = default;
-
-    CWidget* CUISubsystem::setRootWidgetImpl(std::unique_ptr<CWidget> widget)
-    {
-        widget->outer = this;
-        m_rootWidget = std::move(widget);
-        return m_rootWidget.get();
     }
 
     void CUISubsystem::preTick()

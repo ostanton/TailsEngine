@@ -11,4 +11,6 @@ target_sources(
     StackPanelSlot.cpp
     Navigation.cpp
     UISubsystem.cpp
+    SlottedWidget.cpp
+    Image.cpp
 )

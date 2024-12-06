@@ -5,9 +5,8 @@
 
 namespace tails::ui
 {
-    void CStackPanelSlot::drawContent(size_t index, sf::RenderStates& states)
+    void CStackPanelSlot::drawContent(const size_t index, sf::RenderStates& states)
     {
-        sf::Transformable transform;
-        states.transform *= transform.getTransform();
+        CSlot::drawContent(index, states);
     }
 }

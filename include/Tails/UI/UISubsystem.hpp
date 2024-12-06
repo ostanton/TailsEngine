@@ -4,6 +4,7 @@
 #include <Tails/Config.hpp>
 #include <Tails/Subsystem.hpp>
 #include <Tails/Concepts.hpp>
+#include <Tails/ResourceManager.hpp>
 
 #include <memory>
 
@@ -19,7 +20,7 @@ namespace tails
 
 namespace tails::ui
 {
-    class CWidget;
+    class CPanel;
     class CNavigation;
     
     /**
@@ -39,14 +40,7 @@ namespace tails::ui
         CUISubsystem& operator=(const CUISubsystem&) = delete;
         ~CUISubsystem() override;
         
-        template<Derives<CWidget> WidgetT, typename... ArgsT>
-        requires ConstructibleUserType<WidgetT, ArgsT...>
-        WidgetT* setRootWidget(ArgsT&&... args)
-        {
-            return static_cast<WidgetT*>(setRootWidgetImpl(std::make_unique<WidgetT>(std::forward<ArgsT>(args)...)));
-        }
-
-        [[nodiscard]] CWidget* getRootWidget() const noexcept {return m_rootWidget.get();}
+        [[nodiscard]] CPanel& getRootWidget() const noexcept;
 
         template<Derives<CNavigation> NavT>
         NavT* setNavigationClass()
@@ -57,6 +51,8 @@ namespace tails::ui
 
         [[nodiscard]] CNavigation& getNavigation() noexcept {return *m_navigation;}
         [[nodiscard]] const CNavigation& getNavigation() const noexcept {return *m_navigation;}
+
+        CResourceManager resourceManager;
         
     private:
         CUISubsystem(CUISubsystem&&) noexcept;
@@ -64,15 +60,13 @@ namespace tails::ui
 
         void init() override;
         
-        CWidget* setRootWidgetImpl(std::unique_ptr<CWidget> widget);
-
         void preTick() override;
         void eventInput(const sf::Event& ev) const;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
         
-        std::unique_ptr<CWidget> m_rootWidget;
+        std::unique_ptr<CPanel> m_rootWidget; // TODO - could just be stack allocated, must always be valid
         std::unique_ptr<CNavigation> m_navigation;
     };
 }

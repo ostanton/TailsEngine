@@ -11,6 +11,8 @@ namespace tails
         return a + (b - a) * t;
     }
 
+    // TODO - this should be in Tails/Concepts.hpp,
+    // but when I move it there, the hash() "in" param can no longer infer its type??? It all breaks!
     template<typename T>
     concept Hashable =
         requires(T str) {{str.size()} -> std::same_as<size_t>;} && (

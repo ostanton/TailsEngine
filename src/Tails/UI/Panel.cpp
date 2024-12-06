@@ -28,6 +28,34 @@ namespace tails::ui
         return std::nullopt;
     }
 
+    std::unique_ptr<CWidget> CPanel::releaseChild(const size_t index) const
+    {
+        if (!isIndexValid(index)) return nullptr;
+
+        std::unique_ptr<CWidget> result {m_slots[index]->m_slottedWidget.content.release()};
+        result->outer = nullptr;
+        m_slots[index]->markForDestroy();
+        return result;
+    }
+
+    CSlot* CPanel::addChild(std::unique_ptr<CWidget> child)
+    {
+        return addChildWithCustomSlot<CSlot>(std::move(child));
+    }
+
+    sf::Vector2f CPanel::getMinimumSize() const
+    {
+        sf::Vector2f result;
+        
+        for (auto& slot : m_slots)
+        {
+            // TODO - does not account for overlapping widgets, etc.
+            result += slot->getContent()->getLocalBounds().size;
+        }
+        
+        return result;
+    }
+
     CSlot* CPanel::addChildWithSlot(std::unique_ptr<CWidget> child, std::unique_ptr<CSlot> slot)
     {
         slot->setContent(std::move(child));
@@ -50,15 +78,15 @@ namespace tails::ui
         }
     }
 
-    void CPanel::eventInput(const sf::Event& ev)
+    bool CPanel::eventInput(const sf::Event& ev)
     {
-        CWidget::eventInput(ev);
-
         for (const auto& slot : m_slots)
         {
             if (const auto content = slot->getContent())
-                content->eventInput(ev);
+                if (content->eventInput(ev)) break; // TODO - this probably sucks!
         }
+
+        return CWidget::eventInput(ev);
     }
 
     void CPanel::tick(const float deltaTime)
@@ -82,6 +110,7 @@ namespace tails::ui
                 // or reset it each time so the slot needs to have its own stacking
                 auto statesCopy = states;
                 slot->drawContent(i, statesCopy);
+                // apply the additive transform
                 statesCopy.transform *= slot->getContent()->transform;
                 target.draw(*slot->getContent(), statesCopy);
             }
@@ -107,11 +136,6 @@ namespace tails::ui
             else
                 ++it;
         }
-    }
-
-    CSlot* CPanel::addChild(std::unique_ptr<CWidget> child)
-    {
-        return addChildWithSlot(std::move(child), std::make_unique<CSlot>());
     }
 
     CPanel::ConstIterator CPanel::getSlotIterator(CSlot* slot) const

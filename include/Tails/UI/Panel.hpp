@@ -10,9 +10,12 @@
 namespace tails::ui
 {
     class CSlot;
+    class CUISubsystem;
     
     class TAILS_API CPanel : public CWidget
     {
+        friend CUISubsystem;
+        
     public:
         using Container = std::vector<std::unique_ptr<CSlot>>;
         using Iterator = Container::iterator;
@@ -35,6 +38,10 @@ namespace tails::ui
         [[nodiscard]] CWidget* getChildAt(size_t index) const;
         [[nodiscard]] constexpr bool isIndexValid(const size_t index) const noexcept {return index < m_slots.size();}
         [[nodiscard]] std::optional<size_t> getChildIndex(const CWidget* child) const;
+        [[nodiscard]] std::unique_ptr<CWidget> releaseChild(size_t index) const;
+        virtual CSlot* addChild(std::unique_ptr<CWidget> child);
+
+        [[nodiscard]] sf::Vector2f getMinimumSize() const;
 
     protected:
         template<Derives<CWidget> WidgetT, Derives<CSlot> SlotT>
@@ -53,14 +60,12 @@ namespace tails::ui
         }
 
         void preTick() override;
-        void eventInput(const sf::Event& ev) override;
+        bool eventInput(const sf::Event& ev) override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
         
     private:
-        CSlot* addChild(std::unique_ptr<CWidget> child);
-
         ConstIterator getSlotIterator(CSlot* slot) const;
         ConstIterator getSlotIterator(const CWidget* child) const;
         

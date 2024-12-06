@@ -26,6 +26,7 @@ target_sources(
     Maths.hpp
     Subsystem.hpp
     WorldSubsystem.hpp
+    Handle.hpp
 )
 
 add_subdirectory(Audio)

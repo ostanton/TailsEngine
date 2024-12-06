@@ -13,6 +13,7 @@ namespace tails
         SPadding(const float inTop, const float inLeft, const float inBottom, const float inRight)
             : top(inTop), left(inLeft), bottom(inBottom), right(inRight) {}
         explicit SPadding(const sf::FloatRect& floatRect);
+        explicit SPadding(const float val) : top(val), left(val), bottom(val), right(val) {}
 
         float top;
         float left;

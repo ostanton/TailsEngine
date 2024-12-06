@@ -12,4 +12,6 @@ target_sources(
     Alignment.hpp
     Navigation.hpp
     UISubsystem.hpp
+    SlottedWidget.hpp
+    Image.hpp
 )

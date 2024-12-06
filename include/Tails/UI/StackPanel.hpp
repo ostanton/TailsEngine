@@ -17,6 +17,8 @@ namespace tails::ui
         CStackPanel& operator=(const CStackPanel&) = delete;
         CStackPanel& operator=(CStackPanel&&) noexcept;
         ~CStackPanel() override;
+
+        CSlot* addChild(std::unique_ptr<CWidget> child) override;
         
         template<Derives<CWidget> WidgetT, typename... ArgsT>
         requires ConstructibleUserType<WidgetT, ArgsT...>

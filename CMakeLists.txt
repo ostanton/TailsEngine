@@ -39,6 +39,8 @@ CPMAddPackage("gh:nlohmann/json@3.11.3")
 
 # Add LDtkLoader
 CPMAddPackage("gh:Madour/LDtkLoader#1.5.3.1")
+set_property(TARGET LDtkLoader PROPERTY
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_MSVC)

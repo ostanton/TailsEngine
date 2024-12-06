@@ -3,6 +3,7 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
+#include <Tails/UI/SlottedWidget.hpp>
 
 #include <memory>
 
@@ -35,7 +36,13 @@ namespace tails::ui
         ~CSlot() override;
         
         [[nodiscard]] CPanel* getOwner() const;
-        [[nodiscard]] CWidget* getContent() const noexcept {return m_content.get();}
+        [[nodiscard]] CWidget* getContent() const noexcept {return m_slottedWidget.get();}
+
+        [[nodiscard]] sf::Vector2f getContentPosition() const;
+        [[nodiscard]] sf::Angle getContentRotation() const;
+        [[nodiscard]] sf::Vector2f getContentScale() const;
+        [[nodiscard]] const sf::Transform& getContentTransform() const;
+        [[nodiscard]] const sf::Transform& getContentInverseTransform() const;
 
     protected:
         // TODO - work out the deal with this
@@ -45,12 +52,12 @@ namespace tails::ui
          * @param index Current index of this slot in its owning panel
          * @param states States that affect the content widget
          */
-        virtual void drawContent(size_t index, sf::RenderStates& states) {}
+        virtual void drawContent(size_t index, sf::RenderStates& states);
 
+        SSlottedWidget m_slottedWidget;
+        
     private:
         void setContent(std::unique_ptr<CWidget> content);
-        
-        std::unique_ptr<CWidget> m_content {nullptr};
     };
 }
 
