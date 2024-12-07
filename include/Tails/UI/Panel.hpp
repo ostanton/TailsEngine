@@ -27,7 +27,8 @@ namespace tails::ui
         CPanel& operator=(const CPanel&) = delete;
         CPanel& operator=(CPanel&&) noexcept;
         ~CPanel() override;
-        
+
+        // TODO - this should return a pointer to the created widget, not its slot
         template<Derives<CWidget> WidgetT, typename... ArgsT>
         requires ConstructibleUserType<WidgetT, ArgsT...>
         CSlot* createChild(ArgsT&&... args)
@@ -41,7 +42,7 @@ namespace tails::ui
         [[nodiscard]] std::unique_ptr<CWidget> releaseChild(size_t index) const;
         virtual CSlot* addChild(std::unique_ptr<CWidget> child);
 
-        [[nodiscard]] sf::Vector2f getMinimumSize() const;
+        [[nodiscard]] sf::FloatRect getLocalBounds() const override;
 
     protected:
         template<Derives<CWidget> WidgetT, Derives<CSlot> SlotT>

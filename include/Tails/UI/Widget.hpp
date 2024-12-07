@@ -28,6 +28,8 @@ namespace tails::ui
      * 
      * A widget has no transform by itself (aside from its additive transform). Its actual screen position, etc.
      * are dictated by the slot it currently resides in. If it is in no slot, it has no transform.
+     *
+     * A widget's outer is the panel widget it resides in, not its slot. It has m_slot for that
      */
     class TAILS_API CWidget :
         public CObject,
@@ -35,6 +37,7 @@ namespace tails::ui
         public sf::Drawable
     {
         friend CPanel;
+        friend CSlot;
         
     public:
         [[nodiscard]] CEngine& getEngine() const;
@@ -63,6 +66,9 @@ namespace tails::ui
          * @return Whether to let this event continue down the tree and to child widgets
          */
         virtual bool eventInput(const sf::Event& ev) {return true;}
+
+    private:
+        CSlot* m_slot {nullptr};
     };
 }
 

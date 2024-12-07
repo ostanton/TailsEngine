@@ -43,14 +43,13 @@ namespace tails::ui
         return addChildWithCustomSlot<CSlot>(std::move(child));
     }
 
-    sf::Vector2f CPanel::getMinimumSize() const
+    sf::FloatRect CPanel::getLocalBounds() const
     {
-        sf::Vector2f result;
-        
+        sf::FloatRect result {getPosition(), {0.f, 0.f}};
+
         for (auto& slot : m_slots)
         {
-            // TODO - does not account for overlapping widgets, etc.
-            result += slot->getContent()->getLocalBounds().size;
+            result.size += slot->getLocalBounds().size;
         }
         
         return result;
@@ -58,6 +57,8 @@ namespace tails::ui
 
     CSlot* CPanel::addChildWithSlot(std::unique_ptr<CWidget> child, std::unique_ptr<CSlot> slot)
     {
+        child->outer = this;
+        slot->outer = this;
         slot->setContent(std::move(child));
         m_slots.emplace_back(std::move(slot));
         return m_slots.back().get();

@@ -40,6 +40,14 @@ namespace tails::ui
         return m_slottedWidget.getInverseTransform();
     }
 
+    sf::FloatRect CSlot::getLocalBounds() const
+    {
+        if (getContent())
+            return getContent()->getLocalBounds();
+        
+        return {};
+    }
+
     void CSlot::drawContent(size_t index, sf::RenderStates& states)
     {
         if (getOwner())
@@ -47,9 +55,20 @@ namespace tails::ui
         states.transform *= m_slottedWidget.getTransform();
     }
 
+    SSlottedWidget* CSlot::getSlottedWidgetAtIndex(const size_t index) const
+    {
+        if (auto const owner = getOwner())
+        {
+            if (auto const child = owner->getChildAt(index))
+                return &child->getSlot()->m_slottedWidget;
+        }
+        
+        return nullptr;
+    }
+    
     void CSlot::setContent(std::unique_ptr<CWidget> content)
     {
+        content->m_slot = this;
         m_slottedWidget = std::move(content);
-        m_slottedWidget->outer = this;
     }
 }

@@ -14,9 +14,12 @@ namespace tails::ui
         EHorizontalAlignment hAlign {EHorizontalAlignment::Left};
         EVerticalAlignment vAlign {EVerticalAlignment::Top};
         SPadding padding;
+        bool fill {false};
 
     private:
         void drawContent(size_t index, sf::RenderStates& states) override;
+
+        sf::FloatRect getLocalBounds() const override;
     };
 }
 

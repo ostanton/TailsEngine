@@ -44,6 +44,12 @@ namespace tails::ui
         [[nodiscard]] const sf::Transform& getContentTransform() const;
         [[nodiscard]] const sf::Transform& getContentInverseTransform() const;
 
+        /**
+         * Aggregate of content widget local bounds, and any padding, etc. that is added on top
+         * @return Bounding rect
+         */
+        [[nodiscard]] virtual sf::FloatRect getLocalBounds() const;
+
     protected:
         // TODO - work out the deal with this
         /**
@@ -53,6 +59,8 @@ namespace tails::ui
          * @param states States that affect the content widget
          */
         virtual void drawContent(size_t index, sf::RenderStates& states);
+
+        SSlottedWidget* getSlottedWidgetAtIndex(size_t index) const;
 
         SSlottedWidget m_slottedWidget;
         

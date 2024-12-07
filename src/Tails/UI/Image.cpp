@@ -43,7 +43,10 @@ namespace tails::ui
 
     sf::FloatRect CImage::getLocalBounds() const
     {
-        return m_vertices.getBounds();
+        return {
+            m_vertices.getBounds().position + getPosition(),
+            m_vertices.getBounds().size
+        };
     }
 
     void CImage::tick(float deltaTime)

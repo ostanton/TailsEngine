@@ -1,6 +1,7 @@
 #include <Tails/UI/Widget.hpp>
 #include <Tails/Engine.hpp>
 #include <Tails/UI/Slot.hpp>
+#include <Tails/UI/Panel.hpp>
 
 namespace tails::ui
 {
@@ -11,15 +12,12 @@ namespace tails::ui
 
     CPanel* CWidget::getParent() const
     {
-        if (const auto slot = getSlot())
-            return slot->getOwner();
-        
-        return nullptr;
+        return getTypedOuter<CPanel>();
     }
 
     CSlot* CWidget::getSlot() const
     {
-        return getTypedOuter<CSlot>();
+        return m_slot;
     }
 
     void CWidget::destroy()
