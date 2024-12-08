@@ -2,6 +2,7 @@
 #include <Tails/Engine.hpp>
 #include <Tails/UI/Slot.hpp>
 #include <Tails/UI/Panel.hpp>
+#include <Tails/UI/UISubsystem.hpp>
 
 namespace tails::ui
 {
@@ -18,6 +19,11 @@ namespace tails::ui
     CSlot* CWidget::getSlot() const
     {
         return m_slot;
+    }
+
+    void CWidget::focus()
+    {
+        getEngine().getUISubsystem().focusWidget(this);
     }
 
     void CWidget::destroy()

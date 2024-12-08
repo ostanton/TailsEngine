@@ -17,6 +17,7 @@ namespace tails::ui
 {
     class CPanel;
     class CNavigation;
+    class CWidget;
     
     /**
      * General manager for a game's user interface. It has a root widget which the rest of the tree stems.
@@ -45,6 +46,19 @@ namespace tails::ui
         [[nodiscard]] CNavigation& getNavigation() noexcept {return *m_navigation;}
         [[nodiscard]] const CNavigation& getNavigation() const noexcept {return *m_navigation;}
 
+        /**
+         * Focuses a widget
+         * @param widget Widget to focus
+         */
+        void focusWidget(CWidget* widget);
+
+        /**
+         * Checks if a widget currently has focus
+         * @param widget Widget to check focus on
+         * @return If widget is focused
+         */
+        [[nodiscard]] bool widgetFocused(const CWidget* widget) const;
+
         CResourceManager resourceManager;
         
     private:
@@ -61,6 +75,9 @@ namespace tails::ui
         
         std::unique_ptr<CPanel> m_rootWidget; // TODO - could just be stack allocated, must always be valid
         std::unique_ptr<CNavigation> m_navigation;
+
+        /** There should always be a focused widget, at least when using the UI in-game */
+        CWidget* m_focusedWidget {nullptr};
     };
 }
 

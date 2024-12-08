@@ -84,7 +84,7 @@ namespace tails::ui
         for (const auto& slot : m_slots)
         {
             if (const auto content = slot->getContent())
-                if (content->inputEvent(ev)) break; // TODO - this probably sucks!
+                if (content->inputEvent(ev)) break; // TODO - this sucks!
         }
 
         return CWidget::inputEvent(ev);

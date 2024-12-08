@@ -22,6 +22,7 @@ namespace tails::ui
 {
     class CSlot;
     class CPanel;
+    class CUISubsystem;
     
     /**
      * Abstract base class for all widgets.
@@ -38,12 +39,17 @@ namespace tails::ui
     {
         friend CPanel;
         friend CSlot;
+        friend CUISubsystem;
         
     public:
         [[nodiscard]] CEngine& getEngine() const;
         [[nodiscard]] CPanel* getParent() const;
         [[nodiscard]] CSlot* getSlot() const;
-        
+
+        /** Focus this widget */
+        void focus();
+
+        /** Destroy this widget */
         void destroy();
 
         [[nodiscard]] sf::Vector2f getPosition() const;
@@ -66,6 +72,16 @@ namespace tails::ui
          * @return Whether to let this event continue down the tree and to child widgets
          */
         virtual bool inputEvent(const sf::Event& ev) {return true;}
+
+        /**
+         * Called when this widget receives focus
+         */
+        virtual void focusReceived() {}
+
+        /**
+         * Called when this widget loses focus
+         */
+        virtual void focusLost() {}
 
     private:
         CSlot* m_slot {nullptr};
