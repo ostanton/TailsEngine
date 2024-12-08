@@ -37,13 +37,11 @@ namespace tails::ui
             m_rootWidget->preTick();
     }
 
-    void CUISubsystem::eventInput(const sf::Event& ev) const
+    void CUISubsystem::inputEvent(const sf::Event& ev)
     {
+        CSubsystem::inputEvent(ev);
         if (m_rootWidget)
-            m_rootWidget->eventInput(ev);
-
-        // do things to navigation
-        //m_navigation
+            m_rootWidget->inputEvent(ev);
     }
 
     void CUISubsystem::tick(const float deltaTime)

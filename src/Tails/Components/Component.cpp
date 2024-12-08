@@ -102,7 +102,7 @@ namespace tails
         }
     }
 
-    void CComponent::tick(float deltaTime)
+    void CComponent::tick(const float deltaTime)
     {
         for (const auto& child : m_children)
             if (!child->pendingCreate())

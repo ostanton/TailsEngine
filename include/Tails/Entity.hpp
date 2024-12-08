@@ -27,6 +27,11 @@ namespace tails
 
     /**
      * A class that can be spawned in a CLevel. Its root component is its transform representation.
+     * Instead of an ECS, where an entity is the sum of its components, the entity is instead its own thing,
+     * with optional components for additional functionality.
+     *
+     * If you wanted to, you could use it like an ECS, have a player controller as a component and not subclass
+     * the entity. The entity's representation in the world is actually just the sum of its components.
      */
     class TAILS_API CEntity :
         public CObject,

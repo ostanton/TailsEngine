@@ -16,7 +16,10 @@
 namespace tails
 {
     class CEntity;
-    
+
+    /**
+     * Base class for entity components.
+     */
     class TAILS_API CComponent :
         public CObject,
         public ITickable,

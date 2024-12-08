@@ -81,7 +81,8 @@ namespace tails
     void CSpriteComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         CComponent::draw(target, states);
-        
+
+        // The states going into the parent draw are separate to these states (as they're copied in)
         states.transform *= getTransform();
         states.texture = m_texture;
         target.draw(m_vertices, states);

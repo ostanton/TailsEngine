@@ -12,6 +12,7 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/View.hpp>
+#include <SFML/Window/WindowEnums.hpp>
 
 #include <memory>
 #include <string>
@@ -33,6 +34,9 @@ namespace tails
     {
         std::string title {"Tails Engine"};
         sf::Vector2u resolution {1280, 720};
+        unsigned int bitsPerPixel {32};
+        std::uint32_t style {sf::Style::Default};
+        sf::State state {sf::State::Windowed};
     };
 
     std::ostream& operator<<(std::ostream& os, const SWindowProperties& windowProperties);
@@ -59,7 +63,7 @@ namespace tails
         bool maintainAspectRatio {true};
     };
 
-    std::ostream& operator<<(std::ostream& os, const SRenderProperties renderProperties);
+    std::ostream& operator<<(std::ostream& os, const SRenderProperties& renderProperties);
     
     class TAILS_API CEngine final : public CObject, public ITickable, public sf::Drawable
     {
@@ -128,7 +132,7 @@ namespace tails
         [[nodiscard]] ui::CUISubsystem& getUISubsystem() noexcept;
         [[nodiscard]] const ui::CUISubsystem& getUISubsystem() const noexcept;
 
-        [[nodiscard]] SRenderProperties& getRenderProperties() noexcept {return m_renderProperties;}
+        void setRenderProperties(const SRenderProperties& properties) noexcept;
         [[nodiscard]] const SRenderProperties& getRenderProperties() const noexcept {return m_renderProperties;}
 
         [[nodiscard]] SWindowProperties& getWindowProperties() noexcept {return m_windowProperties;}
@@ -153,6 +157,7 @@ namespace tails
         
         void initSubsystems();
         void initInternalRender();
+        void updateRenderView();
         
         void calculateInternalAspectRatio(sf::Vector2u windowSize);
         

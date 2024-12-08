@@ -101,7 +101,7 @@ namespace tails
             m_rootComponent->tick(deltaTime);
     }
 
-    void CEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void CEntity::draw(sf::RenderTarget& target, const sf::RenderStates states) const
     {
         if (!m_rootComponent->pendingCreate())
             target.draw(*m_rootComponent, states);

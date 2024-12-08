@@ -65,7 +65,7 @@ namespace tails::ui
          * @param ev SFML window event
          * @return Whether to let this event continue down the tree and to child widgets
          */
-        virtual bool eventInput(const sf::Event& ev) {return true;}
+        virtual bool inputEvent(const sf::Event& ev) {return true;}
 
     private:
         CSlot* m_slot {nullptr};

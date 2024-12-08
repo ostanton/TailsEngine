@@ -79,15 +79,15 @@ namespace tails::ui
         }
     }
 
-    bool CPanel::eventInput(const sf::Event& ev)
+    bool CPanel::inputEvent(const sf::Event& ev)
     {
         for (const auto& slot : m_slots)
         {
             if (const auto content = slot->getContent())
-                if (content->eventInput(ev)) break; // TODO - this probably sucks!
+                if (content->inputEvent(ev)) break; // TODO - this probably sucks!
         }
 
-        return CWidget::eventInput(ev);
+        return CWidget::inputEvent(ev);
     }
 
     void CPanel::tick(const float deltaTime)

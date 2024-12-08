@@ -61,7 +61,7 @@ namespace tails::ui
         }
 
         void preTick() override;
-        bool eventInput(const sf::Event& ev) override;
+        bool inputEvent(const sf::Event& ev) override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;

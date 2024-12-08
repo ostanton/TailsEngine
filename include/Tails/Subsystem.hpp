@@ -7,6 +7,11 @@
 
 #include <SFML/Graphics/Drawable.hpp>
 
+namespace sf
+{
+    class Event;
+}
+
 namespace tails
 {
     class CEngine;
@@ -23,6 +28,12 @@ namespace tails
          * Called when the engine initialises the registered subsystems
          */
         virtual void init() = 0;
+
+        /**
+         * Called when a window event occurs from the engine
+         * @param ev Window event
+         */
+        virtual void inputEvent(const sf::Event& ev) {}
     };
 }
 

@@ -13,11 +13,6 @@ namespace sf
     class Event;
 }
 
-namespace tails
-{
-    class CEngine;
-}
-
 namespace tails::ui
 {
     class CPanel;
@@ -32,8 +27,6 @@ namespace tails::ui
      */
     class TAILS_API CUISubsystem final : public CSubsystem
     {
-        friend CEngine;
-        
     public:
         CUISubsystem();
         CUISubsystem(const CUISubsystem&) = delete;
@@ -61,7 +54,7 @@ namespace tails::ui
         void init() override;
         
         void preTick() override;
-        void eventInput(const sf::Event& ev) const;
+        void inputEvent(const sf::Event& ev) override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;

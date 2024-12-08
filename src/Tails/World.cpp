@@ -19,7 +19,7 @@ namespace tails
         }
         else if (closePrevious)
         {
-            m_openLevels[m_openLevels.size() - 1] = CLevel(nullptr);
+            m_openLevels[m_openLevels.size() - 1].markForDestroy();
         }
         
         CLevel& result {m_openLevels.back()};

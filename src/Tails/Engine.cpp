@@ -17,11 +17,14 @@ namespace tails
     {
         os << "Window properties:\n" <<
             "  Title - \"" << windowProperties.title << "\"\n" <<
-            "  Resolution - " << SVector2u::toString(windowProperties.resolution);
+            "  Resolution - " << SVector2u::toString(windowProperties.resolution) << "\n" <<
+            "  Bits per Pixel - " << windowProperties.bitsPerPixel << "\n" <<
+            "  Style - " << windowProperties.style << "\n" <<
+            "  State - " << static_cast<unsigned long long>(windowProperties.state);
         return os;
     }
 
-    std::ostream& operator<<(std::ostream& os, const SRenderProperties renderProperties)
+    std::ostream& operator<<(std::ostream& os, const SRenderProperties& renderProperties)
     {
         os << "Render properties:\n" <<
             "  Resolution - " << SVector2u::toString(renderProperties.resolution) << "\n" <<
@@ -33,12 +36,18 @@ namespace tails
     CEngine::CEngine()
     {
         CDebug::flush();
+        CDebug::print();
         CDebug::print("Initialising Engine");
         
         // engine should not be pending create
         unmarkForCreate();
         
         setupDefaultSubsystems();
+
+        CDebug::print("Initialising internal render target");
+        // must be in constructor so m_renderView is set properly for world subsystem
+        initInternalRender();
+        CDebug::print("End engine constructor");
         CDebug::flush();
     }
 
@@ -68,17 +77,17 @@ namespace tails
     {
         CDebug::flush();
         initSubsystems();
-        initInternalRender();
         
-        CDebug::print("Initialising final render target");
         // Set default render target as window if it has not already been set
         if (!m_renderTarget)
             setRenderTarget<sf::RenderWindow>(
-                sf::VideoMode({
-                    m_windowProperties.resolution.x,
-                    m_windowProperties.resolution.y
-                }),
-                m_windowProperties.title
+                sf::VideoMode(
+                    m_windowProperties.resolution,
+                    m_windowProperties.bitsPerPixel
+                ),
+                m_windowProperties.title,
+                m_windowProperties.style,
+                m_windowProperties.state
             );
         CDebug::print(m_windowProperties);
         CDebug::print();
@@ -91,6 +100,7 @@ namespace tails
         calculateInternalAspectRatio(m_renderTarget->getSize());
 
         CDebug::print("Main loop started");
+        CDebug::print("Engine render view: ", SVector2f(getRenderView().getSize()));
         
         while (m_running)
         {
@@ -102,7 +112,8 @@ namespace tails
             {
                 while (const auto ev = window->pollEvent())
                 {
-                    getUISubsystem().eventInput(ev.value());
+                    for (const auto& subsystem : std::ranges::views::values(m_subsystems))
+                        subsystem->inputEvent(ev.value());
                     
                     if (ev->is<sf::Event::Closed>())
                     {
@@ -173,6 +184,12 @@ namespace tails
         return *getSubsystemOfType<ui::CUISubsystem>();
     }
 
+    void CEngine::setRenderProperties(const SRenderProperties& properties) noexcept
+    {
+        m_renderProperties = properties;
+        initInternalRender();
+    }
+
     void CEngine::setRenderTargetClearColour(const sf::Color colour)
     {
         m_renderTargetClearColour = colour;
@@ -229,6 +246,7 @@ namespace tails
 
     void CEngine::setupDefaultSubsystems()
     {
+        CDebug::print();
         CDebug::print("Registering default subsystems");
         registerSubsystem<CWorldSubsystem>("world");
         registerSubsystem<ui::CUISubsystem>("ui");
@@ -238,30 +256,36 @@ namespace tails
 
     void CEngine::initSubsystems()
     {
+        CDebug::print();
         CDebug::print("Initialising subsystems");
         for (const auto& subsystem : std::ranges::views::values(m_subsystems))
         {
             subsystem->init();
         }
         CDebug::print("Subsystems initialised");
+        CDebug::print();
     }
 
     void CEngine::initInternalRender()
     {
-        CDebug::print("Initialising internal render target");
         // Setup internal render texture
         if (!m_renderTextureInternal.resize({m_renderProperties.resolution.x, m_renderProperties.resolution.y}))
             CDebug::error("Failed to resize internal render texture!");
 
         // Set the size and center of the camera initially
+        updateRenderView();
+
+        CDebug::print(m_renderProperties);
+        CDebug::print();
+    }
+
+    void CEngine::updateRenderView()
+    {
         m_renderView.setSize({
             static_cast<float>(m_renderProperties.resolution.x),
             static_cast<float>(m_renderProperties.resolution.y)
         });
         m_renderView.setCenter(m_renderView.getSize() * 0.5f);
-
-        CDebug::print(m_renderProperties);
-        CDebug::print();
     }
 
     void CEngine::calculateInternalAspectRatio(const sf::Vector2u windowSize)
