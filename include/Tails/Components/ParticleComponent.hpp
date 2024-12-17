@@ -2,7 +2,7 @@
 #define TAILS_PARTICLE_COMPONENT_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Components/Component.hpp>
+#include <Tails/Components/TransformComponent.hpp>
 
 #include <SFML/Graphics/Vertex.hpp>
 
@@ -10,7 +10,7 @@
 
 namespace tails
 {
-    class TAILS_API CParticleComponent : public CComponent
+    class TAILS_API CParticleComponent : public CTransformComponent
     {
     public:
         void tick(float deltaTime) override;

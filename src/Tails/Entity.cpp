@@ -1,14 +1,14 @@
 #include <Tails/Entity.hpp>
 #include <Tails/Level.hpp>
 #include <Tails/Vector2.hpp>
-#include <Tails/Directories.hpp>
 #include <Tails/Components/Component.hpp>
+#include <Tails/Components/TransformComponent.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace tails
 {
-    CEntity::CEntity() : m_rootComponent(newObject<CComponent>(this)) {}
+    CEntity::CEntity() = default;
     CEntity::~CEntity() = default;
 
     void CEntity::destroy()
@@ -22,12 +22,13 @@ namespace tails
         if (!entity) return false;
 
         bool colliding {false};
-        auto testCollision = [entity, &colliding](const std::unique_ptr<CComponent>& comp)
+        /*
+        auto testCollision = [entity, &colliding](const std::unique_ptr<CTransformComponent>& comp)
         {
             if (comp->getGlobalBounds() == sf::FloatRect())
                 return;
 
-            auto testCollision2 = [&comp, &colliding](const std::unique_ptr<CComponent>& comp2)
+            auto testCollision2 = [&comp, &colliding](const std::unique_ptr<CTransformComponent>& comp2)
             {
                 if (comp2->getGlobalBounds() == sf::FloatRect())
                     return;
@@ -42,7 +43,7 @@ namespace tails
 
         testCollision(m_rootComponent);
         m_rootComponent->forEachChild(testCollision, true);
-
+        */
         return colliding;
     }
 
@@ -50,7 +51,8 @@ namespace tails
     {
         sf::FloatRect bounds;
 
-        auto setBounds = [&bounds](const std::unique_ptr<CComponent>& comp)
+        /*
+        auto setBounds = [&bounds](const std::unique_ptr<CTransformComponent>& comp)
         {
             if (comp->getGlobalBounds().size.x > bounds.size.x)
                 bounds.size.x = comp->getGlobalBounds().size.x;
@@ -66,7 +68,7 @@ namespace tails
         m_rootComponent->forEachChild(setBounds, true);
 
         bounds = m_rootComponent->getTransform().transformRect(bounds);
-        
+        */
         return bounds;
     }
 
@@ -74,37 +76,73 @@ namespace tails
     {
         return m_rootComponent->getTransform().transformRect(getLocalBounds());
     }
-    
+
+    CComponent* CEntity::createRegisteredComponent(const std::string_view name)
+    {
+        return createRegisteredComponent<CComponent>(name);
+    }
+
     void CEntity::initComponents()
     {
         // root component must always be valid
         if (!m_rootComponent)
-            setRootComponent<CComponent>();
+            setRootComponent(createComponent<CTransformComponent>());
 
-        m_rootComponent->create();
-        m_rootComponent->forEachChild([](auto& compChild) {compChild->create();}, true);
+        for (const auto& component : m_components)
+        {
+            component->create();
+            component->unmarkForCreate();
+        }
     }
 
     void CEntity::preTick()
     {
         ITickable::preTick();
         
-        m_rootComponent->preTick();
+        for (const auto& component : m_components)
+        {
+            component->preTick();
 
-        if (m_rootComponent->pendingCreate())
-            m_rootComponent->unmarkForCreate();
+            if (component->pendingCreate())
+            {
+                component->create();
+                component->unmarkForCreate();
+            }
+        }
     }
 
-    void CEntity::tick(float deltaTime)
+    void CEntity::tick(const float deltaTime)
     {
-        if (!m_rootComponent->pendingCreate())
-            m_rootComponent->tick(deltaTime);
+        //CDebug::print("Component count: ", m_components.size());
+        for (const auto& component : m_components)
+        {
+            if (!component->pendingCreate())
+                component->tick(deltaTime);
+        }
     }
 
-    void CEntity::draw(sf::RenderTarget& target, const sf::RenderStates states) const
+    void CEntity::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (!m_rootComponent->pendingCreate())
-            target.draw(*m_rootComponent, states);
+        for (const auto& component : m_components)
+        {
+            if (component->pendingCreate())
+            {
+                continue;
+            }
+
+            if (auto const drawable = dynamic_cast<CTransformComponent*>(component.get()))
+            {
+                /* TODO - does not work with child components, e.g.:
+                 * Sprite (root)
+                 *   Sprite (works)
+                 *     Sprite (offset by parent's transform, bad!)
+                 */
+                if (auto const parent = drawable->getParent())
+                    states.transform *= parent->getTransform();
+
+                target.draw(*drawable, states);
+            }
+        }
 
         //CDebug::print("Entity left: ", getGlobalBounds().position.x, ", top: ", getGlobalBounds().position.y,
         //    ", right: ", getGlobalBounds().size.x, ", bottom: ", getGlobalBounds().size.y);
@@ -114,12 +152,14 @@ namespace tails
     {
         ITickable::postTick();
 
-        m_rootComponent->postTick();
-
-        if (m_rootComponent->pendingDestroy())
+        for (auto it = m_components.rbegin(); it != m_components.rend();)
         {
-            // destroy current root and replace with new, default, root
-            m_rootComponent = std::make_unique<CComponent>();
+            (*it)->postTick();
+
+            if ((*it)->pendingDestroy())
+                it = decltype(it)(m_components.erase(std::next(it).base()));
+            else
+                ++it;
         }
     }
 
@@ -131,13 +171,6 @@ namespace tails
     CEngine& CEntity::getEngine() const
     {
         return getLevel().getEngine();
-    }
-
-    std::vector<CComponent*> CEntity::getComponents() const
-    {
-        auto result = m_rootComponent->getAllChildren(true);
-        result.insert(result.begin(), m_rootComponent.get());
-        return result;
     }
 
     void CEntity::setPosition(const sf::Vector2f& position) const
@@ -185,9 +218,15 @@ namespace tails
         return m_rootComponent->getInverseTransform();
     }
 
-    CComponent* CEntity::addComponent(std::unique_ptr<CComponent> component) const
+    void CEntity::setRootComponent(CTransformComponent* component)
     {
-        return m_rootComponent->addChild(std::move(component));
+        m_rootComponent = component;
+    }
+
+    CComponent* CEntity::addComponent(std::unique_ptr<CComponent> component)
+    {
+        m_components.emplace_back(std::move(component));
+        return m_components.back().get();
     }
 
     void CEntity::serialise(nlohmann::json& obj) const

@@ -99,7 +99,7 @@ namespace tails
 
     void CTileMapComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        CComponent::draw(target, states);
+        CTransformComponent::draw(target, states);
         
         states.transform *= getTransform();
         states.texture = m_texture;

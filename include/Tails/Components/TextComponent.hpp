@@ -2,7 +2,7 @@
 #define TAILS_TEXT_COMPONENT_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Components/Component.hpp>
+#include <Tails/Components/TransformComponent.hpp>
 #include <Tails/LocaleString.hpp>
 
 #include <SFML/Graphics/Color.hpp>
@@ -17,7 +17,7 @@ namespace tails
     /**
      * Localisable text, supporting various stylings and other options
      */
-    class TAILS_API CTextComponent : public CComponent
+    class TAILS_API CTextComponent : public CTransformComponent
     {
     public:
         /**

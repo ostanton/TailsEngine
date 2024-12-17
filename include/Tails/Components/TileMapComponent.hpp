@@ -2,7 +2,7 @@
 #define TAILS_TILE_MAP_COMPONENT_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Components/Component.hpp>
+#include <Tails/Components/TransformComponent.hpp>
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
@@ -16,7 +16,7 @@ namespace sf
 
 namespace tails
 {
-    class TAILS_API CTileMapComponent final : public CComponent
+    class TAILS_API CTileMapComponent final : public CTransformComponent
     {
     public:
         using TileType = size_t;

@@ -2,7 +2,7 @@
 #define TAILS_SPRITE_COMPONENT_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Components/Component.hpp>
+#include <Tails/Components/TransformComponent.hpp>
 
 #include <SFML/Graphics/VertexArray.hpp>
 
@@ -13,7 +13,7 @@ namespace sf
 
 namespace tails
 {
-    class TAILS_API CSpriteComponent : public CComponent
+    class TAILS_API CSpriteComponent : public CTransformComponent
     {
     public:
         CSpriteComponent();

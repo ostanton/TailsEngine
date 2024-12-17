@@ -13,4 +13,5 @@ target_sources(
     TileMapComponent.hpp
     TextComponent.hpp
     ParticleComponent.hpp
+    TransformComponent.hpp
 )

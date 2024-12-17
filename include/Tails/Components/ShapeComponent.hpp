@@ -2,7 +2,7 @@
 #define TAILS_SHAPE_COMPONENT_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Components/Component.hpp>
+#include <Tails/Components/TransformComponent.hpp>
 
 #include <SFML/Graphics/Rect.hpp>
 
@@ -17,7 +17,7 @@ namespace tails
     /**
      * Abstract base class wrapper for SFML shape classes
      */
-    class TAILS_API CShapeComponent : public CComponent
+    class TAILS_API CShapeComponent : public CTransformComponent
     {
     public:
         virtual void setTexture(const sf::Texture* texture, bool resetRect = false) = 0;

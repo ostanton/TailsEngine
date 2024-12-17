@@ -89,7 +89,7 @@ namespace tails
     {
         if (globalBounds.size == sf::Vector2f{0.f, 0.f})
             return std::nullopt;
-
+/*
         for (auto& entity : m_entities)
         {
             if (!entitiesToIgnore.empty())
@@ -108,7 +108,7 @@ namespace tails
                 // no idea what to do with the hit component atm so just use the entity's root component
                 return std::make_optional(SHitResult{entity.get(), &entity->getRootComponent()});
         }
-
+*/
         return std::nullopt;
     }
 
@@ -165,7 +165,7 @@ namespace tails
         for (auto& entity : m_entities)
         {
             // TODO - round position to integer??
-            if (!entity->pendingCreate() && viewport.findIntersection(entity->getGlobalBounds()))
+            if (!entity->pendingCreate()/* && viewport.findIntersection(entity->getGlobalBounds())*/)
             {
                 target.draw(*entity, states);
             }

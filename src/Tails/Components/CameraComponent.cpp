@@ -27,10 +27,8 @@ namespace tails
         m_view = getOwningEntity().getLevel().getActiveCameraView();
     }
 
-    void CCameraComponent::tick(float deltaTime)
+    void CCameraComponent::tick(const float deltaTime)
     {
-        CComponent::tick(deltaTime);
-
         const sf::Vector2f newCentre {
             m_lag == 0.f ?
             getOwningEntity().getPosition() :

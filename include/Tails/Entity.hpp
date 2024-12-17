@@ -24,6 +24,7 @@ namespace tails
     class CEngine;
     class CResourceManager;
     class CComponent;
+    class CTransformComponent;
 
     /**
      * A class that can be spawned in a CLevel. Its root component is its transform representation.
@@ -69,8 +70,6 @@ namespace tails
          */
         [[nodiscard]] CLevel& getLevel() const;
         [[nodiscard]] CEngine& getEngine() const;
-
-        [[nodiscard]] std::vector<CComponent*> getComponents() const;
 
         /**
          * Sets the position of this entity's root component
@@ -122,24 +121,26 @@ namespace tails
          */
         [[nodiscard]] const sf::Transform& getInverseTransform() const;
 
+        void setRootComponent(CTransformComponent* component);
+        
+        [[nodiscard]] CTransformComponent* getRootComponent() const {return m_rootComponent;}
+
         template<Derives<CComponent> T>
-        T* setRootComponent()
+        [[nodiscard]] T* getRootComponent() const {return static_cast<T*>(m_rootComponent);}
+
+        template<Derives<CComponent> T, typename... ArgsT>
+        requires ConstructibleUserType<T, ArgsT...>
+        T* createComponent(ArgsT&&... args)
         {
-            m_rootComponent.reset(newObject<T>(this));
-            return static_cast<T*>(m_rootComponent.get());
+            return static_cast<T*>(addComponent(std::unique_ptr<T>(newObject<T>(this, std::forward<ArgsT>(args)...))));
         }
 
-        [[nodiscard]] CComponent& getRootComponent() const {return *m_rootComponent;}
+        CComponent* createRegisteredComponent(std::string_view name);
 
         template<Derives<CComponent> T>
-        [[nodiscard]] T& getRootComponent() const {return *static_cast<T*>(m_rootComponent.get());}
-
-        template<Derives<CComponent> T>
-        T* createComponent()
+        T* createRegisteredComponent(const std::string_view name)
         {
-            if (!m_rootComponent) return setRootComponent<T>();
-
-            return static_cast<T*>(addComponent(std::unique_ptr<T>(newObject<T>(this))));
+            return static_cast<T*>(addComponent(std::unique_ptr<T>(newObject<T>(name, this))));
         }
         
     protected:
@@ -180,13 +181,14 @@ namespace tails
          */
         virtual void collision(CEntity& other) {}
 
-        [[nodiscard]] CComponent* addComponent(std::unique_ptr<CComponent> component) const;
+        [[nodiscard]] CComponent* addComponent(std::unique_ptr<CComponent> component);
 
     private:
         void serialise(nlohmann::json& obj) const override;
         void deserialise(const nlohmann::json& obj) override;
 
-        std::unique_ptr<CComponent> m_rootComponent;
+        std::vector<std::unique_ptr<CComponent>> m_components;
+        CTransformComponent* m_rootComponent {nullptr};
     };
 }
 TAILS_REGISTER_CLASS_CUSTOM_NAME(CEntity, "Entity")

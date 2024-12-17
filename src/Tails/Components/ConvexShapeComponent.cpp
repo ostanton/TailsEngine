@@ -59,6 +59,6 @@ namespace tails
         states.transform *= getTransform();
         target.draw(m_convexShape, states);
 
-        CComponent::draw(target, states);
+        CTransformComponent::draw(target, states);
     }
 }

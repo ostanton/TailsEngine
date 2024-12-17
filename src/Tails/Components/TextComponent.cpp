@@ -62,12 +62,12 @@ namespace tails
 
     sf::FloatRect CTextComponent::getGlobalBounds() const
     {
-        return CComponent::getGlobalBounds();
+        return CTransformComponent::getGlobalBounds();
     }
 
     void CTextComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        CComponent::draw(target, states);
+        CTransformComponent::draw(target, states);
         
         if (!m_font || m_string.isEmpty()) return;
 

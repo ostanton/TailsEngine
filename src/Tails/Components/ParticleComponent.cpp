@@ -14,7 +14,7 @@ namespace tails
 
     void CParticleComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        CComponent::draw(target, states);
+        CTransformComponent::draw(target, states);
 
         sf::VertexArray vertices {sf::PrimitiveType::Points, m_particles.size()};
 
