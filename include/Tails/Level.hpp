@@ -106,7 +106,7 @@ namespace tails
 
         [[nodiscard]] const std::string& getName() const;
 
-        [[nodiscard]] bool hasParent() const;
+        void setParent(CLevel* parent);
         [[nodiscard]] CLevel* getParent() const;
         [[nodiscard]] bool hasSublevel(CLevel* level) const;
 

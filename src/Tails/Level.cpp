@@ -117,9 +117,18 @@ namespace tails
         return m_level->name;
     }
 
-    bool CLevel::hasParent() const
+    void CLevel::setParent(CLevel* parent)
     {
-        return getParent() != nullptr;
+        if (!parent) return;
+
+        // remove ourselves from our "old" parent
+        if (auto const oldParent = getParent())
+            oldParent->m_subLevels.erase(
+                std::ranges::find(m_subLevels.begin(), m_subLevels.end(), this)
+            );
+
+        outer = parent;
+        parent->m_subLevels.push_back(this);
     }
 
     CLevel* CLevel::getParent() const
