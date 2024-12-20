@@ -23,11 +23,11 @@ namespace ldtk
 
 namespace tails
 {
-    class CWorld;
     class CEntity;
     class CEngine;
     class CCameraComponent;
     class CComponent;
+    class CLevelSubsystem;
 
     struct TAILS_API SHitResult final
     {
@@ -37,7 +37,7 @@ namespace tails
     
     class TAILS_API CLevel final : public CObject, public ITickable, public sf::Drawable, public sf::Transformable
     {
-        friend CWorld;
+        friend CLevelSubsystem;
         
     public:
         CLevel() = delete;
@@ -89,11 +89,7 @@ namespace tails
 
         static void destroyEntity(CEntity* entity);
 
-        /**
-         * Gets the world that this level belongs to
-         * @return Owning world
-         */
-        [[nodiscard]] CWorld& getWorld() const;
+        [[nodiscard]] CLevelSubsystem& getLevelSubsystem() const;
         [[nodiscard]] CEngine& getEngine() const;
 
         static bool entitiesColliding(const CEntity* entity1, const CEntity* entity2);
@@ -109,6 +105,10 @@ namespace tails
         );
 
         [[nodiscard]] const std::string& getName() const;
+
+        [[nodiscard]] bool hasParent() const;
+        [[nodiscard]] CLevel* getParent() const;
+        [[nodiscard]] bool hasSublevel(CLevel* level) const;
 
         CResourceManager resourceManager;
         
@@ -130,6 +130,7 @@ namespace tails
         const ldtk::Level* m_level {nullptr};
 
         std::vector<std::unique_ptr<CEntity>> m_entities;
+        std::vector<CLevel*> m_subLevels;
 
         sf::View m_defaultView;
         sf::View* m_view {&m_defaultView};

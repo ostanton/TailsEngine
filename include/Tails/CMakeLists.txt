@@ -7,7 +7,6 @@ target_sources(
     Object.hpp
     Tickable.hpp
     Engine.hpp
-    World.hpp
     Level.hpp
     InputManager.hpp
     Entity.hpp
@@ -25,8 +24,8 @@ target_sources(
     Key.hpp
     Maths.hpp
     Subsystem.hpp
-    WorldSubsystem.hpp
     Handle.hpp
+    LevelSubsystem.hpp
 )
 
 add_subdirectory(Audio)

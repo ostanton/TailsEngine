@@ -5,7 +5,6 @@ add_library(
     STATIC
     Object.cpp
     Engine.cpp
-    World.cpp
     Level.cpp
     InputManager.cpp
     Entity.cpp
@@ -17,7 +16,7 @@ add_library(
     Exception.cpp
     Key.cpp
     Subsystem.cpp
-    WorldSubsystem.cpp
+    LevelSubsystem.cpp
 )
 
 add_subdirectory(Audio)

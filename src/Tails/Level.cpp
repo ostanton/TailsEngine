@@ -1,9 +1,9 @@
 #include <Tails/Level.hpp>
-#include <Tails/World.hpp>
 #include <Tails/Entity.hpp>
 #include <Tails/Engine.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/Components/CameraComponent.hpp>
+#include <Tails/LevelSubsystem.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -39,14 +39,14 @@ namespace tails
             entity->destroy();
     }
 
-    CWorld& CLevel::getWorld() const
+    CLevelSubsystem& CLevel::getLevelSubsystem() const
     {
-        return *dynamic_cast<CWorld*>(outer);
+        return *getTypedOuter<CLevelSubsystem>();
     }
 
     CEngine& CLevel::getEngine() const
     {
-        return getWorld().getEngine();
+        return getLevelSubsystem().getEngine();
     }
 
     bool CLevel::entitiesColliding(const CEntity* entity1, const CEntity* entity2)
@@ -115,6 +115,21 @@ namespace tails
     const std::string& CLevel::getName() const
     {
         return m_level->name;
+    }
+
+    bool CLevel::hasParent() const
+    {
+        return getParent() != nullptr;
+    }
+
+    CLevel* CLevel::getParent() const
+    {
+        return getTypedOuter<CLevel>();
+    }
+
+    bool CLevel::hasSublevel(CLevel* level) const
+    {
+        return std::ranges::find(m_subLevels.begin(), m_subLevels.end(), level) != m_subLevels.end();
     }
 
     void CLevel::preTick()

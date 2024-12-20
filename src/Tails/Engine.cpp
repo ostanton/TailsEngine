@@ -4,7 +4,7 @@
 #include <Tails/Debug.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/Subsystem.hpp>
-#include <Tails/WorldSubsystem.hpp>
+#include <Tails/LevelSubsystem.hpp>
 #include <Tails/UI/UISubsystem.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -164,22 +164,12 @@ namespace tails
         m_running = false;
     }
 
-    CWorldSubsystem& CEngine::getWorldSubsystem() noexcept
+    CLevelSubsystem& CEngine::getLevelSubsystem() const noexcept
     {
-        return *getSubsystemOfType<CWorldSubsystem>();
+        return *getSubsystemOfType<CLevelSubsystem>();
     }
 
-    const CWorldSubsystem& CEngine::getWorldSubsystem() const noexcept
-    {
-        return *getSubsystemOfType<CWorldSubsystem>();
-    }
-
-    ui::CUISubsystem& CEngine::getUISubsystem() noexcept
-    {
-        return *getSubsystemOfType<ui::CUISubsystem>();
-    }
-
-    const ui::CUISubsystem& CEngine::getUISubsystem() const noexcept
+    ui::CUISubsystem& CEngine::getUISubsystem() const noexcept
     {
         return *getSubsystemOfType<ui::CUISubsystem>();
     }
@@ -248,7 +238,7 @@ namespace tails
     {
         CDebug::print();
         CDebug::print("Registering default subsystems");
-        registerSubsystem<CWorldSubsystem>("world");
+        registerSubsystem<CLevelSubsystem>("level");
         registerSubsystem<ui::CUISubsystem>("ui");
         CDebug::print("Registered default subsystems");
         CDebug::print();

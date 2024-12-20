@@ -5,7 +5,6 @@
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 #include <Tails/Concepts.hpp>
-#include <Tails/World.hpp>
 #include <Tails/Maths.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -23,7 +22,7 @@ namespace tails
 {
     class CClassRegistry;
     class CSubsystem;
-    class CWorldSubsystem;
+    class CLevelSubsystem;
 
     namespace ui
     {
@@ -126,11 +125,8 @@ namespace tails
         [[nodiscard]] sf::View& getRenderView() noexcept {return m_renderView;}
         [[nodiscard]] const sf::View& getRenderView() const noexcept {return m_renderView;}
 
-        [[nodiscard]] CWorldSubsystem& getWorldSubsystem() noexcept;
-        [[nodiscard]] const CWorldSubsystem& getWorldSubsystem() const noexcept;
-
-        [[nodiscard]] ui::CUISubsystem& getUISubsystem() noexcept;
-        [[nodiscard]] const ui::CUISubsystem& getUISubsystem() const noexcept;
+        [[nodiscard]] CLevelSubsystem& getLevelSubsystem() const noexcept;
+        [[nodiscard]] ui::CUISubsystem& getUISubsystem() const noexcept;
 
         void setRenderProperties(const SRenderProperties& properties) noexcept;
         [[nodiscard]] const SRenderProperties& getRenderProperties() const noexcept {return m_renderProperties;}
