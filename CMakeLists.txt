@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28.3)
+cmake_minimum_required(VERSION 3.24)
 
 project(TailsEngine LANGUAGES CXX)
 
@@ -32,7 +32,7 @@ set(BUILD_SHARED_LIBS OFF)
 set(SFML_USE_STATIC_STD_LIBS ON)
 
 # Add SFML
-CPMAddPackage("gh:SFML/SFML#master")
+CPMAddPackage("gh:SFML/SFML#3.0.0")
 
 # Add nlohmann/json
 CPMAddPackage("gh:nlohmann/json@3.11.3")
