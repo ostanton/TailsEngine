@@ -7,17 +7,22 @@
 namespace tails
 {
     class CAudioManager;
-    class CResourceManager;
+    class CSoundBuffer;
     
     class TAILS_API IBus
     {
         friend CAudioManager;
         
     public:
+        IBus() = default;
+        IBus(const IBus&) = default;
+        IBus(IBus&&) = default;
+        IBus& operator=(const IBus&) = default;
+        IBus& operator=(IBus&&) = default;
         virtual ~IBus() = default;
 
-        template<ResourceType T>
-        void setResource(T* resource)
+        template<Derives<CSoundBuffer> T>
+        void setResource(const std::shared_ptr<T>& resource)
         {
             setResourceImpl(resource);
         }
@@ -27,7 +32,8 @@ namespace tails
         virtual void pause() = 0;
 
     protected:
-        virtual void setResourceImpl(void* resource) = 0;
+        // TODO - make more generic base sound resource
+        virtual void setResourceImpl(const std::shared_ptr<CSoundBuffer>& resource) = 0;
     };
 }
 

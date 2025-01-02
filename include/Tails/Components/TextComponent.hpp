@@ -14,6 +14,8 @@ namespace sf
 
 namespace tails
 {
+    class CFont;
+    
     /**
      * Localisable text, supporting various stylings and other options
      */
@@ -35,7 +37,7 @@ namespace tails
         CTextComponent() = default;
         CTextComponent(
             CLocaleString string,
-            const sf::Font* font,
+            const std::shared_ptr<CFont>& font,
             unsigned int characterSize = 8,
             sf::Color colour = sf::Color::White,
             std::uint8_t style = None,
@@ -46,8 +48,8 @@ namespace tails
         void setString(CLocaleString string);
         [[nodiscard]] constexpr const CLocaleString& getString() const {return m_string;}
 
-        void setFont(const sf::Font* font);
-        [[nodiscard]] constexpr const sf::Font* getFont() const {return m_font;}
+        void setFont(const std::shared_ptr<CFont>& font);
+        [[nodiscard]] std::shared_ptr<CFont> getFont() const;
 
         void setCharacterSize(unsigned int characterSize);
         [[nodiscard]] constexpr unsigned int getCharacterSize() const {return m_characterSize;}
@@ -74,7 +76,8 @@ namespace tails
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         CLocaleString m_string {"Text"};
-        const sf::Font* m_font {nullptr};
+        std::shared_ptr<CFont> m_font;
+        const sf::Font* m_underlying {nullptr};
         unsigned int m_characterSize {8};
         sf::Color m_colour {sf::Color::White};
         std::uint8_t m_style {None};

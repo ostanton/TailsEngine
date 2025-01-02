@@ -4,7 +4,6 @@
 #include <Tails/Config.hpp>
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
-#include <Tails/ResourceManager.hpp>
 #include <Tails/Concepts.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -110,8 +109,6 @@ namespace tails
         [[nodiscard]] CLevel* getParent() const;
         [[nodiscard]] bool hasSublevel(CLevel* level) const;
 
-        CResourceManager resourceManager;
-        
     private:
         void preTick() override;
         void tick(float deltaTime) override;

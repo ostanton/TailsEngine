@@ -4,7 +4,6 @@
 #include <Tails/Config.hpp>
 #include <Tails/Subsystem.hpp>
 #include <Tails/Concepts.hpp>
-#include <Tails/ResourceManager.hpp>
 
 #include <memory>
 
@@ -58,8 +57,6 @@ namespace tails::ui
          * @return If widget is focused
          */
         [[nodiscard]] bool widgetFocused(const CWidget* widget) const;
-
-        CResourceManager resourceManager;
         
     private:
         CUISubsystem(CUISubsystem&&) noexcept;

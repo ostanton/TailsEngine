@@ -1,6 +1,6 @@
 #include <Tails/Components/SpriteComponent.hpp>
+#include <Tails/Resources/Texture.hpp>
 
-#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace tails
@@ -10,12 +10,24 @@ namespace tails
         setSize({16.f, 16.f});
     }
 
-    void CSpriteComponent::setTexture(const sf::Texture* texture)
+    CSpriteComponent::~CSpriteComponent() = default;
+
+    void CSpriteComponent::setTexture(const std::shared_ptr<CTexture>& texture)
     {
         m_texture = texture;
-        if (!texture) return;
-
+        if (!texture)
+        {
+            m_underlying = nullptr;
+            return;
+        }
+        
+        m_underlying = m_texture->getUnderlying<sf::Texture>();
         setTextureCoords({{0, 0}, {texture->getSize().x, texture->getSize().y}});
+    }
+
+    std::shared_ptr<CTexture> CSpriteComponent::getTexture() const
+    {
+        return m_texture;
     }
 
     void CSpriteComponent::setTextureCoords(const sf::Rect<unsigned int>& coords)
@@ -84,7 +96,7 @@ namespace tails
 
         // The states going into the parent draw are separate to these states (as they're copied in)
         states.transform *= getTransform();
-        states.texture = m_texture;
+        states.texture = m_underlying;
         target.draw(m_vertices, states);
     }
 

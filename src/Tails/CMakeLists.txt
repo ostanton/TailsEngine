@@ -22,4 +22,5 @@ add_library(
 add_subdirectory(Audio)
 add_subdirectory(Components)
 add_subdirectory(Network)
+add_subdirectory(Resources)
 add_subdirectory(UI)

@@ -4,13 +4,8 @@
 #include <Tails/Config.hpp>
 #include <Tails/Audio/Bus.hpp>
 
-#include <memory>
-
-namespace sf
-{
-    class Sound;
-    class SoundBuffer;
-}
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 
 namespace tails
 {
@@ -18,7 +13,7 @@ namespace tails
     {
     public:
         CSoundBus();
-        explicit CSoundBus(const sf::SoundBuffer* resource) noexcept;
+        explicit CSoundBus(const std::shared_ptr<CSoundBuffer>& resource) noexcept;
         CSoundBus(const CSoundBus&) = delete;
         CSoundBus(CSoundBus&&) noexcept;
         CSoundBus& operator=(const CSoundBus&) = delete;
@@ -26,19 +21,16 @@ namespace tails
         ~CSoundBus() override;
         
     protected:
-        void setResourceImpl(void* resource) override;
+        void setResourceImpl(const std::shared_ptr<CSoundBuffer>& resource) override;
         
         void play() override;
         void stop() override;
         void pause() override;
         
     private:
-        bool createSound(const sf::SoundBuffer& resource) noexcept;
-
-        // dynamic allocation because sf::Sound requires an sf::SoundBuffer,
-        // but I want to be able to have a sound without a buffer, and I do not want
-        // to make my own sound class
-        std::unique_ptr<sf::Sound> m_sound;
+        sf::Sound m_sound;
+        sf::SoundBuffer m_emptyBuffer;
+        std::shared_ptr<CSoundBuffer> m_buffer;
     };
 }
 

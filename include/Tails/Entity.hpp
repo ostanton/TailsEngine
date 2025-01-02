@@ -146,9 +146,8 @@ namespace tails
     protected:
         /**
          * A place to load all the resources that this entity requires/depends on
-         * @param resourceManager The resource manager associated with the level this entity is spawned in
          */
-        virtual void loadResources(CResourceManager& resourceManager) {}
+        virtual void loadResources() {}
 
         /**
          * Called before spawn(), used to initialise this entity's components

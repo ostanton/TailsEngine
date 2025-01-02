@@ -246,7 +246,7 @@ namespace tails
         entity->setScale(scale);
 
         entity->initComponents();
-        entity->loadResources(resourceManager);
+        entity->loadResources();
         entity->spawn();
 
         m_entities.emplace_back(std::move(entity));

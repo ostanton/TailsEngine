@@ -16,6 +16,8 @@ namespace sf
 
 namespace tails
 {
+    class CTexture;
+    
     class TAILS_API CTileMapComponent final : public CTransformComponent
     {
     public:
@@ -27,8 +29,8 @@ namespace tails
         void setMapSize(const sf::Vector2u& size, bool updateMap = false);
         [[nodiscard]] const sf::Vector2u& getMapSize() const {return m_mapSize;}
         
-        void setMapTexture(const sf::Texture* tileMap, bool updateMap = false);
-        [[nodiscard]] const sf::Texture* setMapTexture() const {return m_texture;}
+        void setMapTexture(const std::shared_ptr<CTexture>& tileMap, bool updateMap = false);
+        [[nodiscard]] std::shared_ptr<CTexture> getMapTexture() const;
 
         void setTileSize(size_t size, bool updateMap = false);
         [[nodiscard]] size_t getTileSize() const {return m_tileSize;}
@@ -41,7 +43,8 @@ namespace tails
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         std::vector<TileType> m_tiles;
-        const sf::Texture* m_texture {nullptr};
+        std::shared_ptr<CTexture> m_texture;
+        const sf::Texture* m_underlying {nullptr};
         size_t m_tileSize {16};
         sf::Vector2u m_mapSize;
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip};

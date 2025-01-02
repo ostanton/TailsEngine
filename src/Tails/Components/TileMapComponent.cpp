@@ -1,6 +1,6 @@
 #include <Tails/Components/TileMapComponent.hpp>
+#include <Tails/Resources/Texture.hpp>
 
-#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -21,11 +21,18 @@ namespace tails
             update();
     }
 
-    void CTileMapComponent::setMapTexture(const sf::Texture* tileMap, bool updateMap /* = false */)
+    void CTileMapComponent::setMapTexture(const std::shared_ptr<CTexture>& tileMap, bool updateMap /* = false */)
     {
         m_texture = tileMap;
+        if (m_texture)
+            m_underlying = m_texture->getUnderlying<sf::Texture>();
         if (updateMap)
             update();
+    }
+
+    std::shared_ptr<CTexture> CTileMapComponent::getMapTexture() const
+    {
+        return m_texture;
     }
 
     void CTileMapComponent::setTileSize(size_t size, bool updateMap /* = false */)
@@ -102,7 +109,7 @@ namespace tails
         CTransformComponent::draw(target, states);
         
         states.transform *= getTransform();
-        states.texture = m_texture;
+        states.texture = m_underlying;
         target.draw(m_vertices, states);
     }
 }

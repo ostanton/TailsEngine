@@ -2,101 +2,81 @@
 #define TAILS_RESOURCE_MANAGER_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Debug.hpp>
 #include <Tails/Concepts.hpp>
 #include <Tails/Maths.hpp>
+#include <Tails/Debug.hpp>
+#include <Tails/Resources/Resource.hpp>
 
 #include <memory>
 #include <unordered_map>
-#include <string_view>
-#include <exception>
-#include <filesystem>
-
-namespace sf
-{
-    class Texture;
-    class SoundBuffer;
-    class Font;
-}
+#include <functional>
 
 namespace tails
 {
-    /**
-     * Owns resources for various classes to have pointers to.
-     * This allows SFML classes to be used with it (raw pointers to the resources that are managed by this manager).
-     * It implements a type-erased unique_ptr, so is 16 bits instead of 8 bits.
-     */
     class TAILS_API CResourceManager final
     {
     public:
-        CResourceManager();
         CResourceManager(const CResourceManager&) = delete;
-        CResourceManager(CResourceManager&&) noexcept = default;
+        CResourceManager(CResourceManager&&) = delete;
         CResourceManager& operator=(const CResourceManager&) = delete;
-        CResourceManager& operator=(CResourceManager&&) noexcept = default;
-        ~CResourceManager();
+        CResourceManager& operator=(CResourceManager&&) = delete;
+        ~CResourceManager() = default;
         
-        using ResourcePtr = std::unique_ptr<void, void(*)(const void*)>;
-        using ResourceMap = std::unordered_map<size_t, ResourcePtr>;
-
-        sf::Texture* createTexture(std::string_view id, const std::filesystem::path& filename);
-        [[nodiscard]] sf::Texture* getTexture(std::string_view id) const;
-
-        sf::SoundBuffer* createSound(std::string_view id, const std::filesystem::path& filename);
-        [[nodiscard]] sf::SoundBuffer* getSound(std::string_view id) const;
-
-        sf::Font* createFont(std::string_view id, const std::filesystem::path& filename);
-        [[nodiscard]] sf::Font* getFont(std::string_view id) const;
-
-        template<ResourceType T>
-        T* createResource(std::string_view id, const std::filesystem::path& filename)
+        template<Derives<IResource> ResT, typename... ArgsT>
+        requires ConstructibleUserType<ResT, ArgsT...>
+        [[nodiscard]] static std::shared_ptr<ResT> loadResource(const std::filesystem::path& path, ArgsT&&... args)
         {
-            if (!m_resources.contains(hash(id)))
+            auto deleter = [](const std::size_t id)
             {
-                try {m_resources.try_emplace(hash(id), makeResourcePtr<T>(filename));}
-                catch (const std::exception& e)
+                if (get().m_resources[id].expired())
                 {
-                    CDebug::exception("Failed to create ", id, " resource: ", e.what());
-                    return nullptr;
+                    CDebug::print("Deleting resource with ID: ", id);
+                    get().m_resources.erase(id);
                 }
-                catch (...)
-                {
-                    CDebug::exception("Unknown exception while creating resource ", id);
-                    return nullptr;
-                }
-
-                CDebug::print("Created \"", id, "\" resource at ", filename);
-            }
-            else
-                CDebug::print("Resource \"", id, "\" already exists, getting it");
-
-            return static_cast<T*>(m_resources.at(hash(id)).get());
-        }
-
-        template<ResourceType T>
-        [[nodiscard]] T* getResource(std::string_view id) const
-        {
-            if (!m_resources.contains(hash(id)))
+            };
+            
+            const std::size_t id {hash(path.string())};
+            std::shared_ptr<IResource> res {new ResT(std::forward<ArgsT>(args)...), std::bind(deleter, id)};
+            get().m_resources.try_emplace(id, res);
+            
+            if (!res->load(path))
             {
-                CDebug::error("Failed to find \"", id, "\" resource");
+                CDebug::error("Failed to load resource at path ", path);
                 return nullptr;
             }
+            
+            // other load things
+            res->postLoad();
+            return std::static_pointer_cast<ResT>(res);
+        }
 
-            return static_cast<T*>(m_resources.at(hash(id)).get());
+        template<Derives<IResource> ResT>
+        [[nodiscard]] static std::shared_ptr<ResT> getResource(const std::filesystem::path& path)
+        {
+            if (get().m_resources.contains(hash(path.string())))
+                return std::static_pointer_cast<ResT>(get().m_resources[hash(path.string())].lock());
+
+            CDebug::error("Failed to get resource at path ", path);
+            return nullptr;
+        }
+
+        template<Derives<IResource> ResT, typename... ArgsT>
+        requires ConstructibleUserType<ResT, ArgsT...>
+        [[nodiscard]] static std::shared_ptr<ResT> getOrLoadResource(const std::filesystem::path& path, ArgsT&&... args)
+        {
+            if (const auto res = getResource<ResT>(path))
+                return res;
+
+            CDebug::print("Couldn't find resource at path ", path, ", so loading it instead");
+            return loadResource<ResT>(path, std::forward<ArgsT>(args)...);
         }
 
     private:
-        template<ResourceType T, typename... ArgsT>
-        requires ConstructibleUserType<T, ArgsT...>
-        [[nodiscard]] ResourcePtr makeResourcePtr(ArgsT&&... args) const
-        {
-            return ResourcePtr(new T(std::forward<ArgsT>(args)...), [](const void* data)
-            {
-                delete static_cast<const T*>(data);
-            });
-        }
+        CResourceManager() = default;
 
-        ResourceMap m_resources;
+        static CResourceManager& get();
+
+        std::unordered_map<std::size_t, std::weak_ptr<IResource>> m_resources;
     };
 }
 

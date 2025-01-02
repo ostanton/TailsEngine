@@ -13,13 +13,16 @@ namespace sf
 
 namespace tails
 {
+    class CTexture;
+    
     class TAILS_API CSpriteComponent : public CTransformComponent
     {
     public:
         CSpriteComponent();
+        ~CSpriteComponent() override;
         
-        void setTexture(const sf::Texture* texture);
-        [[nodiscard]] const sf::Texture* getTexture() const {return m_texture;}
+        void setTexture(const std::shared_ptr<CTexture>& texture);
+        [[nodiscard]] std::shared_ptr<CTexture> getTexture() const;
 
         void setTextureCoords(const sf::Rect<unsigned int>& coords);
         [[nodiscard]] sf::Rect<unsigned int> getTextureCoords() const;
@@ -36,7 +39,8 @@ namespace tails
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};
-        const sf::Texture* m_texture {nullptr};
+        std::shared_ptr<CTexture> m_texture;
+        const sf::Texture* m_underlying {nullptr};
     };
 }
 TAILS_REGISTER_CLASS_CUSTOM_NAME(CSpriteComponent, "SpriteComponent")
