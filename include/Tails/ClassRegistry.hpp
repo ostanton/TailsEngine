@@ -4,7 +4,6 @@
 #include <Tails/Debug.hpp>
 #include <Tails/Concepts.hpp>
 #include <Tails/Assert.hpp>
-#include <Tails/Exception.hpp>
 
 #include <map>
 #include <string>
@@ -47,7 +46,7 @@ namespace tails
             SRegistryEntry(const std::string& name)
             {
                 CDebug::flush();
-                CDebug::print("Trying to register ", name);
+                CDebug::print("ClassRegistry - Trying to register ", name);
                 ClassRegistryMap& registry {getClassRegistry()};
                 CreateObjectFunc func {createObjectImpl<T>};
 
@@ -55,11 +54,11 @@ namespace tails
 
                 if (!result.second)
                 {
-                    CDebug::error("Object ID ", name, " is already registered.");
+                    CDebug::error("ClassRegistry - Object ID ", name, " is already registered.");
                     return;
                 }
 
-                CDebug::print("Registered ID ", name, " of type ", typeid(T).name(), " of size ", sizeof(T));
+                CDebug::print("ClassRegistry - Registered ID ", name, " of type ", typeid(T).name(), " of size ", sizeof(T));
             }
         };
     } // priv
@@ -76,8 +75,8 @@ namespace tails
 
         if (it == reg.end())
         {
-            CDebug::error("Failed to create object with ID \"", name, "\". It is not registered.");
-            throw CException("Failed to create object, its type is not registered.");
+            CDebug::error("ClassRegistry - Failed to create object with ID \"", name, "\". It is not registered.");
+            return nullptr;
         }
 
         return it->second();

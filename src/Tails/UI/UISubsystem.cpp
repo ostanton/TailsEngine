@@ -1,7 +1,7 @@
 #include <Tails/UI/UISubsystem.hpp>
 #include <Tails/UI/Panel.hpp>
 #include <Tails/UI/Navigation.hpp>
-#include <Tails/Exception.hpp>
+#include <Tails/Debug.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -11,13 +11,19 @@ namespace tails::ui
         : m_rootWidget(std::make_unique<CPanel>()), m_navigation(std::make_unique<CNavigation>(this))
     {
         if (!m_rootWidget) // TODO - can this just be tested against a bad_alloc exception in the init list?
-            throw CException("UI Subsystem root widget is invalid. It must be valid!");
+        {
+            CDebug::error("UI Subsystem root widget is invalid. It must be valid!");
+            return;
+        }
         m_rootWidget->outer = this;
         m_focusedWidget = m_rootWidget.get();
         // should we call focusWidget() here or just silently do it?
 
         if (!m_navigation)
-            throw CException("UI Subsystem navigation is invalid. It must be valid!");
+        {
+            CDebug::error("UI Subsystem navigation is invalid. It must be valid!");
+            return;
+        }
     }
 
     void CUISubsystem::focusWidget(CWidget* widget)

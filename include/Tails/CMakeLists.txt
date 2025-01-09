@@ -18,7 +18,6 @@ target_sources(
     Assert.hpp
     Localisation.hpp
     LocaleString.hpp
-    Exception.hpp
     ClassRegistry.hpp
     Concepts.hpp
     Key.hpp
@@ -26,10 +25,12 @@ target_sources(
     Subsystem.hpp
     Handle.hpp
     LevelSubsystem.hpp
+    Asset.hpp
 )
 
 add_subdirectory(Audio)
 add_subdirectory(Components)
+add_subdirectory(Level)
 add_subdirectory(Network)
 add_subdirectory(Resources)
 add_subdirectory(UI)

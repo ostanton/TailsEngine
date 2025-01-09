@@ -11,12 +11,9 @@
 
 namespace tails
 {
-    CLevel::CLevel(const ldtk::Level* level)
-        : m_level(level)
-    {
-        if (level)
-            setPosition({static_cast<float>(level->position.x), static_cast<float>(level->position.y)});
-    }
+    CLevel::CLevel(std::string name)
+        : m_name(std::move(name))
+    {}
 
     CLevel::CLevel(CLevel&&) noexcept = default;
     CLevel& CLevel::operator=(CLevel&&) noexcept = default;
@@ -24,19 +21,42 @@ namespace tails
 
     CEntity* CLevel::spawnEntity(
         const std::string_view className,
-        const sf::Vector2f& position,
+        const sf::Vector2f position,
         const sf::Angle rotation,
-        const sf::Vector2f& scale
+        const sf::Vector2f scale
     )
     {
         CDebug::print("Spawning ", className);
         return spawnEntity<CEntity>(className, position, rotation, scale);
     }
 
+    CEntity* CLevel::spawnEntityDeferred(
+        const std::string_view className,
+        const sf::Vector2f position,
+        const sf::Angle rotation,
+        const sf::Vector2f scale
+    )
+    {
+        return spawnEntityDeferred<CEntity>(className, position, rotation, scale);
+    }
+
+    void CLevel::finishSpawningEntity(CEntity* entity) const
+    {
+        if (!hasEntity(entity))
+            return;
+
+        entity->spawn();
+    }
+
     void CLevel::destroyEntity(CEntity* entity)
     {
         if (entity)
             entity->destroy();
+    }
+
+    bool CLevel::hasEntity(CEntity* entity) const
+    {
+        return entity != nullptr && getEntityIterator(entity) == m_entities.end();
     }
 
     CLevelSubsystem& CLevel::getLevelSubsystem() const
@@ -114,7 +134,7 @@ namespace tails
 
     const std::string& CLevel::getName() const
     {
-        return m_level->name;
+        return m_name;
     }
 
     void CLevel::setParent(CLevel* parent)
@@ -139,6 +159,11 @@ namespace tails
     bool CLevel::hasSublevel(CLevel* level) const
     {
         return std::ranges::find(m_subLevels.begin(), m_subLevels.end(), level) != m_subLevels.end();
+    }
+
+    void CLevel::addResource(const std::shared_ptr<IResource>& resource)
+    {
+        m_resources.emplace_back(resource);
     }
 
     void CLevel::preTick()
@@ -238,7 +263,7 @@ namespace tails
         }
     }
 
-    CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale)
+    CEntity* CLevel::spawnEntityImpl(std::unique_ptr<CEntity> entity, const sf::Vector2f& position, sf::Angle rotation, const sf::Vector2f& scale, bool deferred)
     {
         entity->outer = this;
         entity->setPosition(position);
@@ -247,10 +272,30 @@ namespace tails
 
         entity->initComponents();
         entity->loadResources();
-        entity->spawn();
+
+        if (!deferred)
+            entity->spawn();
 
         m_entities.emplace_back(std::move(entity));
 
         return m_entities.back().get();
+    }
+
+    CLevel::EntityIterator CLevel::getEntityIterator(CEntity* entity)
+    {
+        return std::ranges::find_if(m_entities.begin(), m_entities.end(),
+            [entity](const auto& uniqueEntity)
+            {
+                return uniqueEntity.get() == entity;
+            });
+    }
+
+    CLevel::ConstEntityIterator CLevel::getEntityIterator(CEntity* entity) const
+    {
+        return std::ranges::find_if(m_entities.begin(), m_entities.end(),
+            [entity](const auto& uniqueEntity)
+            {
+                return uniqueEntity.get() == entity;
+            });
     }
 }

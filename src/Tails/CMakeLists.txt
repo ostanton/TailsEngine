@@ -13,10 +13,10 @@ add_library(
     Debug.cpp
     Localisation.cpp
     LocaleString.cpp
-    Exception.cpp
     Key.cpp
     Subsystem.cpp
     LevelSubsystem.cpp
+    Asset.cpp
 )
 
 add_subdirectory(Audio)

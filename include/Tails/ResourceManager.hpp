@@ -30,7 +30,7 @@ namespace tails
             {
                 if (get().m_resources[id].expired())
                 {
-                    CDebug::print("Deleting resource with ID: ", id);
+                    CDebug::print("CResourceManager - Deleting resource with ID: ", id);
                     get().m_resources.erase(id);
                 }
             };
@@ -41,12 +41,13 @@ namespace tails
             
             if (!res->load(path))
             {
-                CDebug::error("Failed to load resource at path ", path);
+                CDebug::error("CResourceManager - Failed to load resource at path ", path);
                 return nullptr;
             }
             
             // other load things
             res->postLoad();
+            CDebug::print("CResourceManager - Loaded resource at path ", path, " with hash ", id);
             return std::static_pointer_cast<ResT>(res);
         }
 
@@ -56,7 +57,7 @@ namespace tails
             if (get().m_resources.contains(hash(path.string())))
                 return std::static_pointer_cast<ResT>(get().m_resources[hash(path.string())].lock());
 
-            CDebug::error("Failed to get resource at path ", path);
+            CDebug::error("CResourceManager - Failed to get resource at path ", path);
             return nullptr;
         }
 
@@ -67,7 +68,7 @@ namespace tails
             if (const auto res = getResource<ResT>(path))
                 return res;
 
-            CDebug::print("Couldn't find resource at path ", path, ", so loading it instead");
+            CDebug::print("CResourceManager - Couldn't find resource at path ", path, ", so loading it instead");
             return loadResource<ResT>(path, std::forward<ArgsT>(args)...);
         }
 
