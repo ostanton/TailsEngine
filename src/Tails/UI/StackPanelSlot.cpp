@@ -8,23 +8,23 @@ namespace tails::ui
 {
     void CStackPanelSlot::drawContent(const size_t index, sf::RenderStates& states)
     {
-        const CSlot* lastSlot = nullptr;
-
-        // if we are not the first child
+        // we don't need to offset by our owner's position as the incoming states already have that
         if (index > 0)
-            lastSlot = getOwner()->getChildAt(index)->getSlot();
-
-        if (lastSlot)
+        {
+            const CSlot* lastSlot = getOwner()->getChildAt(index)->getSlot();
             m_slottedWidget.setPosition({
-                getOwner()->getPosition().x + padding.left,
-                lastSlot->getContentPosition().y + lastSlot->getLocalBounds().size.y + padding.top
+                padding.left,
+                lastSlot->getContentGlobalBounds().size.y + padding.top
             });
+        }
         else
+        {
             m_slottedWidget.setPosition({
-                getOwner()->getPosition().x + padding.left,
-                getOwner()->getPosition().y + padding.top
+                padding.left,
+                padding.top
             });
-        
+        }
+
         states.transform *= m_slottedWidget.getTransform();
     }
 
@@ -32,16 +32,16 @@ namespace tails::ui
     {
         if (!getContent()) return {};
 
-        const auto globalBounds = getContentTransform().transformRect(getContent()->getLocalBounds());
+        const auto localBounds = getContent()->getLocalBounds();
         
         return {
             {
-                globalBounds.position.x - padding.left,
-                globalBounds.position.y - padding.top
+                localBounds.position.x - padding.left,
+                localBounds.position.y - padding.top
             },
             {
-                globalBounds.size.x + padding.right,
-                globalBounds.size.y + padding.bottom
+                localBounds.size.x + padding.right,
+                localBounds.size.y + padding.bottom
             }
         };
     }

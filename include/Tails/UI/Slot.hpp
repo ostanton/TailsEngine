@@ -41,6 +41,7 @@ namespace tails::ui
         [[nodiscard]] sf::Vector2f getContentPosition() const;
         [[nodiscard]] sf::Angle getContentRotation() const;
         [[nodiscard]] sf::Vector2f getContentScale() const;
+        [[nodiscard]] sf::FloatRect getContentGlobalBounds() const;
         [[nodiscard]] const sf::Transform& getContentTransform() const;
         [[nodiscard]] const sf::Transform& getContentInverseTransform() const;
 

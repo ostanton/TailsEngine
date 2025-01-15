@@ -18,6 +18,11 @@ namespace tails::ui
         return content.release();
     }
 
+    sf::FloatRect SSlottedWidget::getGlobalBounds() const
+    {
+        return getTransform().transformRect(content->getLocalBounds());
+    }
+
     CWidget* SSlottedWidget::operator->() const noexcept
     {
         return get();

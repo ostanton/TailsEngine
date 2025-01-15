@@ -30,6 +30,11 @@ namespace tails::ui
         return m_slottedWidget.getScale();
     }
 
+    sf::FloatRect CSlot::getContentGlobalBounds() const
+    {
+        return m_slottedWidget.getGlobalBounds();
+    }
+
     const sf::Transform& CSlot::getContentTransform() const
     {
         return m_slottedWidget.getTransform();

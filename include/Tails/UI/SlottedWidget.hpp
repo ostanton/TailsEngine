@@ -29,6 +29,8 @@ namespace tails::ui
         [[nodiscard]] CWidget* get() const noexcept;
         [[nodiscard]] CWidget* release() noexcept;
 
+        [[nodiscard]] sf::FloatRect getGlobalBounds() const;
+
         CWidget* operator->() const noexcept;
         SSlottedWidget& operator=(std::unique_ptr<CWidget>&& newContent);
     };
