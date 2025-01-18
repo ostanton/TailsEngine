@@ -39,9 +39,9 @@ namespace tails
         return m_circleShape.getGeometricCenter();
     }
 
-    sf::FloatRect CCircleShapeComponent::getGlobalBounds() const
+    sf::FloatRect CCircleShapeComponent::getLocalBounds() const
     {
-        return m_circleShape.getGlobalBounds();
+        return m_circleShape.getLocalBounds();
     }
 
     void CCircleShapeComponent::setTexture(const sf::Texture* texture, bool resetRect)

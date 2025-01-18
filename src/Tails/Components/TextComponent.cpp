@@ -69,11 +69,6 @@ namespace tails
         m_letterSpacing = spacing;
     }
 
-    sf::FloatRect CTextComponent::getGlobalBounds() const
-    {
-        return CTransformComponent::getGlobalBounds();
-    }
-
     void CTextComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         CTransformComponent::draw(target, states);

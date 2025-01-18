@@ -77,7 +77,7 @@ namespace tails
     {
         if (!m_animations.contains(name.data()))
         {
-            CDebug::error("Failed to play animation \"", name, "\". It does not exist");
+            debug::error("Failed to play animation \"", name, "\". It does not exist");
             return;
         }
 

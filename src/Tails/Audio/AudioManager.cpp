@@ -12,7 +12,7 @@ namespace tails
         auto result = get().m_buses.try_emplace(hash(busName), std::move(bus));
         if (!result.second)
         {
-            CDebug::error("Failed to add ", busName, " bus.");
+            debug::error("Failed to add ", busName, " bus.");
             return nullptr;
         }
         
@@ -23,7 +23,7 @@ namespace tails
     {
         if (!get().m_buses.contains(hash(busName)))
         {
-            CDebug::error(busName, " bus does not exist");
+            debug::error(busName, " bus does not exist");
             return nullptr;
         }
 

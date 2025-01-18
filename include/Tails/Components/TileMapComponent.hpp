@@ -35,7 +35,7 @@ namespace tails
         void setTileSize(size_t size, bool updateMap = false);
         [[nodiscard]] size_t getTileSize() const {return m_tileSize;}
 
-        sf::FloatRect getGlobalBounds() const override;
+        sf::FloatRect getLocalBounds() const override;
         
     private:
         void update();

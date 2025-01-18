@@ -50,12 +50,12 @@ namespace tails
         }
         catch (const std::invalid_argument& e)
         {
-            CDebug::exception("Failed to load LDtk project: ", e.what());
+            debug::exception("Failed to load LDtk project: ", e.what());
             return nullptr;
         }
         catch (...)
         {
-            CDebug::exception("Unknown exception, rethrowing");
+            debug::exception("Unknown exception, rethrowing");
             throw;
         }
     }

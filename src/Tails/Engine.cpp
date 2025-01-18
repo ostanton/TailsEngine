@@ -35,20 +35,20 @@ namespace tails
 
     CEngine::CEngine()
     {
-        CDebug::flush();
-        CDebug::print();
-        CDebug::print("Initialising Engine");
+        debug::flush();
+        debug::print();
+        debug::print("Initialising Engine");
         
         // engine should not be pending create
         unmarkForCreate();
         
         setupDefaultSubsystems();
 
-        CDebug::print("Initialising internal render target");
+        debug::print("Initialising internal render target");
         // must be in constructor so m_renderView is set properly for world subsystem
         initInternalRender();
-        CDebug::print("End engine constructor");
-        CDebug::flush();
+        debug::print("End engine constructor");
+        debug::flush();
     }
 
     CEngine::CEngine(CEngine&&) noexcept = default;
@@ -56,9 +56,9 @@ namespace tails
     
     CEngine::~CEngine()
     {
-        CDebug::flush();
-        CDebug::print("Engine alive for ", m_lifeTime, " seconds");
-        CDebug::print("Engine destructing");
+        debug::flush();
+        debug::print("Engine alive for ", m_lifeTime, " seconds");
+        debug::print("Engine destructing");
     }
 
     CSubsystem* CEngine::getSubsystem(std::string_view id) const
@@ -66,7 +66,7 @@ namespace tails
         const std::size_t hashed {hash(id)};
         if (!m_subsystems.contains(hashed))
         {
-            CDebug::error("Failed to find ", id, " subsystem.");
+            debug::error("Failed to find ", id, " subsystem.");
             return nullptr;
         }
 
@@ -75,7 +75,7 @@ namespace tails
 
     void CEngine::run()
     {
-        CDebug::flush();
+        debug::flush();
         initSubsystems();
         
         // Set default render target as window if it has not already been set
@@ -89,8 +89,8 @@ namespace tails
                 m_windowProperties.style,
                 m_windowProperties.state
             );
-        CDebug::print(m_windowProperties);
-        CDebug::print();
+        debug::print(m_windowProperties);
+        debug::print();
         
         sf::Clock clock;
         const auto window = dynamic_cast<sf::RenderWindow*>(m_renderTarget.get());
@@ -99,8 +99,8 @@ namespace tails
 
         calculateInternalAspectRatio(m_renderTarget->getSize());
 
-        CDebug::print("Main loop started");
-        CDebug::print("Engine render view: ", SVector2f(getRenderView().getSize()));
+        debug::print("Main loop started");
+        debug::print("Engine render view: ", SVector2f(getRenderView().getSize()));
         
         while (m_running)
         {
@@ -122,7 +122,7 @@ namespace tails
                     else if (const auto* resize = ev->getIf<sf::Event::Resized>())
                     {
                         calculateInternalAspectRatio(resize->size);
-                        CDebug::print("Resized window size: ", resize->size.x, "x", resize->size.y);
+                        debug::print("Resized window size: ", resize->size.x, "x", resize->size.y);
                     }
                 }
             }
@@ -154,9 +154,9 @@ namespace tails
             postTick();
         }
 
-        CDebug::print("Main loop ended");
-        CDebug::print();
-        CDebug::flush();
+        debug::print("Main loop ended");
+        debug::print();
+        debug::flush();
     }
 
     void CEngine::kill()
@@ -226,6 +226,8 @@ namespace tails
         {
             subsystem->postTick();
         }
+
+        debug::cleanup();
     }
 
     void CEngine::registerSubsystemImpl(const std::size_t id, std::unique_ptr<CSubsystem> subsystem)
@@ -236,37 +238,37 @@ namespace tails
 
     void CEngine::setupDefaultSubsystems()
     {
-        CDebug::print();
-        CDebug::print("Registering default subsystems");
+        debug::print();
+        debug::print("Registering default subsystems");
         registerSubsystem<CLevelSubsystem>("level");
         registerSubsystem<ui::CUISubsystem>("ui");
-        CDebug::print("Registered default subsystems");
-        CDebug::print();
+        debug::print("Registered default subsystems");
+        debug::print();
     }
 
     void CEngine::initSubsystems()
     {
-        CDebug::print();
-        CDebug::print("Initialising subsystems");
+        debug::print();
+        debug::print("Initialising subsystems");
         for (const auto& subsystem : std::ranges::views::values(m_subsystems))
         {
             subsystem->init();
         }
-        CDebug::print("Subsystems initialised");
-        CDebug::print();
+        debug::print("Subsystems initialised");
+        debug::print();
     }
 
     void CEngine::initInternalRender()
     {
         // Setup internal render texture
         if (!m_renderTextureInternal.resize({m_renderProperties.resolution.x, m_renderProperties.resolution.y}))
-            CDebug::error("Failed to resize internal render texture!");
+            debug::error("Failed to resize internal render texture!");
 
         // Set the size and center of the camera initially
         updateRenderView();
 
-        CDebug::print(m_renderProperties);
-        CDebug::print();
+        debug::print(m_renderProperties);
+        debug::print();
     }
 
     void CEngine::updateRenderView()
@@ -289,7 +291,7 @@ namespace tails
             }));
             if (!m_renderTextureInternal.resize(windowSize))
             {
-                CDebug::print("Failed to resize internal render target to final render target size.");
+                debug::print("Failed to resize internal render target to final render target size.");
             }
             return;
         }

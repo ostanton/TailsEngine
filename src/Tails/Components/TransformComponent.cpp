@@ -6,6 +6,22 @@
 
 namespace tails
 {
+    sf::FloatRect CTransformComponent::getLocalBounds() const
+    {
+        // TODO - this SUCKS!
+        sf::FloatRect result;
+        for (auto const child : m_children)
+        {
+            result = child->getTransform().transformRect(result);
+        }
+        return result;
+    }
+
+    sf::FloatRect CTransformComponent::getGlobalBounds() const
+    {
+        return getTransform().transformRect(getLocalBounds());
+    }
+
     sf::Vector2f CTransformComponent::getGlobalPosition() const
     {
         return m_parent->getTransform().transformPoint(getPosition());
@@ -33,7 +49,7 @@ namespace tails
         m_parent = parent;
     }
 
-    std::vector<CTransformComponent*> CTransformComponent::getAllChildren(bool recursive) const
+    std::vector<CTransformComponent*> CTransformComponent::getAllChildren(const bool recursive) const
     {
         std::vector<CTransformComponent*> result {m_children.size()};
 
@@ -96,6 +112,7 @@ namespace tails
 
     bool CTransformComponent::removeChild(CTransformComponent* child)
     {
+        // we can erase it from this vector, as it is non-owning. Removing it from the entity requires postTick
         if (const auto it = getChildIterator(child); it != m_children.end())
         {
             m_children.erase(it);

@@ -26,7 +26,7 @@ namespace tails
             , m_resource(CResourceManager::getOrLoadResource<ResT>(m_path))
         {
             if (!m_resource)
-                CDebug::error("Asset failed to load resource, path: ", m_path);
+                debug::error("Asset failed to load resource, path: ", m_path);
         }
         TAsset(const TAsset&) = default;
         TAsset(TAsset&&) = default;

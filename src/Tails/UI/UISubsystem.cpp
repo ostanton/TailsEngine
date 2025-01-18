@@ -12,7 +12,7 @@ namespace tails::ui
     {
         if (!m_rootWidget) // TODO - can this just be tested against a bad_alloc exception in the init list?
         {
-            CDebug::error("UI Subsystem root widget is invalid. It must be valid!");
+            debug::error("UI Subsystem root widget is invalid. It must be valid!");
             return;
         }
         m_rootWidget->outer = this;
@@ -21,7 +21,7 @@ namespace tails::ui
 
         if (!m_navigation)
         {
-            CDebug::error("UI Subsystem navigation is invalid. It must be valid!");
+            debug::error("UI Subsystem navigation is invalid. It must be valid!");
             return;
         }
     }

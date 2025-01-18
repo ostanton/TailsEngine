@@ -42,7 +42,7 @@ namespace tails
             update();
     }
 
-    sf::FloatRect CTileMapComponent::getGlobalBounds() const
+    sf::FloatRect CTileMapComponent::getLocalBounds() const
     {
         return {m_vertices[0].position, m_vertices[3].position};
     }

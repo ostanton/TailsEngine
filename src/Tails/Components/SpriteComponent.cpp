@@ -90,6 +90,11 @@ namespace tails
         return m_vertices[0].color;
     }
 
+    sf::FloatRect CSpriteComponent::getLocalBounds() const
+    {
+        return m_vertices.getBounds();
+    }
+
     void CSpriteComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         CTransformComponent::draw(target, states);
@@ -98,10 +103,5 @@ namespace tails
         states.transform *= getTransform();
         states.texture = m_underlying;
         target.draw(m_vertices, states);
-    }
-
-    sf::FloatRect CSpriteComponent::getGlobalBounds() const
-    {
-        return getTransform().transformRect(m_vertices.getBounds());
     }
 }

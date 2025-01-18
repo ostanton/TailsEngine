@@ -30,7 +30,8 @@ namespace tails
         using ChildIterator = ChildVector::iterator;
         using ConstChildIterator = ChildVector::const_iterator;
 
-        [[nodiscard]] virtual sf::FloatRect getGlobalBounds() const {return {};}
+        [[nodiscard]] virtual sf::FloatRect getLocalBounds() const;
+        [[nodiscard]] sf::FloatRect getGlobalBounds() const;
 
         [[nodiscard]] sf::Vector2f getGlobalPosition() const;
         [[nodiscard]] sf::Angle getGlobalRotation() const;

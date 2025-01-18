@@ -45,8 +45,8 @@ namespace tails
         private:
             SRegistryEntry(const std::string& name)
             {
-                CDebug::flush();
-                CDebug::print("ClassRegistry - Trying to register ", name);
+                debug::flush();
+                debug::print("ClassRegistry - Trying to register ", name);
                 ClassRegistryMap& registry {getClassRegistry()};
                 CreateObjectFunc func {createObjectImpl<T>};
 
@@ -54,11 +54,11 @@ namespace tails
 
                 if (!result.second)
                 {
-                    CDebug::error("ClassRegistry - Object ID ", name, " is already registered.");
+                    debug::error("ClassRegistry - Object ID ", name, " is already registered.");
                     return;
                 }
 
-                CDebug::print("ClassRegistry - Registered ID ", name, " of type ", typeid(T).name(), " of size ", sizeof(T));
+                debug::print("ClassRegistry - Registered ID ", name, " of type ", typeid(T).name(), " of size ", sizeof(T));
             }
         };
     } // priv
@@ -75,7 +75,7 @@ namespace tails
 
         if (it == reg.end())
         {
-            CDebug::error("ClassRegistry - Failed to create object with ID \"", name, "\". It is not registered.");
+            debug::error("ClassRegistry - Failed to create object with ID \"", name, "\". It is not registered.");
             return nullptr;
         }
 

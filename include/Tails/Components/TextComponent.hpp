@@ -69,8 +69,6 @@ namespace tails
 
         void setLetterSpacing(float spacing);
         [[nodiscard]] constexpr float getLetterSpacing() const {return m_letterSpacing;}
-
-        [[nodiscard]] sf::FloatRect getGlobalBounds() const override;
         
     private:
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

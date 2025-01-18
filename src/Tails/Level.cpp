@@ -3,9 +3,14 @@
 #include <Tails/Engine.hpp>
 #include <Tails/Vector2.hpp>
 #include <Tails/Components/CameraComponent.hpp>
+#include <Tails/Components/TransformComponent.hpp>
 #include <Tails/LevelSubsystem.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
 
 #include <LDtkLoader/Level.hpp>
 
@@ -26,7 +31,7 @@ namespace tails
         const sf::Vector2f scale
     )
     {
-        CDebug::print("Spawning ", className);
+        debug::print("Spawning ", className);
         return spawnEntity<CEntity>(className, position, rotation, scale);
     }
 
@@ -56,7 +61,7 @@ namespace tails
 
     bool CLevel::hasEntity(CEntity* entity) const
     {
-        return entity != nullptr && getEntityIterator(entity) == m_entities.end();
+        return entity != nullptr && getEntityIterator(entity) != m_entities.end();
     }
 
     CLevelSubsystem& CLevel::getLevelSubsystem() const
@@ -103,13 +108,14 @@ namespace tails
     }
 
     std::optional<SHitResult> CLevel::rectangleTrace(
-        const sf::FloatRect globalBounds,
+        const sf::FloatRect bounds,
         const std::span<CEntity*> entitiesToIgnore
     )
     {
-        if (globalBounds.size == sf::Vector2f{0.f, 0.f})
+        if (bounds.size == sf::Vector2f{0.f, 0.f})
             return std::nullopt;
-/*
+
+        // TODO - obviously make this more optimised in the future. But it's pointless to at the moment
         for (auto& entity : m_entities)
         {
             if (!entitiesToIgnore.empty())
@@ -124,11 +130,11 @@ namespace tails
                 ) continue;
             }
 
-            if (globalBounds.findIntersection(entity->getGlobalBounds()))
+            if (bounds.findIntersection(entity->getBounds()))
                 // no idea what to do with the hit component atm so just use the entity's root component
-                return std::make_optional(SHitResult{entity.get(), &entity->getRootComponent()});
+                return std::make_optional(SHitResult{entity.get(), entity->getRootComponent()});
         }
-*/
+
         return std::nullopt;
     }
 
@@ -217,8 +223,19 @@ namespace tails
             if (!entity->pendingCreate()/* && viewport.findIntersection(entity->getGlobalBounds())*/)
             {
                 target.draw(*entity, states);
+
+#ifdef TAILS_DEBUG
+                if (drawEntityBounds)
+                    debug::drawRect({entity->getPosition(), entity->getBounds().size});
+#endif // TAILS_DEBUG
             }
         }
+        
+#ifdef TAILS_DEBUG
+        // draw debug shapes
+        drawDebug(target, states);
+#endif // TAILS_DEBUG
+        
         target.setView(target.getDefaultView());
     }
 
@@ -235,6 +252,78 @@ namespace tails
                 it = decltype(it)(m_entities.erase(std::next(it).base()));
             else
                 ++it;
+        }
+    }
+
+    void CLevel::drawDebug(sf::RenderTarget& target, const sf::RenderStates& states) const
+    {
+        // rectangles
+        for (const auto& rects = debug::getRects();
+            const auto& [rect, fillColour, outlineColour, thickness] : rects)
+        {
+            sf::RectangleShape rectangleShape {rect.size};
+            rectangleShape.setPosition(rect.position);
+            rectangleShape.setFillColor(fillColour);
+            rectangleShape.setOutlineColor(outlineColour);
+            rectangleShape.setOutlineThickness(thickness);
+            target.draw(rectangleShape, states);
+        }
+        
+        // lines
+        for (const auto& lines = debug::getLines();
+            const auto& [start, end, colour, thickness] : lines)
+        {
+            // TODO - thickness atm is not supported as it's just two linked vertices
+            std::array line {
+                sf::Vertex {start, colour},
+                sf::Vertex {end, colour}
+            };
+
+            target.draw(line.data(), line.size(), sf::PrimitiveType::Lines, states);
+        }
+        
+        // circles
+        for (const auto& circles = debug::getCircles();
+            const auto& [
+                position,
+                radius,
+                pointCount,
+                fillColour,
+                outlineColour,
+                thickness
+            ] : circles)
+        {
+            sf::CircleShape circle {radius, pointCount};
+            circle.setPosition(position);
+            circle.setFillColor(fillColour);
+            circle.setOutlineColor(outlineColour);
+            circle.setOutlineThickness(thickness);
+
+            target.draw(circle, states);
+        }
+
+        // convex shapes
+        for (const auto& convexShapes = debug::getConvexShapes();
+            const auto& [
+                points,
+                position,
+                fillColour,
+                outlineColour,
+                thickness
+            ] : convexShapes)
+        {
+            sf::ConvexShape shape {points.size()};
+            for (std::size_t i {0}; const auto point : points)
+            {
+                shape.setPoint(i, point);
+                i++;
+            }
+            shape.setPosition(position);
+            shape.setFillColor(fillColour);
+            shape.setOutlineColor(outlineColour);
+            shape.setOutlineThickness(thickness);
+
+            target.draw(shape, states);
         }
     }
 

@@ -191,7 +191,7 @@ namespace tails
         if (name == "Controller Right Thumbstick X") return {EInputDevice::Controller, EXboxAxis::RightThumbstickX};
         if (name == "Controller Right Thumbstick Y") return {EInputDevice::Controller, EXboxAxis::RightThumbstickY};
 
-        CDebug::print("Failed to find key \"", name, "\"");
+        debug::print("Failed to find key \"", name, "\"");
         return {EInputDevice::Unknown, 0};
     }
 

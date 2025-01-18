@@ -33,7 +33,7 @@ namespace tails
         void setColour(sf::Color colour);
         [[nodiscard]] sf::Color getColour() const;
         
-        [[nodiscard]] sf::FloatRect getGlobalBounds() const override;
+        [[nodiscard]] sf::FloatRect getLocalBounds() const override;
 
     protected:
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

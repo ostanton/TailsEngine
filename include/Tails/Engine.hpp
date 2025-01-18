@@ -88,12 +88,12 @@ namespace tails
             const std::size_t hashed {hash(id)};
             if (m_subsystems.contains(hashed))
             {
-                CDebug::print("  Subsystem ", id, " is already registered");
+                debug::print("  Subsystem ", id, " is already registered");
                 return;
             }
 
             registerSubsystemImpl(hashed, std::make_unique<T>(std::forward<ArgsT>(args)...));
-            CDebug::print("  Registered ", id, " subsystem");
+            debug::print("  Registered ", id, " subsystem");
         }
 
         [[nodiscard]] CSubsystem* getSubsystem(std::string_view id) const;

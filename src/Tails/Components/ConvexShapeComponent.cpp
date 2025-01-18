@@ -29,9 +29,9 @@ namespace tails
         return m_convexShape.getPoint(index);
     }
 
-    sf::FloatRect CConvexShapeComponent::getGlobalBounds() const
+    sf::FloatRect CConvexShapeComponent::getLocalBounds() const
     {
-        return m_convexShape.getGlobalBounds();
+        return m_convexShape.getLocalBounds();
     }
 
     void CConvexShapeComponent::setTexture(const sf::Texture* texture, bool resetRect)

@@ -22,7 +22,7 @@ namespace tails
         void setPoint(size_t index, const sf::Vector2f& point);
         [[nodiscard]] sf::Vector2f getPoint(size_t index) const;
 
-        sf::FloatRect getGlobalBounds() const override;
+        sf::FloatRect getLocalBounds() const override;
 
         void setTexture(const sf::Texture* texture, bool resetRect = false) override;
         [[nodiscard]] const sf::Texture* getTexture() const override;

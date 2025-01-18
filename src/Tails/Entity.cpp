@@ -47,34 +47,10 @@ namespace tails
         return colliding;
     }
 
-    sf::FloatRect CEntity::getLocalBounds() const
+    sf::FloatRect CEntity::getBounds() const
     {
-        sf::FloatRect bounds;
-
-        /*
-        auto setBounds = [&bounds](const std::unique_ptr<CTransformComponent>& comp)
-        {
-            if (comp->getGlobalBounds().size.x > bounds.size.x)
-                bounds.size.x = comp->getGlobalBounds().size.x;
-            if (comp->getGlobalBounds().size.y > bounds.size.y)
-                bounds.size.y = comp->getGlobalBounds().size.y;
-            if (comp->getGlobalBounds().position.x < bounds.position.x)
-                bounds.position.x = comp->getGlobalBounds().position.x;
-            if (comp->getGlobalBounds().position.y < bounds.position.y)
-                bounds.position.y = comp->getGlobalBounds().position.y;
-        };
-
-        setBounds(m_rootComponent);
-        m_rootComponent->forEachChild(setBounds, true);
-
-        bounds = m_rootComponent->getTransform().transformRect(bounds);
-        */
-        return bounds;
-    }
-
-    sf::FloatRect CEntity::getGlobalBounds() const
-    {
-        return m_rootComponent->getTransform().transformRect(getLocalBounds());
+        // there is no need for entities to have local bounds (unless they can be parented to other entities)
+        return m_rootComponent->getGlobalBounds();
     }
 
     CComponent* CEntity::createRegisteredComponent(const std::string_view name)

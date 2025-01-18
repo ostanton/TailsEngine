@@ -61,8 +61,7 @@ namespace tails
          */
         bool colliding(const CEntity* entity) const;
 
-        [[nodiscard]] sf::FloatRect getLocalBounds() const;
-        [[nodiscard]] sf::FloatRect getGlobalBounds() const;
+        [[nodiscard]] sf::FloatRect getBounds() const;
 
         /**
          * Gets the level that this entity belongs to

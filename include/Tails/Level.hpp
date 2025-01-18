@@ -173,8 +173,8 @@ namespace tails
         [[nodiscard]] bool isCameraActive(const CCameraComponent* camera) const;
 
         [[nodiscard]] std::optional<SHitResult> rectangleTrace(
-            sf::FloatRect globalBounds,
-            std::span<CEntity*> entitiesToIgnore
+            sf::FloatRect bounds,
+            std::span<CEntity*> entitiesToIgnore = {}
         );
 
         [[nodiscard]] const std::string& getName() const;
@@ -185,11 +185,18 @@ namespace tails
 
         void addResource(const std::shared_ptr<IResource>& resource);
 
+        /**
+         * Debug bool for whether every entity's bounds should be drawn or not
+         */
+        bool drawEntityBounds {false};
+
     private:
         void preTick() override;
         void tick(float deltaTime) override;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void postTick() override;
+
+        void drawDebug(sf::RenderTarget& target, const sf::RenderStates& states) const;
 
         /**
          * Called when this level is being closed and another is opening.
