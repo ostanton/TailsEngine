@@ -1,11 +1,11 @@
 #ifndef TAILS_UI_ALIGNMENT_HPP
 #define TAILS_UI_ALIGNMENT_HPP
 
-#include <Tails/Config.hpp>
+#include <Tails/Types/Int.hpp>
 
 namespace tails::ui
 {
-    enum class EHorizontalAlignment : std::uint8_t
+    enum class EHorizontalAlignment : u8
     {
         Left,
         Centre,
@@ -13,7 +13,7 @@ namespace tails::ui
         Fill
     };
 
-    enum class EVerticalAlignment : std::uint8_t
+    enum class EVerticalAlignment : u8
     {
         Top,
         Centre,

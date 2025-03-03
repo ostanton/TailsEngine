@@ -27,12 +27,37 @@ set_property(TARGET TailsEngine PROPERTY
 # Don't need to check if these are downloaded, CPM seems to do it for us
 # Could check on the user's PC elsewhere, but having a clean clone is good I think
 
-# Build SFML statically
-set(BUILD_SHARED_LIBS OFF)
-set(SFML_USE_STATIC_STD_LIBS ON)
+set(TAILS_BACKEND "SFML3" CACHE STRING "Backend for Tails Engine to use")
+message("-- TailsEngine: Using backend ${TAILS_BACKEND}")
 
-# Add SFML
-CPMAddPackage("gh:SFML/SFML#3.0.0")
+if (TAILS_BACKEND STREQUAL "SFML3")
+    add_subdirectory(include/Platform/SFML3)
+    
+    # Build SFML statically
+    set(BUILD_SHARED_LIBS OFF)
+    set(SFML_USE_STATIC_STD_LIBS ON)
+    
+    # Add SFML
+    CPMAddPackage("gh:SFML/SFML#3.0.0")
+    target_compile_definitions(TailsEngine PUBLIC TAILS_BACKEND_SFML3)
+    
+    target_link_libraries(
+        TailsEngine
+        PUBLIC
+            SFML::Graphics
+            SFML::Audio
+            SFML::Network
+    )
+
+# Windows/Darwin/Linux/etc.
+elseif (TAILS_BACKEND STREQUAL "Native")
+    add_subdirectory(include/Platform/${CMAKE_SYSTEM_NAME})
+    
+    target_compile_definitions(TailsEngine PUBLIC TAILS_BACKEND_NATIVE)
+    
+else ()
+    message("-- TailsEngine: Invalid backend!")
+endif ()
 
 # Add nlohmann/json
 CPMAddPackage("gh:nlohmann/json@3.11.3")
@@ -48,7 +73,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_GNU)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_CLANG)
-else()
+else ()
     target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_UNKNOWN)
 endif ()
 
@@ -65,9 +90,6 @@ endif ()
 target_link_libraries(
     TailsEngine
     PUBLIC
-        SFML::Graphics
-        SFML::Audio
-        SFML::Network
         nlohmann_json::nlohmann_json
         LDtkLoader::LDtkLoader
 )

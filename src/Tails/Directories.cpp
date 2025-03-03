@@ -2,31 +2,27 @@
 #include <Tails/Debug.hpp>
 #include <Tails/Maths.hpp>
 
-#include <nlohmann/json.hpp>
+#include <unordered_map>
 
-namespace tails
+namespace tails::dir
 {
-    void CDirectories::addDirectory(const std::string_view id, std::filesystem::path&& path)
+    std::unordered_map<std::size_t, std::filesystem::path> gDirectories;
+    
+    void addDirectory(const std::string_view id, const std::filesystem::path& path)
     {
         if (containsDirectory(id))
             return;
 
-        get().m_dirs.try_emplace(hash(id), std::move(path));
+        gDirectories.try_emplace(hash(id), std::move(path));
     }
 
-    bool CDirectories::containsDirectory(const std::string_view id)
+    bool containsDirectory(const std::string_view id)
     {
-        return get().m_dirs.contains(hash(id));
+        return gDirectories.contains(hash(id));
     }
 
-    const std::filesystem::path& CDirectories::getDirectory(const std::string_view id)
+    const std::filesystem::path& getDirectory(const std::string_view id)
     {
-        return get().m_dirs[hash(id)];
-    }
-
-    CDirectories& CDirectories::get()
-    {
-        static CDirectories instance;
-        return instance;
+        return gDirectories[hash(id)];
     }
 }

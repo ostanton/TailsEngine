@@ -41,6 +41,9 @@ namespace tails
     concept ResourceType =
         std::constructible_from<T, const std::filesystem::path&> &&
         std::movable<T>;
+
+    template<typename T>
+    concept Arithmetic = std::is_arithmetic_v<T>;
 }
 
 #endif // TAILS_CONCEPTS_HPP

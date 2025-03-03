@@ -8,29 +8,32 @@ target_sources(
     Tickable.hpp
     Engine.hpp
     Level.hpp
-    InputManager.hpp
     Entity.hpp
     ResourceManager.hpp
     Directories.hpp
     Serialisable.hpp
     Debug.hpp
-    Vector2.hpp
     Assert.hpp
     Localisation.hpp
     LocaleString.hpp
     ClassRegistry.hpp
     Concepts.hpp
-    Key.hpp
     Maths.hpp
     Subsystem.hpp
     Handle.hpp
     LevelSubsystem.hpp
-    Asset.hpp
+    Instance.hpp
+    Renderer.hpp
+    Window.hpp
 )
 
+add_subdirectory(Assets)
 add_subdirectory(Audio)
 add_subdirectory(Components)
+add_subdirectory(Containers)
+add_subdirectory(Input)
 add_subdirectory(Level)
 add_subdirectory(Network)
 add_subdirectory(Resources)
+add_subdirectory(Types)
 add_subdirectory(UI)

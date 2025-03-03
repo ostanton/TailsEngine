@@ -1,4 +1,4 @@
-#include <Tails/Key.hpp>
+#include <Tails/Input/Key.hpp>
 #include <Tails/Debug.hpp>
 
 namespace tails

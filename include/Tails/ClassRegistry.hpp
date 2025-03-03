@@ -10,7 +10,7 @@
 
 namespace tails
 {
-    namespace priv
+    namespace impl
     {
         using CreateObjectFunc = void*(*)();
         using ClassRegistryMap = std::map<std::string, CreateObjectFunc>;
@@ -68,9 +68,9 @@ namespace tails
      * @param name Registered class name
      * @return Constructed class data
      */
-    inline void* constructClass(std::string_view name)
+    inline void* constructClass(const std::string_view name)
     {
-        auto& reg = priv::getClassRegistry();
+        auto& reg = impl::getClassRegistry();
         const auto it = reg.find(name.data());
 
         if (it == reg.end())
@@ -89,7 +89,7 @@ namespace tails
      * @return Constructed class object
      */
     template<UserType T>
-    T* constructClass(std::string_view name)
+    T* constructClass(const std::string_view name)
     {
         return static_cast<T*>(constructClass(name));
     }
@@ -97,18 +97,21 @@ namespace tails
 
 #define TAILS_REGISTER_CLASS_CUSTOM_NAME(TYPE, NAME) \
     namespace tails { \
-    namespace priv { \
+    namespace impl { \
     namespace { \
         template<::tails::UserType T> \
         class CClassRegistration; \
         template<> \
         class CClassRegistration<TYPE> { \
-            static const ::tails::priv::SRegistryEntry<TYPE>& m_reg; \
+            static const ::tails::impl::SRegistryEntry<TYPE>& m_reg; \
         }; \
-        const ::tails::priv::SRegistryEntry<TYPE>& CClassRegistration<TYPE>::m_reg = \
-            ::tails::priv::SRegistryEntry<TYPE>::get(NAME); \
+        const ::tails::impl::SRegistryEntry<TYPE>& CClassRegistration<TYPE>::m_reg = \
+            ::tails::impl::SRegistryEntry<TYPE>::get(NAME); \
     }}}
 
 #define TAILS_REGISTER_CLASS(TYPE) TAILS_REGISTER_CLASS_CUSTOM_NAME(TYPE, #TYPE)
+
+#define TAILS_CLASS(CLASS) \
+    static std::string getClassName() {return #CLASS;}
 
 #endif // TAILS_CLASS_REGISTRY_HPP

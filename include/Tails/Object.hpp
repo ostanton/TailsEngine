@@ -4,15 +4,12 @@
 #include <Tails/Config.hpp>
 #include <Tails/Concepts.hpp>
 #include <Tails/ClassRegistry.hpp>
-
-#include <cstdint>
+#include <Tails/Types/Int.hpp>
 
 namespace tails
 {
     /**
      * Base object class for any object that requires an outer, and can be created & destroyed.
-     *
-     * TODO - Should pending create/destroy be in ITickable instead, since they're closely coupled?
      */
     class TAILS_API CObject
     {
@@ -39,9 +36,9 @@ namespace tails
                 return typedOuter;
 
             // if we're looking for an outer that is not our direct outer and our direct outer is valid
-            for (CObject* p_outer {outer}; p_outer; p_outer = p_outer->outer)
+            for (CObject* pOuter {outer}; pOuter; pOuter = pOuter->outer)
             {
-                if (auto typedOuter = dynamic_cast<T*>(p_outer))
+                if (auto typedOuter = dynamic_cast<T*>(pOuter))
                     return typedOuter;
             }
 
@@ -61,7 +58,7 @@ namespace tails
         CObject* outer {nullptr};
 
     private:
-        std::uint8_t m_flags {PendingCreate};
+        u8 m_flags {PendingCreate};
     };
 
     // Functions for creating children of CObject specifically
@@ -91,7 +88,7 @@ namespace tails
      * @param outer The object this new object will reside in
      * @return Created object
      */
-    inline CObject* newObject(std::string_view name, CObject* outer)
+    inline CObject* newObject(const std::string_view name, CObject* outer)
     {
         return newObject<CObject>(name, outer);
     }

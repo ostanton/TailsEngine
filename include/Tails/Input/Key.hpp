@@ -7,6 +7,8 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 
+#include <string>
+
 namespace tails
 {
     enum class TAILS_API EInputDevice : int

@@ -22,12 +22,12 @@ namespace tails
         return loc.function_name();
     }
 
-    TAILS_API constexpr std::uint_least32_t getLine(const std::source_location& loc = std::source_location::current()) noexcept
+    TAILS_API constexpr auto getLine(const std::source_location& loc = std::source_location::current()) noexcept
     {
         return loc.line();
     }
 
-    TAILS_API constexpr std::uint_least32_t getColumn(const std::source_location& loc = std::source_location::current()) noexcept
+    TAILS_API constexpr auto getColumn(const std::source_location& loc = std::source_location::current()) noexcept
     {
         return loc.column();
     }

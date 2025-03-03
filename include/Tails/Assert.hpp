@@ -20,7 +20,7 @@
 namespace tails
 {
 #ifdef TAILS_DEBUG
-    namespace priv
+    namespace impl
     {
         template<PrintableStream MsgT>
         constexpr void invokeAssert(const MsgT& msg, const std::source_location& loc = std::source_location::current())
@@ -31,7 +31,7 @@ namespace tails
                 << "Message: " << msg << "\n";
             abort();
         }
-    } // priv
+    } // impl
 #endif // TAILS_DEBUG
 
 #ifdef TAILS_DEBUG
@@ -42,7 +42,7 @@ namespace tails
     constexpr void runtimeAssert(PredT predicate, MsgT&& msg, const std::source_location& loc = std::source_location::current())
     {
 #ifdef TAILS_DEBUG
-        if (!predicate()) priv::invokeAssert(std::forward<MsgT>(msg), loc);
+        if (!predicate()) impl::invokeAssert(std::forward<MsgT>(msg), loc);
 #endif // TAILS_DEBUG
     }
 
@@ -54,7 +54,7 @@ namespace tails
     constexpr void runtimeAssert(bool condition, MsgT&& msg, const std::source_location& loc = std::source_location::current())
     {
 #ifdef TAILS_DEBUG
-        if (!condition) priv::invokeAssert(std::forward<MsgT>(msg), loc);
+        if (!condition) impl::invokeAssert(std::forward<MsgT>(msg), loc);
 #endif // TAILS_DEBUG
     }
 } // tails

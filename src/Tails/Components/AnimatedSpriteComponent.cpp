@@ -140,9 +140,9 @@ namespace tails
         return false;
     }
 
-    void CAnimatedSpriteComponent::tick(float deltaTime)
+    void CAnimatedSpriteComponent::tick(const float deltaTime)
     {
-        CComponent::tick(deltaTime);
+        CTransformComponent::tick(deltaTime);
         
         if (!m_currentAnim || !m_currentAnim->playing) return;
 

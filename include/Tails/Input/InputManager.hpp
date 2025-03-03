@@ -2,7 +2,7 @@
 #define TAILS_INPUT_MANAGER_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Key.hpp>
+#include <Tails/Input/Key.hpp>
 
 #include <vector>
 #include <string_view>

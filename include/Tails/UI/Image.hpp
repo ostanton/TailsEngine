@@ -3,6 +3,8 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/UI/Widget.hpp>
+#include <Tails/Assets/AssetPtr.hpp>
+#include <Tails/Assets/Texture.hpp>
 
 #include <SFML/Graphics/VertexArray.hpp>
 
@@ -39,6 +41,7 @@ namespace tails::ui
     private:
         sf::VertexArray m_vertices {sf::PrimitiveType::TriangleStrip, 4};
         const sf::Texture* m_texture {nullptr};
+        TAssetPtr<CTexture> m_texture2 {"res/player.png"};
     };
 }
 

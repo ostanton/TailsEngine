@@ -1,4 +1,4 @@
-#include <Tails/InputManager.hpp>
+#include <Tails/Input/InputManager.hpp>
 #include <Tails/Maths.hpp>
 
 #include <fstream>
