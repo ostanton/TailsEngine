@@ -15,6 +15,12 @@ namespace tails
     class TAILS_API CAssetManager final
     {
     public:
+        /**
+         * Gets the global instance asset manager
+         * @return Asset manager reference
+         */
+        [[nodiscard]] static CAssetManager& get();
+        
         template<typename T>
         [[nodiscard]] std::shared_ptr<T> load(const std::filesystem::path& path)
         {
@@ -45,8 +51,6 @@ namespace tails
     private:
         std::vector<std::weak_ptr<IAsset>> m_assets;
     };
-
-    extern CAssetManager gAssetManager;
 }
 
 #endif // TAILS_ASSET_MANAGER_HPP

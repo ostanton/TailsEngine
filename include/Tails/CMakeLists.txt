@@ -18,13 +18,13 @@ target_sources(
     LocaleString.hpp
     ClassRegistry.hpp
     Concepts.hpp
-    Maths.hpp
     Subsystem.hpp
     Handle.hpp
     LevelSubsystem.hpp
     Instance.hpp
     Renderer.hpp
     Window.hpp
+    Colour.hpp
 )
 
 add_subdirectory(Assets)
@@ -33,7 +33,8 @@ add_subdirectory(Components)
 add_subdirectory(Containers)
 add_subdirectory(Input)
 add_subdirectory(Level)
+add_subdirectory(Maths)
+add_subdirectory(Memory)
 add_subdirectory(Network)
 add_subdirectory(Resources)
-add_subdirectory(Types)
 add_subdirectory(UI)

@@ -39,7 +39,11 @@ namespace tails
 #else // TAILS_DEBUG
     template<typename PredT, typename MsgT>
 #endif // TAILS_DEBUG
-    constexpr void runtimeAssert(PredT predicate, MsgT&& msg, const std::source_location& loc = std::source_location::current())
+    constexpr void runtimeAssert(
+        PredT predicate,
+        MsgT&& msg,
+        const std::source_location& loc = std::source_location::current()
+    )
     {
 #ifdef TAILS_DEBUG
         if (!predicate()) impl::invokeAssert(std::forward<MsgT>(msg), loc);
@@ -51,7 +55,11 @@ namespace tails
 #else // TAILS_DEBUG
     template<typename MsgT>
 #endif // TAILS_DEBUG
-    constexpr void runtimeAssert(bool condition, MsgT&& msg, const std::source_location& loc = std::source_location::current())
+    constexpr void runtimeAssert(
+        const bool condition,
+        MsgT&& msg,
+        const std::source_location& loc = std::source_location::current()
+    )
     {
 #ifdef TAILS_DEBUG
         if (!condition) impl::invokeAssert(std::forward<MsgT>(msg), loc);

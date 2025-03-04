@@ -3,7 +3,7 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/Localisation.hpp>
-#include <Tails/Maths.hpp>
+#include <Tails/Maths/Maths.hpp>
 
 #include <string>
 #include <format>
@@ -23,9 +23,9 @@ namespace tails
 
         template<typename... ArgsT>
         CLocaleString(size_t id, ArgsT&&... args)
-            :
-            m_id(std::make_optional(id)),
-            m_string(std::format(CLocalisation::getLocalisedString(id), std::forward<ArgsT>(args)...)) {}
+            : m_id(std::make_optional(id))
+            , m_string(std::format(locale::getLocalisedString(id), std::forward<ArgsT>(args)...))
+        {}
 
         CLocaleString(const CLocaleString&) = default;
         CLocaleString(CLocaleString&&) = default;
@@ -46,7 +46,7 @@ namespace tails
         void updateLocale(ArgsT&&... args)
         {
             if (localised())
-                m_string = CLocalisation::getLocalisedString(m_id.value());
+                m_string = locale::getLocalisedString(m_id.value());
 
             if (sizeof...(args) > 0)
                 format(std::forward<ArgsT>(args)...);

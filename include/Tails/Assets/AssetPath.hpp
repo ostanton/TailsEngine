@@ -38,7 +38,7 @@ namespace tails
             if (path.empty())
                 return nullptr;
             
-            return gAssetManager.load<T>(path);
+            return CAssetManager::get().load<T>(path);
         }
         
         std::filesystem::path path;

@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.24)
 
 project(TailsEngine LANGUAGES CXX)
 
+set(TAILS_BUILD_SHARED OFF CACHE BOOL "Whether to build shared/dynamically (default - OFF)")
+set(TAILS_BACKEND "SFML3" CACHE STRING "Backend for Tails Engine to use (default - 'SFML3')")
+
 # Download CPM if it does not already exist
 if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake")
     message("-- TailsEngine: CPM is already downloaded")
@@ -17,23 +20,27 @@ endif ()
 # Include CPM
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
+if (TAILS_BUILD_SHARED)
+    message("-- TailsEngine: Building shared library")
+    add_library(TailsEngine SHARED)
+else ()
+    message("-- TailsEngine: Building static library")
+    add_library(TailsEngine STATIC)
+endif ()
+
 add_subdirectory(src/Tails)
 add_subdirectory(include/Tails)
-
-# Use static RuntimeLibrary in MSVC instead of DLL
-set_property(TARGET TailsEngine PROPERTY
-    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # Don't need to check if these are downloaded, CPM seems to do it for us
 # Could check on the user's PC elsewhere, but having a clean clone is good I think
 
-set(TAILS_BACKEND "SFML3" CACHE STRING "Backend for Tails Engine to use")
 message("-- TailsEngine: Using backend ${TAILS_BACKEND}")
 
 if (TAILS_BACKEND STREQUAL "SFML3")
     add_subdirectory(include/Platform/SFML3)
     
     # Build SFML statically
+    # TODO - should this be checked with TAILS_BUILD_SHARED or something else?
     set(BUILD_SHARED_LIBS OFF)
     set(SFML_USE_STATIC_STD_LIBS ON)
     
@@ -69,6 +76,12 @@ set_property(TARGET LDtkLoader PROPERTY
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_MSVC)
+    
+    if (NOT TAILS_BUILD_SHARED)
+        # Use static RuntimeLibrary in MSVC instead of DLL
+        set_property(TARGET TailsEngine PROPERTY
+            MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    endif ()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_definitions(TailsEngine PUBLIC TAILS_COMP_GNU)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

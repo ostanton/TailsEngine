@@ -5,7 +5,8 @@
 #include <Tails/Object.hpp>
 #include <Tails/Tickable.hpp>
 #include <Tails/Concepts.hpp>
-#include <Tails/Maths.hpp>
+#include <Tails/Maths/Maths.hpp>
+#include <Tails/Memory/OptionalRef.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -190,6 +191,26 @@ namespace tails
 
         sf::Color m_renderTargetClearColour {0, 0, 0, 255};
         sf::Color m_renderTextureInternalClearColour {0, 0, 0, 255};
+    };
+
+    class CRenderer;
+    
+    /**
+     * Base engine class for the main game loop and most other game-specific things.
+     * TODO - could have this be like the platform-specific things. We don't need to change it at runtime
+     */
+    class TAILS_API IEngine
+    {
+    public:
+        IEngine(CRenderer& renderer)
+            : m_renderer(renderer)
+        {}
+        virtual ~IEngine() = default;
+
+        virtual void init() = 0;
+
+    private:
+        TOptionalRef<CRenderer> m_renderer;
     };
 }
 

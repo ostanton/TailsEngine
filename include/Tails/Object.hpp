@@ -4,7 +4,6 @@
 #include <Tails/Config.hpp>
 #include <Tails/Concepts.hpp>
 #include <Tails/ClassRegistry.hpp>
-#include <Tails/Types/Int.hpp>
 
 namespace tails
 {

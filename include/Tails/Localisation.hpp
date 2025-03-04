@@ -3,30 +3,14 @@
 
 #include <Tails/Config.hpp>
 
-#include <unordered_map>
+#include <filesystem>
 #include <string>
 
-namespace tails
+namespace tails::locale
 {
-    class TAILS_API CLocalisation final
-    {
-    public:
-        using LocaleMap = std::unordered_map<size_t, std::string>;
-
-        static LocaleMap& getLocaleMap();
-
-        static const std::string& getLocalisedString(size_t id);
-        static const std::string& getLocalisedString(std::string_view id);
-
-        static bool loadLocalisedStrings(const std::string& filename);
-
-    private:
-        CLocalisation() = default;
-
-        static CLocalisation& get();
-        
-        LocaleMap m_localeMap;
-    };
+    const std::string& getLocalisedString(usize id);
+    const std::string& getLocalisedString(std::string_view id);
+    bool loadLocalisedStrings(const std::filesystem::path& path);
 }
 
 #endif // TAILS_LOCALISATION_HPP

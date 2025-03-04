@@ -2,7 +2,7 @@
 #define TAILS_HANDLE_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Maths.hpp>
+#include <Tails/Maths/Maths.hpp>
 
 #include <optional>
 

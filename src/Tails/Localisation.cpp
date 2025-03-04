@@ -1,51 +1,44 @@
 #include <Tails/Localisation.hpp>
-#include <Tails/Maths.hpp>
+#include <Tails/Maths/Maths.hpp>
+#include <Tails/Containers/Map.hpp>
 
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-namespace tails
+namespace tails::locale
 {
-    CLocalisation::LocaleMap& CLocalisation::getLocaleMap()
+    TMap<usize, std::string> gLocaleMap;
+
+    const std::string& getLocalisedString(const usize id)
     {
-        return get().m_localeMap;
+        return gLocaleMap.at(id);
     }
 
-    const std::string& CLocalisation::getLocalisedString(size_t id)
-    {
-        return getLocaleMap().at(id);
-    }
-
-    const std::string& CLocalisation::getLocalisedString(std::string_view id)
+    const std::string& getLocalisedString(const std::string_view id)
     {
         return getLocalisedString(hash(id));
     }
 
-    bool CLocalisation::loadLocalisedStrings(const std::string& filename)
+    bool loadLocalisedStrings(const std::filesystem::path& path)
     {
-        std::ifstream file {filename};
-        
-        if (!file.is_open()) return false;
-        
-        nlohmann::json localeObj = nlohmann::json::parse(file);
+        std::ifstream file {path};
 
-        if (localeObj.is_null()) return false;
-        
-        LocaleMap& locMap {getLocaleMap()};
-        locMap.clear();
+        if (!file.is_open())
+            return false;
 
-        for (auto& [locKey, locVal] : localeObj.items())
+        const nlohmann::json localeObj = nlohmann::json::parse(file);
+
+        if (localeObj.is_null())
+            return false;
+
+        gLocaleMap.clear();
+
+        for (auto& [key, val] : localeObj.items())
         {
-            if (locVal.is_string())
-                locMap.try_emplace(hash(locKey), locVal.get<std::string>());
+            if (val.is_string())
+                gLocaleMap.try_emplace(hash(key), val.get<std::string>());
         }
 
         return true;
-    }
-
-    CLocalisation& CLocalisation::get()
-    {
-        static CLocalisation instance;
-        return instance;
     }
 }

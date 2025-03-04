@@ -3,7 +3,7 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/Concepts.hpp>
-#include <Tails/Maths.hpp>
+#include <Tails/Maths/Maths.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Resources/Resource.hpp>
 

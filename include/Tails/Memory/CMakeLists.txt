@@ -3,5 +3,7 @@ project(TailsEngine)
 target_sources(
     TailsEngine
     PRIVATE
-    Colour.cpp
+    SharedPtr.hpp
+    UniquePtr.hpp
+    OptionalRef.hpp
 )

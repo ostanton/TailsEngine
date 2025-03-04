@@ -2,7 +2,6 @@
 #define TAILS_COLOUR_HPP
 
 #include <Tails/Config.hpp>
-#include <Tails/Types/Int.hpp>
 
 namespace tails
 {

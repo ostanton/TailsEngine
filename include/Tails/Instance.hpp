@@ -3,17 +3,34 @@
 
 #include <Tails/Config.hpp>
 #include <Tails/Assets/AssetManager.hpp>
-
-#include <memory>
+#include <Tails/Memory/UniquePtr.hpp>
 
 namespace tails
 {
     class CEngine;
+    class CRenderer;
     
     class TAILS_API CInstance final
     {
     public:
         CInstance() = default;
+
+        template<typename T>
+        T* createRenderer()
+        {
+            renderer = makeUnique<T>();
+            return renderer.get();
+        }
+
+        template<typename T>
+        T* createEngine()
+        {
+            if (!renderer)
+                createRenderer<CRenderer>();
+            
+            engine = makeUnique<T>(*renderer);
+            return engine.get();
+        }
 
         void init();
         void tick(float deltaTime);
@@ -21,7 +38,8 @@ namespace tails
         
         void main();
 
-        std::unique_ptr<CEngine> engine;
+        TUniquePtr<CEngine> engine;
+        TUniquePtr<CRenderer> renderer;
         CAssetManager assetManager;
     };
 

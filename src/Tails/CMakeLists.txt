@@ -1,8 +1,8 @@
 project(TailsEngine)
 
-add_library(
+target_sources(
     TailsEngine
-    STATIC
+    PRIVATE
     Object.cpp
     Engine.cpp
     Level.cpp
@@ -15,6 +15,7 @@ add_library(
     Subsystem.cpp
     LevelSubsystem.cpp
     Instance.cpp
+    Colour.cpp
 )
 
 add_subdirectory(Assets)
@@ -23,5 +24,4 @@ add_subdirectory(Components)
 add_subdirectory(Input)
 add_subdirectory(Network)
 add_subdirectory(Resources)
-add_subdirectory(Types)
 add_subdirectory(UI)

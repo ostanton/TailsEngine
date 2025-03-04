@@ -43,7 +43,17 @@ namespace tails
         std::movable<T>;
 
     template<typename T>
+    concept FloatingPoint = std::floating_point<T>;
+
+    template<typename T>
     concept Arithmetic = std::is_arithmetic_v<T>;
+
+    template<typename T>
+    concept Hashable =
+        requires(T str) {{str.size()} -> std::same_as<size_t>;} && (
+        requires(T str) {{str[0]} -> std::same_as<char>;} ||
+        requires(T str) {{str[0]} -> std::same_as<char&>;} ||
+        requires(T str) {{str[0]} -> std::same_as<const char&>;});
 }
 
 #endif // TAILS_CONCEPTS_HPP

@@ -24,7 +24,8 @@ namespace tails
         virtual void tick(float deltaTime) = 0;
 
         /**
-         * Simulates a garbage collector. Destroys any objects or memory that are pending destroy.
+         * Simulates a garbage collector or some reference counter.
+         * Destroys any objects or memory that are pending destroy.
          */
         virtual void postTick() {}
     };
