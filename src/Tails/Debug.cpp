@@ -1,94 +1,62 @@
 #include <Tails/Debug.hpp>
 
+#include <vector>
+
+#ifdef TAILS_OS_PSP
+#include <pspdebug.h>
+#endif // TAILS_OS_PSP
+
+// TODO - on screen messages should use platform agnostic SilverUI things.
+// Log should use platform-specific prints like the console or PSP's debug screen
+
 namespace tails::debug
 {
-    void flush()
+    struct SDebugMessage
     {
-#ifdef TAILS_DEBUG
-        std::flush(std::cout);
-#endif // TAILS_DEBUG
+        const char* message;
+        float duration;
+        float timer;
+    };
+
+    namespace
+    {
+        std::vector<SDebugMessage> gDebugMessages;
     }
 
-    void flushErr()
+    void init()
     {
-#ifdef TAILS_DEBUG
-        std::flush(std::cerr);
-#endif // TAILS_DEBUG
+#ifdef TAILS_OS_PSP
+        pspDebugScreenInit();
+#endif // TAILS_OS_PSP
     }
 
-#ifdef TAILS_DEBUG
-    struct SDebugShapes
+    void tick(const float deltaSeconds)
     {
-        std::vector<SRect> rects;
-        std::vector<SLine> lines;
-        std::vector<SCircle> circles;
-        std::vector<SConvex> convex;
-
-        void clear()
+        for (auto it {gDebugMessages.rbegin()}; it != gDebugMessages.rend();)
         {
-            rects.clear();
-            lines.clear();
-            circles.clear();
-            convex.clear();
+            if (it->timer >= it->duration)
+                it = decltype(it)(gDebugMessages.erase(std::next(it).base()));
+            else
+            {
+                it->timer += deltaSeconds;
+                ++it;
+            }
         }
-    } gDebugShapes;
-
-    const std::vector<SRect>& getRects() noexcept {return gDebugShapes.rects;}
-    const std::vector<SLine>& getLines() noexcept {return gDebugShapes.lines;}
-    const std::vector<SCircle>& getCircles() noexcept {return gDebugShapes.circles;}
-    const std::vector<SConvex>& getConvexShapes() noexcept {return gDebugShapes.convex;}
-#endif // TAILS_DEBUG
-
-    void drawRect(
-        const sf::FloatRect rect,
-        const sf::Color fillColour,
-        const sf::Color outlineColour,
-        const float thickness
-    )
-    {
-#ifdef TAILS_DEBUG
-        gDebugShapes.rects.emplace_back(rect, fillColour, outlineColour, thickness);
-#endif // TAILS_DEBUG
     }
 
-    void drawLine(const sf::Vector2f start, const sf::Vector2f end, const sf::Color colour, const float thickness)
+    void render()
     {
-#ifdef TAILS_DEBUG
-        gDebugShapes.lines.emplace_back(start, end, colour, thickness);
-#endif // TAILS_DEBUG
+#ifdef TAILS_OS_PSP
+        pspDebugScreenSetXY(0, 0);
+        for (const auto& message : gDebugMessages)
+        {
+            pspDebugScreenPrintf(message.message);
+        }
+#endif // TAILS_OS_PSP
     }
 
-    void drawCircle(
-        const sf::Vector2f position,
-        const float radius,
-        const std::size_t pointCount,
-        const sf::Color fillColour,
-        const sf::Color outlineColour,
-        const float thickness
-    )
+    void addOnScreenDebugMessage(const char* message, float duration)
     {
-#ifdef TAILS_DEBUG
-        gDebugShapes.circles.emplace_back(position, radius, pointCount, fillColour, outlineColour, thickness);
-#endif // TAILS_DEBUG
-    }
-
-    void drawConvexShape(
-        std::vector<sf::Vector2f> points,
-        const sf::Vector2f position,
-        const sf::Color fillColour,
-        const sf::Color outlineColour,
-        const float thickness)
-    {
-#ifdef TAILS_DEBUG
-        gDebugShapes.convex.emplace_back(std::move(points), position, fillColour, outlineColour, thickness);
-#endif // TAILS_DEBUG
-    }
-
-    void cleanup()
-    {
-        // gonna be honest, idk what I'm doing
-#ifdef TAILS_DEBUG
-        gDebugShapes.clear();
-#endif // TAILS_DEBUG
+        gDebugMessages.push_back({message, duration, 0.f});
     }
 }

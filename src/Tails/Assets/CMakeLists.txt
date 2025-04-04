@@ -1,9 +1,14 @@
-project(TailsEngine)
+project(Tails)
 
 target_sources(
-    TailsEngine
+    Tails
     PRIVATE
-    AssetPath.cpp
-    Asset.cpp
-    AssetManager.cpp
+        AssetManager.cpp
+        AssetRegistry.cpp
+        AssetPtr.cpp
+        
+        Texture.cpp
+        Sound.cpp
 )
+
+add_subdirectory(Loaders)

@@ -1,40 +1,23 @@
-project(TailsEngine)
+project(Tails)
 
 target_sources(
-    TailsEngine
+    Tails
     PRIVATE
-    Config.hpp
-    Object.hpp
-    Tickable.hpp
-    Engine.hpp
-    Level.hpp
-    Entity.hpp
-    ResourceManager.hpp
-    Directories.hpp
-    Serialisable.hpp
-    Debug.hpp
-    Assert.hpp
-    Localisation.hpp
-    LocaleString.hpp
-    ClassRegistry.hpp
-    Concepts.hpp
-    Subsystem.hpp
-    Handle.hpp
-    LevelSubsystem.hpp
-    Instance.hpp
-    Renderer.hpp
-    Window.hpp
-    Colour.hpp
+        Core.hpp
+        Log.hpp
+        Profiler.hpp
+        String.hpp
+        Application.hpp
+        EntryPoint.hpp
+        Window.hpp
+        Debug.hpp
 )
 
 add_subdirectory(Assets)
-add_subdirectory(Audio)
-add_subdirectory(Components)
-add_subdirectory(Containers)
+add_subdirectory(Delegates)
+add_subdirectory(Game)
 add_subdirectory(Input)
-add_subdirectory(Level)
 add_subdirectory(Maths)
-add_subdirectory(Memory)
-add_subdirectory(Network)
-add_subdirectory(Resources)
-add_subdirectory(UI)
+add_subdirectory(Renderer)
+add_subdirectory(SilverUI)
+add_subdirectory(Templated)

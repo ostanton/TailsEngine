@@ -1,52 +1,96 @@
 #ifndef TAILS_ASSET_PTR_HPP
 #define TAILS_ASSET_PTR_HPP
 
-#include <Tails/Concepts.hpp>
-#include <Tails/Assets/AssetPath.hpp>
-#include <Tails/Assets/AssetManager.hpp>
+#include <Tails/Core.hpp>
+#include <Tails/Assets/AssetType.hpp>
 
 #include <memory>
 
 namespace tails
 {
     class IAsset;
+    class CAssetManager;
 
     /**
-     * Extension of SAssetPath which caches its loaded asset for later use.
-     * TODO - could have a constructor for an ID of some resource file stored in some map somewhere, json or registry maybe
-     * @tparam T Asset type
+     * Wrapper for an asset type which can load whenever
      */
-    template<Derives<IAsset> T>
+    struct TAILS_API SAssetPtr final
+    {
+        SAssetPtr(
+            const EAssetType inAssetType
+        )
+            : assetType(static_cast<u8>(inAssetType))
+        {}
+        
+        template<typename CustomAssetTypeT>
+        SAssetPtr(
+            const CustomAssetTypeT inCustomAssetType
+        )
+            : assetType(getCustomAssetID(inCustomAssetType))
+        {}
+
+        SAssetPtr(const IAsset& asset);
+
+        u8 assetType;
+
+        [[nodiscard]] std::shared_ptr<IAsset> load(const char* filename, CAssetManager* assetManager = nullptr) const;
+    };
+
+    /**
+     * Refers to a specific asset on disk, and can load it
+     */
+    struct TAILS_API SAssetPath final
+    {
+        const char* filename;
+        u8 assetType;
+    };
+
+    /**
+     * Same as @code SAssetPtr@endcode, however it caches the loaded asset, and returns it as the correct type, instead
+     * of the generic @code IAsset@endcode 
+     * @tparam T Asset class
+     *
+     * TODO - have EAssetType be automatically set somehow??
+     */
+    template<typename T>
     class TAssetPtr final
     {
     public:
-        TAssetPtr() = default;
-        TAssetPtr(SAssetPath path)
-            : m_path(std::move(path))
+        explicit TAssetPtr(EAssetType assetType)
+            : m_assetPtr(assetType)
         {}
-        TAssetPtr(const TAssetPtr&) = default;
-        TAssetPtr(TAssetPtr&&) noexcept = default;
-        TAssetPtr& operator=(const TAssetPtr&) = default;
-        TAssetPtr& operator=(TAssetPtr&&) = default;
-        ~TAssetPtr() = default;
 
-        void setPath(SAssetPath path)
+        template<typename CustomAssetTypeT>
+        explicit TAssetPtr(CustomAssetTypeT customAssetType)
+            : m_assetPtr(customAssetType)
+        {}
+
+        explicit TAssetPtr(std::shared_ptr<T> asset)
+            : m_assetPtr(*asset), m_cached(std::move(asset))
+        {}
+
+        explicit TAssetPtr(std::shared_ptr<T>&& asset)
+            : m_assetPtr(*asset), m_cached(std::move(asset))
+        {}
+
+        TAssetPtr& operator=(std::shared_ptr<T>&& asset)
         {
-            m_path = std::move(path);
+            m_cached = std::move(asset);
+            m_assetPtr = SAssetPtr {*m_cached};
+            return *this;
         }
         
-        [[nodiscard]] std::shared_ptr<T> load() const
+        [[nodiscard]] std::shared_ptr<T> load(const char* filename, CAssetManager* assetManager = nullptr) noexcept
         {
-            if (m_ptr)
-                return m_ptr;
-
-            m_ptr = m_path.load<T>();
-            return m_ptr;
+            if (!m_cached)
+                m_cached = std::static_pointer_cast<T>(m_assetPtr.load(filename, assetManager));
+            
+            return m_cached;
         }
         
     private:
-        SAssetPath m_path;
-        std::shared_ptr<T> m_ptr;
+        SAssetPtr m_assetPtr;
+        std::shared_ptr<T> m_cached;
     };
 }
 

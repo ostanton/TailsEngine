@@ -1,55 +1,39 @@
 #ifndef TAILS_ASSET_MANAGER_HPP
 #define TAILS_ASSET_MANAGER_HPP
 
-#include <Tails/Config.hpp>
+#include <Tails/Core.hpp>
+#include <Tails/Assets/AssetType.hpp>
 
-#include <vector>
 #include <memory>
-#include <filesystem>
-#include <functional>
+#include <vector>
 
 namespace tails
 {
     class IAsset;
-    
-    class TAILS_API CAssetManager final
+    class CString;
+
+    /**
+     * The asset manager is a localised, owning, manager for assets created via the CAssetRegistry.
+     * It does this by querying the registry, which calls the appropriate asset creator factory,
+     * which returns an owning pointer to the loaded asset memory which the manager then assumes ownership of
+     */
+    class TAILS_API CAssetManager
     {
     public:
-        /**
-         * Gets the global instance asset manager
-         * @return Asset manager reference
-         */
-        [[nodiscard]] static CAssetManager& get();
+        std::shared_ptr<IAsset> getAsset(EAssetType type);
         
-        template<typename T>
-        [[nodiscard]] std::shared_ptr<T> load(const std::filesystem::path& path)
+        template<typename CustomAssetTypeT>
+        std::shared_ptr<IAsset> getAsset(CustomAssetTypeT customType)
         {
-            auto deleter = [this](T* asset)
-            {
-                if (const auto it = std::ranges::find_if(m_assets.begin(), m_assets.end(),
-                    [asset](const std::shared_ptr<T>& shared)
-                    {
-                        return shared.get() == asset;
-                    });
-                    it != m_assets.end()
-                )
-                {
-                    m_assets.erase(it);
-                }
-            };
-
-            T* const rawAsset {new T};
-            m_assets.emplace_back(std::make_shared<T>(rawAsset, std::bind(deleter, rawAsset)));
-            const std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets.back().lock());
-
-            if (!result->load(path))
-                return nullptr;
-
-            return result;
+            return getAssetImpl(getCustomAssetID(customType));
         }
         
+        std::shared_ptr<IAsset> getAsset(u8 assetID);
+        
     private:
-        std::vector<std::weak_ptr<IAsset>> m_assets;
+        // TODO - owning or not? can we check the ref-count and only destroy when it's == 1 with a shared_ptr and
+        // not a weak_ptr?
+        std::vector<std::weak_ptr<IAsset>> m_loadedAssets;
     };
 }
 

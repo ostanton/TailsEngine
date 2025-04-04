@@ -1,14 +1,12 @@
-project(TailsEngine)
+project(Tails)
 
 target_sources(
-    TailsEngine
+    Tails
     PRIVATE
-    Maths.hpp
-    Vector2.hpp
-    Vector3.hpp
-    Transform2D.hpp
-    Transform3D.hpp
-    Euler.hpp
-    Quaternion.hpp
-    Angle.hpp
+        Vector2.hpp
+        Rect.hpp
+        Colour.hpp
+        Transform2D.hpp
+        Maths.hpp
+        Circle.hpp
 )

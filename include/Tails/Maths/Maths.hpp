@@ -1,37 +1,30 @@
 #ifndef TAILS_MATHS_HPP
 #define TAILS_MATHS_HPP
 
-#include <Tails/Concepts.hpp>
+#include <Tails/Core.hpp>
 
-namespace tails
+#include <cmath>
+
+namespace tails::maths
 {
-    template<Arithmetic T>
-    constexpr T pi {static_cast<T>(3.141592653589793)};
-    
-    template<typename T>
-    [[nodiscard]] constexpr T lerp(T a, T b, float t) noexcept
+    template<typename T> [[nodiscard]] constexpr T square(T x) noexcept {return x * x;}
+    template<typename T> [[nodiscard]] constexpr T cube(T x) noexcept {return x * x * x;}
+    template<typename T> [[nodiscard]] constexpr T sqrt(T x) noexcept {return std::sqrt(x);}
+    template<typename T> [[nodiscard]] constexpr T invSqrt(T x) noexcept {return static_cast<T>(1) / sqrt(x);}
+    template<typename T> [[nodiscard]] constexpr T fInvSqrt(T x) noexcept
     {
-        return a + (b - a) * t;
+        // id-tech fast inverse sqrt
+        // I don't understand it, but it works :D
+        const float x2 = x * 0.5f;
+        constexpr float threeHalves {1.5f};
+        float y = x;
+        long i = *(long*)&y;
+        i = 0x5f3759df - (i >> 1);
+        y = *(float*)&i;
+        y = y * (threeHalves - x2 * y * y);
+        return y;
     }
-
-    /**
-     * Hashes an object into a size_t
-     * @param in Must implement size and operator[] which returns a char
-     * @return Hashed number
-     */
-    template<Hashable T>
-    [[nodiscard]] constexpr size_t hash(const T& in) noexcept
-    {
-        // djb2 algorithm
-        size_t result {5381};
-        // could change to range-based loop
-        // but idk how to check for char in iterator
-        for (size_t i {0}; i < in.size(); i++)
-        {
-            result = (result << 5) + result + in[i];
-        }
-        return result;
-    }
+    template<typename T> [[nodiscard]] constexpr T abs(T x) noexcept {return x > static_cast<T>(x) ? x : -x;}
 }
 
 #endif // TAILS_MATHS_HPP

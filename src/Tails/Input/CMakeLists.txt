@@ -1,8 +1,8 @@
-project(TailsEngine)
+project(Tails)
 
 target_sources(
-    TailsEngine
+    Tails
     PRIVATE
-    InputManager.cpp
-    Key.cpp
+        InputSubsystem.cpp
+        Keys.cpp
 )

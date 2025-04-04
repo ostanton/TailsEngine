@@ -1,27 +1,20 @@
-project(TailsEngine)
+project(Tails)
 
 target_sources(
-    TailsEngine
+    Tails
     PRIVATE
-    Object.cpp
-    Engine.cpp
-    Level.cpp
-    Entity.cpp
-    ResourceManager.cpp
-    Directories.cpp
-    Debug.cpp
-    Localisation.cpp
-    LocaleString.cpp
-    Subsystem.cpp
-    LevelSubsystem.cpp
-    Instance.cpp
-    Colour.cpp
+        Log.cpp
+        Profiler.cpp
+        String.cpp
+        Application.cpp
+        EntryPoint.cpp
+        Window.cpp
+        Debug.cpp
 )
 
 add_subdirectory(Assets)
-add_subdirectory(Audio)
-add_subdirectory(Components)
+add_subdirectory(Game)
 add_subdirectory(Input)
-add_subdirectory(Network)
-add_subdirectory(Resources)
-add_subdirectory(UI)
+add_subdirectory(Maths)
+add_subdirectory(Renderer)
+add_subdirectory(SilverUI)

@@ -1,8 +1,12 @@
-project(TailsEngine)
+project(Tails)
 
 target_sources(
-    TailsEngine
+    Tails
     PRIVATE
-    InputManager.hpp
-    Key.hpp
+        Event.hpp
+        EventPoller.hpp
+        InputSubsystem.hpp
+        Mouse.hpp
+        Keys.hpp
+        ActionHandle.hpp
 )
