@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-namespace tails
+namespace tails::input
 {
     namespace
     {
@@ -49,153 +49,150 @@ namespace tails
         return nullptr;
     }
 
-    namespace input
+    void init()
     {
-        void init()
+        if (!SDL_HasGamepad())
         {
-            if (!SDL_HasGamepad())
-            {
-                std::cerr << "No gamepads connected!\n";
-                return;
-            }
-        
-            int count {0};
-            auto joysticks = SDL_GetGamepads(&count);
-            if (!joysticks)
-            {
-                std::cerr << "Failed to find gamepads!\n";
-                SDL_free(joysticks);
-                return;
-            }
-
-            std::cout << "Found " << count << " gamepads!\n";
-            if (count <= 0)
-                return;
-        
-            gGamepad = SDL_OpenGamepad(joysticks[0]);
-            if (!gGamepad)
-            {
-                std::cerr << "Failed to open gamepad!\n";
-            }
-
+            std::cerr << "No gamepads connected!\n";
+            return;
+        }
+    
+        int count {0};
+        auto joysticks = SDL_GetGamepads(&count);
+        if (!joysticks)
+        {
+            std::cerr << "Failed to find gamepads!\n";
             SDL_free(joysticks);
+            return;
         }
 
-        void tick()
+        std::cout << "Found " << count << " gamepads!\n";
+        if (count <= 0)
+            return;
+    
+        gGamepad = SDL_OpenGamepad(joysticks[0]);
+        if (!gGamepad)
         {
-            for (auto& action : gActions)
+            std::cerr << "Failed to open gamepad!\n";
+        }
+
+        SDL_free(joysticks);
+    }
+
+    void tick()
+    {
+        for (auto& action : gActions)
+        {
+            if (action.currentValue != action.lastValue)
+                action.lastValue = action.currentValue;
+        
+            for (const auto& key : action.keys)
             {
-                if (action.currentValue != action.lastValue)
-                    action.lastValue = action.currentValue;
-            
-                for (const auto& key : action.keys)
+                const bool active {key.isActive()};
+                
+                if (key.key.isDigital())
                 {
-                    const bool active {key.isActive()};
+                    if (active)
+                    {
+                        action.currentValue = key.magnitude;
+                        break;
+                    }
                     
-                    if (key.key.isDigital())
-                    {
-                        if (active)
-                        {
-                            action.currentValue = key.magnitude;
-                            break;
-                        }
-                        
-                        action.currentValue = false;
-                    }
-
-                    if (key.key.isScalar())
-                    {
-                        if (const auto val = getKeyValueNormalised(key.key); active)
-                        {
-                            action.currentValue = val * key.magnitude;
-                            break;
-                        }
-                        
-                        action.currentValue = 0.f;
-                    }
+                    action.currentValue = false;
                 }
 
-                for (auto& [trigger, binding] : action.delegates)
+                if (key.key.isScalar())
                 {
-                    switch (trigger)
+                    if (const auto val = getKeyValueNormalised(key.key); active)
                     {
-                    case EActionTrigger::Pressed:
-                        if (action.isActive() && !action.lastValue.isActive())
-                            binding.broadcast({});
-                        break;
-                    case EActionTrigger::Held:
-                        if (action.isActive())
-                            binding.broadcast(SActionValue {action.currentValue});
-                        break;
-                    case EActionTrigger::Released:
-                        if (!action.isActive() && action.lastValue.isActive())
-                            binding.broadcast({});
-                        break;
-                    case EActionTrigger::None:
+                        action.currentValue = val * key.magnitude;
                         break;
                     }
+                    
+                    action.currentValue = 0.f;
                 }
             }
-        }
 
-        bool isKeyPressed(const SKey key)
-        {
-            return getKeyValueRaw(key) != 0;
-        }
-
-        i16 getKeyValueRaw(const SKey key)
-        {
-            constexpr i16 maxValue {32767};
-            switch (key.type)
+            for (auto& [trigger, binding] : action.delegates)
             {
-            case EKeyType::Keyboard:
-                if (auto const keyState = SDL_GetKeyboardState(nullptr);
-                    keyState && keyState[SDL_GetScancodeFromKey(key.code, nullptr)])
+                switch (trigger)
                 {
-                    return maxValue;
+                case EActionTrigger::Pressed:
+                    if (action.isActive() && !action.lastValue.isActive())
+                        binding.broadcast({});
+                    break;
+                case EActionTrigger::Held:
+                    if (action.isActive())
+                        binding.broadcast(SActionValue {action.currentValue});
+                    break;
+                case EActionTrigger::Released:
+                    if (!action.isActive() && action.lastValue.isActive())
+                        binding.broadcast({});
+                    break;
+                case EActionTrigger::None:
+                    break;
                 }
-                break;
-                
-            case EKeyType::GamepadButton:
-                return SDL_GetGamepadButton(gGamepad, static_cast<SDL_GamepadButton>(key.code)) ? maxValue : 0;
-                
-            case EKeyType::GamepadAxis:
-                return SDL_GetGamepadAxis(gGamepad, static_cast<SDL_GamepadAxis>(key.code));
-                
-            case EKeyType::MouseButton:
-                {
-                    const auto mouseFlags = SDL_GetMouseState(nullptr, nullptr);
-                    const auto keyMask = SDL_BUTTON_MASK(key.code);
-                    return (mouseFlags & keyMask) == keyMask ? maxValue : 0;
-                }
-                
-            case EKeyType::MouseMove:
-            case EKeyType::MouseWheel:
-                break;
             }
-            return 0;
         }
+    }
 
-        float getKeyValueNormalised(const SKey key)
-        {
-            return static_cast<float>(getKeyValueRaw(key)) / 32767.f; // max SDL axis value
-        }
+    bool isKeyPressed(const SKey key)
+    {
+        return getKeyValueRaw(key) != 0;
+    }
 
-        SActionHandle addAction(SAction action)
+    i16 getKeyValueRaw(const SKey key)
+    {
+        constexpr i16 maxValue {32767};
+        switch (key.type)
         {
-            gActions.emplace_back(std::move(action));
-            return {gActions.size() - 1};
-        }
-
-        SAction* getActionFromName(const CString& name)
-        {
-            for (auto& action : gActions)
+        case EKeyType::Keyboard:
+            if (auto const keyState = SDL_GetKeyboardState(nullptr);
+                keyState && keyState[SDL_GetScancodeFromKey(key.code, nullptr)])
             {
-                if (action.name == name)
-                    return &action;
+                return maxValue;
             }
-
-            return nullptr;
+            break;
+            
+        case EKeyType::GamepadButton:
+            return SDL_GetGamepadButton(gGamepad, static_cast<SDL_GamepadButton>(key.code)) ? maxValue : 0;
+            
+        case EKeyType::GamepadAxis:
+            return SDL_GetGamepadAxis(gGamepad, static_cast<SDL_GamepadAxis>(key.code));
+            
+        case EKeyType::MouseButton:
+            {
+                const auto mouseFlags = SDL_GetMouseState(nullptr, nullptr);
+                const auto keyMask = SDL_BUTTON_MASK(key.code);
+                return (mouseFlags & keyMask) == keyMask ? maxValue : 0;
+            }
+            
+        case EKeyType::MouseMove:
+        case EKeyType::MouseWheel:
+            break;
         }
+        return 0;
+    }
+
+    float getKeyValueNormalised(const SKey key)
+    {
+        return static_cast<float>(getKeyValueRaw(key)) / 32767.f; // max SDL axis value
+    }
+
+    SActionHandle addAction(SAction action)
+    {
+        gActions.emplace_back(std::move(action));
+        return {gActions.size() - 1};
+    }
+
+    SAction* getActionFromName(const CString& name)
+    {
+        for (auto& action : gActions)
+        {
+            if (action.name == name)
+                return &action;
+        }
+
+        return nullptr;
     }
 }

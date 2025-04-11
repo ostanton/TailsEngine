@@ -55,7 +55,7 @@ namespace tails::debug
 #endif // TAILS_OS_PSP
     }
 
-    void addOnScreenDebugMessage(const char* message, float duration)
+    void addOnScreenDebugMessage(const char* message, const float duration)
     {
         gDebugMessages.push_back({message, duration, 0.f});
     }

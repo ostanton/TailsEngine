@@ -12,7 +12,7 @@
 #include <vector>
 #include <unordered_map>
 
-namespace tails
+namespace tails::input
 {
     enum class EActionTrigger : u8
     {
@@ -100,16 +100,13 @@ namespace tails
         void bind(EActionTrigger triggerType, SOnActionBinding::Delegate binding);
     };
 
-    namespace input
-    {
-        TAILS_API void init();
-        TAILS_API void tick();
-        TAILS_API bool isKeyPressed(SKey key);
-        TAILS_API i16 getKeyValueRaw(SKey key);
-        TAILS_API float getKeyValueNormalised(SKey key);
-        TAILS_API SActionHandle addAction(SAction action);
-        TAILS_API SAction* getActionFromName(const CString& name);
-    }
+    TAILS_API void init();
+    TAILS_API void tick();
+    TAILS_API bool isKeyPressed(SKey key);
+    TAILS_API i16 getKeyValueRaw(SKey key);
+    TAILS_API float getKeyValueNormalised(SKey key);
+    TAILS_API SActionHandle addAction(SAction action);
+    TAILS_API SAction* getActionFromName(const CString& name);
 
     template<>
     inline bool SActionValue::get() const noexcept

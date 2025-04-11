@@ -1,4 +1,4 @@
-#include <Tails/Game/Components/PrimitiveComponent.hpp>
+#include <Tails/World/Components/PrimitiveComponent.hpp>
 
 namespace tails
 {

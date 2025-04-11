@@ -1,14 +1,17 @@
 #ifndef EXAMPLE_PLAYER_HPP
 #define EXAMPLE_PLAYER_HPP
 
-#include <Tails/Game/Actor.hpp>
+#include <Tails/World/Actor.hpp>
 #include <Tails/Input/ActionHandle.hpp>
 
 namespace tails
 {
     class CSpriteComponent;
-    struct SAction;
-    struct SActionValue;
+    namespace input
+    {
+        struct SAction;
+        struct SActionValue;
+    }
 }
 
 class CPlayer final : public tails::CActor
@@ -22,18 +25,18 @@ private:
     void onTick(float deltaSeconds) override;
     void onOverlap(CActor* otherActor) override;
     
-    void handleMoveDown(tails::SActionValue actionValue);
-    void handleMoveRight(tails::SActionValue actionValue);
-    void handleStartSprint(tails::SActionValue actionValue);
-    void handleStopSprint(tails::SActionValue actionValue);
-    void handleStartShooting(tails::SActionValue actionValue);
-    void handleStopShooting(tails::SActionValue actionValue);
+    void handleMoveDown(tails::input::SActionValue actionValue);
+    void handleMoveRight(tails::input::SActionValue actionValue);
+    void handleStartSprint(tails::input::SActionValue actionValue);
+    void handleStopSprint(tails::input::SActionValue actionValue);
+    void handleStartShooting(tails::input::SActionValue actionValue);
+    void handleStopShooting(tails::input::SActionValue actionValue);
     
     tails::CSpriteComponent* m_spriteComponent;
-    tails::SActionHandle m_moveDownAction;
-    tails::SActionHandle m_moveRightAction;
-    tails::SActionHandle m_sprintAction;
-    tails::SActionHandle m_shootAction;
+    tails::input::SActionHandle m_moveDownAction;
+    tails::input::SActionHandle m_moveRightAction;
+    tails::input::SActionHandle m_sprintAction;
+    tails::input::SActionHandle m_shootAction;
 
     float m_currentSpeed;
     float m_sprintSpeed {500.f};

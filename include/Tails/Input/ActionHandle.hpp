@@ -3,7 +3,7 @@
 
 #include <Tails/Core.hpp>
 
-namespace tails
+namespace tails::input
 {
     struct SAction;
     

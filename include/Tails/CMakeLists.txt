@@ -14,10 +14,11 @@ target_sources(
 )
 
 add_subdirectory(Assets)
+add_subdirectory(Audio)
 add_subdirectory(Delegates)
-add_subdirectory(Game)
 add_subdirectory(Input)
 add_subdirectory(Maths)
 add_subdirectory(Renderer)
 add_subdirectory(SilverUI)
 add_subdirectory(Templated)
+add_subdirectory(World)

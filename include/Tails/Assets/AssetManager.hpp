@@ -13,7 +13,7 @@ namespace tails
     class CString;
 
     /**
-     * The asset manager is a localised, owning, manager for assets created via the CAssetRegistry.
+     * The asset manager is a localised, non-owning, manager for assets created via the CAssetRegistry.
      * It does this by querying the registry, which calls the appropriate asset creator factory,
      * which returns an owning pointer to the loaded asset memory which the manager then assumes ownership of
      */

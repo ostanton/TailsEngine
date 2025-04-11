@@ -6,4 +6,5 @@ target_sources(
         Optional.hpp
         Variant.hpp
         Bitset.hpp
+        Expected.hpp
 )

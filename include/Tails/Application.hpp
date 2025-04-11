@@ -3,7 +3,6 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Window.hpp>
-#include <Tails/Game/Level.hpp>
 #include <Tails/Assets/AssetManager.hpp>
 #include <Tails/Debug.hpp>
 
@@ -39,7 +38,7 @@ namespace tails
         
     public:
         IApplication() = delete;
-        IApplication(SVector2u windowSize);
+        explicit IApplication(SVector2u windowSize);
         IApplication(const IApplication&) = default;
         IApplication(IApplication&&) noexcept = default;
         IApplication& operator=(const IApplication&) = default;
@@ -72,16 +71,14 @@ namespace tails
         virtual void onInputEvent(const CEvent& ev) = 0;
         virtual void tick(float deltaSeconds);
         void render();
+        virtual void cleanup();
 
         [[nodiscard]] virtual bool shouldExit() const;
-
-        [[nodiscard]] CLevel& getLevel() {return m_level;}
 
     private:
         static void setInstance(IApplication& instance);
 
         CWindow m_window;
-        CLevel m_level;
         CAssetManager m_assetManager;
         float m_currentDeltaSeconds {0.f};
         float m_averageFPS {0.f};

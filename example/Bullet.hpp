@@ -1,8 +1,8 @@
 #ifndef EXAMPLE_BULLET_HPP
 #define EXAMPLE_BULLET_HPP
 
-#include <Tails/Game/Actor.hpp>
-#include <Tails/Game/Components/SpriteComponent.hpp>
+#include <Tails/World/Actor.hpp>
+#include <Tails/World/Components/SpriteComponent.hpp>
 
 class CBullet final : public tails::CActor
 {

@@ -5,36 +5,36 @@
 
 namespace tails
 {
-    enum class ELogSeverity : u8
-    {
-        Message,
-        Warning,
-        Error
-    };
-
-    enum class ELogCategory : u8
-    {
-        Input,
-        Profile,
-        Render,
-        Level,
-        Game // Any non-Tails logs
-    };
-    
     namespace logger
     {
-        struct TAILS_API SLogDetails
+        struct TAILS_API SDetails
         {
             const char* fileName;
             u16 line;
         };
+
+        enum class ESeverity : u8
+        {
+            Message,
+            Warning,
+            Error
+        };
+
+        enum class ECategory : u8
+        {
+            Input,
+            Profile,
+            Render,
+            Level,
+            Game // Any non-Tails logs
+        };
         
         TAILS_API void init();
         TAILS_API void log(
-            ELogCategory category,
-            ELogSeverity severity,
+            ECategory category,
+            ESeverity severity,
             const char* message,
-            const SLogDetails& details
+            const SDetails& details
         );
     }
 }
@@ -42,16 +42,16 @@ namespace tails
 #ifdef TAILS_ENABLE_LOGGING
 #define TAILS_ENGINE_LOG(CATEGORY, SEVERITY, MSG) \
     ::tails::logger::log( \
-        ::tails::ELogCategory::CATEGORY, \
-        ::tails::ELogSeverity::SEVERITY, \
+        ::tails::logger::ECategory::CATEGORY, \
+        ::tails::logger::ESeverity::SEVERITY, \
         MSG, \
         {TAILS_FILE_NAME, TAILS_LINE} \
     )
 
 #define TAILS_LOG(SEVERITY, MSG) \
     ::tails::logger::log( \
-        ::tails::ELogCategory::Game, \
-        ::tails::ELogSeverity::SEVERITY, \
+        ::tails::logger::ECategory::Game, \
+        ::tails::logger::ESeverity::SEVERITY, \
         MSG, \
         {TAILS_FILE_NAME, TAILS_LINE} \
     )

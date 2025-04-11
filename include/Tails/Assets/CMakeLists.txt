@@ -11,6 +11,7 @@ target_sources(
         
         Texture.hpp
         Sound.hpp
+        Level.hpp
 )
 
 add_subdirectory(Loaders)

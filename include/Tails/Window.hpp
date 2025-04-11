@@ -12,11 +12,6 @@ namespace tails
 {
     class CString;
 
-    struct TAILS_API SMessageBoxButton
-    {
-        const char* text;
-    };
-    
     /**
      * OS-agnostic window
      */
@@ -24,6 +19,10 @@ namespace tails
     {
     public:
         CWindow(const CString& title, SVector2u size);
+        CWindow(const CWindow&) = default;
+        CWindow(CWindow&&) = default;
+        CWindow& operator=(const CWindow&) = default;
+        CWindow& operator=(CWindow&&) = default;
         ~CWindow() override;
 
         void close();

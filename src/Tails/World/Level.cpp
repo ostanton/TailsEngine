@@ -1,11 +1,13 @@
-#include <Tails/Game/Level.hpp>
-#include <Tails/Game/Actor.hpp>
+#include <Tails/World/Level.hpp>
+#include <Tails/World/Actor.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 
 #include <algorithm>
 
 namespace tails
 {
+    CLevel::~CLevel() = default;
+
     void CLevel::destroyActor(const CActor* actor)
     {
         if (const auto it = getActorIterator(actor); it != m_actors.end())

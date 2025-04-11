@@ -1,4 +1,4 @@
-#include <Tails/Game/Components/ActorComponent.hpp>
+#include <Tails/World/Components/ActorComponent.hpp>
 
 namespace tails
 {

@@ -3,8 +3,9 @@ project(Tails)
 target_sources(
     Tails
     PRIVATE
-        Level.cpp
-        Actor.cpp
+        Level.hpp
+        Actor.hpp
+        WorldSubsystem.hpp
 )
 
 add_subdirectory(Components)

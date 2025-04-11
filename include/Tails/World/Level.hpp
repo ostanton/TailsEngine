@@ -17,6 +17,8 @@ namespace tails
     public:
         using ActorIterator = std::vector<std::unique_ptr<CActor>>::iterator;
         using ConstActorIterator = std::vector<std::unique_ptr<CActor>>::const_iterator;
+
+        ~CLevel() override;
         
         template<typename T>
         T* spawnActor(const STransform2D& transform)
@@ -30,6 +32,10 @@ namespace tails
         void onRender(IRenderer& renderer) const override;
         
         CActor* spawnActor(std::unique_ptr<CActor> actor, const STransform2D& transform);
+
+        /**
+         * Deletes and erases any actors that are pending destroy
+         */
         void cleanupActors();
         
         [[nodiscard]] ActorIterator getActorIterator(const CActor* actor);

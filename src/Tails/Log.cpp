@@ -14,10 +14,10 @@ namespace tails::logger
     }
 
     void log(
-        const ELogCategory category,
-        const ELogSeverity severity,
+        const ECategory category,
+        const ESeverity severity,
         const char* message,
-        const SLogDetails& details
+        const SDetails& details
     )
     {
 #ifdef TAILS_ENABLE_LOGGING

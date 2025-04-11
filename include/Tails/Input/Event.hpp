@@ -9,7 +9,7 @@
 namespace tails
 {
     /**
-     * Generic window event
+     * Generic input poller event
      */
     class TAILS_API CEvent final
     {

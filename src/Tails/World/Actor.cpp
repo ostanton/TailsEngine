@@ -1,6 +1,6 @@
-#include <Tails/Game/Actor.hpp>
-#include <Tails/Game/Level.hpp>
-#include <Tails/Game/Components/PrimitiveComponent.hpp>
+#include <Tails/World/Actor.hpp>
+#include <Tails/World/Level.hpp>
+#include <Tails/World/Components/PrimitiveComponent.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 
 namespace tails

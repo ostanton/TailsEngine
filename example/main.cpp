@@ -2,7 +2,9 @@
 
 #include <Tails/Application.hpp>
 #include <Tails/EntryPoint.hpp>
-#include <Tails/Game/Components/SpriteComponent.hpp>
+#include <Tails/World/Components/SpriteComponent.hpp>
+#include <Tails/World/WorldSubsystem.hpp>
+#include <Tails/World/Level.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -30,8 +32,14 @@ private:
         if (!IApplication::init(argc, argv))
             return false;
 
-        getLevel().spawnActor<CPlayer>({{50.f, 50.f}, 0.f, {1.f, 1.f}});
-        getLevel().spawnActor<CTestActor>({{96.f, 96.f}, 0.f, {1.f, 1.f}});
+        auto const level = tails::world::getLevelFromHandle(0);
+        if (!level)
+        {
+            return false;
+        }
+        
+        level->spawnActor<CPlayer>({{50.f, 50.f}, 0.f, {1.f, 1.f}});
+        level->spawnActor<CTestActor>({{96.f, 96.f}, 0.f, {1.f, 1.f}});
         return true;
     }
     

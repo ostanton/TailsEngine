@@ -1,8 +1,9 @@
 #include <Tails/Application.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Input/InputSubsystem.hpp>
+#include <Tails/Audio/AudioSubsystem.hpp>
 #include <Tails/SilverUI/WidgetSubsystem.hpp>
-#include <Tails/Game/Actor.hpp>
+#include <Tails/World/WorldSubsystem.hpp>
 #include <Tails/Log.hpp>
 
 #include <SDL3/SDL_init.h>
@@ -69,13 +70,15 @@ namespace tails
 
     bool IApplication::init(int argc, char* argv[])
     {
-        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD);
+        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMEPAD);
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
 
         // init Tails systems
         input::init();
+        audio::init();
         debug::init();
         logger::init();
+        world::init();
         ui::init();
         
         return true;
@@ -93,10 +96,9 @@ namespace tails
                 static_cast<float>((timeNow - timeLast) * 1000) / static_cast<float>(SDL_GetPerformanceFrequency()) * 0.001f;
             
             pollInput();
-            
             tick(m_currentDeltaSeconds);
-            
             render();
+            cleanup();
         }
 
         return false;
@@ -112,31 +114,32 @@ namespace tails
         while (const auto ev = m_window.pollEvent())
         {
             onInputEvent(*ev);
+            ui::processEvent(*ev);
         }
     }
 
     void IApplication::tick(const float deltaSeconds)
     {
         input::tick();
-        debug::tick(m_currentDeltaSeconds);
-        
-        m_level.onTick(deltaSeconds);
-
-        ui::tick(m_currentDeltaSeconds);
+        debug::tick(deltaSeconds);
+        world::tick(deltaSeconds);
+        ui::tick(deltaSeconds);
     }
 
     void IApplication::render()
     {
         m_window.clear();
 
-        // do some batch rendering or something idk
-        m_window.render(m_level);
-        m_level.cleanupActors();
-
+        world::render(m_window);
         ui::render(m_window);
         debug::render(); // TODO - how to stop it flickering??
 
         m_window.present();
+    }
+
+    void IApplication::cleanup()
+    {
+        world::cleanup();
     }
 
     bool IApplication::shouldExit() const

@@ -1,4 +1,4 @@
-#include <Tails/Game/Components/SpriteComponent.hpp>
+#include <Tails/World/Components/SpriteComponent.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 
 namespace tails

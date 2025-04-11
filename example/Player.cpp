@@ -1,7 +1,8 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
 
-#include <Tails/Game/Components/SpriteComponent.hpp>
+#include <Tails/World/Components/SpriteComponent.hpp>
+#include <Tails/World/Level.hpp>
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Application.hpp>
 #include <Tails/Debug.hpp>
@@ -51,28 +52,28 @@ CPlayer::CPlayer()
     });
 
     m_moveDownAction.getAction()->bind(
-        tails::EActionTrigger::Held,
-        tails::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleMoveDown)
+        tails::input::EActionTrigger::Held,
+        tails::input::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleMoveDown)
     );
     m_moveRightAction.getAction()->bind(
-        tails::EActionTrigger::Held,
-        tails::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleMoveRight)
+        tails::input::EActionTrigger::Held,
+        tails::input::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleMoveRight)
     );
     m_sprintAction.getAction()->bind(
-        tails::EActionTrigger::Pressed,
-        tails::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleStartSprint)
+        tails::input::EActionTrigger::Pressed,
+        tails::input::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleStartSprint)
     );
     m_sprintAction.getAction()->bind(
-        tails::EActionTrigger::Released,
-        tails::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleStopSprint)
+        tails::input::EActionTrigger::Released,
+        tails::input::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleStopSprint)
     );
     m_shootAction.getAction()->bind(
-        tails::EActionTrigger::Pressed,
-        tails::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleStartShooting)
+        tails::input::EActionTrigger::Pressed,
+        tails::input::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleStartShooting)
     );
     m_shootAction.getAction()->bind(
-        tails::EActionTrigger::Released,
-        tails::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleStopShooting)
+        tails::input::EActionTrigger::Released,
+        tails::input::SOnActionBinding::Delegate::createRaw(this, &CPlayer::handleStopShooting)
     );
 }
 
@@ -110,7 +111,7 @@ void CPlayer::onOverlap(CActor* otherActor)
         std::cout << "Overlapping INVALID actor!\n";
 }
 
-void CPlayer::handleMoveDown(const tails::SActionValue actionValue)
+void CPlayer::handleMoveDown(const tails::input::SActionValue actionValue)
 {
     move({
         0.f,
@@ -118,7 +119,7 @@ void CPlayer::handleMoveDown(const tails::SActionValue actionValue)
     });
 }
 
-void CPlayer::handleMoveRight(const tails::SActionValue actionValue)
+void CPlayer::handleMoveRight(const tails::input::SActionValue actionValue)
 {
     move({
         actionValue.get<float>() * m_currentSpeed * tails::IApplication::get().getDeltaSeconds(),
@@ -126,22 +127,22 @@ void CPlayer::handleMoveRight(const tails::SActionValue actionValue)
     });
 }
 
-void CPlayer::handleStartSprint(tails::SActionValue actionValue)
+void CPlayer::handleStartSprint(tails::input::SActionValue actionValue)
 {
     m_currentSpeed = m_sprintSpeed;
 }
 
-void CPlayer::handleStopSprint(tails::SActionValue actionValue)
+void CPlayer::handleStopSprint(tails::input::SActionValue actionValue)
 {
     m_currentSpeed = m_walkSpeed;
 }
 
-void CPlayer::handleStartShooting(tails::SActionValue actionValue)
+void CPlayer::handleStartShooting(tails::input::SActionValue actionValue)
 {
     m_wishShoot = true;
 }
 
-void CPlayer::handleStopShooting(tails::SActionValue actionValue)
+void CPlayer::handleStopShooting(tails::input::SActionValue actionValue)
 {
     m_wishShoot = false;
 }

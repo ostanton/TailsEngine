@@ -10,20 +10,22 @@ namespace tails
     class SWidget;
     class ISlot;
     class IRenderer;
+    class CEvent;
+}
+
+namespace tails::ui
+{
+    TAILS_API void init();
+    TAILS_API void processEvent(const CEvent& ev);
+    TAILS_API void tick(float deltaSeconds);
+    TAILS_API void render(IRenderer& renderer);
     
-    namespace ui
+    TAILS_API ISlot* addWidget(std::shared_ptr<SWidget> content);
+    
+    template<typename T>
+    ISlot* addWidget()
     {
-        TAILS_API void init();
-        TAILS_API void tick(float deltaSeconds);
-        TAILS_API void render(IRenderer& renderer);
-        
-        TAILS_API ISlot* addWidget(std::shared_ptr<SWidget> content);
-        
-        template<typename T>
-        ISlot* addWidget()
-        {
-            return addWidget(std::make_shared<T>());
-        }
+        return addWidget(std::make_shared<T>());
     }
 }
 

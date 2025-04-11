@@ -2,7 +2,7 @@
 #define TAILS_SPRITE_COMPONENT_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Game/Components/PrimitiveComponent.hpp>
+#include <Tails/World/Components/PrimitiveComponent.hpp>
 #include <Tails/Maths/Vector2.hpp>
 #include <Tails/Maths/Colour.hpp>
 #include <Tails/Maths/Rect.hpp>

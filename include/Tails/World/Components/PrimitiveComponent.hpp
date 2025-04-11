@@ -2,7 +2,7 @@
 #define TAILS_PRIMITIVE_COMPONENT_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Game/Components/ActorComponent.hpp>
+#include <Tails/World/Components/ActorComponent.hpp>
 #include <Tails/Renderer/RenderItem.hpp>
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Maths/Rect.hpp>
