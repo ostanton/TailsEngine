@@ -57,7 +57,15 @@ namespace tails
 
     void IRenderer::render(const SFloatRect& rect, const SColour colour) const
     {
-        SDL_FRect myRect {rect.position.x, rect.position.y, rect.size.x, rect.size.y};
+        /**
+         * TODO - separate into two things:
+         * 1. Have some array of render items which is appended to here,
+         * 2. Have another pass going through those items actually rendering them all at once.
+         *
+         * Is that better than this? Going through that array is fast yeah, but we can just render
+         * here since we're here already. What do we gain from separating them into two passes?
+         */
+        const SDL_FRect myRect {rect.position.x, rect.position.y, rect.size.x, rect.size.y};
         SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
         SDL_RenderFillRect(m_renderer, &myRect);
     }

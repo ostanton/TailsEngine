@@ -12,6 +12,7 @@
 namespace tails
 {
     class CLevel;
+    class CLayer;
     class CActorComponent;
     class CPrimitiveComponent;
 
@@ -25,6 +26,7 @@ namespace tails
     class TAILS_API CActor : IRenderItem
     {
         friend CLevel;
+        friend CLayer;
         
     public:
         enum EFlags : u8
@@ -76,6 +78,9 @@ namespace tails
             return static_cast<T*>(addComponent(std::make_unique<T>()));
         }
 
+        void setLayer(isize layer);
+        [[nodiscard]] isize getLayer() const noexcept;
+
         TBitset<EFlags> flags;
 
     protected:
@@ -95,6 +100,8 @@ namespace tails
         CLevel* m_owningLevel {nullptr};
         std::vector<std::unique_ptr<CActorComponent>> m_components;
         CPrimitiveComponent* m_rootComponent {nullptr};
+        /** The current layer this actor is on */
+        isize m_layer {0};
     };
 }
 

@@ -40,6 +40,7 @@ namespace tails
 
     TOptional<CEvent> CWindow::pollEvent()
     {
+        // TODO - PSP home button doesn't work for some reason!
         SDL_Event ev;
         while (SDL_PollEvent(&ev))
         {

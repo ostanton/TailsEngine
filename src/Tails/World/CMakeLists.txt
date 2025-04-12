@@ -6,6 +6,8 @@ target_sources(
         Level.cpp
         Actor.cpp
         WorldSubsystem.cpp
+        ActorRegistry.cpp
+        Layer.cpp
 )
 
 add_subdirectory(Components)

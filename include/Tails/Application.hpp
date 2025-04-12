@@ -76,8 +76,6 @@ namespace tails
         [[nodiscard]] virtual bool shouldExit() const;
 
     private:
-        static void setInstance(IApplication& instance);
-
         CWindow m_window;
         CAssetManager m_assetManager;
         float m_currentDeltaSeconds {0.f};

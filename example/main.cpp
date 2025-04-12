@@ -5,6 +5,8 @@
 #include <Tails/World/Components/SpriteComponent.hpp>
 #include <Tails/World/WorldSubsystem.hpp>
 #include <Tails/World/Level.hpp>
+#include <Tails/String.hpp>
+#include <Tails/World/ActorRegistry.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -17,6 +19,22 @@ public:
         setRootComponent(sprite);
     }
 };
+
+TAILS_REGISTER_ACTOR(CTestActor, "TestActor")
+
+class CTestActor2 : public tails::CActor
+{
+public:
+    CTestActor2()
+    {
+        auto const sprite = createComponent<tails::CSpriteComponent>();
+        sprite->setSize({32.f, 32.f});
+        sprite->setColour(tails::SColour::magenta);
+        setRootComponent(sprite);
+    }
+};
+
+TAILS_REGISTER_ACTOR(CTestActor2, "TestActor2")
 
 class CExampleApp final : public tails::IApplication
 {
@@ -38,8 +56,19 @@ private:
             return false;
         }
         
-        level->spawnActor<CPlayer>({{50.f, 50.f}, 0.f, {1.f, 1.f}});
-        level->spawnActor<CTestActor>({{96.f, 96.f}, 0.f, {1.f, 1.f}});
+        //level->spawnActor<CPlayer>({{50.f, 50.f}, 0.f, {1.f, 1.f}});
+        //level->spawnActor<CTestActor>({{96.f, 96.f}, 0.f, {1.f, 1.f}});
+        auto const player = level->spawnActor(
+            "Player",
+            {
+                {50.f, 50.f},
+                0.f,
+                {1.f, 1.f}
+            },
+            -5
+        );
+        level->spawnActor("TestActor", {{96.f, 96.f}, 0.f, {1.f, 1.f}});
+        player->setLayer(5);
         return true;
     }
     

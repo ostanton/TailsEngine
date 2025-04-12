@@ -7,7 +7,6 @@ target_sources(
         Profiler.cpp
         String.cpp
         Application.cpp
-        EntryPoint.cpp
         Window.cpp
         Debug.cpp
 )

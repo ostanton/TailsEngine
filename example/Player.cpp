@@ -6,6 +6,9 @@
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Application.hpp>
 #include <Tails/Debug.hpp>
+#include <Tails/World/ActorRegistry.hpp>
+
+TAILS_REGISTER_ACTOR(CPlayer, "Player")
 
 CPlayer::CPlayer()
 {
@@ -21,7 +24,7 @@ CPlayer::CPlayer()
         {
             tails::EKeys::Down,
             {tails::EKeys::Up, -1.f},
-            tails::EKeys::GamepadLeftStickY,
+            {tails::EKeys::GamepadLeftStickY, 1.f, 0.2f},
             tails::EKeys::GamepadDPadDown,
             {tails::EKeys::GamepadDPadUp, -1.f}
         }
@@ -31,7 +34,7 @@ CPlayer::CPlayer()
         {
             tails::EKeys::Right,
             {tails::EKeys::Left, -1.f},
-            tails::EKeys::GamepadLeftStickX,
+            {tails::EKeys::GamepadLeftStickX, 1.f, 0.2f},
             tails::EKeys::GamepadDPadRight,
             {tails::EKeys::GamepadDPadLeft, -1.f}
         }
@@ -84,7 +87,7 @@ void CPlayer::shoot()
         m_spriteComponent->getCentre(),
         getRotation(),
         getScale()
-    });
+    }, -10);
     bullet->moveDirection = {1.f, 0.f};
 }
 
@@ -127,22 +130,22 @@ void CPlayer::handleMoveRight(const tails::input::SActionValue actionValue)
     });
 }
 
-void CPlayer::handleStartSprint(tails::input::SActionValue actionValue)
+void CPlayer::handleStartSprint(const tails::input::SActionValue actionValue)
 {
     m_currentSpeed = m_sprintSpeed;
 }
 
-void CPlayer::handleStopSprint(tails::input::SActionValue actionValue)
+void CPlayer::handleStopSprint(const tails::input::SActionValue actionValue)
 {
     m_currentSpeed = m_walkSpeed;
 }
 
-void CPlayer::handleStartShooting(tails::input::SActionValue actionValue)
+void CPlayer::handleStartShooting(const tails::input::SActionValue actionValue)
 {
     m_wishShoot = true;
 }
 
-void CPlayer::handleStopShooting(tails::input::SActionValue actionValue)
+void CPlayer::handleStopShooting(const tails::input::SActionValue actionValue)
 {
     m_wishShoot = false;
 }

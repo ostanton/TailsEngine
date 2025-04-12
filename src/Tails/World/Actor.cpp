@@ -85,6 +85,16 @@ namespace tails
         return m_rootComponent->isOverlapping(other->getRootComponent());
     }
 
+    void CActor::setLayer(const isize layer)
+    {
+        getLevel()->setActorLayer(this, layer);
+    }
+
+    isize CActor::getLayer() const noexcept
+    {
+        return m_layer;
+    }
+
     void CActor::onInitComponents()
     {
         for (const auto& component : m_components)
@@ -114,6 +124,7 @@ namespace tails
             }
             
             m_rootComponent = createComponent<CPrimitiveComponent>();
+            m_rootComponent->onInit();
         }
     }
 

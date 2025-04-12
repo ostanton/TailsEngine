@@ -47,6 +47,7 @@ TailsEngine.kdev4
 
 # Folders
 build/
+psp-build/
 .idea/
 cmake-build-debug/
 cmake-build-release/

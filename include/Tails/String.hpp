@@ -54,4 +54,13 @@ namespace tails
     };
 }
 
+template<>
+struct std::hash<tails::CString>
+{
+    std::size_t operator()(const tails::CString& str) const noexcept
+    {
+        return std::hash<std::string>{}(str.getData());
+    }
+};
+
 #endif // TAILS_STRING_HPP

@@ -1,4 +1,5 @@
 #include <Tails/Application.hpp>
+#include <Tails/EntryPoint.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Audio/AudioSubsystem.hpp>
@@ -25,6 +26,20 @@ namespace tails
     namespace
     {
         IApplication* gApplication {nullptr};
+    }
+
+    int SEntryPoint::main(const int argc, char* argv[], IApplication& app)
+    {
+        gApplication = &app;
+
+        // TODO - abstract into user-friendly arg struct
+        if (!app.init(argc, argv))
+            return 0;
+    
+        if (!app.run())
+            app.shutdown();
+    
+        return 0;
     }
 
     IApplication::IApplication(const SVector2u windowSize)
@@ -145,10 +160,5 @@ namespace tails
     bool IApplication::shouldExit() const
     {
         return !m_window.isOpen();
-    }
-
-    void IApplication::setInstance(IApplication& instance)
-    {
-        gApplication = &instance;
     }
 }
