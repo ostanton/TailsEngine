@@ -6,4 +6,14 @@ namespace tails
     {
         return EAssetType::Texture;
     }
+
+    SVector2u CTexture::getSize() const noexcept
+    {
+        return m_size;
+    }
+
+    const u8* CTexture::getPixels() const noexcept
+    {
+        return m_pixels;
+    }
 }

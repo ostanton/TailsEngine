@@ -25,3 +25,4 @@ namespace tails::logger
 #endif // TAILS_ENABLE_LOGGING
     }
 }
+

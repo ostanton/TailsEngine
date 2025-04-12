@@ -6,6 +6,8 @@
 #include <Tails/Maths/Rect.hpp>
 #include <Tails/Maths/Colour.hpp>
 
+#include <memory>
+
 struct SDL_Renderer;
 struct SDL_Window;
 
@@ -13,6 +15,7 @@ namespace tails
 {
     class IRenderItem;
     class CString;
+    class CTexture;
 
     /**
      * Abstract class for rendering items
@@ -35,11 +38,25 @@ namespace tails
         [[nodiscard]] SDL_Window* getRenderWindow() const;
         
         void render(const IRenderItem& item);
+        // TODO - various other render functions
         // TODO - pass in extra transform or something so rect is not absolute
         void render(const SFloatRect& rect, SColour colour = SColour::white) const;
-
-        // TODO - various other render functions
-        void renderText(const CString& string);
+        
+        /**
+         * Renders a texture as an image to the screen
+         * @param texture Texture asset to render
+         * @param position Where on screen to render
+         * @param size Size to override the texture's size. Set to 0 to keep texture size
+         * @param tint Colour tint for the texture
+         */
+        void render(
+            const std::shared_ptr<CTexture>& texture,
+            SVector2f position,
+            SVector2f size = {},
+            SColour tint = SColour::white
+        ) const;
+        
+        void render(const CString& string) const;
 
         void clear(SColour colour = SColour::black) const;
         void present() const;

@@ -2,6 +2,7 @@
 #include <Tails/Renderer/RenderItem.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/String.hpp>
+#include <Tails/Assets/Texture.hpp>
 
 #include <SDL3/SDL_render.h>
 
@@ -70,7 +71,38 @@ namespace tails
         SDL_RenderFillRect(m_renderer, &myRect);
     }
 
-    void IRenderer::renderText(const CString& string)
+    void IRenderer::render(
+        const std::shared_ptr<CTexture>& texture,
+        const SVector2f position,
+        const SVector2f size,
+        const SColour tint
+    ) const
+    {
+        auto const tex = SDL_CreateTexture(
+            m_renderer,
+            SDL_PIXELFORMAT_RGB24, // TODO - make these actually make sense
+            SDL_TEXTUREACCESS_STATIC,
+            static_cast<int>(texture->getSize().x),
+            static_cast<int>(texture->getSize().y)
+        );
+        
+        if (!tex)
+        {
+            // TODO - fail!
+        }
+        
+        if (!SDL_UpdateTexture(tex, nullptr, texture->getPixels(), static_cast<int>(texture->getSize().x)))
+        {
+            // TODO - fail!
+        }
+        
+        SDL_SetRenderDrawColor(m_renderer, tint.r, tint.g, tint.b, tint.a);
+        const SDL_FRect destRect {position.x, position.y, size.x, size.y};
+        SDL_RenderTexture(m_renderer, tex, nullptr, &destRect);
+        SDL_DestroyTexture(tex);
+    }
+
+    void IRenderer::render(const CString& string) const
     {
         TAILS_LOG(Message, string.getData());
     }

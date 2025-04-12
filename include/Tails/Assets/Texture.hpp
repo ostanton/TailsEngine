@@ -12,8 +12,13 @@ namespace tails
     public:
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
+        [[nodiscard]] SVector2u getSize() const noexcept;
+        [[nodiscard]] const u8* getPixels() const noexcept;
+
     private:
         SVector2u m_size;
+        const u8* m_pixels {nullptr};
+        // TODO - specific format, etc. options too
     };
 }
 
