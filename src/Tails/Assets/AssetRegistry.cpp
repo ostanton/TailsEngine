@@ -1,5 +1,6 @@
 #include <Tails/Assets/AssetRegistry.hpp>
 #include <Tails/Assets/Loaders/AssetLoader.hpp>
+#include <Tails/Assets/AssetManager.hpp>
 
 namespace tails
 {
@@ -10,20 +11,21 @@ namespace tails
     }
 
     std::shared_ptr<IAsset> CAssetRegistry::loadAssetFromFile(
-        const EAssetType assetType,
-        const char* filename
+        const u8 assetType,
+        const char* filename,
+        CAssetManager& assetManager
     ) const
     {
-        return loadAssetFromFileImpl(static_cast<u8>(assetType), filename);
+        if (m_factories.find(assetType) == m_factories.end())
+            return nullptr; // TODO - log error message
+
+        const auto result = m_factories.at(assetType)->load(filename);
+        assetManager.addAsset(result);
+        return result;
     }
 
-    void CAssetRegistry::registerFactoryImpl(std::unique_ptr<IAssetLoader> factory, const u8 assetID)
+    void CAssetRegistry::registerFactoryImpl(std::unique_ptr<IAssetLoader> factory, const u8 assetType)
     {
-        m_factories.try_emplace(assetID, std::move(factory));
-    }
-
-    std::shared_ptr<IAsset> CAssetRegistry::loadAssetFromFileImpl(const u8 assetID, const char* filename) const
-    {
-        return m_factories.at(assetID)->load(); // TODO - load from file, specifics
+        m_factories.try_emplace(assetType, std::move(factory));
     }
 }

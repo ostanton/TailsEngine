@@ -3,21 +3,8 @@
 
 namespace tails
 {
-    enum class EMyAssetTypes
+    void CAssetManager::addAsset(const std::shared_ptr<IAsset>& asset)
     {
-        GIF,
-        Music
-    };
-
-    std::shared_ptr<IAsset> CAssetManager::getAsset(const EAssetType type)
-    {
-        return getAsset(static_cast<u8>(type));
-    }
-
-    std::shared_ptr<IAsset> CAssetManager::getAsset(const u8 assetID)
-    {
-        const auto asset = CAssetRegistry::get().loadAssetFromFileImpl(assetID, "");
         m_loadedAssets.emplace_back(asset);
-        return asset;
     }
 }

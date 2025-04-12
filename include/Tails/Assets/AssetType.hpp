@@ -39,13 +39,21 @@ namespace tails
     };
 
     /**
+     * Gets the asset type of the given asset (outside the asset class itself,
+     * otherwise some allocation is required).
+     * @return Asset ID value
+     */
+    template<typename>
+    [[nodiscard]] constexpr u8 getAssetType();
+
+    /**
      * Helper function to get the final asset ID from a custom asset type
      * @tparam CustomAssetTypeT Custom asset type enumeration
      * @param customAssetType Specific asset type enumerator
      * @return Asset ID value
      */
     template<typename CustomAssetTypeT>
-    [[nodiscard]] constexpr u8 getCustomAssetID(CustomAssetTypeT customAssetType) noexcept
+    [[nodiscard]] constexpr u8 getCustomAssetType(CustomAssetTypeT customAssetType) noexcept
     {
         return static_cast<u8>(EAssetType::Custom) + static_cast<u8>(customAssetType);
     }

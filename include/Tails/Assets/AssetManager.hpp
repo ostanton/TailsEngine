@@ -2,7 +2,6 @@
 #define TAILS_ASSET_MANAGER_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Assets/AssetType.hpp>
 
 #include <memory>
 #include <vector>
@@ -10,7 +9,8 @@
 namespace tails
 {
     class IAsset;
-    class CString;
+
+    using SAssetHandle = usize;
 
     /**
      * The asset manager is a localised, non-owning, manager for assets created via the CAssetRegistry.
@@ -20,19 +20,10 @@ namespace tails
     class TAILS_API CAssetManager
     {
     public:
-        std::shared_ptr<IAsset> getAsset(EAssetType type);
-        
-        template<typename CustomAssetTypeT>
-        std::shared_ptr<IAsset> getAsset(CustomAssetTypeT customType)
-        {
-            return getAssetImpl(getCustomAssetID(customType));
-        }
-        
-        std::shared_ptr<IAsset> getAsset(u8 assetID);
+        void addAsset(const std::shared_ptr<IAsset>& asset);
         
     private:
-        // TODO - owning or not? can we check the ref-count and only destroy when it's == 1 with a shared_ptr and
-        // not a weak_ptr?
+        // TODO - std::map<SAssetHandle, std::weak_ptr<IAsset>>
         std::vector<std::weak_ptr<IAsset>> m_loadedAssets;
     };
 }

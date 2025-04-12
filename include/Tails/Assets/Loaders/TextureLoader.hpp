@@ -9,7 +9,7 @@ namespace tails
     class TAILS_API CTextureLoader : public IAssetLoader
     {
     public:
-        std::shared_ptr<IAsset> load() override;
+        std::shared_ptr<IAsset> load(const char* path) override;
     };
 }
 

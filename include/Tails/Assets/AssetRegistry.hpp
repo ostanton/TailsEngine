@@ -36,15 +36,11 @@ namespace tails
             );
         }
 
-        std::shared_ptr<IAsset> loadAssetFromFile(EAssetType assetType, const char* filename) const;
-        template<typename CustomAssetTypeT>
-        std::shared_ptr<IAsset> loadAssetFromFile(const CustomAssetTypeT customAssetType, const char* filename) const
-        {
-            return loadAssetFromFileImpl(
-                getCustomAssetID(customAssetType),
-                filename
-            );
-        }
+        std::shared_ptr<IAsset> loadAssetFromFile(
+            u8 assetType,
+            const char* filename,
+            CAssetManager& assetManager
+        ) const;
 
     private:
         CAssetRegistry() = default;
@@ -55,9 +51,7 @@ namespace tails
             registerFactoryImpl(std::make_unique<FactoryT>(), static_cast<u8>(assetType));
         }
         
-        void registerFactoryImpl(std::unique_ptr<IAssetLoader> factory, u8 assetID);
-
-        std::shared_ptr<IAsset> loadAssetFromFileImpl(u8 assetID, const char* filename) const;
+        void registerFactoryImpl(std::unique_ptr<IAssetLoader> factory, u8 assetType);
 
         std::unordered_map<u8, std::unique_ptr<IAssetLoader>> m_factories;
     };

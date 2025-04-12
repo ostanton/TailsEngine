@@ -11,6 +11,12 @@ namespace tails
     public:
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
     };
+
+    template<>
+    [[nodiscard]] constexpr u8 getAssetType<CSound>()
+    {
+        return static_cast<u8>(EAssetType::Sound);
+    }
 }
 
 #endif // TAILS_SOUND_ASSET_HPP

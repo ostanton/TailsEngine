@@ -4,8 +4,9 @@
 
 namespace tails
 {
-    std::shared_ptr<IAsset> CSoundLoader::load()
+    std::shared_ptr<IAsset> CSoundLoader::load(const char* path)
     {
+        // TODO - load sound!
         return std::make_shared<CSound>();
     }
 }

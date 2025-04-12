@@ -46,7 +46,7 @@ namespace tails
         IAssetLoader& operator=(IAssetLoader&&) noexcept = delete;
         virtual ~IAssetLoader() = default;
 
-        virtual std::shared_ptr<IAsset> load() = 0;
+        virtual std::shared_ptr<IAsset> load(const char* path) = 0;
     };
 }
 

@@ -10,7 +10,7 @@ namespace tails::audio
     {
         float volume;
         bool playing;
-        TAssetPtr<CSound> currentSound {EAssetType::Sound};
+        TAssetPtr<CSound> currentSound;
     };
 
     namespace

@@ -7,6 +7,8 @@
 #include <Tails/World/Level.hpp>
 #include <Tails/String.hpp>
 #include <Tails/World/ActorRegistry.hpp>
+#include <Tails/Assets/AssetPtr.hpp>
+#include <Tails/Assets/Texture.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -55,6 +57,9 @@ private:
         {
             return false;
         }
+
+        tails::TAssetPtr<tails::CTexture> myTexture {"myTexture.png"};
+        const auto texture = myTexture.load();
         
         //level->spawnActor<CPlayer>({{50.f, 50.f}, 0.f, {1.f, 1.f}});
         //level->spawnActor<CTestActor>({{96.f, 96.f}, 0.f, {1.f, 1.f}});
@@ -80,3 +85,4 @@ private:
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")
+

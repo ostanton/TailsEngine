@@ -15,7 +15,7 @@ namespace tails::world
     
     void init()
     {
-        const TAssetPtr<CLevelAsset> nullLevel {EAssetType::Level};
+        const TAssetPtr<CLevelAsset> nullLevel;
         openLevel(nullLevel);
     }
 

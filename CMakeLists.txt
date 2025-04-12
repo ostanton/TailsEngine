@@ -74,16 +74,16 @@ list(APPEND TAILS_LIBS SDL3::SDL3)
 
 # SDL3_image
 # TODO
-set(SDLIMAGE_AVIF OFF CACHE BOOL "" FORCE)
-set(SDL3_DIR "${SDL3_BINARY_DIR}")
-message("-- Tails: SDL3_BINARY_DIR = ${SDL3_BINARY_DIR}")
-FetchContent_Declare(
-    SDL3_image
-    GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
-    GIT_TAG release-3.2.4
-)
-FetchContent_MakeAvailable(SDL3_image)
-list(APPEND TAILS_LIBS SDL3_image::SDL3_image)
+#set(SDLIMAGE_AVIF OFF CACHE BOOL "" FORCE)
+#set(SDL3_DIR "${SDL3_BINARY_DIR}")
+#message("-- Tails: SDL3_BINARY_DIR = ${SDL3_BINARY_DIR}")
+#FetchContent_Declare(
+#    SDL3_image
+#    GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+#    GIT_TAG release-3.2.4
+#)
+#FetchContent_MakeAvailable(SDL3_image)
+#list(APPEND TAILS_LIBS SDL3_image::SDL3_image)
 
 target_include_directories(
     Tails

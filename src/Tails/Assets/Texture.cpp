@@ -2,6 +2,11 @@
 
 namespace tails
 {
+    CTexture::CTexture(const SVector2u size, const u8* pixels)
+        : m_size(size), m_pixels(pixels)
+    {
+    }
+
     EAssetType CTexture::getAssetType() const noexcept
     {
         return EAssetType::Texture;

@@ -11,6 +11,12 @@ namespace tails
     public:
         [[nodiscard]] EAssetType getAssetType() const noexcept override {return EAssetType::Level;}
     };
+
+    template<>
+    [[nodiscard]] constexpr u8 getAssetType<CLevelAsset>()
+    {
+        return static_cast<u8>(EAssetType::Level);
+    }
 }
 
 #endif // TAILS_LEVEL_ASSET_HPP

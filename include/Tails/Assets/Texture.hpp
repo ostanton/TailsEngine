@@ -10,6 +10,8 @@ namespace tails
     class TAILS_API CTexture : public IAsset
     {
     public:
+        CTexture(SVector2u size, const u8* pixels);
+        
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
         [[nodiscard]] SVector2u getSize() const noexcept;
@@ -17,9 +19,15 @@ namespace tails
 
     private:
         SVector2u m_size;
-        const u8* m_pixels {nullptr};
+        const u8* m_pixels {nullptr}; // dunno yet how to represent the pixels, etc.
         // TODO - specific format, etc. options too
     };
+
+    template<>
+    [[nodiscard]] constexpr u8 getAssetType<CTexture>()
+    {
+        return static_cast<u8>(EAssetType::Texture);
+    }
 }
 
 #endif // TAILS_TEXTURE_ASSET_HPP
