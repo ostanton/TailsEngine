@@ -40,6 +40,11 @@ namespace tails
     }
 }
 
+/**
+ * Registers an actor with the actor registry, so it can be allocated via just its string name
+ * @param CLASS Actor class
+ * @param NAME Friendly name
+ */
 #define TAILS_REGISTER_ACTOR(CLASS, NAME) \
     template<typename> struct TActorRegistration; \
     template<> struct TActorRegistration<CLASS> \

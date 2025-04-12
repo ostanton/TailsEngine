@@ -58,8 +58,7 @@ private:
             return false;
         }
 
-        tails::TAssetPtr<tails::CTexture> myTexture {"myTexture.png"};
-        const auto texture = myTexture.load();
+        const auto texture = m_texture.load();
         
         //level->spawnActor<CPlayer>({{50.f, 50.f}, 0.f, {1.f, 1.f}});
         //level->spawnActor<CTestActor>({{96.f, 96.f}, 0.f, {1.f, 1.f}});
@@ -82,6 +81,8 @@ private:
         if (ev.is<tails::CEvent::SClosed>())
             exit();
     }
+
+    tails::TAssetPtr<tails::CTexture> m_texture {"myTexture.png"};
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")

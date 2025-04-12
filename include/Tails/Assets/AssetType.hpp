@@ -47,15 +47,18 @@ namespace tails
     [[nodiscard]] constexpr u8 getAssetType();
 
     /**
-     * Helper function to get the final asset ID from a custom asset type
-     * @tparam CustomAssetTypeT Custom asset type enumeration
-     * @param customAssetType Specific asset type enumerator
+     * Helper function to get any asset type as a u8
+     * @tparam AssetTypeT Custom asset type enumeration
+     * @param assetType Specific asset type enumerator
      * @return Asset ID value
      */
-    template<typename CustomAssetTypeT>
-    [[nodiscard]] constexpr u8 getCustomAssetType(CustomAssetTypeT customAssetType) noexcept
+    template<typename AssetTypeT>
+    [[nodiscard]] constexpr u8 getAssetType(const AssetTypeT assetType) noexcept
     {
-        return static_cast<u8>(EAssetType::Custom) + static_cast<u8>(customAssetType);
+        if constexpr (std::is_same_v<AssetTypeT, EAssetType>)
+            return static_cast<u8>(assetType);
+        else
+            return static_cast<u8>(EAssetType::Custom) + static_cast<u8>(assetType);
     }
 }
 

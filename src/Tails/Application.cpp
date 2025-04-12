@@ -5,6 +5,7 @@
 #include <Tails/Audio/AudioSubsystem.hpp>
 #include <Tails/SilverUI/WidgetSubsystem.hpp>
 #include <Tails/World/WorldSubsystem.hpp>
+#include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/Log.hpp>
 
 #include <SDL3/SDL_init.h>
@@ -35,10 +36,10 @@ namespace tails
         // TODO - abstract into user-friendly arg struct
         if (!app.init(argc, argv))
             return 0;
-    
-        if (!app.run())
-            app.shutdown();
-    
+
+        app.run();
+        app.shutdown();
+
         return 0;
     }
 
@@ -89,6 +90,7 @@ namespace tails
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
 
         // init Tails systems
+        assets::init();
         input::init();
         audio::init();
         debug::init();
@@ -99,7 +101,7 @@ namespace tails
         return true;
     }
 
-    bool IApplication::run()
+    void IApplication::run()
     {
         auto timeNow = SDL_GetPerformanceCounter();
         
@@ -115,8 +117,6 @@ namespace tails
             render();
             cleanup();
         }
-
-        return false;
     }
 
     void IApplication::shutdown()

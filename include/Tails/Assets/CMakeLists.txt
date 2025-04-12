@@ -8,6 +8,8 @@ target_sources(
         AssetRegistry.hpp
         AssetType.hpp
         AssetPtr.hpp
+        AssetDeleter.hpp
+        AssetSubsystem.hpp
         
         Texture.hpp
         Sound.hpp

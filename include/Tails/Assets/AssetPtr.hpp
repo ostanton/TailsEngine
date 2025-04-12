@@ -16,15 +16,12 @@ namespace tails
      */
     struct TAILS_API SAssetPath final
     {
-        SAssetPath(const EAssetType inAssetType, const char* inPath = nullptr)
-            : assetType(static_cast<u8>(inAssetType)), path(inPath)
-        {}
         SAssetPath(const u8 inAssetType, const char* inPath = nullptr)
             : assetType(inAssetType), path(inPath)
         {}
-        template<typename CustomAssetTypeT>
-        SAssetPath(const CustomAssetTypeT inCustomAssetType, const char* inPath = nullptr)
-            : assetType(getCustomAssetType(inCustomAssetType)), path(inPath)
+        template<typename AssetTypeT>
+        SAssetPath(const AssetTypeT inAssetType, const char* inPath = nullptr)
+            : assetType(getAssetType(inAssetType)), path(inPath)
         {}
 
         u8 assetType;

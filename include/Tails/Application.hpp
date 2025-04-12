@@ -59,7 +59,7 @@ namespace tails
     protected:
         // TODO - could abstract args to a more user-friendly struct
         virtual bool init(int argc, char* argv[]);
-        virtual bool run();
+        virtual void run();
         virtual void shutdown();
 
         void pollInput();

@@ -9,6 +9,7 @@
 namespace tails
 {
     class IAsset;
+    struct SAssetDeleter;
 
     using SAssetHandle = usize;
 
@@ -19,6 +20,8 @@ namespace tails
      */
     class TAILS_API CAssetManager
     {
+        friend SAssetDeleter;
+        
     public:
         void addAsset(const std::shared_ptr<IAsset>& asset);
         

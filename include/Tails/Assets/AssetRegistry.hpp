@@ -2,7 +2,6 @@
 #define TAILS_ASSET_REGISTRY_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Assets/AssetType.hpp>
 
 #include <memory>
 #include <unordered_map>
@@ -12,64 +11,66 @@ namespace tails
     class IAssetLoader;
     class IAsset;
     class CAssetManager;
-    
-    /**
-     * The asset registry is a central repository of registered asset factories which the asset manager
-     * queries to create assets. It works on the same ID system the manager does. Read up on it there.
-     *
-     * TODO - could have auto-registering at static-time:
-     * https://stackoverflow.com/questions/10676498/factory-pattern-allocating-memory-at-compile-time-and-how-to-print-compile-time
-     */
-    class TAILS_API CAssetRegistry final
+
+    namespace impl
     {
-        friend CAssetManager;
-        
-    public:
-        static CAssetRegistry& get();
-
-        template<typename FactoryT, typename CustomAssetTypeT>
-        void registerFactory(const CustomAssetTypeT customAssetType)
+        /**
+         * The asset registry is a central repository of registered asset factories which the asset manager
+         * queries to create assets. It works on the same ID system the manager does. Read up on it there
+         */
+        class TAILS_API CAssetRegistry final
         {
-            registerFactoryImpl(
-                std::make_unique<FactoryT>(),
-                getCustomAssetID(customAssetType)
+            friend CAssetManager;
+        
+        public:
+            static CAssetRegistry& get();
+
+            template<typename FactoryT>
+            void registerLoader(const u8 assetType)
+            {
+                registerLoaderImpl(
+                    std::make_unique<FactoryT>(),
+                    assetType,
+                    typeid(FactoryT).name()
+                );
+            }
+
+            std::shared_ptr<IAsset> loadAssetFromFile(
+                u8 assetType,
+                const char* filename,
+                CAssetManager& assetManager
+            ) const;
+
+        private:
+            CAssetRegistry() = default;
+
+            void registerLoaderImpl(
+                std::unique_ptr<IAssetLoader> factory,
+                u8 assetType,
+                const char* debugName
             );
-        }
 
-        std::shared_ptr<IAsset> loadAssetFromFile(
-            u8 assetType,
-            const char* filename,
-            CAssetManager& assetManager
-        ) const;
-
-    private:
-        CAssetRegistry() = default;
+            std::unordered_map<u8, std::unique_ptr<IAssetLoader>> m_factories;
+        };
 
         template<typename FactoryT>
-        void registerEngineFactory(const EAssetType assetType)
+        struct TAssetRegistryEntry final
         {
-            registerFactoryImpl(std::make_unique<FactoryT>(), static_cast<u8>(assetType));
-        }
-        
-        void registerFactoryImpl(std::unique_ptr<IAssetLoader> factory, u8 assetType);
-
-        std::unordered_map<u8, std::unique_ptr<IAssetLoader>> m_factories;
-    };
-
-    template<typename FactoryT>
-    class TAILS_API TCustomAssetRegistrar
-    {
-    public:
-        template<typename CustomAssetTypeT>
-        TCustomAssetRegistrar(CustomAssetTypeT customAssetType)
-        {
-            CAssetRegistry::get().registerFactory<FactoryT>(customAssetType);
-        }
-    };
+            explicit TAssetRegistryEntry(const u8 customAssetType)
+            {
+                CAssetRegistry::get().registerLoader<FactoryT>(customAssetType);
+            }
+        };
+    }
 }
 
-// TODO - auto register asset loaders
-#define TAILS_REGISTER_CUSTOM_ASSET_LOADER(LOADER_CLASS, CUSTOM_ASSET_TYPE) \
-    static inline ::tails::TCustomAssetRegistrar<LOADER_CLASS> gRegistrar##LOADER_CLASS {CUSTOM_ASSET_TYPE};
+// TODO - fixup! Does not work when called in Tails library cpp files!!
+#define TAILS_REGISTER_ASSET_LOADER(CLASS, ASSET_TYPE) \
+    template<typename> struct TAssetLoaderRegistration; \
+    template<> struct TAssetLoaderRegistration<CLASS> \
+    { \
+        static const ::tails::impl::TAssetRegistryEntry<CLASS> gAssetRegistrar; \
+    }; \
+    const ::tails::impl::TAssetRegistryEntry<CLASS> TAssetLoaderRegistration<CLASS>::gAssetRegistrar {::tails::getAssetType(ASSET_TYPE)};
 
 #endif // TAILS_ASSET_REGISTRY_HPP

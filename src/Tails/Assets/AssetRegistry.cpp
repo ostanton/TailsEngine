@@ -2,7 +2,9 @@
 #include <Tails/Assets/Loaders/AssetLoader.hpp>
 #include <Tails/Assets/AssetManager.hpp>
 
-namespace tails
+#include <iostream>
+
+namespace tails::impl
 {
     CAssetRegistry& CAssetRegistry::get()
     {
@@ -17,15 +19,23 @@ namespace tails
     ) const
     {
         if (m_factories.find(assetType) == m_factories.end())
-            return nullptr; // TODO - log error message
+        {
+            std::cerr << "Failed to load asset\n";
+            return nullptr;
+        }
 
         const auto result = m_factories.at(assetType)->load(filename);
         assetManager.addAsset(result);
         return result;
     }
 
-    void CAssetRegistry::registerFactoryImpl(std::unique_ptr<IAssetLoader> factory, const u8 assetType)
+    void CAssetRegistry::registerLoaderImpl(
+        std::unique_ptr<IAssetLoader> factory,
+        const u8 assetType,
+        const char* debugName
+    )
     {
         m_factories.try_emplace(assetType, std::move(factory));
+        std::cout << "Asset Registry: Registered asset loader '" << debugName << "'\n";
     }
 }
