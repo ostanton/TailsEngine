@@ -69,16 +69,6 @@ namespace tails
         return m_averageFPS;
     }
 
-    CAssetManager& IApplication::getAssetManager() noexcept
-    {
-        return m_assetManager;
-    }
-
-    const CAssetManager& IApplication::getAssetManager() const noexcept
-    {
-        return m_assetManager;
-    }
-
     void IApplication::exit()
     {
         m_window.close();

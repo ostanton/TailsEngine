@@ -1,8 +1,7 @@
 #include <Tails/Assets/AssetRegistry.hpp>
 #include <Tails/Assets/Loaders/AssetLoader.hpp>
-#include <Tails/Assets/AssetManager.hpp>
-
-#include <iostream>
+#include <Tails/Assets/AssetSubsystem.hpp>
+#include <Tails/Log.hpp>
 
 namespace tails::impl
 {
@@ -14,18 +13,24 @@ namespace tails::impl
 
     std::shared_ptr<IAsset> CAssetRegistry::loadAssetFromFile(
         const u8 assetType,
-        const char* filename,
-        CAssetManager& assetManager
+        const char* filename
     ) const
     {
         if (m_factories.find(assetType) == m_factories.end())
         {
-            std::cerr << "Failed to load asset\n";
+            TAILS_LOG(AssetRegistry, Error, "Failed to find asset loader");
             return nullptr;
         }
 
-        const auto result = m_factories.at(assetType)->load(filename);
-        assetManager.addAsset(result);
+        auto result = m_factories.at(assetType)->load(filename);
+        
+        if (!result)
+        {
+            TAILS_LOG(AssetRegistry, Error, "Failed to load asset path '%s'", filename);
+            return nullptr;
+        }
+        
+        assets::addAsset(result);
         return result;
     }
 
@@ -36,6 +41,6 @@ namespace tails::impl
     )
     {
         m_factories.try_emplace(assetType, std::move(factory));
-        std::cout << "Asset Registry: Registered asset loader '" << debugName << "'\n";
+        TAILS_LOG(AssetRegistry, Message, "Registered asset loader '%s'", debugName);
     }
 }

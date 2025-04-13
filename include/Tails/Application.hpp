@@ -3,7 +3,6 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Window.hpp>
-#include <Tails/Assets/AssetManager.hpp>
 #include <Tails/Debug.hpp>
 
 namespace tails
@@ -51,9 +50,6 @@ namespace tails
         [[nodiscard]] float getFPS() const noexcept;
         [[nodiscard]] float getAverageFPS() const noexcept;
 
-        [[nodiscard]] CAssetManager& getAssetManager() noexcept;
-        [[nodiscard]] const CAssetManager& getAssetManager() const noexcept;
-
         virtual void exit();
 
     protected:
@@ -77,7 +73,6 @@ namespace tails
 
     private:
         CWindow m_window;
-        CAssetManager m_assetManager;
         float m_currentDeltaSeconds {0.f};
         float m_averageFPS {0.f};
     };

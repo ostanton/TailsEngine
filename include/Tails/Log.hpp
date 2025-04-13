@@ -3,62 +3,47 @@
 
 #include <Tails/Core.hpp>
 
-namespace tails
+namespace tails::logger
 {
-    namespace logger
+    enum class ESeverity : u8
     {
-        struct TAILS_API SDetails
-        {
-            const char* fileName;
-            u16 line;
-        };
+        Message,
+        Warning,
+        Error
+    };
 
-        enum class ESeverity : u8
-        {
-            Message,
-            Warning,
-            Error
-        };
-
-        enum class ECategory : u8
-        {
-            Input,
-            Profile,
-            Render,
-            Level,
-            Game // Any non-Tails logs
-        };
-        
-        TAILS_API void init();
-        TAILS_API void log(
-            ECategory category,
-            ESeverity severity,
-            const char* message,
-            const SDetails& details
-        );
-    }
+    enum class ECategory : u8
+    {
+        AssetRegistry,
+        AssetSubsystem,
+        AudioSubsystem,
+        InputSubsystem,
+        WorldSubsystem,
+        ActorRegistry,
+        Game // Any non-Tails engine logs
+    };
+    
+    TAILS_API void init();
+    TAILS_API void log(ECategory category, ESeverity severity, const char* fmt, ...);
 }
 
 #ifdef TAILS_ENABLE_LOGGING
-#define TAILS_ENGINE_LOG(CATEGORY, SEVERITY, MSG) \
+/**
+ * Logs a formatted string to the console (whatever target SDL_Log uses)
+ * @param CATEGORY Logging category, Game if not logging a specific engine system
+ * @param SEVERITY Message, Warning, Error, etc.
+ * @param MSG C-style formatted message
+ */
+#define TAILS_LOG(CATEGORY, SEVERITY, FMT, ...) \
     ::tails::logger::log( \
         ::tails::logger::ECategory::CATEGORY, \
         ::tails::logger::ESeverity::SEVERITY, \
-        MSG, \
-        {TAILS_FILE_NAME, TAILS_LINE} \
-    )
-
-#define TAILS_LOG(SEVERITY, MSG) \
-    ::tails::logger::log( \
-        ::tails::logger::ECategory::Game, \
-        ::tails::logger::ESeverity::SEVERITY, \
-        MSG, \
-        {TAILS_FILE_NAME, TAILS_LINE} \
+        FMT, \
+        __VA_ARGS__ \
     )
 
 #else // TAILS_ENABLE_LOGGING
-    #define TAILS_ENGINE_LOG(CATEGORY, SEVERITY, MSG)
-    #define TAILS_LOG(SEVERITY, MSG)
+    #define TAILS_LOG(CATEGORY, SEVERITY, FMT, ...)
 
 #endif // TAILS_ENABLE_LOGGING
 

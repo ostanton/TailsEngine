@@ -1,9 +1,9 @@
 #include <Tails/World/ActorRegistry.hpp>
 #include <Tails/String.hpp>
 #include <Tails/World/Actor.hpp>
+#include <Tails/Log.hpp>
 
 #include <unordered_map>
-#include <iostream>
 
 namespace tails::impl
 {
@@ -27,12 +27,12 @@ namespace tails::impl
     {
         if (getActorRegistryMap().find(name) != getActorRegistryMap().end())
         {
-            std::cout << "Actor Registry: Failed to register " << name << " actor, it already exists in the registry" << '\n';
+            TAILS_LOG(ActorRegistry, Error, "Failed to register '%s', it already exists in the registry", name.getData());
             return false;
         }
 
         getActorRegistryMap().try_emplace(name, allocFunc);
-        std::cout << "Actor Registry: Registered actor '" << name << "'\n";
+        TAILS_LOG(ActorRegistry, Message, "Registered '%s'", name.getData());
         return true;
     }
 }

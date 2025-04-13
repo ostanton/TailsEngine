@@ -9,6 +9,7 @@
 #include <Tails/World/ActorRegistry.hpp>
 #include <Tails/Assets/AssetPtr.hpp>
 #include <Tails/Assets/Texture.hpp>
+#include <Tails/Log.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -57,6 +58,8 @@ private:
         {
             return false;
         }
+
+        TAILS_LOG(Game, Error, "Hello, my rural chum!");
 
         const auto texture = m_texture.load();
         

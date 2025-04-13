@@ -1,7 +1,5 @@
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Renderer/RenderItem.hpp>
-#include <Tails/Log.hpp>
-#include <Tails/String.hpp>
 #include <Tails/Assets/Texture.hpp>
 
 #include <SDL3/SDL_render.h>
@@ -104,7 +102,7 @@ namespace tails
 
     void IRenderer::render(const CString& string) const
     {
-        TAILS_LOG(Message, string.getData());
+        
     }
 
     void IRenderer::clear(const SColour colour) const

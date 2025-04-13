@@ -27,7 +27,7 @@ namespace tails
         u8 assetType;
         const char* path;
 
-        [[nodiscard]] std::shared_ptr<IAsset> load(CAssetManager* assetManager = nullptr) const;
+        [[nodiscard]] std::shared_ptr<IAsset> load() const;
     };
 
     /**
@@ -56,10 +56,10 @@ namespace tails
         void setPath(const char* path) noexcept {m_assetPath.path = path;}
         [[nodiscard]] const SAssetPath& getAssetPath() const noexcept {return m_assetPath;}
         
-        [[nodiscard]] std::shared_ptr<T> load(CAssetManager* assetManager = nullptr) noexcept
+        [[nodiscard]] std::shared_ptr<T> load() noexcept
         {
             if (!m_cached)
-                m_cached = std::static_pointer_cast<T>(m_assetPath.load(assetManager));
+                m_cached = std::static_pointer_cast<T>(m_assetPath.load());
             
             return m_cached;
         }

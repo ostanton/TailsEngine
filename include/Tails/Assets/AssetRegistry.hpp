@@ -10,7 +10,6 @@ namespace tails
 {
     class IAssetLoader;
     class IAsset;
-    class CAssetManager;
 
     namespace impl
     {
@@ -20,8 +19,6 @@ namespace tails
          */
         class TAILS_API CAssetRegistry final
         {
-            friend CAssetManager;
-        
         public:
             static CAssetRegistry& get();
 
@@ -37,8 +34,7 @@ namespace tails
 
             std::shared_ptr<IAsset> loadAssetFromFile(
                 u8 assetType,
-                const char* filename,
-                CAssetManager& assetManager
+                const char* filename
             ) const;
 
         private:

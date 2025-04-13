@@ -1,10 +1,9 @@
 #include <Tails/Input/InputSubsystem.hpp>
+#include <Tails/Log.hpp>
 
 #include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_mouse.h>
-
-#include <iostream>
 
 namespace tails::input
 {
@@ -53,7 +52,7 @@ namespace tails::input
     {
         if (!SDL_HasGamepad())
         {
-            std::cerr << "Input Subsystem: No gamepads connected!\n";
+            TAILS_LOG(InputSubsystem, Message, "No gamepads connected");
             return;
         }
     
@@ -61,12 +60,12 @@ namespace tails::input
         auto joysticks = SDL_GetGamepads(&count);
         if (!joysticks)
         {
-            std::cerr << "Input Subsystem: Failed to find gamepads!\n";
+            TAILS_LOG(InputSubsystem, Warning, "Failed to find gamepads");
             SDL_free(joysticks);
             return;
         }
 
-        std::cout << "Input Subsystem: Found " << count << " gamepads!\n";
+        TAILS_LOG(InputSubsystem, Message, "Found %d gamepads", count);
         if (count <= 0)
         {
             SDL_free(joysticks);
@@ -76,11 +75,11 @@ namespace tails::input
         gGamepad = SDL_OpenGamepad(joysticks[0]);
         if (!gGamepad)
         {
-            std::cerr << "Input Subsystem: Failed to open first gamepad!\n";
+            TAILS_LOG(InputSubsystem, Error, "Failed to open first gamepad");
         }
         else
         {
-            std::cout << "Input Subsystem: Using '" << SDL_GetGamepadName(gGamepad) << "' gamepad\n";
+            TAILS_LOG(InputSubsystem, Message, "Using '%s' gamepad", SDL_GetGamepadName(gGamepad));
         }
 
         SDL_free(joysticks);
