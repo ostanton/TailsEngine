@@ -50,7 +50,8 @@ namespace tails::logger
     )
 
 #else // TAILS_ENABLE_LOGGING
-    #define TAILS_LOG(CATEGORY, SEVERITY, FMT, ...)
+    #define TAILS_LOG(CATEGORY, SEVERITY, MSG)
+    #define TAILS_LOG_VA(CATEGORY, SEVERITY, FMT, ...)
 
 #endif // TAILS_ENABLE_LOGGING
 
