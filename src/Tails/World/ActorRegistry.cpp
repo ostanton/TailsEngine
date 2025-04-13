@@ -27,12 +27,13 @@ namespace tails::impl
     {
         if (getActorRegistryMap().find(name) != getActorRegistryMap().end())
         {
-            TAILS_LOG(ActorRegistry, Error, "Failed to register '%s', it already exists in the registry", name.getData());
+            TAILS_LOG_VA(ActorRegistry, Error,
+                "Failed to register '%s', it already exists in the registry", name.getData());
             return false;
         }
 
         getActorRegistryMap().try_emplace(name, allocFunc);
-        TAILS_LOG(ActorRegistry, Message, "Registered '%s'", name.getData());
+        TAILS_LOG_VA(ActorRegistry, Message, "Registered '%s'", name.getData());
         return true;
     }
 }

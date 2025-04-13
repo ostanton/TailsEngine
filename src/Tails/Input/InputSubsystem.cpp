@@ -20,7 +20,7 @@ namespace tails::input
 
     bool SAction::SKeyDataPair::isActive() const noexcept
     {
-        return std::abs(input::getKeyValueNormalised(key) * magnitude) >= deadZone;
+        return std::abs(getKeyValueNormalised(key) * magnitude) >= deadZone;
     }
 
     SAction::SAction(CString inName, std::vector<SKeyDataPair> inKeys)
@@ -65,7 +65,7 @@ namespace tails::input
             return;
         }
 
-        TAILS_LOG(InputSubsystem, Message, "Found %d gamepads", count);
+        TAILS_LOG_VA(InputSubsystem, Message, "Found %d gamepads", count);
         if (count <= 0)
         {
             SDL_free(joysticks);
@@ -79,7 +79,7 @@ namespace tails::input
         }
         else
         {
-            TAILS_LOG(InputSubsystem, Message, "Using '%s' gamepad", SDL_GetGamepadName(gGamepad));
+            TAILS_LOG_VA(InputSubsystem, Message, "Using '%s' gamepad", SDL_GetGamepadName(gGamepad));
         }
 
         SDL_free(joysticks);

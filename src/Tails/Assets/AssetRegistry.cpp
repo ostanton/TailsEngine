@@ -26,7 +26,7 @@ namespace tails::impl
         
         if (!result)
         {
-            TAILS_LOG(AssetRegistry, Error, "Failed to load asset path '%s'", filename);
+            TAILS_LOG_VA(AssetRegistry, Error, "Failed to load asset path '%s'", filename);
             return nullptr;
         }
         
@@ -41,6 +41,6 @@ namespace tails::impl
     )
     {
         m_factories.try_emplace(assetType, std::move(factory));
-        TAILS_LOG(AssetRegistry, Message, "Registered asset loader '%s'", debugName);
+        TAILS_LOG_VA(AssetRegistry, Message, "Registered asset loader '%s'", debugName);
     }
 }

@@ -28,13 +28,20 @@ namespace tails::logger
 }
 
 #ifdef TAILS_ENABLE_LOGGING
+// TODO - have some TAILS_FMT macro or something so we don't need two different log macros
 /**
  * Logs a formatted string to the console (whatever target SDL_Log uses)
  * @param CATEGORY Logging category, Game if not logging a specific engine system
  * @param SEVERITY Message, Warning, Error, etc.
  * @param MSG C-style formatted message
  */
-#define TAILS_LOG(CATEGORY, SEVERITY, FMT, ...) \
+#define TAILS_LOG(CATEGORY, SEVERITY, MSG) \
+    ::tails::logger::log( \
+        ::tails::logger::ECategory::CATEGORY, \
+        ::tails::logger::ESeverity::SEVERITY, \
+        MSG \
+    )
+#define TAILS_LOG_VA(CATEGORY, SEVERITY, FMT, ...) \
     ::tails::logger::log( \
         ::tails::logger::ECategory::CATEGORY, \
         ::tails::logger::ESeverity::SEVERITY, \

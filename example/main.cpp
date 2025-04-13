@@ -89,4 +89,3 @@ private:
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")
-

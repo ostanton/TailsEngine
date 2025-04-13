@@ -53,10 +53,10 @@ namespace tails::assets
         if (validHandle(handle))
         {
             gLoadedAssets.erase(handle);
-            TAILS_LOG(AssetSubsystem, Message, "Deleted asset with handle '%d'", handle);
+            TAILS_LOG_VA(AssetSubsystem, Message, "Deleted asset with handle '%d'", handle);
         }
         else
-            TAILS_LOG(AssetSubsystem, Message, "Failed to delete asset with invalid handle '%d'", handle);
+            TAILS_LOG_VA(AssetSubsystem, Message, "Failed to delete asset with invalid handle '%d'", handle);
 
         delete asset;
     }
