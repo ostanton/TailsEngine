@@ -6,6 +6,7 @@
 #include <Tails/Assets/Handle.hpp>
 #include <Tails/Assets/AssetType.hpp>
 #include <Tails/Assets/AssetDeleter.hpp>
+#include <Tails/String.hpp>
 
 #include <memory>
 #include <type_traits>
@@ -37,7 +38,7 @@ namespace tails::assets
      * @param path Path to the file to load
      * @return Shared pointer to loaded asset
      */
-    TAILS_API std::shared_ptr<IAsset> loadAsset(u8 assetType, const char* path);
+    TAILS_API std::shared_ptr<IAsset> loadAsset(u8 assetType, const CString& path);
 
     /**
      * Loads an asset from file
@@ -46,7 +47,7 @@ namespace tails::assets
      * @return Shared pointer to loaded asset
      */
     template<typename T>
-    std::shared_ptr<T> loadAsset(const char* path)
+    std::shared_ptr<T> loadAsset(const CString& path)
     {
         return std::static_pointer_cast<T>(
             loadAsset(getAssetType<T>(), path)
@@ -58,13 +59,13 @@ namespace tails::assets
      * @param handle Asset handle
      * @return Shared pointer to asset
      */
-    TAILS_API std::shared_ptr<IAsset> getAsset(SHandle handle);
-    TAILS_API bool validHandle(SHandle handle);
+    TAILS_API std::shared_ptr<IAsset> getAsset(const SHandle& handle);
+    TAILS_API bool validHandle(const SHandle& handle);
 
-    std::shared_ptr<IAsset> allocateAsset(const std::shared_ptr<IAsset>& asset, const char* path, u8 type);
+    std::shared_ptr<IAsset> allocateAsset(const std::shared_ptr<IAsset>& asset, const CString& path, u8 type);
 
     template<typename T, typename... ArgsT>
-    std::shared_ptr<T> allocateAsset(const char* path, ArgsT&&... args)
+    std::shared_ptr<T> allocateAsset(const CString& path, ArgsT&&... args)
     {
         return std::static_pointer_cast<T>(
             allocateAsset(

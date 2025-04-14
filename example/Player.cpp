@@ -15,7 +15,9 @@ CPlayer::CPlayer()
     m_spriteComponent = createComponent<tails::CSpriteComponent>();
     m_spriteComponent->size = {16.f, 16.f};
     m_spriteComponent->colour = tails::SColour::green;
+#ifndef TAILS_OS_PSP
     m_spriteComponent->texture = m_sprite.load();
+#endif // TAILS_OS_PSP
     setRootComponent(m_spriteComponent);
 
     m_currentSpeed = m_walkSpeed;

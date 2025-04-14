@@ -9,6 +9,7 @@ target_sources(
         Application.cpp
         Window.cpp
         Debug.cpp
+        Filesystem.cpp
 )
 
 add_subdirectory(Assets)

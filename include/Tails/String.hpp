@@ -49,6 +49,11 @@ namespace tails
         [[nodiscard]] char* getData();
         [[nodiscard]] const char* getData() const;
 
+        void insert(const usize position, const CString& str)
+        {
+            m_string.insert(position, str.getData());
+        }
+
     private:
         impl::CStringImpl m_string;
     };

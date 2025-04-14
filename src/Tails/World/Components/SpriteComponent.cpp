@@ -1,6 +1,5 @@
 #include <Tails/World/Components/SpriteComponent.hpp>
 #include <Tails/Renderer/Renderer.hpp>
-#include <Tails/Assets/Texture.hpp>
 
 namespace tails
 {
@@ -28,7 +27,7 @@ namespace tails
             renderer.render(
                 texture,
                 transform.position,
-                useTextureSize ? SVector2f {texture->getSize()} : size,
+                useTextureSize ? SVector2f {} : size,
                 colour
             );
     }

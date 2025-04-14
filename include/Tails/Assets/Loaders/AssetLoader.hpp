@@ -2,6 +2,7 @@
 #define TAILS_ASSET_LOADER_HPP
 
 #include <Tails/Core.hpp>
+#include <Tails/String.hpp>
 
 #include <memory>
 
@@ -46,7 +47,12 @@ namespace tails
         IAssetLoader& operator=(IAssetLoader&&) noexcept = delete;
         virtual ~IAssetLoader() = default;
 
-        virtual std::shared_ptr<IAsset> load(const char* path) = 0;
+        /**
+         * Loads an asset from a full path to a file
+         * @param path Full path to the file on disk
+         * @return Shared pointer to asset loaded from the path
+         */
+        virtual std::shared_ptr<IAsset> load(const CString& path) = 0;
     };
 }
 

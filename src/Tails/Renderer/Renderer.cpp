@@ -86,10 +86,10 @@ namespace tails
 
         auto const tex = SDL_CreateTexture(
             m_renderer,
-            SDL_PIXELFORMAT_RGBA32, // TODO - make these actually make sense
+            SDL_PIXELFORMAT_RGBA32,
             SDL_TEXTUREACCESS_STATIC,
-            static_cast<int>(texture->getSize().x),
-            static_cast<int>(texture->getSize().y)
+            size.isZero() ? static_cast<int>(texture->getSize().x) : static_cast<int>(size.x),
+            size.isZero() ? static_cast<int>(texture->getSize().y) : static_cast<int>(size.y)
         );
         
         if (!tex)
@@ -106,9 +106,22 @@ namespace tails
             return;
         }
         
-        SDL_SetRenderDrawColor(m_renderer, tint.r, tint.g, tint.b, tint.a);
+        if (!SDL_SetRenderDrawColor(m_renderer, tint.r, tint.g, tint.b, tint.a))
+        {
+            TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '%s'", SDL_GetError());
+            SDL_DestroyTexture(tex);
+            return;
+        }
+        
         const SDL_FRect destRect {position.x, position.y, size.x, size.y};
-        SDL_RenderTexture(m_renderer, tex, nullptr, &destRect);
+        // TODO - rendering the texture crashes the PSP!!!
+#ifndef TAILS_OS_PSP
+        if (!SDL_RenderTexture(m_renderer, tex, nullptr, &destRect))
+        {
+            TAILS_LOG_VA(Renderer, Error, "Failed to render texture, '%s'", SDL_GetError());
+        }
+#endif // TAILS_OS_PSP
+        
         SDL_DestroyTexture(tex);
     }
 

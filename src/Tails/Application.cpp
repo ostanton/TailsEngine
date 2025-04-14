@@ -94,6 +94,7 @@ namespace tails
 
     void IApplication::run()
     {
+        TAILS_LOG(Application, Message, "Starting main loop");
         auto timeNow = SDL_GetPerformanceCounter();
         
         while (!shouldExit())
@@ -109,10 +110,13 @@ namespace tails
             render();
             cleanup();
         }
+
+        TAILS_LOG(Application, Message, "Finished main loop");
     }
 
     void IApplication::shutdown()
     {
+        TAILS_LOG(Application, Message, "Shutting down application");
         world::deinit();
         debug::deinit();
         audio::deinit();
@@ -120,6 +124,7 @@ namespace tails
         assets::deinit();
         
         SDL_Quit();
+        TAILS_LOG(Application, Message, "Application shutdown successfully");
     }
 
     void IApplication::pollInput()

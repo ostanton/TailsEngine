@@ -9,7 +9,7 @@ namespace tails::logger
 {
     void init()
     {
-        // TODO - allow logs to be collected into a file and saved, maybe use RAII, save it in destructor?
+        // SDL_Log saves to a file already, so I don't need to do that. Might as well keep this around anyway
         TAILS_LOG(LoggerSubsystem, Message, "Initialised");
     }
 
@@ -19,6 +19,9 @@ namespace tails::logger
         CString str;
         switch (category)
         {
+        case ECategory::Application:
+            str += "Application       ";
+            break;
         case ECategory::LoggerSubsystem:
             str += "Logger Subsystem  ";
             break;

@@ -3,16 +3,12 @@
 #include <Tails/Assets/Loaders/SoundLoader.hpp>
 #include <Tails/Assets/Asset.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/String.hpp>
 
 #include <unordered_map>
 
 namespace tails::assets
 {
-    bool SHandle::isValid() const noexcept
-    {
-        return path != nullptr; // TODO - make better or something
-    }
-
     namespace
     {
         SHandle gLastAssetIndex;
@@ -57,10 +53,10 @@ namespace tails::assets
         return nullptr;
     }
 
-    std::shared_ptr<IAsset> loadAsset(const u8 assetType, const char* path)
+    std::shared_ptr<IAsset> loadAsset(const u8 assetType, const CString& path)
     {
         // if the path is already loaded as an asset, use it instead of loading a new one
-        if (const SHandle handle = {path, assetType}; validHandle(handle))
+        if (const SHandle handle = {path.getData(), assetType}; validHandle(handle))
             return gLoadedAssets[handle].lock();
         
         auto const loader = getLoader(assetType);
@@ -73,15 +69,15 @@ namespace tails::assets
         auto result = loader->load(path);
         if (!result)
         {
-            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load asset at path '%s'", path);
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load asset at path '%s'", path.getData());
             return nullptr;
         }
 
-        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded asset at path '%s'", path);
+        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded asset at path '%s'", path.getData());
         return result;
     }
 
-    std::shared_ptr<IAsset> getAsset(const SHandle handle)
+    std::shared_ptr<IAsset> getAsset(const SHandle& handle)
     {
         if (validHandle(handle))
             return gLoadedAssets[handle].lock();
@@ -89,12 +85,11 @@ namespace tails::assets
         return nullptr;
     }
 
-    bool validHandle(const SHandle handle)
+    bool validHandle(const SHandle& handle)
     {
         if (!handle.isValid())
             return false;
 
-        // TODO - causing crash!
         return gLoadedAssets.find(handle) != gLoadedAssets.end();
     }
 
@@ -102,7 +97,7 @@ namespace tails::assets
     {
         if (!validHandle(handle))
         {
-            TAILS_LOG_VA(AssetSubsystem, Message, "Failed to delete asset with invalid handle '%s'", handle.path);
+            TAILS_LOG_VA(AssetSubsystem, Message, "Failed to delete asset with invalid handle '%s'", handle.getDebugPath().getData());
             return;
         }
 
@@ -110,13 +105,13 @@ namespace tails::assets
         {
             delete asset;
             gLoadedAssets.erase(handle);
-            TAILS_LOG_VA(AssetSubsystem, Message, "Deleted asset with handle '%s'", handle.path);
+            TAILS_LOG_VA(AssetSubsystem, Message, "Deleted asset with handle '%s'", handle.getDebugPath().getData());
         }
     }
 
     std::shared_ptr<IAsset> allocateAsset(
         const std::shared_ptr<IAsset>& asset,
-        const char* path,
+        const CString& path,
         const u8 type
     )
     {

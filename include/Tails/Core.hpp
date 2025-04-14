@@ -70,6 +70,7 @@
 #endif // TAILS_ENABLE_ASSERTS
 
 #include <cstdint>
+#include <cstddef>
 
 namespace tails
 {
@@ -83,7 +84,7 @@ namespace tails
     using i32 = std::int32_t;
     using i64 = std::int64_t;
 
-    using usize = std::uintmax_t;
+    using usize = std::size_t;
     using isize = std::intmax_t;
 }
 

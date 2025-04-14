@@ -49,6 +49,7 @@ namespace tails::debug
 
     void render()
     {
+        // TODO - use SDL_RenderDebugText in future? Can then have a debug fps counter
 #ifdef TAILS_OS_PSP
         pspDebugScreenSetXY(0, 0);
         for (const auto& message : gDebugMessages)

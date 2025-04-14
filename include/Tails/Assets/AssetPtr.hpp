@@ -3,6 +3,8 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Assets/AssetType.hpp>
+#include <Tails/String.hpp>
+#include <Tails/Log.hpp>
 
 #include <memory>
 
@@ -16,16 +18,14 @@ namespace tails
      */
     struct TAILS_API SAssetPath final
     {
-        SAssetPath(const u8 inAssetType, const char* inPath = nullptr)
-            : assetType(inAssetType), path(inPath)
-        {}
+        SAssetPath(u8 inAssetType, CString inPath = {});
         template<typename AssetTypeT>
-        SAssetPath(const AssetTypeT inAssetType, const char* inPath = nullptr)
-            : assetType(getAssetType(inAssetType)), path(inPath)
+        SAssetPath(const AssetTypeT inAssetType, CString inPath = {})
+            : assetType(getAssetType(inAssetType)), path(std::move(inPath))
         {}
 
         u8 assetType;
-        const char* path;
+        CString path;
 
         [[nodiscard]] std::shared_ptr<IAsset> load() const;
     };
@@ -42,8 +42,8 @@ namespace tails
         explicit TAssetPtr()
             : m_assetPath(getAssetType<T>())
         {}
-        explicit TAssetPtr(const char* path)
-            : m_assetPath(getAssetType<T>(), path)
+        explicit TAssetPtr(CString path)
+            : m_assetPath(getAssetType<T>(), std::move(path))
         {}
 
         TAssetPtr& operator=(std::shared_ptr<T>&& asset)

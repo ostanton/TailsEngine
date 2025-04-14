@@ -11,6 +11,7 @@ target_sources(
         EntryPoint.hpp
         Window.hpp
         Debug.hpp
+        Filesystem.hpp
 )
 
 add_subdirectory(Assets)

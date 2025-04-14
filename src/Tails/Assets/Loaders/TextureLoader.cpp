@@ -2,8 +2,11 @@
 #include <Tails/Assets/Texture.hpp>
 #include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/String.hpp>
+#include <Tails/Filesystem.hpp>
 
 #include <SDL3/SDL_stdinc.h>
+#include <SDL3/SDL_error.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x)
@@ -15,15 +18,24 @@
 
 namespace tails
 {
-    std::shared_ptr<IAsset> CTextureLoader::load(const char* path)
+    std::shared_ptr<IAsset> CTextureLoader::load(const CString& path)
     {
+        usize dataSize {0};
+        auto const fileData {fs::loadFile(path, &dataSize)};
+        
+        if (!fileData)
+        {
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load texture file '%s', '%s'", path.getData(), SDL_GetError());
+            return nullptr;
+        }
+        
         int w, h, channels;
-        // TODO - does not work on PSP, use SDL's filesystem stuff
-        auto data = stbi_load(path, &w, &h, &channels, 4);
+        auto data = stbi_load_from_memory(fileData, static_cast<int>(dataSize), &w, &h, &channels, 4);
+        //auto data = stbi_load(path, &w, &h, &channels, 4);
         
         if (!data)
         {
-            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load texture '%s', '%s'", path, stbi_failure_reason());
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to read texture data '%s', '%s'", path.getData(), stbi_failure_reason());
             stbi_image_free(data);
             return nullptr;
         }
@@ -34,7 +46,6 @@ namespace tails
             static_cast<unsigned int>(channels),
             data
         );
-        //stbi_image_free(data);
         return result;
     }
 }
