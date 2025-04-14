@@ -85,7 +85,7 @@ CPlayer::CPlayer()
 
 void CPlayer::shoot()
 {
-    TAILS_DEBUG_PRINT("SHOOT!\n", 2.f);
+    TAILS_DEBUG_PRINT(2.f, "SHOOT!");
     auto const bullet = getLevel()->spawnActor<CBullet>({
         m_spriteComponent->getCentre(),
         getRotation(),

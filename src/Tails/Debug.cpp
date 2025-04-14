@@ -1,40 +1,43 @@
 #include <Tails/Debug.hpp>
+
+#ifdef TAILS_DEBUG
 #include <Tails/Log.hpp>
+#include <Tails/Renderer/Renderer.hpp>
+#include <Tails/String.hpp>
+
+#include <SDL3/SDL_stdinc.h>
+#include <SDL3/SDL_render.h>
 
 #include <vector>
-
-#ifdef TAILS_OS_PSP
-#include <pspdebug.h>
-#endif // TAILS_OS_PSP
-
-// TODO - on screen messages should use platform agnostic SilverUI things.
-// Log should use platform-specific prints like the console or PSP's debug screen
+#include <cstdarg>
+#endif // TAILS_DEBUG
 
 namespace tails::debug
 {
-    struct SDebugMessage
-    {
-        const char* message;
-        float duration;
-        float timer;
-    };
-
     namespace
     {
+#ifdef TAILS_DEBUG
+        struct SDebugMessage
+        {
+            const char* message;
+            float duration;
+            float timer;
+        };
+        
         std::vector<SDebugMessage> gDebugMessages;
+#endif // TAILS_DEBUG
     }
 
     void init()
     {
-#ifdef TAILS_OS_PSP
-        pspDebugScreenInit();
-#endif // TAILS_OS_PSP
-
+#ifdef TAILS_DEBUG
         TAILS_LOG(DebugSubsystem, Message, "Initialised");
+#endif // TAILS_DEBUG
     }
 
     void tick(const float deltaSeconds)
     {
+#ifdef TAILS_DEBUG
         for (auto it {gDebugMessages.rbegin()}; it != gDebugMessages.rend();)
         {
             if (it->timer >= it->duration)
@@ -45,29 +48,54 @@ namespace tails::debug
                 ++it;
             }
         }
+#endif // TAILS_DEBUG
     }
 
-    void render()
+    void render(const IRenderer& renderer)
     {
-        // TODO - use SDL_RenderDebugText in future? Can then have a debug fps counter
-#ifdef TAILS_OS_PSP
-        pspDebugScreenSetXY(0, 0);
+#ifdef TAILS_DEBUG
+        // TODO - crashes on PSP!
         for (const auto& message : gDebugMessages)
         {
-            pspDebugScreenPrintf(message.message);
+            renderer.renderDebugText(
+                {
+                    0.f,
+                    static_cast<float>(gDebugMessages.size()) * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE
+                },
+                message.message
+            );
         }
-#endif // TAILS_OS_PSP
+#endif // TAILS_DEBUG
     }
 
     void deinit()
     {
+#ifdef TAILS_DEBUG
         gDebugMessages.clear();
 
         TAILS_LOG(DebugSubsystem, Message, "Deinitialised");
+#endif // TAILS_DEBUG
     }
 
-    void addOnScreenDebugMessage(const char* message, const float duration)
+    void addOnScreenDebugMessage(const float duration, const char* fmt, ...)
     {
-        gDebugMessages.push_back({message, duration, 0.f});
+#ifdef TAILS_DEBUG
+        std::va_list args;
+        va_start(args, fmt);
+        const int len {SDL_vsnprintf(nullptr, 0, fmt, args)};
+        va_end(args);
+
+        auto const msg {static_cast<char*>(SDL_malloc(len + 1))};
+        va_start(args, fmt);
+        if (SDL_vsnprintf(msg, len + 1, fmt, args) < 0)
+        {
+            TAILS_LOG(DebugSubsystem, Error, "Failed to format on-screen debug message");
+            va_end(args);
+            return;
+        }
+        va_end(args);
+        
+        gDebugMessages.push_back({msg, duration, 0.f});
+#endif // TAILS_DEBUG
     }
 }

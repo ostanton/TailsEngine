@@ -19,6 +19,8 @@ namespace tails
 
     /**
      * Abstract class for rendering items
+     *
+     * TODO - turn into just some generic render surface instead? An interface for this feels a bit weird
      */
     class TAILS_API IRenderer
     {
@@ -58,6 +60,11 @@ namespace tails
         ) const;
         
         void render(const CString& string) const;
+        void renderDebugText(
+            SVector2f position,
+            const CString& string,
+            SColour colour = SColour::green
+        ) const;
 
         void clear(SColour colour = SColour::black) const;
         void present() const;

@@ -150,7 +150,7 @@ namespace tails
 
         world::render(m_window);
         ui::render(m_window);
-        debug::render(); // TODO - how to stop it flickering??
+        debug::render(m_window); // TODO - how to stop it flickering??
 
         m_window.present();
     }

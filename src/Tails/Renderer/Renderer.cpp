@@ -130,6 +130,18 @@ namespace tails
         
     }
 
+    void IRenderer::renderDebugText(
+        const SVector2f position,
+        const CString& string,
+        const SColour colour
+    ) const
+    {
+#ifdef TAILS_DEBUG
+        SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
+        SDL_RenderDebugText(m_renderer, position.x, position.y, string.getData());
+#endif // TAILS_DEBUG
+    }
+
     void IRenderer::clear(const SColour colour) const
     {
         SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
