@@ -16,30 +16,16 @@ namespace tails
     class TAILS_API CSpriteComponent : public CPrimitiveComponent
     {
     public:
-        void setSize(SVector2f size);
-        [[nodiscard]] SVector2f getSize() const;
-
         [[nodiscard]] SVector2f getCentre() const noexcept;
-
-        void setColour(SColour colour);
-        [[nodiscard]] SColour getColour() const noexcept;
-
-        void setTexture(std::shared_ptr<CTexture> texture);
-        [[nodiscard]] std::shared_ptr<CTexture> getTexture() const noexcept;
-
-        void setUseTextureSize(bool useTextureSize);
-        [[nodiscard]] bool getUseTextureSize() const noexcept;
-
         [[nodiscard]] SFloatRect getGlobalBounds() const noexcept override;
+
+        SVector2f size;
+        SColour colour;
+        std::shared_ptr<CTexture> texture;
+        bool useTextureSize {false};
 
     protected:
         void onRender(IRenderer& renderer) const override;
-        
-    private:
-        SVector2f m_size;
-        SColour m_colour;
-        std::shared_ptr<CTexture> m_texture;
-        bool m_useTextureSize {false};
     };
 }
 

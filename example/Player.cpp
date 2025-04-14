@@ -13,9 +13,9 @@ TAILS_REGISTER_ACTOR(CPlayer, "Player")
 CPlayer::CPlayer()
 {
     m_spriteComponent = createComponent<tails::CSpriteComponent>();
-    m_spriteComponent->setSize({16.f, 16.f});
-    m_spriteComponent->setColour(tails::SColour::green);
-    m_spriteComponent->setTexture(m_sprite.load());
+    m_spriteComponent->size = {16.f, 16.f};
+    m_spriteComponent->colour = tails::SColour::green;
+    m_spriteComponent->texture = m_sprite.load();
     setRootComponent(m_spriteComponent);
 
     m_currentSpeed = m_walkSpeed;
@@ -119,14 +119,14 @@ void CPlayer::handleMoveDown(const tails::input::SActionValue actionValue)
 {
     move({
         0.f,
-        actionValue.get<float>() * m_currentSpeed * tails::IApplication::get().getDeltaSeconds()
+        actionValue.get<float>() * m_currentSpeed * tails::getDeltaSeconds()
     });
 }
 
 void CPlayer::handleMoveRight(const tails::input::SActionValue actionValue)
 {
     move({
-        actionValue.get<float>() * m_currentSpeed * tails::IApplication::get().getDeltaSeconds(),
+        actionValue.get<float>() * m_currentSpeed * tails::getDeltaSeconds(),
         0.f
     });
 }
@@ -134,6 +134,7 @@ void CPlayer::handleMoveRight(const tails::input::SActionValue actionValue)
 void CPlayer::handleStartSprint(const tails::input::SActionValue actionValue)
 {
     m_currentSpeed = m_sprintSpeed;
+    m_spriteComponent->visible = !m_spriteComponent->visible;
 }
 
 void CPlayer::handleStopSprint(const tails::input::SActionValue actionValue)

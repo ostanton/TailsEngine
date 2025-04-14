@@ -14,8 +14,8 @@ public:
     CTestActor()
     {
         auto const sprite = createComponent<tails::CSpriteComponent>();
-        sprite->setSize({32.f, 32.f});
-        sprite->setColour(tails::SColour::magenta);
+        sprite->size = {32.f, 32.f};
+        sprite->colour = tails::SColour::magenta;
         setRootComponent(sprite);
     }
 };
@@ -28,8 +28,8 @@ public:
     CTestActor2()
     {
         auto const sprite = createComponent<tails::CSpriteComponent>();
-        sprite->setSize({32.f, 32.f});
-        sprite->setColour(tails::SColour::magenta);
+        sprite->size = {32.f, 32.f};
+        sprite->colour = tails::SColour::magenta;
         setRootComponent(sprite);
     }
 };

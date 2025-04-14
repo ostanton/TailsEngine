@@ -12,9 +12,9 @@ public:
     CBullet()
     {
         m_spriteComponent = createComponent<tails::CSpriteComponent>();
-        m_spriteComponent->setSize({16.f, 4.f});
-        m_spriteComponent->setColour(tails::SColour::yellow);
-        m_spriteComponent->setTexture(m_texture.load());
+        m_spriteComponent->size = {16.f, 4.f};
+        m_spriteComponent->colour = tails::SColour::yellow;
+        m_spriteComponent->texture = m_texture.load();
         setRootComponent(m_spriteComponent);
     }
 

@@ -9,12 +9,6 @@
 
 namespace tails
 {
-    enum class EComponentVisibility : u8
-    {
-        Visible,
-        Hidden
-    };
-
     enum class ECollisionType : u8
     {
         Block,
@@ -42,7 +36,7 @@ namespace tails
         [[nodiscard]] bool isOverlapping(const CPrimitiveComponent* other) const noexcept;
         
         STransform2D transform;
-        EComponentVisibility visibility {EComponentVisibility::Visible};
+        bool visible {true};
         ECollisionType collisionType {ECollisionType::Block};
         u8 collisionMask {0};
 

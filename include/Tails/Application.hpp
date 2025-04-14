@@ -3,7 +3,6 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Window.hpp>
-#include <Tails/Debug.hpp>
 
 namespace tails
 {
@@ -25,6 +24,10 @@ namespace tails
 
     extern SAppCreateData gAppCreateData;
 
+    [[nodiscard]] TAILS_API IApplication& getApplication() noexcept;
+    [[nodiscard]] TAILS_API float getDeltaSeconds() noexcept;
+    [[nodiscard]] TAILS_API float getFPS() noexcept;
+
     /**
      * Platform-agnostic application. Creates the necessary things like a window, etc. for the specific
      * platform, and polls events, renders, etc. for it. E.g.:
@@ -45,10 +48,6 @@ namespace tails
         virtual ~IApplication() = default;
 
         [[nodiscard]] static IApplication& get();
-
-        [[nodiscard]] float getDeltaSeconds() const noexcept;
-        [[nodiscard]] float getFPS() const noexcept;
-        [[nodiscard]] float getAverageFPS() const noexcept;
 
         virtual void exit();
 
@@ -73,8 +72,6 @@ namespace tails
 
     private:
         CWindow m_window;
-        float m_currentDeltaSeconds {0.f};
-        float m_averageFPS {0.f};
     };
 }
 

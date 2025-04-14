@@ -6,6 +6,7 @@
 #include <Tails/SilverUI/WidgetSubsystem.hpp>
 #include <Tails/World/WorldSubsystem.hpp>
 #include <Tails/Assets/AssetSubsystem.hpp>
+#include <Tails/Debug.hpp>
 #include <Tails/Log.hpp>
 
 #include <SDL3/SDL_init.h>
@@ -27,6 +28,7 @@ namespace tails
     namespace
     {
         IApplication* gApplication {nullptr};
+        float gDeltaSeconds {0.f};
     }
 
     int SEntryPoint::main(const int argc, char* argv[], IApplication& app)
@@ -43,6 +45,21 @@ namespace tails
         return 0;
     }
 
+    IApplication& getApplication() noexcept
+    {
+        return *gApplication;
+    }
+
+    float getDeltaSeconds() noexcept
+    {
+        return gDeltaSeconds;
+    }
+
+    float getFPS() noexcept
+    {
+        return 1.f / gDeltaSeconds;
+    }
+
     IApplication::IApplication(const SVector2u windowSize)
         : m_window(gAppCreateData.name, windowSize)
     {
@@ -51,22 +68,6 @@ namespace tails
     IApplication& IApplication::get()
     {
         return *gApplication;
-    }
-
-    float IApplication::getDeltaSeconds() const noexcept
-    {
-        return m_currentDeltaSeconds;
-    }
-
-    float IApplication::getFPS() const noexcept
-    {
-        return 1.f / m_currentDeltaSeconds;
-    }
-
-    float IApplication::getAverageFPS() const noexcept
-    {
-        // TODO - calculate average FPS!
-        return m_averageFPS;
     }
 
     void IApplication::exit()
@@ -99,11 +100,12 @@ namespace tails
         {
             const auto timeLast = timeNow;
             timeNow = SDL_GetPerformanceCounter();
-            m_currentDeltaSeconds =
-                static_cast<float>((timeNow - timeLast) * 1000) / static_cast<float>(SDL_GetPerformanceFrequency()) * 0.001f;
+            gDeltaSeconds =
+                static_cast<float>((timeNow - timeLast) * 1000) /
+                    static_cast<float>(SDL_GetPerformanceFrequency()) * 0.001f;
             
             pollInput();
-            tick(m_currentDeltaSeconds);
+            tick(gDeltaSeconds);
             render();
             cleanup();
         }
