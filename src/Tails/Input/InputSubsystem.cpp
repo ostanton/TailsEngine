@@ -83,6 +83,8 @@ namespace tails::input
         }
 
         SDL_free(joysticks);
+
+        TAILS_LOG(InputSubsystem, Message, "Initialised");
     }
 
     void tick()
@@ -140,6 +142,14 @@ namespace tails::input
                 }
             }
         }
+    }
+
+    void deinit()
+    {
+        gGamepad = nullptr;
+        gActions.clear();
+
+        TAILS_LOG(InputSubsystem, Message, "Deinitialised");
     }
 
     bool isKeyPressed(const SKey key)

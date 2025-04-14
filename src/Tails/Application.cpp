@@ -80,11 +80,11 @@ namespace tails
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
 
         // init Tails systems
+        logger::init();
         assets::init();
         input::init();
         audio::init();
         debug::init();
-        logger::init();
         world::init();
         ui::init();
         
@@ -111,6 +111,12 @@ namespace tails
 
     void IApplication::shutdown()
     {
+        world::deinit();
+        debug::deinit();
+        audio::deinit();
+        input::deinit();
+        assets::deinit();
+        
         SDL_Quit();
     }
 

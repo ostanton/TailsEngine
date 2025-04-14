@@ -5,12 +5,13 @@
 
 namespace tails::debug
 {
-    void init();
-    void tick(float deltaSeconds);
-    void render();
+    TAILS_API void init();
+    TAILS_API void tick(float deltaSeconds);
+    TAILS_API void render();
+    TAILS_API void deinit();
 
     // TODO - C-formatted or modern format (probably C-formatted!)
-    void addOnScreenDebugMessage(const char* message, float duration);
+    TAILS_API void addOnScreenDebugMessage(const char* message, float duration);
 }
 
 #define TAILS_DEBUG_PRINT(MSG, DURATION) \

@@ -11,6 +11,7 @@ namespace tails::audio
     using SBusHandle = usize;
     
     TAILS_API void init();
+    TAILS_API void deinit();
     TAILS_API SBusHandle addBus();
     TAILS_API void removeBus(SBusHandle handle);
     TAILS_API void setBusVolume(SBusHandle handle, float volume);

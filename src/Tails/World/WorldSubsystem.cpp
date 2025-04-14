@@ -2,6 +2,7 @@
 #include <Tails/World/Level.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/World/Actor.hpp>
+#include <Tails/Log.hpp>
 
 #include <unordered_map>
 
@@ -12,11 +13,13 @@ namespace tails::world
         usize gNextLevelIndex {0};
         std::unordered_map<usize, CLevel> gLevels;
     }
-    
+
     void init()
     {
         const TAssetPtr<CLevelAsset> nullLevel;
         openLevel(nullLevel);
+
+        TAILS_LOG(WorldSubsystem, Message, "Initialised");
     }
 
     void tick(const float deltaSeconds)
@@ -41,6 +44,13 @@ namespace tails::world
         {
             level.cleanupActors();
         }
+    }
+
+    void deinit()
+    {
+        gLevels.clear();
+
+        TAILS_LOG(WorldSubsystem, Message, "Deinitialised");
     }
 
     SLevelHandle openLevel(const TAssetPtr<CLevelAsset>& level)

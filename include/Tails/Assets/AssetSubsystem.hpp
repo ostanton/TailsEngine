@@ -3,40 +3,76 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Templated/Optional.hpp>
+#include <Tails/Assets/Handle.hpp>
+#include <Tails/Assets/AssetType.hpp>
+#include <Tails/Assets/AssetDeleter.hpp>
 
 #include <memory>
+#include <type_traits>
 
 namespace tails
 {
     class IAsset;
+    class IAssetLoader;
 }
 
 namespace tails::assets
 {
-    using SHandle = usize;
-    
     TAILS_API void init();
+    TAILS_API void deinit();
+
+    TAILS_API void registerLoader(std::unique_ptr<IAssetLoader> loader, u8 assetType, const char* debugName);
     
+    template<typename LoaderT>
+    void registerLoader(const u8 assetType)
+    {
+        registerLoader(std::make_unique<LoaderT>(), assetType, typeid(LoaderT).name());
+    }
+
+    TAILS_API IAssetLoader* getLoader(u8 assetType);
+
     /**
-     * Adds an asset to the asset subsystem. It does not check if it already exists, so this can be used to
-     * "duplicate" assets if needed
-     * @param asset Asset to add to the subsystem
-     * @return Handle to the asset pointer
+     * Loads an asset from file
+     * @param assetType The asset's type
+     * @param path Path to the file to load
+     * @return Shared pointer to loaded asset
      */
-    TAILS_API SHandle addAsset(const std::shared_ptr<IAsset>& asset);
+    TAILS_API std::shared_ptr<IAsset> loadAsset(u8 assetType, const char* path);
+
+    /**
+     * Loads an asset from file
+     * @tparam T Asset type
+     * @param path Path to the file to load
+     * @return Shared pointer to loaded asset
+     */
+    template<typename T>
+    std::shared_ptr<T> loadAsset(const char* path)
+    {
+        return std::static_pointer_cast<T>(
+            loadAsset(getAssetType<T>(), path)
+        );
+    }
+
+    /**
+     * Gets an asset that is already loaded and exists in memory
+     * @param handle Asset handle
+     * @return Shared pointer to asset
+     */
     TAILS_API std::shared_ptr<IAsset> getAsset(SHandle handle);
     TAILS_API bool validHandle(SHandle handle);
 
-    struct SAssetDeleter final
-    {
-        SHandle handle;
-        void operator()(const IAsset* asset) const noexcept;
-    };
+    std::shared_ptr<IAsset> allocateAsset(const std::shared_ptr<IAsset>& asset, const char* path, u8 type);
 
     template<typename T, typename... ArgsT>
-    std::shared_ptr<T> allocateAsset(ArgsT&&... args)
+    std::shared_ptr<T> allocateAsset(const char* path, ArgsT&&... args)
     {
-        return std::shared_ptr<T>(new T {std::forward<ArgsT>(args)...}, SAssetDeleter {});
+        return std::static_pointer_cast<T>(
+            allocateAsset(
+                std::shared_ptr<T>(new T {std::forward<ArgsT>(args)...}, SAssetDeleter {}),
+                path,
+                getAssetType<T>()
+            )
+        );
     }
 }
 

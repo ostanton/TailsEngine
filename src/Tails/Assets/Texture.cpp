@@ -2,8 +2,14 @@
 
 namespace tails
 {
-    CTexture::CTexture(const SVector2u size, const u8* pixels)
-        : m_size(size), m_pixels(pixels)
+    CTexture::CTexture(
+        const SVector2u size,
+        const unsigned int channels,
+        const u8* pixels
+    )
+        : m_size(size)
+        , m_channels(channels)
+        , m_pixels(pixels)
     {
     }
 
@@ -20,5 +26,16 @@ namespace tails
     const u8* CTexture::getPixels() const noexcept
     {
         return m_pixels;
+    }
+
+    unsigned int CTexture::getImageSize() const noexcept
+    {
+        return m_size.x * m_size.y * m_channels;
+    }
+
+    unsigned int CTexture::getPitch() const noexcept
+    {
+        const auto pitch = m_size.x * m_channels;
+        return (pitch + 3) & ~3;
     }
 }

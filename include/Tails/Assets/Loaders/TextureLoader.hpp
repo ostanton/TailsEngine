@@ -3,8 +3,6 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Assets/Loaders/AssetLoader.hpp>
-#include <Tails/Assets/AssetType.hpp>
-#include <Tails/Assets/AssetRegistry.hpp>
 
 namespace tails
 {

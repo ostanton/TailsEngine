@@ -1,5 +1,4 @@
 #include <Tails/Assets/AssetSubsystem.hpp>
-#include <Tails/Assets/AssetRegistry.hpp>
 #include <Tails/Assets/Loaders/TextureLoader.hpp>
 #include <Tails/Assets/Loaders/SoundLoader.hpp>
 #include <Tails/Assets/Asset.hpp>
@@ -9,32 +8,82 @@
 
 namespace tails::assets
 {
+    bool SHandle::isValid() const noexcept
+    {
+        return path != nullptr; // TODO - make better or something
+    }
+
     namespace
     {
-        // 0 is reserved for invalid handle
-        SHandle gLastAssetIndex {0};
+        SHandle gLastAssetIndex;
         std::unordered_map<SHandle, std::weak_ptr<IAsset>> gLoadedAssets;
+        std::unordered_map<u8, std::unique_ptr<IAssetLoader>> gAssetLoaders;
     }
-    
+
     void init()
     {
         // register default engine asset loaders
-        auto& registry = impl::CAssetRegistry::get();
-        registry.registerLoader<CTextureLoader>(getAssetType(EAssetType::Texture));
-        registry.registerLoader<CSoundLoader>(getAssetType(EAssetType::Sound));
+        registerLoader<CTextureLoader>(getAssetType(EAssetType::Texture));
+        registerLoader<CSoundLoader>(getAssetType(EAssetType::Sound));
+
+        TAILS_LOG(AssetSubsystem, Message, "Initialised");
     }
 
-    SHandle addAsset(const std::shared_ptr<IAsset>& asset)
+    void deinit()
     {
-        gLastAssetIndex++;
-        gLoadedAssets[gLastAssetIndex] = asset;
-        std::get_deleter<SAssetDeleter>(asset)->handle = gLastAssetIndex;
-        return gLastAssetIndex;
+        gAssetLoaders.clear();
+        gLoadedAssets.clear();
+
+        TAILS_LOG(AssetSubsystem, Message, "Deinitialised");
+    }
+
+    void registerLoader(std::unique_ptr<IAssetLoader> loader, const u8 assetType, const char* debugName)
+    {
+        const auto result = gAssetLoaders.try_emplace(assetType, std::move(loader));
+        if (!result.second)
+        {
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to register loader '%s'", debugName);
+            return;
+        }
+
+        TAILS_LOG_VA(AssetSubsystem, Message, "Registered loader '%s'", debugName);
+    }
+
+    IAssetLoader* getLoader(const u8 assetType)
+    {
+        if (gAssetLoaders.find(assetType) != gAssetLoaders.end())
+            return gAssetLoaders[assetType].get();
+
+        return nullptr;
+    }
+
+    std::shared_ptr<IAsset> loadAsset(const u8 assetType, const char* path)
+    {
+        // if the path is already loaded as an asset, use it instead of loading a new one
+        if (const SHandle handle = {path, assetType}; validHandle(handle))
+            return gLoadedAssets[handle].lock();
+        
+        auto const loader = getLoader(assetType);
+        if (!loader)
+        {
+            TAILS_LOG(AssetSubsystem, Error, "Failed to find asset loader");
+            return nullptr;
+        }
+
+        auto result = loader->load(path);
+        if (!result)
+        {
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load asset at path '%s'", path);
+            return nullptr;
+        }
+
+        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded asset at path '%s'", path);
+        return result;
     }
 
     std::shared_ptr<IAsset> getAsset(const SHandle handle)
     {
-        if (gLoadedAssets.find(handle) != gLoadedAssets.end())
+        if (validHandle(handle))
             return gLoadedAssets[handle].lock();
 
         return nullptr;
@@ -42,22 +91,43 @@ namespace tails::assets
 
     bool validHandle(const SHandle handle)
     {
-        if (handle == 0)
+        if (!handle.isValid())
             return false;
-        
+
+        // TODO - causing crash!
         return gLoadedAssets.find(handle) != gLoadedAssets.end();
     }
 
     void SAssetDeleter::operator()(const IAsset* asset) const noexcept
     {
-        if (validHandle(handle))
+        if (!validHandle(handle))
         {
-            gLoadedAssets.erase(handle);
-            TAILS_LOG_VA(AssetSubsystem, Message, "Deleted asset with handle '%d'", handle);
+            TAILS_LOG_VA(AssetSubsystem, Message, "Failed to delete asset with invalid handle '%s'", handle.path);
+            return;
         }
-        else
-            TAILS_LOG_VA(AssetSubsystem, Message, "Failed to delete asset with invalid handle '%d'", handle);
 
-        delete asset;
+        if (gLoadedAssets[handle].expired())
+        {
+            delete asset;
+            gLoadedAssets.erase(handle);
+            TAILS_LOG_VA(AssetSubsystem, Message, "Deleted asset with handle '%s'", handle.path);
+        }
+    }
+
+    std::shared_ptr<IAsset> allocateAsset(
+        const std::shared_ptr<IAsset>& asset,
+        const char* path,
+        const u8 type
+    )
+    {
+        gLastAssetIndex = SHandle {path, type};
+        
+        if (gLoadedAssets.find(gLastAssetIndex) == gLoadedAssets.end())
+            gLoadedAssets.emplace(gLastAssetIndex, asset);
+        else
+            gLoadedAssets[gLastAssetIndex] = asset;
+        
+        std::get_deleter<SAssetDeleter>(asset)->handle = gLastAssetIndex;
+        return asset;
     }
 }

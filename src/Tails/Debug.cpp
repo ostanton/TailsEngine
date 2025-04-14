@@ -1,4 +1,5 @@
 #include <Tails/Debug.hpp>
+#include <Tails/Log.hpp>
 
 #include <vector>
 
@@ -28,6 +29,8 @@ namespace tails::debug
 #ifdef TAILS_OS_PSP
         pspDebugScreenInit();
 #endif // TAILS_OS_PSP
+
+        TAILS_LOG(DebugSubsystem, Message, "Initialised");
     }
 
     void tick(const float deltaSeconds)
@@ -53,6 +56,13 @@ namespace tails::debug
             pspDebugScreenPrintf(message.message);
         }
 #endif // TAILS_OS_PSP
+    }
+
+    void deinit()
+    {
+        gDebugMessages.clear();
+
+        TAILS_LOG(DebugSubsystem, Message, "Deinitialised");
     }
 
     void addOnScreenDebugMessage(const char* message, const float duration)

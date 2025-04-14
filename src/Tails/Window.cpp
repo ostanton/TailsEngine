@@ -16,6 +16,7 @@ namespace tails
         if (!m_window)
         {
             close();
+            SDL_DestroyWindow(m_window);
             return;
         }
 
@@ -23,6 +24,7 @@ namespace tails
         if (!m_renderer)
         {
             close();
+            SDL_DestroyWindow(m_window);
             return;
         }
     }
@@ -30,12 +32,12 @@ namespace tails
     CWindow::~CWindow()
     {
         close();
+        SDL_DestroyWindow(m_window);
     }
 
     void CWindow::close()
     {
         m_open = false;
-        SDL_DestroyWindow(m_window);
     }
 
     TOptional<CEvent> CWindow::pollEvent()

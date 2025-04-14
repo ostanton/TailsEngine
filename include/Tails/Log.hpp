@@ -14,12 +14,15 @@ namespace tails::logger
 
     enum class ECategory : u8
     {
-        AssetRegistry,
+        LoggerSubsystem,
         AssetSubsystem,
-        AudioSubsystem,
         InputSubsystem,
+        AudioSubsystem,
+        DebugSubsystem,
         WorldSubsystem,
+        WidgetSubsystem,
         ActorRegistry,
+        Renderer,
         Game // Any non-Tails engine logs
     };
     

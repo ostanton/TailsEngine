@@ -22,10 +22,13 @@ namespace tails
         [[nodiscard]] SVector2f getCentre() const noexcept;
 
         void setColour(SColour colour);
-        [[nodiscard]] SColour getColour() const;
+        [[nodiscard]] SColour getColour() const noexcept;
 
         void setTexture(std::shared_ptr<CTexture> texture);
-        [[nodiscard]] std::shared_ptr<CTexture> getTexture() const;
+        [[nodiscard]] std::shared_ptr<CTexture> getTexture() const noexcept;
+
+        void setUseTextureSize(bool useTextureSize);
+        [[nodiscard]] bool getUseTextureSize() const noexcept;
 
         [[nodiscard]] SFloatRect getGlobalBounds() const noexcept override;
 
@@ -36,6 +39,7 @@ namespace tails
         SVector2f m_size;
         SColour m_colour;
         std::shared_ptr<CTexture> m_texture;
+        bool m_useTextureSize {false};
     };
 }
 

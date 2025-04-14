@@ -1,4 +1,5 @@
 #include <Tails/Audio/AudioSubsystem.hpp>
+#include <Tails/Log.hpp>
 
 #include <SDL3/SDL_audio.h>
 
@@ -29,7 +30,14 @@ namespace tails::audio
     
     void init()
     {
-        
+        TAILS_LOG(AudioSubsystem, Message, "Initialised");
+    }
+
+    void deinit()
+    {
+        gBuses.clear();
+
+        TAILS_LOG(AudioSubsystem, Message, "Deinitialised");
     }
 
     SBusHandle addBus()

@@ -102,6 +102,7 @@ namespace tails::input
 
     TAILS_API void init();
     TAILS_API void tick();
+    TAILS_API void deinit();
     TAILS_API bool isKeyPressed(SKey key);
     TAILS_API i16 getKeyValueRaw(SKey key);
     TAILS_API float getKeyValueNormalised(SKey key);

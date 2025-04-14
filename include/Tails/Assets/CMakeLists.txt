@@ -4,10 +4,11 @@ target_sources(
     Tails
     PRIVATE
         Asset.hpp
-        AssetRegistry.hpp
         AssetType.hpp
         AssetPtr.hpp
         AssetSubsystem.hpp
+        AssetDeleter.hpp
+        Handle.hpp
         
         Texture.hpp
         Sound.hpp

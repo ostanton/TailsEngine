@@ -1,6 +1,5 @@
 #include <Tails/Assets/Loaders/SoundLoader.hpp>
 #include <Tails/Assets/Sound.hpp>
-#include <Tails/Assets/AssetRegistry.hpp>
 
 namespace tails
 {

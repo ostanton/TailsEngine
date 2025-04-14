@@ -3,10 +3,13 @@
 
 #include <Tails/World/Actor.hpp>
 #include <Tails/Input/ActionHandle.hpp>
+#include <Tails/Assets/AssetPtr.hpp>
+#include <Tails/Assets/Texture.hpp>
 
 namespace tails
 {
     class CSpriteComponent;
+    
     namespace input
     {
         struct SAction;
@@ -45,6 +48,8 @@ private:
     bool m_wishShoot {false};
     float m_shootTimer {0.f};
     float m_fireRate {0.1f};
+
+    tails::TAssetPtr<tails::CTexture> m_sprite {"face.png"};
 };
 
 #endif // EXAMPLE_PLAYER_HPP

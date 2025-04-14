@@ -7,9 +7,6 @@
 #include <Tails/World/Level.hpp>
 #include <Tails/String.hpp>
 #include <Tails/World/ActorRegistry.hpp>
-#include <Tails/Assets/AssetPtr.hpp>
-#include <Tails/Assets/Texture.hpp>
-#include <Tails/Log.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -58,10 +55,6 @@ private:
         {
             return false;
         }
-
-        TAILS_LOG(Game, Error, "Hello, my rural chum!");
-
-        const auto texture = m_texture.load();
         
         //level->spawnActor<CPlayer>({{50.f, 50.f}, 0.f, {1.f, 1.f}});
         //level->spawnActor<CTestActor>({{96.f, 96.f}, 0.f, {1.f, 1.f}});
@@ -84,8 +77,7 @@ private:
         if (ev.is<tails::CEvent::SClosed>())
             exit();
     }
-
-    tails::TAssetPtr<tails::CTexture> m_texture {"myTexture.png"};
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")
+

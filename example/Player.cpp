@@ -13,8 +13,9 @@ TAILS_REGISTER_ACTOR(CPlayer, "Player")
 CPlayer::CPlayer()
 {
     m_spriteComponent = createComponent<tails::CSpriteComponent>();
-    m_spriteComponent->setSize({32.f, 32.f});
+    m_spriteComponent->setSize({16.f, 16.f});
     m_spriteComponent->setColour(tails::SColour::green);
+    m_spriteComponent->setTexture(m_sprite.load());
     setRootComponent(m_spriteComponent);
 
     m_currentSpeed = m_walkSpeed;

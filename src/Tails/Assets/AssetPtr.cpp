@@ -1,11 +1,11 @@
 #include <Tails/Assets/AssetPtr.hpp>
-#include <Tails/Assets/AssetRegistry.hpp>
 #include <Tails/Assets/Asset.hpp>
+#include <Tails/Assets/AssetSubsystem.hpp>
 
 namespace tails
 {
     std::shared_ptr<IAsset> SAssetPath::load() const
     {
-        return impl::CAssetRegistry::get().loadAssetFromFile(assetType, path);
+        return assets::loadAsset(assetType, path);
     }
 }

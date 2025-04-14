@@ -52,7 +52,7 @@ if (TAILS_ENABLE_LOGGING)
 endif ()
 
 add_subdirectory(include/Tails)
-add_subdirectory(src/Tails)
+add_subdirectory(src)
 
 set(SDL_SHARED OFF)
 set(SDL_STATIC ON)

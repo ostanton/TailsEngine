@@ -30,6 +30,7 @@ namespace tails
         IRenderer& operator=(IRenderer&&) noexcept = default;
         virtual ~IRenderer();
 
+        // TODO - create camera and move this stuff to it instead, or have camera inherit this
         void setRenderResolution(SVector2i resolution, bool integerScale = false);
         [[nodiscard]] SVector2i getRenderResolution() const;
         [[nodiscard]] bool isIntegerScaled() const;

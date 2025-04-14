@@ -1,7 +1,7 @@
 #include <Tails/SilverUI/WidgetSubsystem.hpp>
 #include <Tails/SilverUI/Layout/Canvas.hpp>
 #include <Tails/Renderer/Renderer.hpp>
-#include <Tails/Input/Event.hpp>
+#include <Tails/Log.hpp>
 
 namespace tails::ui
 {
@@ -12,7 +12,7 @@ namespace tails::ui
     
     void init()
     {
-        
+        TAILS_LOG(WidgetSubsystem, Message, "Initialised");
     }
 
     void processEvent(const CEvent& ev)

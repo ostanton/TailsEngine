@@ -1,5 +1,6 @@
 #include <Tails/World/Components/SpriteComponent.hpp>
 #include <Tails/Renderer/Renderer.hpp>
+#include <Tails/Assets/Texture.hpp>
 
 namespace tails
 {
@@ -23,7 +24,7 @@ namespace tails
         m_colour = colour;
     }
 
-    SColour CSpriteComponent::getColour() const
+    SColour CSpriteComponent::getColour() const noexcept
     {
         return m_colour;
     }
@@ -33,9 +34,19 @@ namespace tails
         m_texture = std::move(texture);
     }
 
-    std::shared_ptr<CTexture> CSpriteComponent::getTexture() const
+    std::shared_ptr<CTexture> CSpriteComponent::getTexture() const noexcept
     {
         return m_texture;
+    }
+
+    void CSpriteComponent::setUseTextureSize(const bool useTextureSize)
+    {
+        m_useTextureSize = useTextureSize;
+    }
+
+    bool CSpriteComponent::getUseTextureSize() const noexcept
+    {
+        return m_useTextureSize;
     }
 
     SFloatRect CSpriteComponent::getGlobalBounds() const noexcept
@@ -48,6 +59,14 @@ namespace tails
         CPrimitiveComponent::onRender(renderer);
 
         // right and bottom (size) is offset by left and top (position) for us by SDL
-        renderer.render({transform.position, m_size}, m_colour);
+        if (!m_texture)
+            renderer.render({transform.position, m_size}, m_colour);
+        else
+            renderer.render(
+                m_texture,
+                transform.position,
+                m_useTextureSize ? SVector2f {m_texture->getSize()} : m_size,
+                m_colour
+            );
     }
 }

@@ -10,6 +10,7 @@ namespace tails::logger
     void init()
     {
         // TODO - allow logs to be collected into a file and saved, maybe use RAII, save it in destructor?
+        TAILS_LOG(LoggerSubsystem, Message, "Initialised");
     }
 
     void log(const ECategory category, const ESeverity severity, const char* fmt, ...)
@@ -18,23 +19,32 @@ namespace tails::logger
         CString str;
         switch (category)
         {
-        case ECategory::AssetRegistry:
-            str += "Asset Registry    ";
+        case ECategory::LoggerSubsystem:
+            str += "Logger Subsystem  ";
             break;
         case ECategory::AssetSubsystem:
             str += "Asset Subsystem   ";
             break;
+        case ECategory::InputSubsystem:
+            str += "Input Subsystem   ";
+            break;
         case ECategory::AudioSubsystem:
             str += "Audio Subsystem   ";
             break;
-        case ECategory::InputSubsystem:
-            str += "Input Subsystem   ";
+        case ECategory::DebugSubsystem:
+            str += "Debug Subsystem   ";
             break;
         case ECategory::WorldSubsystem:
             str += "World Subsystem   ";
             break;
+        case ECategory::WidgetSubsystem:
+            str += "Widget Subsystem  ";
+            break;
         case ECategory::ActorRegistry:
             str += "Actor Registry    ";
+            break;
+        case ECategory::Renderer:
+            str += "Renderer          ";
             break;
         case ECategory::Game:
             str += "Game              ";

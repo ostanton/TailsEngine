@@ -1,6 +1,7 @@
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Renderer/RenderItem.hpp>
 #include <Tails/Assets/Texture.hpp>
+#include <Tails/Log.hpp>
 
 #include <SDL3/SDL_render.h>
 
@@ -76,9 +77,16 @@ namespace tails
         const SColour tint
     ) const
     {
+        // TODO - TSharedRef wrapping shared_ptr
+        if (!texture)
+        {
+            TAILS_LOG(Renderer, Warning, "Render texture is invalid");
+            return;
+        }
+
         auto const tex = SDL_CreateTexture(
             m_renderer,
-            SDL_PIXELFORMAT_RGB24, // TODO - make these actually make sense
+            SDL_PIXELFORMAT_RGBA32, // TODO - make these actually make sense
             SDL_TEXTUREACCESS_STATIC,
             static_cast<int>(texture->getSize().x),
             static_cast<int>(texture->getSize().y)
@@ -86,12 +94,16 @@ namespace tails
         
         if (!tex)
         {
-            // TODO - fail!
+            TAILS_LOG_VA(Renderer, Error, "Failed to create texture for rendering, '%s'", SDL_GetError());
+            SDL_DestroyTexture(tex);
+            return;
         }
         
-        if (!SDL_UpdateTexture(tex, nullptr, texture->getPixels(), static_cast<int>(texture->getSize().x)))
+        if (!SDL_UpdateTexture(tex, nullptr, texture->getPixels(), static_cast<int>(texture->getPitch())))
         {
-            // TODO - fail!
+            TAILS_LOG_VA(Renderer, Error, "Failed to update texture for rendering, '%s'", SDL_GetError());
+            SDL_DestroyTexture(tex);
+            return;
         }
         
         SDL_SetRenderDrawColor(m_renderer, tint.r, tint.g, tint.b, tint.a);

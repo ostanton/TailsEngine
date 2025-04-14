@@ -10,15 +10,18 @@ namespace tails
     class TAILS_API CTexture : public IAsset
     {
     public:
-        CTexture(SVector2u size, const u8* pixels);
+        CTexture(SVector2u size, unsigned int channels, const u8* pixels);
         
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
         [[nodiscard]] SVector2u getSize() const noexcept;
         [[nodiscard]] const u8* getPixels() const noexcept;
+        [[nodiscard]] unsigned int getImageSize() const noexcept;
+        [[nodiscard]] unsigned int getPitch() const noexcept;
 
     private:
         SVector2u m_size;
+        unsigned int m_channels; // bytes per pixel (RGBA, etc.)
         const u8* m_pixels {nullptr}; // dunno yet how to represent the pixels, etc.
         // TODO - specific format, etc. options too
     };
