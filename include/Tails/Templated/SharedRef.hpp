@@ -18,10 +18,10 @@ namespace tails
     public:
         TSharedRef() = delete;
         TSharedRef(std::nullptr_t) = delete;
-        TSharedRef(const std::shared_ptr<T>& ptr)
+        TSharedRef(std::shared_ptr<T> ptr)
         {
             TAILS_ASSERT(ptr != nullptr, "Creating a shared ref from null shared ptr is not allowed!");
-            m_ptr = ptr;
+            m_ptr = std::move(ptr);
         }
         TSharedRef(const TSharedRef&) = default;
         TSharedRef(TSharedRef&&) = default;

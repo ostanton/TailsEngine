@@ -8,6 +8,7 @@ target_sources(
         WorldSubsystem.hpp
         ActorRegistry.hpp
         Layer.hpp
+        CameraActor.hpp
 )
 
 add_subdirectory(Components)

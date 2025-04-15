@@ -2,13 +2,100 @@
 #include <Tails/World/Actor.hpp>
 #include <Tails/World/ActorRegistry.hpp>
 #include <Tails/World/Layer.hpp>
+#include <Tails/World/CameraActor.hpp>
 
 #include <algorithm>
 
 namespace tails
 {
     CLevel::CLevel() = default;
+
+    CLevel::CLevel(ActorsVector&& actors)
+        : m_actors(std::move(actors))
+    {}
+
+    CLevel::CLevel(ActorsVector&& actors, LayersMap&& layers)
+        : m_layers(std::move(layers)), m_actors(std::move(actors))
+    {}
+
     CLevel::~CLevel() = default;
+
+    void CLevel::loadFinished()
+    {
+        if (!activeCamera)
+        {
+            activeCamera = spawnActor<CCameraActor>({
+                {0.f, 0.f},
+                0.f,
+                {1.f, 1.f}
+            })->cameraComponent;
+        }
+    }
+
+    void CLevel::initActors() const
+    {
+        for (const auto& actor : m_actors)
+        {
+            actor->onInitComponents();
+            actor->onSpawn();
+        }
+    }
+
+    CActor* CLevel::spawnActor(
+        std::unique_ptr<CActor> actor,
+        const STransform2D& transform,
+        const int layer
+    )
+    {
+        auto const result = spawnActorDeferred(std::move(actor), transform, layer);
+        if (!result)
+            return nullptr;
+        
+        finishActorSpawn(result);
+        return result;
+    }
+
+    CActor* CLevel::spawnActor(
+        const CString& name,
+        const STransform2D& transform,
+        const int layer
+    )
+    {
+        return spawnActor(impl::allocateActor(name), transform, layer);
+    }
+
+    CActor* CLevel::spawnActorDeferred(
+        const CString& name,
+        const STransform2D& transform,
+        const int layer
+    )
+    {
+        return spawnActorDeferred(impl::allocateActor(name), transform, layer);
+    }
+
+    CActor* CLevel::spawnActorDeferred(
+        std::unique_ptr<CActor> actor,
+        const STransform2D& transform,
+        const int layer
+    )
+    {
+        m_actors.emplace_back(std::move(actor));
+        auto& result = *m_actors.back();
+        m_layers[layer].m_actors.push_back(&result);
+        result.m_layer = layer;
+        result.m_owningLevel = this;
+        result.setTransform(transform);
+        return &result;
+    }
+
+    void CLevel::finishActorSpawn(CActor* actor) const
+    {
+        if (!actor || getActorIterator(actor) == m_actors.end())
+            return;
+
+        actor->onInitComponents();
+        actor->onSpawn();
+    }
 
     void CLevel::setActorLayer(CActor* actor, const int layer)
     {
@@ -39,36 +126,11 @@ namespace tails
 
     void CLevel::onRender(IRenderer& renderer) const
     {
+        // TODO - render in camera view or something idk
         for (const auto& [id, layer] : m_layers)
         {
             layer.onRender(renderer);
         }
-    }
-
-    CActor* CLevel::spawnActor(
-        std::unique_ptr<CActor> actor,
-        const STransform2D& transform,
-        const int layer
-    )
-    {
-        m_actors.emplace_back(std::move(actor));
-        auto& result = *m_actors.back();
-        m_layers[layer].m_actors.push_back(&result);
-        result.m_layer = layer;
-        result.m_owningLevel = this;
-        result.onInitComponents();
-        result.setTransform(transform);
-        result.onSpawn();
-        return &result;
-    }
-
-    CActor* CLevel::spawnActor(
-        const CString& name,
-        const STransform2D& transform,
-        const int layer
-    )
-    {
-        return spawnActor(impl::allocateActor(name), transform, layer);
     }
 
     void CLevel::cleanupActors()
@@ -103,6 +165,21 @@ namespace tails
             {
                 return actor == uniqueActor.get();
             });
+    }
+
+    const CLevel::ActorsVector& CLevel::getActors() const
+    {
+        return m_actors;
+    }
+
+    const CLevel::LayersMap& CLevel::getLayers() const
+    {
+        return m_layers;
+    }
+
+    EAssetType CLevel::getAssetType() const noexcept
+    {
+        return EAssetType::Level;
     }
 
     bool CLevel::containsActor(const CActor* actor) const

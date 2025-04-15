@@ -9,6 +9,7 @@
 namespace tails::fs
 {
     TAILS_API CString getCurrentDirectory();
+    TAILS_API CString getBasePath();
     
     /**
      * Generic file loading function. Wraps SDL_LoadFile

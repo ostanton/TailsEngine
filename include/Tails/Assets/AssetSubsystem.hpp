@@ -46,17 +46,17 @@ namespace tails::assets
     TAILS_API IAssetLoader* getLoader(u8 assetType);
 
     /**
-     * Loads an asset from file
+     * Loads an asset from file, relative to executable
      * @param assetType The asset's type
-     * @param path Path to the file to load
+     * @param path Path to the file (relative to executable) to load
      * @return Shared pointer to loaded asset
      */
     TAILS_API std::shared_ptr<IAsset> loadAsset(u8 assetType, const CString& path);
 
     /**
-     * Loads an asset from file
+     * Loads an asset from file, relative to executable
      * @tparam T Asset type
-     * @param path Path to the file to load
+     * @param path Path to the file (relative to executable) to load
      * @return Shared pointer to loaded asset
      */
     template<typename T>

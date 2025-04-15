@@ -3,68 +3,76 @@
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/World/Actor.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/String.hpp>
+#include <Tails/Assets/AssetSubsystem.hpp>
 
-#include <unordered_map>
+#include <memory>
 
 namespace tails::world
 {
     namespace
     {
-        usize gNextLevelIndex {0};
-        std::unordered_map<usize, CLevel> gLevels;
+        /** Shared pointer to level asset in the asset subsystem */
+        std::shared_ptr<CLevel> gCurrentLevel;
+        /** Target level to make current at the end of this frame */
+        std::shared_ptr<CLevel> gTargetLevel;
     }
 
     void init()
     {
         // open empty level
-        openLevel({});
+        gCurrentLevel = assets::loadAsset<CLevel>({});
 
         TAILS_LOG(WorldSubsystem, Message, "Initialised");
     }
 
     void tick(const float deltaSeconds)
     {
-        for (auto& [index, level] : gLevels)
-        {
-            level.onTick(deltaSeconds);
-        }
+        gCurrentLevel->onTick(deltaSeconds);
     }
 
     void render(IRenderer& renderer)
     {
-        for (auto& [index, level] : gLevels)
-        {
-            renderer.render(level);
-        }
+        renderer.render(*gCurrentLevel);
     }
 
     void cleanup()
     {
-        for (auto& [index, level] : gLevels)
+        gCurrentLevel->cleanupActors();
+
+        if (gTargetLevel)
         {
-            level.cleanupActors();
+            gCurrentLevel = gTargetLevel;
+            gTargetLevel.reset();
         }
     }
 
     void deinit()
     {
-        gLevels.clear();
+        gCurrentLevel.reset();
+        gTargetLevel.reset();
 
         TAILS_LOG(WorldSubsystem, Message, "Deinitialised");
     }
 
-    SLevelHandle openLevel(const std::shared_ptr<CLevelAsset>& level)
+    CLevel* openLevel(const CString& path)
     {
-        // TODO - open level from the level asset
-        gLevels.try_emplace(gNextLevelIndex++);
-        return gNextLevelIndex - 1;
+        gTargetLevel = assets::loadAsset<CLevel>(path);
+        return gTargetLevel.get();
     }
 
-    CLevel* getLevelFromHandle(const SLevelHandle handle)
+    void openLevel(std::shared_ptr<CLevel> level)
     {
-        if (gLevels.find(handle) != gLevels.end())
-            return &gLevels[handle];
-        
-        return nullptr;
+        gTargetLevel = std::move(level);
+    }
+
+    CLevel* getCurrentLevel()
+    {
+        return gCurrentLevel.get();
+    }
+
+    CLevel* getTargetLevel()
+    {
+        return gTargetLevel.get();
     }
 }

@@ -6,4 +6,5 @@ target_sources(
         AssetLoader.hpp
         TextureLoader.hpp
         SoundLoader.hpp
+        LevelLoader.hpp
 )

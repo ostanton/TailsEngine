@@ -25,6 +25,7 @@ namespace tails
         {}
 
         u8 assetType;
+        /** Path relative to executable */
         CString path;
 
         [[nodiscard]] std::shared_ptr<IAsset> load() const;

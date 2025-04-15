@@ -1,6 +1,7 @@
 #include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/Assets/Loaders/TextureLoader.hpp>
 #include <Tails/Assets/Loaders/SoundLoader.hpp>
+#include <Tails/Assets/Loaders/LevelLoader.hpp>
 #include <Tails/Assets/Asset.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/String.hpp>
@@ -21,6 +22,7 @@ namespace tails::assets
         // register default engine asset loaders
         registerLoader<CTextureLoader>();
         registerLoader<CSoundLoader>();
+        registerLoader<CLevelLoader>();
 
         TAILS_LOG(AssetSubsystem, Message, "Initialised");
     }

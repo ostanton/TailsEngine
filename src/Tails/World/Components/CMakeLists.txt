@@ -6,4 +6,5 @@ target_sources(
         ActorComponent.cpp
         PrimitiveComponent.cpp
         SpriteComponent.cpp
+        CameraComponent.cpp
 )

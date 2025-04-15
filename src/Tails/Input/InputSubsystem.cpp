@@ -53,15 +53,17 @@ namespace tails::input
         if (!SDL_HasGamepad())
         {
             TAILS_LOG(InputSubsystem, Message, "No gamepads connected");
+            TAILS_LOG(InputSubsystem, Message, "Initialised");
             return;
         }
-    
+
         int count {0};
         auto joysticks = SDL_GetGamepads(&count);
         if (!joysticks)
         {
             TAILS_LOG(InputSubsystem, Warning, "Failed to find gamepads");
             SDL_free(joysticks);
+            TAILS_LOG(InputSubsystem, Message, "Initialised");
             return;
         }
 
@@ -69,6 +71,7 @@ namespace tails::input
         if (count <= 0)
         {
             SDL_free(joysticks);
+            TAILS_LOG(InputSubsystem, Message, "Initialised");
             return;
         }
 

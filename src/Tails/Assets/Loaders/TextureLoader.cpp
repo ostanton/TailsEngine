@@ -40,12 +40,11 @@ namespace tails
             return nullptr;
         }
 
-        const auto result = assets::allocateAsset<CTexture>(
+        return assets::allocateAsset<CTexture>(
             path,
             SVector2u {static_cast<unsigned int>(w), static_cast<unsigned int>(h)},
             static_cast<unsigned int>(channels),
             data
         );
-        return result;
     }
 }

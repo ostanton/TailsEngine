@@ -8,6 +8,7 @@ target_sources(
         WorldSubsystem.cpp
         ActorRegistry.cpp
         Layer.cpp
+        CameraActor.cpp
 )
 
 add_subdirectory(Components)

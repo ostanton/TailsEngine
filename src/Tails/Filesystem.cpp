@@ -10,6 +10,11 @@ namespace tails::fs
         return SDL_GetCurrentDirectory();
     }
 
+    CString getBasePath()
+    {
+        return SDL_GetBasePath();
+    }
+
     u8* loadFile(const CString& path, usize* outSize)
     {
         auto const data = SDL_LoadFile(path.getData(), outSize);

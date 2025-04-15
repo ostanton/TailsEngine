@@ -1,8 +1,6 @@
 #ifndef TAILS_MATHS_HPP
 #define TAILS_MATHS_HPP
 
-#include <Tails/Core.hpp>
-
 #include <cmath>
 
 namespace tails::maths
@@ -25,6 +23,9 @@ namespace tails::maths
         return y;
     }
     template<typename T> [[nodiscard]] constexpr T abs(T x) noexcept {return x > static_cast<T>(0) ? x : -x;}
+    template<typename T> [[nodiscard]] constexpr T max(T a, T b) noexcept {return a > b ? a : b;}
+    template<typename T> [[nodiscard]] constexpr T min(T a, T b) noexcept {return a < b ? a : b;}
+    template<typename T, typename U> [[nodiscard]] constexpr T power(T x, U exp) noexcept {return std::pow(x, exp);}
 }
 
 #endif // TAILS_MATHS_HPP

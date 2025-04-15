@@ -50,7 +50,7 @@ private:
         if (!IApplication::init(argc, argv))
             return false;
 
-        auto const level = tails::world::getLevelFromHandle(0);
+        auto const level = tails::world::getCurrentLevel();
         if (!level)
         {
             return false;
@@ -80,4 +80,3 @@ private:
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")
-

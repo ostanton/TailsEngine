@@ -105,23 +105,20 @@ namespace tails
         // if no root component exists, create one. One should always exist
         if (!m_rootComponent)
         {
-            if (m_components.empty())
+            bool containsPrimitive {false};
+            for (const auto& component : m_components)
             {
-                bool containsPrimitive {false};
-                for (const auto& component : m_components)
+                // very sad! surely there's a better way than casting each one??
+                if (auto const primitive = dynamic_cast<CPrimitiveComponent*>(component.get()))
                 {
-                    // very sad! surely there's a better way than casting each one??
-                    if (auto const primitive = dynamic_cast<CPrimitiveComponent*>(component.get()))
-                    {
-                        m_rootComponent = primitive;
-                        containsPrimitive = true;
-                        break;
-                    }
+                    m_rootComponent = primitive;
+                    containsPrimitive = true;
+                    break;
                 }
-                
-                if (containsPrimitive)
-                    return;
             }
+            
+            if (containsPrimitive)
+                return;
             
             m_rootComponent = createComponent<CPrimitiveComponent>();
             m_rootComponent->onInit();
