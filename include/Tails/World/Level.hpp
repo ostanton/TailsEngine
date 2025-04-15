@@ -29,25 +29,25 @@ namespace tails
         ~CLevel() override;
         
         template<typename T>
-        T* spawnActor(const STransform2D& transform, const isize layer = 0)
+        T* spawnActor(const STransform2D& transform, const int layer = 0)
         {
             return static_cast<T*>(spawnActor(std::make_unique<T>(), transform, layer));
         }
 
         template<typename T>
-        T* spawnActor(const CString& name, const STransform2D& transform, const isize layer = 0)
+        T* spawnActor(const CString& name, const STransform2D& transform, const int layer = 0)
         {
             return static_cast<T*>(spawnActor(name, transform, layer));
         }
 
-        void setActorLayer(CActor* actor, isize layer);
+        void setActorLayer(CActor* actor, int layer);
         void destroyActor(const CActor* actor);
         
         void onTick(float deltaSeconds);
         void onRender(IRenderer& renderer) const override;
         
-        CActor* spawnActor(std::unique_ptr<CActor> actor, const STransform2D& transform, isize layer = 0);
-        CActor* spawnActor(const CString& name, const STransform2D& transform, isize layer = 0);
+        CActor* spawnActor(std::unique_ptr<CActor> actor, const STransform2D& transform, int layer = 0);
+        CActor* spawnActor(const CString& name, const STransform2D& transform, int layer = 0);
 
         /**
          * Deletes and erases any actors that are pending destroy
@@ -61,7 +61,7 @@ namespace tails
         [[nodiscard]] bool containsActor(const CActor* actor) const;
         [[nodiscard]] CLayer* getLayerFromActor(const CActor* actor);
 
-        std::map<isize, CLayer> m_layers;
+        std::map<int, CLayer> m_layers;
         std::vector<std::unique_ptr<CActor>> m_actors;
     };
 }

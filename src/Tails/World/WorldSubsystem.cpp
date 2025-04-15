@@ -16,8 +16,8 @@ namespace tails::world
 
     void init()
     {
-        const TAssetPtr<CLevelAsset> nullLevel;
-        openLevel(nullLevel);
+        // open empty level
+        openLevel({});
 
         TAILS_LOG(WorldSubsystem, Message, "Initialised");
     }
@@ -53,7 +53,7 @@ namespace tails::world
         TAILS_LOG(WorldSubsystem, Message, "Deinitialised");
     }
 
-    SLevelHandle openLevel(const TAssetPtr<CLevelAsset>& level)
+    SLevelHandle openLevel(const std::shared_ptr<CLevelAsset>& level)
     {
         // TODO - open level from the level asset
         gLevels.try_emplace(gNextLevelIndex++);

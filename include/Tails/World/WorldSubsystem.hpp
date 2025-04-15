@@ -2,8 +2,9 @@
 #define TAILS_WORLD_SUBSYSTEM_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Assets/AssetPtr.hpp>
 #include <Tails/Assets/Level.hpp>
+
+#include <memory>
 
 namespace tails
 {
@@ -20,7 +21,7 @@ namespace tails::world
     TAILS_API void render(IRenderer& renderer);
     TAILS_API void cleanup();
     TAILS_API void deinit();
-    TAILS_API SLevelHandle openLevel(const TAssetPtr<CLevelAsset>& level);
+    TAILS_API SLevelHandle openLevel(const std::shared_ptr<CLevelAsset>& level);
     TAILS_API CLevel* getLevelFromHandle(SLevelHandle handle);
 }
 

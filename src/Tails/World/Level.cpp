@@ -10,7 +10,7 @@ namespace tails
     CLevel::CLevel() = default;
     CLevel::~CLevel() = default;
 
-    void CLevel::setActorLayer(CActor* actor, const isize layer)
+    void CLevel::setActorLayer(CActor* actor, const int layer)
     {
         // remove actor from its current layer
         if (auto const layerPtr = getLayerFromActor(actor))
@@ -48,7 +48,7 @@ namespace tails
     CActor* CLevel::spawnActor(
         std::unique_ptr<CActor> actor,
         const STransform2D& transform,
-        const isize layer
+        const int layer
     )
     {
         m_actors.emplace_back(std::move(actor));
@@ -65,7 +65,7 @@ namespace tails
     CActor* CLevel::spawnActor(
         const CString& name,
         const STransform2D& transform,
-        const isize layer
+        const int layer
     )
     {
         return spawnActor(impl::allocateActor(name), transform, layer);

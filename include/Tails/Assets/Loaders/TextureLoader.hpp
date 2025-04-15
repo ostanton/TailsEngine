@@ -6,9 +6,13 @@
 
 namespace tails
 {
+    class CTexture;
+    
     class TAILS_API CTextureLoader : public IAssetLoader
     {
     public:
+        using AssetType = CTexture;
+        
         std::shared_ptr<IAsset> load(const CString& path) override;
     };
 }

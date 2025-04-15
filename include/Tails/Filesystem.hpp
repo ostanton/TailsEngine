@@ -8,6 +8,8 @@
 // TODO - could have separate IO for saving/loading files? Then just use std::filesystem instead?
 namespace tails::fs
 {
+    TAILS_API CString getCurrentDirectory();
+    
     /**
      * Generic file loading function. Wraps SDL_LoadFile
      * @param path File path

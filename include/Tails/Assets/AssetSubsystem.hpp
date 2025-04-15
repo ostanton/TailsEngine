@@ -23,11 +23,15 @@ namespace tails::assets
     TAILS_API void deinit();
 
     TAILS_API void registerLoader(std::unique_ptr<IAssetLoader> loader, u8 assetType, const char* debugName);
-    
+
     template<typename LoaderT>
-    void registerLoader(const u8 assetType)
+    void registerLoader()
     {
-        registerLoader(std::make_unique<LoaderT>(), assetType, typeid(LoaderT).name());
+        registerLoader(
+            std::make_unique<LoaderT>(),
+            getAssetType<typename LoaderT::AssetType>(),
+            typeid(LoaderT).name()
+        );
     }
 
     TAILS_API IAssetLoader* getLoader(u8 assetType);

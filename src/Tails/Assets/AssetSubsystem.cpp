@@ -19,8 +19,8 @@ namespace tails::assets
     void init()
     {
         // register default engine asset loaders
-        registerLoader<CTextureLoader>(getAssetType(EAssetType::Texture));
-        registerLoader<CSoundLoader>(getAssetType(EAssetType::Sound));
+        registerLoader<CTextureLoader>();
+        registerLoader<CSoundLoader>();
 
         TAILS_LOG(AssetSubsystem, Message, "Initialised");
     }

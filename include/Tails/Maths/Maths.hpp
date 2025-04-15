@@ -24,7 +24,7 @@ namespace tails::maths
         y = y * (threeHalves - x2 * y * y);
         return y;
     }
-    template<typename T> [[nodiscard]] constexpr T abs(T x) noexcept {return x > static_cast<T>(x) ? x : -x;}
+    template<typename T> [[nodiscard]] constexpr T abs(T x) noexcept {return x > static_cast<T>(0) ? x : -x;}
 }
 
 #endif // TAILS_MATHS_HPP

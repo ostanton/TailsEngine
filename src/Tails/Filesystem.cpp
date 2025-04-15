@@ -1,9 +1,15 @@
 #include <Tails/Filesystem.hpp>
 
 #include <SDL3/SDL_iostream.h>
+#include <SDL3/SDL_filesystem.h>
 
 namespace tails::fs
 {
+    CString getCurrentDirectory()
+    {
+        return SDL_GetCurrentDirectory();
+    }
+
     u8* loadFile(const CString& path, usize* outSize)
     {
         auto const data = SDL_LoadFile(path.getData(), outSize);

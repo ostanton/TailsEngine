@@ -78,8 +78,8 @@ namespace tails
             return static_cast<T*>(addComponent(std::make_unique<T>()));
         }
 
-        void setLayer(isize layer);
-        [[nodiscard]] isize getLayer() const noexcept;
+        void setLayer(int layer);
+        [[nodiscard]] int getLayer() const noexcept;
 
         TBitset<EFlags> flags;
 
@@ -98,10 +98,12 @@ namespace tails
         CActorComponent* addComponent(std::unique_ptr<CActorComponent> component);
         
         CLevel* m_owningLevel {nullptr};
+        // TODO - could store these somewhere else more optimally. For later, the Actor's interface for
+        // its components would stay the same so it can wait for a while
         std::vector<std::unique_ptr<CActorComponent>> m_components;
         CPrimitiveComponent* m_rootComponent {nullptr};
         /** The current layer this actor is on */
-        isize m_layer {0};
+        int m_layer {0};
     };
 }
 
