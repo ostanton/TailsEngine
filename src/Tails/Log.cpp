@@ -20,40 +20,40 @@ namespace tails::logger
         switch (category)
         {
         case ECategory::Application:
-            str += "Application       ";
+            str += "Application        ";
             break;
         case ECategory::LoggerSubsystem:
-            str += "Logger Subsystem  ";
+            str += "Logger Subsystem   ";
             break;
         case ECategory::AssetSubsystem:
-            str += "Asset Subsystem   ";
+            str += "Asset Subsystem    ";
             break;
         case ECategory::InputSubsystem:
-            str += "Input Subsystem   ";
+            str += "Input Subsystem    ";
             break;
         case ECategory::AudioSubsystem:
-            str += "Audio Subsystem   ";
+            str += "Audio Subsystem    ";
             break;
         case ECategory::DebugSubsystem:
-            str += "Debug Subsystem   ";
+            str += "Debug Subsystem    ";
             break;
         case ECategory::WorldSubsystem:
-            str += "World Subsystem   ";
+            str += "World Subsystem    ";
             break;
         case ECategory::WidgetSubsystem:
-            str += "Widget Subsystem  ";
+            str += "Widget Subsystem   ";
             break;
         case ECategory::ActorRegistry:
-            str += "Actor Registry    ";
+            str += "Actor Registry     ";
             break;
         case ECategory::Renderer:
-            str += "Renderer          ";
+            str += "Renderer           ";
             break;
         case ECategory::Game:
-            str += "Game              ";
+            str += "Game               ";
             break;
         default:
-            str += "Unknown           ";
+            str += "Unknown            ";
             break;
         }
 

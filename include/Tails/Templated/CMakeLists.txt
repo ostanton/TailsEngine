@@ -7,4 +7,5 @@ target_sources(
         Variant.hpp
         Bitset.hpp
         Expected.hpp
+        SharedRef.hpp
 )

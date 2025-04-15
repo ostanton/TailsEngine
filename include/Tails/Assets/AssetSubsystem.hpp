@@ -24,9 +24,18 @@ namespace tails::assets
 
     TAILS_API void registerLoader(std::unique_ptr<IAssetLoader> loader, u8 assetType, const char* debugName);
 
+    namespace impl
+    {
+        template<typename T, typename = void>
+        constexpr inline bool hasAssetType = false;
+        template<typename T>
+        constexpr inline bool hasAssetType<T, std::void_t<typename T::AssetType>> = true;
+    }
+
     template<typename LoaderT>
     void registerLoader()
     {
+        static_assert(impl::hasAssetType<LoaderT>, "Asset loader must have nested 'AssetType' alias");
         registerLoader(
             std::make_unique<LoaderT>(),
             getAssetType<typename LoaderT::AssetType>(),
