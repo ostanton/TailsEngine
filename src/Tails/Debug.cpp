@@ -54,7 +54,6 @@ namespace tails::debug
     void render(const IRenderer& renderer)
     {
 #ifdef TAILS_DEBUG
-        // TODO - crashes on PSP!
         for (const auto& message : gDebugMessages)
         {
             renderer.renderDebugText(

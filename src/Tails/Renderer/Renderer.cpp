@@ -84,32 +84,35 @@ namespace tails
             return;
         }
 
-        auto const tex = SDL_CreateTexture(
-            m_renderer,
-            SDL_PIXELFORMAT_RGBA32,
-            SDL_TEXTUREACCESS_STATIC,
-            size.isZero() ? static_cast<int>(texture->getSize().x) : static_cast<int>(size.x),
-            size.isZero() ? static_cast<int>(texture->getSize().y) : static_cast<int>(size.y)
-        );
+        if (!texture->m_internal)
+        {
+            // only create texture if the tails::CTexture doesn't have a pointer to an SDL_Texture already
+            texture->m_internal = SDL_CreateTexture(
+                m_renderer,
+                SDL_PIXELFORMAT_RGBA32,
+                SDL_TEXTUREACCESS_STATIC,
+                size.isZero() ? static_cast<int>(texture->getSize().x) : static_cast<int>(size.x),
+                size.isZero() ? static_cast<int>(texture->getSize().y) : static_cast<int>(size.y)
+            );
+        }
+        
+        auto const tex = texture->m_internal;
         
         if (!tex)
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to create texture for rendering, '%s'", SDL_GetError());
-            SDL_DestroyTexture(tex);
             return;
         }
         
         if (!SDL_UpdateTexture(tex, nullptr, texture->getPixels(), static_cast<int>(texture->getPitch())))
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to update texture for rendering, '%s'", SDL_GetError());
-            SDL_DestroyTexture(tex);
             return;
         }
         
         if (!SDL_SetRenderDrawColor(m_renderer, tint.r, tint.g, tint.b, tint.a))
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '%s'", SDL_GetError());
-            SDL_DestroyTexture(tex);
             return;
         }
         
@@ -120,9 +123,15 @@ namespace tails
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to render texture, '%s'", SDL_GetError());
         }
+#else // TAILS_OS_PSP
+        // just render a coloured rect instead
+        if (!SDL_RenderRect(m_renderer, &destRect))
+        {
+            TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '%s'", SDL_GetError());
+        }
 #endif // TAILS_OS_PSP
         
-        SDL_DestroyTexture(tex);
+        //SDL_DestroyTexture(tex);
     }
 
     void IRenderer::render(const CString& string) const
@@ -136,10 +145,13 @@ namespace tails
         const SColour colour
     ) const
     {
+        // TODO - crashes the PSP!!
+#ifndef TAILS_OS_PSP
 #ifdef TAILS_DEBUG
         SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
         SDL_RenderDebugText(m_renderer, position.x, position.y, string.getData());
 #endif // TAILS_DEBUG
+#endif // TAILS_OS_PSP
     }
 
     void IRenderer::clear(const SColour colour) const

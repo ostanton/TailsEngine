@@ -30,12 +30,20 @@ namespace tails
         }
         
         int w, h, channels;
-        auto data = stbi_load_from_memory(fileData, static_cast<int>(dataSize), &w, &h, &channels, 4);
+        auto data = stbi_load_from_memory(
+            fileData,
+            static_cast<int>(dataSize),
+            &w,
+            &h,
+            &channels,
+            4
+        );
         //auto data = stbi_load(path, &w, &h, &channels, 4);
         
         if (!data)
         {
             TAILS_LOG_VA(AssetSubsystem, Error, "Failed to read texture data '%s', '%s'", path.getData(), stbi_failure_reason());
+            SDL_free(fileData);
             stbi_image_free(data);
             return nullptr;
         }

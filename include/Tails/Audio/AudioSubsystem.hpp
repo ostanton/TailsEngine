@@ -2,8 +2,13 @@
 #define TAILS_AUDIO_SUBSYSTEM_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Assets/AssetPtr.hpp>
-#include <Tails/Assets/Sound.hpp>
+
+#include <memory>
+
+namespace tails
+{
+    class CSound;
+}
 
 namespace tails::audio
 {
@@ -17,7 +22,7 @@ namespace tails::audio
     TAILS_API void setBusVolume(SBusHandle handle, float volume);
     TAILS_API float getBusVolume(SBusHandle handle);
     TAILS_API bool isBusPlaying(SBusHandle handle);
-    TAILS_API void playSoundInBus(SBusHandle handle, const TAssetPtr<CSound>& sound);
+    TAILS_API void playSoundInBus(SBusHandle handle, std::shared_ptr<CSound> sound);
     TAILS_API void stopBus(SBusHandle handle);
 }
 

@@ -12,7 +12,11 @@ namespace tails
     class IRenderer;
     
     /**
-     * A layer within a level. Higher layers render in front of lower layers.
+     * A layer within a level. Higher layers render in front of lower layers
+     *
+     * TODO - could make this completely hidden from user, in Level.cpp.
+     * Might be worth having it exposed though if there's lots of options for a given layer. Just get the layer
+     * from its number and call the function on it, instead of going through the level (level->setLayerShader()), etc.
      */
     class TAILS_API CLayer final
     {

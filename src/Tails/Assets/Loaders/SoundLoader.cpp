@@ -1,11 +1,12 @@
 #include <Tails/Assets/Loaders/SoundLoader.hpp>
 #include <Tails/Assets/Sound.hpp>
+#include <Tails/Assets/AssetSubsystem.hpp>
 
 namespace tails
 {
     std::shared_ptr<IAsset> CSoundLoader::load(const CString& path)
     {
         // TODO - load sound!
-        return std::make_shared<CSound>();
+        return assets::allocateAsset<CSound>(path);
     }
 }

@@ -1,4 +1,5 @@
 #include <Tails/Audio/AudioSubsystem.hpp>
+#include <Tails/Assets/Sound.hpp>
 #include <Tails/Log.hpp>
 
 #include <SDL3/SDL_audio.h>
@@ -11,7 +12,7 @@ namespace tails::audio
     {
         float volume;
         bool playing;
-        TAssetPtr<CSound> currentSound;
+        std::shared_ptr<CSound> currentSound;
     };
 
     namespace
@@ -76,13 +77,13 @@ namespace tails::audio
         return false;
     }
 
-    void playSoundInBus(const SBusHandle handle, const TAssetPtr<CSound>& sound)
+    void playSoundInBus(const SBusHandle handle, std::shared_ptr<CSound> sound)
     {
         auto const bus = getBus(handle);
         if (!bus)
             return;
         
-        bus->currentSound = sound;
+        bus->currentSound = std::move(sound);
         bus->playing = true;
         // TODO - actually play the sound via SDL or something!
     }
