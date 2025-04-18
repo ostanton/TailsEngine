@@ -20,7 +20,7 @@ namespace tails
     /**
      * Abstract class for rendering items
      *
-     * TODO - turn into just some generic render surface instead? An interface for this feels a bit weird
+     * TODO - turn into a concrete class? Maybe with a render list or something as a buffer?
      */
     class TAILS_API IRenderer
     {

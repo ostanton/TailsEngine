@@ -3,7 +3,7 @@
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Audio/AudioSubsystem.hpp>
-#include <Tails/SilverUI/WidgetSubsystem.hpp>
+#include <Tails/UI/WidgetSubsystem.hpp>
 #include <Tails/World/WorldSubsystem.hpp>
 #include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/Debug.hpp>
@@ -117,6 +117,7 @@ namespace tails
     void IApplication::shutdown()
     {
         TAILS_LOG(Application, Message, "Shutting down application");
+        ui::deinit();
         world::deinit();
         debug::deinit();
         audio::deinit();
@@ -141,7 +142,6 @@ namespace tails
         input::tick();
         debug::tick(deltaSeconds);
         world::tick(deltaSeconds);
-        ui::tick(deltaSeconds);
     }
 
     void IApplication::render()
@@ -149,8 +149,9 @@ namespace tails
         m_window.clear();
 
         world::render(m_window);
-        ui::render(m_window);
-        debug::render(m_window); // TODO - how to stop it flickering??
+        // TODO - might want this on a separate thread in the future
+        ui::paint(m_window, gDeltaSeconds);
+        debug::render(m_window);
 
         m_window.present();
     }

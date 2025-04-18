@@ -2,9 +2,10 @@
 #define TAILS_WINDOW_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Input/EventPoller.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Maths/Vector2.hpp>
+#include <Tails/Templated/Optional.hpp>
+#include <Tails/Input/Event.hpp>
 
 struct SDL_Window;
 
@@ -14,8 +15,12 @@ namespace tails
 
     /**
      * OS-agnostic window
+     *
+     * TODO - should this be a widget, inherit from CCompoundWidget? If so, this basically becomes the
+     * widget subsystem, as the root panel will be whatever the window's content widget is.
+     * Would the window then remain as a renderer? Should the renderer be moved to not be an interface at all?
      */
-    class TAILS_API CWindow : public IEventPoller, public IRenderer
+    class TAILS_API CWindow : public IRenderer
     {
     public:
         CWindow(const CString& title, SVector2u size);
@@ -26,7 +31,7 @@ namespace tails
         ~CWindow() override;
 
         void close();
-        TOptional<CEvent> pollEvent() override;
+        TOptional<CEvent> pollEvent();
 
         [[nodiscard]] bool isOpen() const;
         

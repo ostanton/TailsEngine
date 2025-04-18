@@ -6,4 +6,5 @@ target_sources(
         StackBox.hpp
         Spacer.hpp
         Canvas.hpp
+        Helpers.hpp
 )

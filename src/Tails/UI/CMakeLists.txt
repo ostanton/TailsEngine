@@ -6,6 +6,11 @@ target_sources(
         WidgetSubsystem.cpp
         Widget.cpp
         Panel.cpp
+        TransformedWidgets.cpp
+        LayoutData.cpp
+        LeafWidget.cpp
+        Image.cpp
+        CompoundWidget.cpp
 )
 
 add_subdirectory(Layout)
