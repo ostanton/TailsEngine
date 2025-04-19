@@ -4,15 +4,15 @@
 #include <Tails/Core.hpp>
 #include <Tails/UI/Children/Children.hpp>
 
-#include <vector>
+#include <deque>
 
 namespace tails::ui
 {
     template<typename SlotT>
     struct TAILS_API TPanelChildren final : IChildren
     {
-        using Iterator = typename std::vector<SlotT>::iterator;
-        using ConstIterator = typename std::vector<SlotT>::const_iterator;
+        using Iterator = typename std::deque<SlotT>::iterator;
+        using ConstIterator = typename std::deque<SlotT>::const_iterator;
 
         using IChildren::IChildren;
         
@@ -36,12 +36,21 @@ namespace tails::ui
             return &slots.back();
         }
 
+        void clearChildren() override
+        {
+            slots.clear();
+        }
+
         [[nodiscard]] Iterator begin() noexcept {return slots.begin();}
         [[nodiscard]] Iterator end() noexcept {return slots.end();}
         [[nodiscard]] ConstIterator begin() const noexcept {return slots.begin();}
         [[nodiscard]] ConstIterator end() const noexcept {return slots.end();}
-        
-        std::vector<SlotT> slots;
+
+        /**
+         * deque and not vector because vectors invalidate when resizing, and I don't want more
+         * pointer stuff, like vector<unique_ptr<SlotT>>
+         */
+        std::deque<SlotT> slots;
     };
 }
 

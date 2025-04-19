@@ -1,7 +1,8 @@
-#include "Player.hpp"
+#include "MyWidget.hpp"
 
 #include <Tails/Application.hpp>
 #include <Tails/EntryPoint.hpp>
+#include <Tails/World/Actor.hpp>
 #include <Tails/World/Components/SpriteComponent.hpp>
 #include <Tails/World/WorldSubsystem.hpp>
 #include <Tails/World/Level.hpp>
@@ -9,7 +10,6 @@
 #include <Tails/World/ActorRegistry.hpp>
 #include <Tails/UI/WidgetSubsystem.hpp>
 #include <Tails/UI/Layout/StackBox.hpp>
-#include <Tails/UI/Image.hpp>
 #include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/UI/Layout/Canvas.hpp>
 
@@ -76,28 +76,13 @@ private:
         player->setLayer(5);
 
         using namespace tails::ui;
-        const auto hbox = createWidget<CStackBox>(getRootPanel());
-        hbox->orientation = EOrientation::Horizontal;
-        CCanvas::slotAsCanvasSlot(hbox)->position = {8.f, 8.f};
-        const auto vbox1 = createWidget<CStackBox>(hbox);
-        CStackBox::slotAsStackBoxSlot(vbox1)->margin.right = 8.f;
-        for (tails::usize i {0}; i < 5; i++)
-        {
-            const auto image = createWidget<CImage>(vbox1);
-            image->customSize = true;
-            image->customSize = {32.f, 32.f};
-            if (i < 4)
-                CStackBox::slotAsStackBoxSlot(image)->margin.bottom = 8.f;
-        }
-        const auto vbox2 = createWidget<CStackBox>(hbox);
-        for (tails::usize i {0}; i < 5; i++)
-        {
-            const auto image = createWidget<CImage>(vbox2);
-            image->customSize = true;
-            image->customSize = {32.f, 32.f};
-            if (i < 4)
-                CStackBox::slotAsStackBoxSlot(image)->margin.bottom = 8.f;
-        }
+        using namespace tails;
+        const auto myWidget = createWidget<CMyWidget>(getRootPanel());
+        const std::vector colours {SColour::magenta, SColour::blue, SColour::green, SColour::red};
+        myWidget->refreshContents(colours);
+        auto const myWidgetSlot = CCanvas::slotAsCanvasSlot(myWidget);
+        myWidgetSlot->position.x = 16.f;
+        myWidgetSlot->position.y = 16.f;
         return true;
     }
     
@@ -109,4 +94,3 @@ private:
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")
-

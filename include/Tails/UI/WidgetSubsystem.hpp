@@ -43,25 +43,26 @@ namespace tails::ui
     TAILS_API void paint(const IRenderer& renderer, float deltaSeconds);
     TAILS_API void deinit();
 
-    [[nodiscard]] TAILS_API std::shared_ptr<CPanel> getRootPanel() noexcept;
+    [[nodiscard]] TAILS_API const std::shared_ptr<CPanel>& getRootPanel() noexcept;
     
     TAILS_API ISlot* addWidget(std::shared_ptr<CWidget> content);
-    TAILS_API ISlot* setupWidget(const std::shared_ptr<CWidget>& content, const std::shared_ptr<CPanel>& parent);
+    TAILS_API ISlot* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent);
     
     template<typename ParentT>
     typename ParentT::SSlot* setupWidget(
-        const std::shared_ptr<CWidget>& content,
+        std::shared_ptr<CWidget> content,
         const std::shared_ptr<ParentT>& parent
     )
     {
-        return static_cast<typename ParentT::SSlot*>(setupWidget(content, parent));
+        return static_cast<typename ParentT::SSlot*>(setupWidget(std::move(content), parent));
     }
 
     template<typename T>
-    std::shared_ptr<T> createWidget(const std::shared_ptr<CPanel>& parent)
+    std::shared_ptr<T> createWidget(const std::shared_ptr<CWidget>& parent)
     {
         auto widget = std::make_shared<T>();
-        setupWidget(widget, parent);
+        if (parent)
+            setupWidget(widget, parent);
         return widget;
     }
     

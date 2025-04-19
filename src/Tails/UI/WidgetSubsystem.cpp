@@ -37,7 +37,7 @@ namespace tails::ui
         TAILS_LOG(WidgetSubsystem, Message, "Deinitialised");
     }
 
-    std::shared_ptr<CPanel> getRootPanel() noexcept
+    const std::shared_ptr<CPanel>& getRootPanel() noexcept
     {
         return gRootPanel;
     }
@@ -47,8 +47,8 @@ namespace tails::ui
         return gRootPanel->addChild(std::move(content));
     }
 
-    ISlot* setupWidget(const std::shared_ptr<CWidget>& content, const std::shared_ptr<CPanel>& parent)
+    ISlot* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent)
     {
-        return parent->addChild(content);
+        return parent->getChildren().addChild(std::move(content));
     }
 }

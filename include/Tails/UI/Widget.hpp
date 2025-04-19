@@ -5,6 +5,8 @@
 #include <Tails/Maths/Vector2.hpp>
 #include <Tails/UI/Visibility.hpp>
 
+#include <memory>
+
 namespace tails
 {
     class IRenderer;
@@ -23,7 +25,7 @@ namespace tails::ui
      *
      * TODO - some way to traverse the widget hierarchy vertically, like Unreal's FWidgetPath
      */
-    class TAILS_API CWidget
+    class TAILS_API CWidget : protected std::enable_shared_from_this<CWidget>
     {
     public:
         CWidget() = default;

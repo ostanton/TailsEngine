@@ -20,13 +20,14 @@ namespace tails::ui
             using ISlot::ISlot;
         };
 
-        CCompoundWidget() = delete;
-        CCompoundWidget(std::shared_ptr<CWidget> content);
+        CCompoundWidget();
 
         [[nodiscard]] SVector2f getDesiredSize() const noexcept override;
         [[nodiscard]] IChildren& getChildren() noexcept override;
 
         void onLayoutChildren(const SLayoutData& myLayout, CTransformedWidgets& transformedWidgets) const override;
+
+        void setContent(std::shared_ptr<CWidget> content);
         
     protected:
         void onPaint(const SLayoutData& myLayout, const IRenderer& renderer, float deltaSeconds) const override;

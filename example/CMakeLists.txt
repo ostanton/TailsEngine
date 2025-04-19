@@ -6,6 +6,7 @@ add_executable(
         Player.hpp
         Player.cpp
         Bullet.hpp
+        MyWidget.hpp
 )
 target_link_libraries(
     TailsEXE

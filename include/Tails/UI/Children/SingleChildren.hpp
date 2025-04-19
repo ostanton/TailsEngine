@@ -9,8 +9,8 @@ namespace tails::ui
     template<typename SlotT>
     struct TAILS_API TSingleChildren final : IChildren
     {
-        TSingleChildren(CWidget* owner, std::shared_ptr<CWidget> content)
-            : IChildren(owner), slot(owner, content)
+        TSingleChildren(CWidget* inOwner, std::shared_ptr<CWidget> content)
+            : IChildren(inOwner), slot(inOwner, std::move(content))
         {}
 
         [[nodiscard]] usize size() const noexcept override {return 1;}
@@ -31,6 +31,11 @@ namespace tails::ui
         {
             slot.content = std::move(child);
             return &slot;
+        }
+
+        void clearChildren() override
+        {
+            slot.content.reset();
         }
 
         [[nodiscard]] const std::shared_ptr<CWidget>& getContent() const noexcept

@@ -6,7 +6,7 @@
 
 namespace tails::ui
 {
-    struct TAILS_API SNoChildren : IChildren
+    struct TAILS_API SNoChildren final : IChildren
     {
         using IChildren::IChildren;
         
@@ -16,6 +16,7 @@ namespace tails::ui
         [[nodiscard]] std::shared_ptr<const CWidget> getChildAt(usize index) const noexcept override {return nullptr;}
 
         ISlot* addChild(std::shared_ptr<CWidget> child) override {return nullptr;}
+        void clearChildren() override {}
     };
 }
 

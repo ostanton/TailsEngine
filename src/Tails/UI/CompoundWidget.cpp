@@ -3,8 +3,8 @@
 
 namespace tails::ui
 {
-    CCompoundWidget::CCompoundWidget(std::shared_ptr<CWidget> content)
-        : m_slot(this, std::move(content))
+    CCompoundWidget::CCompoundWidget()
+        : m_slot(this, nullptr)
     {}
 
     SVector2f CCompoundWidget::getDesiredSize() const noexcept
@@ -38,6 +38,12 @@ namespace tails::ui
             0.f,
             myLayout.size
         ));
+    }
+
+    void CCompoundWidget::setContent(std::shared_ptr<CWidget> content)
+    {
+        content->slot = &m_slot.slot;
+        m_slot.slot.content = std::move(content);
     }
 
     void CCompoundWidget::onPaint(const SLayoutData& myLayout, const IRenderer& renderer, const float deltaSeconds) const

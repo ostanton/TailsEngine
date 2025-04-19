@@ -30,6 +30,7 @@ namespace tails::ui
         }
         
         ISlot* addChild(std::shared_ptr<CWidget> content);
+        void clearChildren();
 
         void onLayoutChildren(
             const SLayoutData& myLayout,

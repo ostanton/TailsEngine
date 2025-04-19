@@ -31,6 +31,7 @@ namespace tails::ui
         [[nodiscard]] virtual std::shared_ptr<const CWidget> getChildAt(usize index) const noexcept = 0;
 
         virtual ISlot* addChild(std::shared_ptr<CWidget> child) = 0;
+        virtual void clearChildren() = 0;
 
         CWidget* owner {nullptr};
     };

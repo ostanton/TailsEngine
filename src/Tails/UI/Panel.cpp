@@ -11,6 +11,11 @@ namespace tails::ui
         return getChildren().addChild(std::move(content));
     }
 
+    void CPanel::clearChildren()
+    {
+        getChildren().clearChildren();
+    }
+
     void CPanel::onPaint(const SLayoutData& myLayout, const IRenderer& renderer, const float deltaSeconds) const
     {
         CTransformedWidgets widgets;
