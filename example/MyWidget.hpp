@@ -30,9 +30,13 @@ public:
         {
             auto image = createWidget<CImage>(m_verticalBox);
             image->tint = item;
-            CStackBox::slotAsStackBoxSlot(image)->margin.bottom = 8.f;
+            auto const slot = CStackBox::slotAsStackBoxSlot(image);
+            slot->margin.bottom = 8.f;
         }
+        CStackBox::slotAsStackBoxSlot(m_verticalBox->getChildren().getChildAt(1))->margin.left = 8.f;
     }
+
+    [[nodiscard]] const std::shared_ptr<tails::ui::CStackBox>& getVerticalBox() const noexcept {return m_verticalBox;}
 
 private:
     std::shared_ptr<tails::ui::CStackBox> m_verticalBox;

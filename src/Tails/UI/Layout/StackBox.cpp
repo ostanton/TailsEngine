@@ -18,14 +18,14 @@ namespace tails::ui
             switch (orientation)
             {
             case EOrientation::Vertical:
-                size.x = maths::max(size.x, childSize.x + slot.margin.getWidth());
+                size.x = maths::max(size.x, childSize.x + slot.margin.getSpaceAlong<EOrientation::Horizontal>());
                 // TODO - max size?
-                size.y += childSize.y + slot.margin.getHeight();
+                size.y += childSize.y + slot.margin.getSpaceAlong<EOrientation::Vertical>();
                 break;
             case EOrientation::Horizontal:
-                size.y = maths::max(size.y, childSize.y + slot.margin.getHeight());
+                size.y = maths::max(size.y, childSize.y + slot.margin.getSpaceAlong<EOrientation::Vertical>());
                 // TODO - max size?
-                size.x += childSize.x + slot.margin.getWidth();
+                size.x += childSize.x + slot.margin.getSpaceAlong<EOrientation::Horizontal>();
                 break;
             }
         }

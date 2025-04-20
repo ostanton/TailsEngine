@@ -24,6 +24,7 @@ namespace tails::ui
 
     SFloatRect SLayoutData::getRect() const noexcept
     {
-        return {transform.position, size};
+        // TODO - account for rotation
+        return {transform.position, size * transform.scale2D};
     }
 }

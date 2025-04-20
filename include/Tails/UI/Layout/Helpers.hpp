@@ -35,13 +35,13 @@ namespace tails::ui
             const SMargin margin {slot.margin};
             SVector2f localSize {
                 Orientation == EOrientation::Vertical ?
-                    SVector2f {layoutData.size.x, childSize} :
-                    SVector2f {childSize, layoutData.size.y}
+                    SVector2f {layoutData.size.x - margin.getSpaceAlong<EOrientation::Horizontal>(), childSize} :
+                    SVector2f {childSize, layoutData.size.y - margin.getSpaceAlong<EOrientation::Vertical>()}
             };
             SVector2f localPosition {
                 Orientation == EOrientation::Vertical ?
-                    SVector2f {0.f, totalOffset + offset + margin.top} :
-                    SVector2f {totalOffset + offset + margin.left, 0.f}
+                    SVector2f {margin.left, totalOffset + offset + margin.top} :
+                    SVector2f {totalOffset + offset + margin.left, margin.top}
             };
 
             transformedWidgets.addWidget(layoutData.makeWidget(child, localPosition, localSize));
@@ -49,7 +49,9 @@ namespace tails::ui
             if (child->visibility != EVisibility::Collapsed)
                 totalOffset +=
                     (Orientation == EOrientation::Vertical ? localSize.y : localSize.x) +
-                    (Orientation == EOrientation::Vertical ? margin.getHeight() : margin.getWidth());
+                    (Orientation == EOrientation::Vertical ?
+                        margin.getSpaceAlong<EOrientation::Vertical>() :
+                        margin.getSpaceAlong<EOrientation::Horizontal>());
         }
     }
 }

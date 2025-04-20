@@ -19,16 +19,13 @@ namespace tails::ui
             : left(uniform), top(uniform), right(uniform), bottom(uniform)
         {}
 
-        [[nodiscard]] float getWidth() const noexcept {return left + right;}
-        [[nodiscard]] float getHeight() const noexcept {return top + bottom;}
-
         template<EOrientation Orientation>
-        [[nodiscard]] float getSpaceAlong() const noexcept
+        [[nodiscard]] constexpr float getSpaceAlong() const noexcept
         {
             if constexpr (Orientation == EOrientation::Vertical)
-                return getHeight();
+                return top + bottom;
             else
-                return getWidth();
+                return left + right;
         }
         
         float left {0.f};

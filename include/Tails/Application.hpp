@@ -27,6 +27,7 @@ namespace tails
     [[nodiscard]] TAILS_API IApplication& getApplication() noexcept;
     [[nodiscard]] TAILS_API float getDeltaSeconds() noexcept;
     [[nodiscard]] TAILS_API float getFPS() noexcept;
+    [[nodiscard]] TAILS_API CWindow& getWindow() noexcept;
 
     /**
      * Platform-agnostic application. Creates the necessary things like a window, etc. for the specific
@@ -51,6 +52,8 @@ namespace tails
 
         virtual void exit();
 
+        CWindow window;
+
     protected:
         // TODO - could abstract args to a more user-friendly struct
         virtual bool init(int argc, char* argv[]);
@@ -69,9 +72,6 @@ namespace tails
         virtual void cleanup();
 
         [[nodiscard]] virtual bool shouldExit() const;
-
-    private:
-        CWindow m_window;
     };
 }
 

@@ -32,6 +32,10 @@ namespace tails::ui
             SVector2f localSize
         ) const noexcept;
 
+        /**
+         * Gets the layout data as a rectangle, adjusted for its transform and size
+         * @return Rectangle which this layout data occupies
+         */
         [[nodiscard]] SFloatRect getRect() const noexcept;
         
         STransform2D transform;

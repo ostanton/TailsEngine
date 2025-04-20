@@ -60,8 +60,13 @@ namespace tails
         return 1.f / gDeltaSeconds;
     }
 
+    CWindow& getWindow() noexcept
+    {
+        return gApplication->window;
+    }
+
     IApplication::IApplication(const SVector2u windowSize)
-        : m_window(gAppCreateData.name, windowSize)
+        : window(gAppCreateData.name, windowSize)
     {
     }
 
@@ -72,7 +77,7 @@ namespace tails
 
     void IApplication::exit()
     {
-        m_window.close();
+        window.close();
     }
 
     bool IApplication::init(int argc, char* argv[])
@@ -130,7 +135,7 @@ namespace tails
 
     void IApplication::pollInput()
     {
-        while (const auto ev = m_window.pollEvent())
+        while (const auto ev = window.pollEvent())
         {
             onInputEvent(*ev);
             ui::processEvent(*ev);
@@ -146,14 +151,14 @@ namespace tails
 
     void IApplication::render()
     {
-        m_window.getRenderer().clear();
+        window.getRenderer().clear();
 
-        world::render(m_window.getRenderer());
+        world::render(window.getRenderer());
         // TODO - might want this on a separate thread in the future
-        ui::paint(m_window.getRenderer(), gDeltaSeconds);
-        debug::render(m_window.getRenderer());
+        ui::paint(window.getRenderer(), gDeltaSeconds);
+        debug::render(window.getRenderer());
 
-        m_window.getRenderer().present();
+        window.getRenderer().present();
     }
 
     void IApplication::cleanup()
@@ -163,6 +168,6 @@ namespace tails
 
     bool IApplication::shouldExit() const
     {
-        return !m_window.isOpen();
+        return !window.isOpen();
     }
 }

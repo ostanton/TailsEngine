@@ -28,6 +28,7 @@ namespace tails::ui
     {
         // TODO - get window input instead of renderer, get window layout data!
         SLayoutData layoutData;
+        layoutData.transform.scale2D = 1.f;
         layoutData.size = renderer.getRenderResolution();
         gRootPanel->paint(layoutData, renderer, deltaSeconds);
     }

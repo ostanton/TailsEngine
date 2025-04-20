@@ -77,20 +77,22 @@ private:
 
         using namespace tails::ui;
         using namespace tails;
-        const auto myWidget = createWidget<CMyWidget>(getRootPanel());
+        m_myWidget = createWidget<CMyWidget>(getRootPanel());
         const std::vector colours {SColour::magenta, SColour::blue, SColour::green, SColour::red};
-        myWidget->refreshContents(colours);
-        auto const myWidgetSlot = CCanvas::slotAsCanvasSlot(myWidget);
+        m_myWidget->refreshContents(colours);
+        auto const myWidgetSlot = CCanvas::slotAsCanvasSlot(m_myWidget);
         myWidgetSlot->position.x = 16.f;
         myWidgetSlot->position.y = 16.f;
         return true;
     }
-    
+
     void onInputEvent(const tails::CEvent& ev) override
     {
         if (ev.is<tails::CEvent::SClosed>())
             exit();
     }
+
+    std::shared_ptr<CMyWidget> m_myWidget;
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")
