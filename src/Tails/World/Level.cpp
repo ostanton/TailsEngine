@@ -124,7 +124,7 @@ namespace tails
         }
     }
 
-    void CLevel::onRender(IRenderer& renderer) const
+    void CLevel::onRender(CRenderer& renderer) const
     {
         // TODO - render in camera view or something idk
         for (const auto& [id, layer] : m_layers)

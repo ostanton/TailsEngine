@@ -2,6 +2,7 @@
 #include <Tails/UI/Layout/Canvas.hpp>
 #include <Tails/UI/LayoutData.hpp>
 #include <Tails/UI/TransformedWidgets.hpp>
+#include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Log.hpp>
 
 namespace tails::ui
@@ -23,10 +24,11 @@ namespace tails::ui
         // TODO - send event down widget tree
     }
 
-    void paint(const IRenderer& renderer, const float deltaSeconds)
+    void paint(const CRenderer& renderer, const float deltaSeconds)
     {
         // TODO - get window input instead of renderer, get window layout data!
         SLayoutData layoutData;
+        layoutData.size = renderer.getRenderResolution();
         gRootPanel->paint(layoutData, renderer, deltaSeconds);
     }
 

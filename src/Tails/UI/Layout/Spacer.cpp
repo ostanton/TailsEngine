@@ -9,7 +9,7 @@ namespace tails::ui
         return desiredSize;
     }
 
-    void CSpacer::onPaint(const SLayoutData& myLayout, const IRenderer& renderer, const float deltaSeconds) const
+    void CSpacer::onPaint(const SLayoutData& myLayout, const CRenderer& renderer, const float deltaSeconds) const
     {
         renderer.render(myLayout.getRect(), debugColour);
     }

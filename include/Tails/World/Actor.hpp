@@ -93,7 +93,7 @@ namespace tails
         virtual void onOverlap(CActor* otherActor);
         
     private:
-        void onRender(IRenderer& renderer) const final;
+        void onRender(CRenderer& renderer) const final;
         
         CActorComponent* addComponent(std::unique_ptr<CActorComponent> component);
         

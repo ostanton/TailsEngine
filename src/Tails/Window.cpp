@@ -12,16 +12,9 @@ namespace tails
             static_cast<int>(size.x),
             static_cast<int>(size.y),
             SDL_WINDOW_RESIZABLE))
+        , m_renderer(*this)
     {
         if (!m_window)
-        {
-            close();
-            SDL_DestroyWindow(m_window);
-            return;
-        }
-
-        m_renderer = SDL_CreateRenderer(m_window, nullptr);
-        if (!m_renderer)
         {
             close();
             SDL_DestroyWindow(m_window);
@@ -99,5 +92,15 @@ namespace tails
         SVector2i size;
         SDL_GetWindowSize(m_window, &size.x, &size.y);
         return SVector2u {size};
+    }
+
+    CRenderer& CWindow::getRenderer() noexcept
+    {
+        return m_renderer;
+    }
+
+    SDL_Window* CWindow::getInternal() const noexcept
+    {
+        return m_window;
     }
 }

@@ -9,37 +9,46 @@
 #include <memory>
 
 struct SDL_Renderer;
-struct SDL_Window;
+struct SDL_Surface;
 
 namespace tails
 {
     class IRenderItem;
     class CString;
     class CTexture;
+    class CWindow;
 
     /**
-     * Abstract class for rendering items
-     *
-     * TODO - turn into a concrete class? Maybe with a render list or something as a buffer?
+     * Renderer which can be used with a window (GPU rendering via graphics context)
+     * or without (software rendering)
      */
-    class TAILS_API IRenderer
+    class TAILS_API CRenderer final
     {
     public:
-        IRenderer() = default;
-        IRenderer(const IRenderer&) = default;
-        IRenderer(IRenderer&&) noexcept = default;
-        IRenderer& operator=(const IRenderer&) = default;
-        IRenderer& operator=(IRenderer&&) noexcept = default;
-        virtual ~IRenderer();
+        /**
+         * Create a software renderer without a window
+         * @param size Rendering surface size
+         */
+        CRenderer(SVector2u size);
+        
+        /**
+         * Create a renderer for the specified window
+         * @param window Target window
+         */
+        CRenderer(CWindow& window);
+        CRenderer(const CRenderer&) = default;
+        CRenderer(CRenderer&&) noexcept = default;
+        CRenderer& operator=(const CRenderer&) = default;
+        CRenderer& operator=(CRenderer&&) noexcept = default;
+        ~CRenderer();
 
-        // TODO - create camera and move this stuff to it instead, or have camera inherit this
+        // TODO - create camera and move this stuff to it instead?
         void setRenderResolution(SVector2i resolution, bool integerScale = false);
         [[nodiscard]] SVector2i getRenderResolution() const;
         [[nodiscard]] bool isIntegerScaled() const;
 
-        [[nodiscard]] SVector2i getOutputSize() const;
-        [[nodiscard]] SDL_Window* getRenderWindow() const;
-        
+        [[nodiscard]] SVector2u getOutputSize() const;
+
         void render(const IRenderItem& item);
         // TODO - various other render functions
         // TODO - pass in extra transform or something so rect is not absolute
@@ -66,11 +75,16 @@ namespace tails
             SColour colour = SColour::green
         ) const;
 
+        [[nodiscard]] std::shared_ptr<CTexture> getOutputTexture() const noexcept;
+
         void clear(SColour colour = SColour::black) const;
         void present() const;
 
     protected:
         SDL_Renderer* m_renderer;
+        CWindow* m_window;
+        /** Surface we render to when using software rendering without a window */
+        SDL_Surface* m_surface;
     };
 }
 

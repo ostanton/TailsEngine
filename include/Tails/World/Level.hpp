@@ -120,7 +120,7 @@ namespace tails
         void destroyActor(const CActor* actor);
         
         void onTick(float deltaSeconds);
-        void onRender(IRenderer& renderer) const override;
+        void onRender(CRenderer& renderer) const override;
 
         /**
          * Deletes and erases any actors that are pending destroy

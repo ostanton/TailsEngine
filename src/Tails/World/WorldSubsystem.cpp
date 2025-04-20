@@ -31,7 +31,7 @@ namespace tails::world
         gCurrentLevel->onTick(deltaSeconds);
     }
 
-    void render(IRenderer& renderer)
+    void render(CRenderer& renderer)
     {
         renderer.render(*gCurrentLevel);
     }

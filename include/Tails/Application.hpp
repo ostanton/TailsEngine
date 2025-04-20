@@ -3,13 +3,13 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Window.hpp>
+#include <Tails/Renderer/Renderer.hpp>
 
 namespace tails
 {
     class CString;
     class IApplication;
     class IEventPoller;
-    class IRenderer;
     class CEvent;
     struct SEntryPoint;
 

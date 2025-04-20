@@ -16,7 +16,7 @@ namespace tails::ui
         getChildren().clearChildren();
     }
 
-    void CPanel::onPaint(const SLayoutData& myLayout, const IRenderer& renderer, const float deltaSeconds) const
+    void CPanel::onPaint(const SLayoutData& myLayout, const CRenderer& renderer, const float deltaSeconds) const
     {
         CTransformedWidgets widgets;
         onLayoutChildren(myLayout, widgets);

@@ -153,7 +153,7 @@ namespace tails
     {
     }
 
-    void CActor::onRender(IRenderer& renderer) const
+    void CActor::onRender(CRenderer& renderer) const
     {
         // TODO - batch rendering???
         renderer.render(*m_rootComponent);

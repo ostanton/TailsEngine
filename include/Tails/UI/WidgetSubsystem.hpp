@@ -7,7 +7,7 @@
 
 namespace tails
 {
-    class IRenderer;
+    class CRenderer;
     class CEvent;
 }
 
@@ -40,7 +40,7 @@ namespace tails::ui
     
     TAILS_API void init();
     TAILS_API void processEvent(const CEvent& ev);
-    TAILS_API void paint(const IRenderer& renderer, float deltaSeconds);
+    TAILS_API void paint(const CRenderer& renderer, float deltaSeconds);
     TAILS_API void deinit();
 
     [[nodiscard]] TAILS_API const std::shared_ptr<CPanel>& getRootPanel() noexcept;

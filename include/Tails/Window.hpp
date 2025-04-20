@@ -15,12 +15,8 @@ namespace tails
 
     /**
      * OS-agnostic window
-     *
-     * TODO - should this be a widget, inherit from CCompoundWidget? If so, this basically becomes the
-     * widget subsystem, as the root panel will be whatever the window's content widget is.
-     * Would the window then remain as a renderer? Should the renderer be moved to not be an interface at all?
      */
-    class TAILS_API CWindow : public IRenderer
+    class TAILS_API CWindow final
     {
     public:
         CWindow(const CString& title, SVector2u size);
@@ -28,7 +24,7 @@ namespace tails
         CWindow(CWindow&&) = default;
         CWindow& operator=(const CWindow&) = default;
         CWindow& operator=(CWindow&&) = default;
-        ~CWindow() override;
+        ~CWindow();
 
         void close();
         TOptional<CEvent> pollEvent();
@@ -44,8 +40,13 @@ namespace tails
         void setSize(SVector2u size);
         [[nodiscard]] SVector2u getSize() const;
 
+        [[nodiscard]] CRenderer& getRenderer() noexcept;
+
+        [[nodiscard]] SDL_Window* getInternal() const noexcept;
+
     private:
         SDL_Window* m_window {nullptr};
+        CRenderer m_renderer;
         bool m_open {true};
     };
 }

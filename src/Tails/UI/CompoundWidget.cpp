@@ -46,7 +46,7 @@ namespace tails::ui
         m_slot.slot.content = std::move(content);
     }
 
-    void CCompoundWidget::onPaint(const SLayoutData& myLayout, const IRenderer& renderer, const float deltaSeconds) const
+    void CCompoundWidget::onPaint(const SLayoutData& myLayout, const CRenderer& renderer, const float deltaSeconds) const
     {
         CTransformedWidgets widgets;
         onLayoutChildren(myLayout, widgets);

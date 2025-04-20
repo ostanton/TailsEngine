@@ -33,7 +33,7 @@ namespace tails
         return getGlobalBounds().intersects(other->getGlobalBounds());
     }
 
-    void CPrimitiveComponent::onRender(IRenderer& renderer) const
+    void CPrimitiveComponent::onRender(CRenderer& renderer) const
     {
     }
 

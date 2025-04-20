@@ -41,7 +41,7 @@ namespace tails
         u8 collisionMask {0};
 
     protected:
-        void onRender(IRenderer& renderer) const override;
+        void onRender(CRenderer& renderer) const override;
 
         void onOverlap(CPrimitiveComponent* otherComponent);
 

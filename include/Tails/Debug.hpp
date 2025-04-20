@@ -5,14 +5,14 @@
 
 namespace tails
 {
-    class IRenderer;
+    class CRenderer;
 }
 
 namespace tails::debug
 {
     TAILS_API void init();
     TAILS_API void tick(float deltaSeconds);
-    TAILS_API void render(const IRenderer& renderer);
+    TAILS_API void render(const CRenderer& renderer);
     TAILS_API void deinit();
 
     TAILS_API void addOnScreenDebugMessage(float duration, const char* fmt, ...);

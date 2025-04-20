@@ -116,4 +116,15 @@ namespace tails
         const auto pitch = m_size.x * m_channels;
         return (pitch + 3) & ~3;
     }
+
+    bool CTexture::setInternal(SDL_Texture* texture)
+    {
+        m_internal = texture;
+        return SDL_UpdateTexture(m_internal, nullptr, m_pixels, static_cast<int>(getPitch()));
+    }
+
+    SDL_Texture* CTexture::getInternal() const noexcept
+    {
+        return m_internal;
+    }
 }

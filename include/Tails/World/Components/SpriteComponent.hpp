@@ -25,7 +25,7 @@ namespace tails
         bool useTextureSize {false};
 
     protected:
-        void onRender(IRenderer& renderer) const override;
+        void onRender(CRenderer& renderer) const override;
     };
 }
 

@@ -51,7 +51,7 @@ namespace tails::debug
 #endif // TAILS_DEBUG
     }
 
-    void render(const IRenderer& renderer)
+    void render(const CRenderer& renderer)
     {
 #ifdef TAILS_DEBUG
         for (const auto& message : gDebugMessages)

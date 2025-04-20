@@ -146,14 +146,14 @@ namespace tails
 
     void IApplication::render()
     {
-        m_window.clear();
+        m_window.getRenderer().clear();
 
-        world::render(m_window);
+        world::render(m_window.getRenderer());
         // TODO - might want this on a separate thread in the future
-        ui::paint(m_window, gDeltaSeconds);
-        debug::render(m_window);
+        ui::paint(m_window.getRenderer(), gDeltaSeconds);
+        debug::render(m_window.getRenderer());
 
-        m_window.present();
+        m_window.getRenderer().present();
     }
 
     void IApplication::cleanup()

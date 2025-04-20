@@ -9,7 +9,7 @@
 
 namespace tails
 {
-    class IRenderer;
+    class CRenderer;
 }
 
 namespace tails::ui
@@ -43,14 +43,14 @@ namespace tails::ui
             const SLayoutData& myLayout,
             CTransformedWidgets& transformedWidgets
         ) const = 0;
-        void paint(const SLayoutData& myLayout, const IRenderer& renderer, float deltaSeconds);
+        void paint(const SLayoutData& myLayout, const CRenderer& renderer, float deltaSeconds);
 
         ISlot* slot {nullptr};
         EVisibility visibility {EVisibility::Visible};
 
     protected:
         virtual void onTick(float deltaSeconds);
-        virtual void onPaint(const SLayoutData& myLayout, const IRenderer& renderer, float deltaSeconds) const = 0;
+        virtual void onPaint(const SLayoutData& myLayout, const CRenderer& renderer, float deltaSeconds) const = 0;
     };
 }
 

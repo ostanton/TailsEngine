@@ -9,12 +9,8 @@ struct SDL_Texture;
 
 namespace tails
 {
-    class IRenderer;
-    
     class TAILS_API CTexture : public IAsset
     {
-        friend IRenderer;
-        
     public:
         CTexture(SVector2u size, unsigned int channels, u8* pixels);
         CTexture(const CTexture& other);
@@ -32,6 +28,9 @@ namespace tails
         [[nodiscard]] const u8* getPixels() const noexcept;
         [[nodiscard]] unsigned int getPixelCount() const noexcept;
         [[nodiscard]] unsigned int getPitch() const noexcept;
+
+        bool setInternal(SDL_Texture* texture);
+        [[nodiscard]] SDL_Texture* getInternal() const noexcept;
 
     private:
         SVector2u m_size;

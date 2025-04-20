@@ -13,7 +13,7 @@ namespace tails
         return {transform.position, transform.position + size};
     }
 
-    void CSpriteComponent::onRender(IRenderer& renderer) const
+    void CSpriteComponent::onRender(CRenderer& renderer) const
     {
         CPrimitiveComponent::onRender(renderer);
 

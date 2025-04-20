@@ -5,11 +5,11 @@
 
 namespace tails
 {
-    class IRenderer;
+    class CRenderer;
     
     class TAILS_API IRenderItem
     {
-        friend IRenderer;
+        friend CRenderer;
         
     public:
         IRenderItem() = default;
@@ -20,7 +20,7 @@ namespace tails
         virtual ~IRenderItem() = default;
 
     protected:
-        virtual void onRender(IRenderer& renderer) const = 0;
+        virtual void onRender(CRenderer& renderer) const = 0;
     };
 }
 
