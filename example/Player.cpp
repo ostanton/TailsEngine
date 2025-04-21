@@ -1,6 +1,7 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
 
+#include <Tails/World/Components/AnimatedSpriteComponent.hpp>
 #include <Tails/World/Components/SpriteComponent.hpp>
 #include <Tails/World/Level.hpp>
 #include <Tails/Input/InputSubsystem.hpp>
@@ -12,11 +13,28 @@ TAILS_REGISTER_ACTOR(CPlayer, "Player")
 
 CPlayer::CPlayer()
 {
-    m_spriteComponent = createComponent<tails::CSpriteComponent>();
-    m_spriteComponent->size = {16.f, 16.f};
-    m_spriteComponent->colour = tails::SColour::green;
-    m_spriteComponent->texture = m_sprite.load();
+    m_spriteComponent = createComponent<tails::CAnimatedSpriteComponent>();
+    m_spriteComponent->tint = tails::SColour::green;
+    m_spriteComponent->animationPlayer.spriteSheet = m_sprite.load();
+    m_spriteComponent->animationPlayer.addAnimation("test", {
+        {
+            tails::SFrame {{{0, 0}, {4, 4}}, 1.f},
+            tails::SFrame {{{4, 4}, {4, 4}}, 1.f}
+        },
+        10,
+        0,
+        true
+    });
+    m_spriteComponent->animationPlayer.playAnimation("test");
     setRootComponent(m_spriteComponent);
+    
+
+    //auto const spriteComponent = createComponent<tails::CSpriteComponent>();
+    //spriteComponent->texture = m_sprite.load();
+    //spriteComponent->size = {64.f, 64.f};
+    //spriteComponent->useTextureSize = false;
+    //spriteComponent->colour = tails::SColour::red;
+    //spriteComponent->setParent(m_spriteComponent);
 
     m_currentSpeed = m_walkSpeed;
 
@@ -84,11 +102,7 @@ CPlayer::CPlayer()
 void CPlayer::shoot()
 {
     TAILS_DEBUG_PRINT(2.f, "SHOOT!");
-    auto const bullet = getLevel()->spawnActor<CBullet>({
-        m_spriteComponent->getCentre(),
-        getRotation(),
-        getScale()
-    }, -10);
+    auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), -10);
     bullet->moveDirection = {1.f, 0.f};
 }
 
@@ -134,7 +148,7 @@ void CPlayer::handleMoveRight(const tails::input::SActionValue actionValue)
 void CPlayer::handleStartSprint(const tails::input::SActionValue actionValue)
 {
     m_currentSpeed = m_sprintSpeed;
-    m_spriteComponent->visible = !m_spriteComponent->visible;
+    setVisible(!isVisible());
 }
 
 void CPlayer::handleStopSprint(const tails::input::SActionValue actionValue)

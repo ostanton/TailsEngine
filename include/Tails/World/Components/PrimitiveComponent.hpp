@@ -35,7 +35,7 @@ namespace tails
 
         [[nodiscard]] bool isOverlapping(const CPrimitiveComponent* other) const noexcept;
         
-        STransform2D transform;
+        STransform2D transform {0.f, 0.f, 1.f};
         bool visible {true};
         ECollisionType collisionType {ECollisionType::Block};
         u8 collisionMask {0};

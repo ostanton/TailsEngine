@@ -22,7 +22,7 @@ namespace tails
         m_rootComponent->transform = transform;
     }
 
-    const STransform2D& CActor::getTransform() const
+    const STransform2D& CActor::getTransform() const noexcept
     {
         return m_rootComponent->transform;
     }
@@ -32,7 +32,7 @@ namespace tails
         m_rootComponent->transform.position = position;
     }
 
-    SVector2f CActor::getPosition() const
+    SVector2f CActor::getPosition() const noexcept
     {
         return m_rootComponent->transform.position;
     }
@@ -42,7 +42,7 @@ namespace tails
         m_rootComponent->transform.rotation = rotation;
     }
 
-    float CActor::getRotation() const
+    float CActor::getRotation() const noexcept
     {
         return m_rootComponent->transform.rotation;
     }
@@ -52,9 +52,19 @@ namespace tails
         m_rootComponent->transform.scale2D = scale;
     }
 
-    SVector2f CActor::getScale() const
+    SVector2f CActor::getScale() const noexcept
     {
         return m_rootComponent->transform.scale2D;
+    }
+
+    void CActor::setVisible(const bool visible)
+    {
+        m_rootComponent->visible = visible;
+    }
+
+    bool CActor::isVisible() const noexcept
+    {
+        return m_rootComponent->visible;
     }
 
     void CActor::destroy() const
@@ -140,6 +150,9 @@ namespace tails
 
     void CActor::setRootComponent(CPrimitiveComponent* rootComponent)
     {
+        if (!rootComponent)
+            return;
+        
         if (rootComponent->getOwningActor() != this)
             return;
         

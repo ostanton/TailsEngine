@@ -73,10 +73,65 @@ namespace tails
         [[nodiscard]] bool operator!=(const TVector2<U>& other) const noexcept {return !(*this == other);}
         [[nodiscard]] bool operator!=(const TVector2& other) const noexcept {return !(*this == other);}
 
-        [[nodiscard]] TVector2 operator+(const TVector2& other) const noexcept {return {x + other.x, y + other.y};}
-        [[nodiscard]] TVector2 operator-(const TVector2& other) const noexcept {return {x - other.x, y - other.y};}
-        [[nodiscard]] TVector2 operator*(const TVector2& other) const noexcept {return {x * other.x, y * other.y};}
-        [[nodiscard]] TVector2 operator/(const TVector2& other) const noexcept {return {x / other.x, y / other.y};}
+        template<typename U>
+        [[nodiscard]] TVector2 operator+(const TVector2<U>& other) const noexcept
+        {
+            return {
+                x + static_cast<T>(other.x),
+                y + static_cast<T>(other.y)
+            };
+        }
+        
+        template<typename U>
+        [[nodiscard]] TVector2 operator-(const TVector2<U>& other) const noexcept
+        {
+            return {
+                x - static_cast<T>(other.x),
+                y - static_cast<T>(other.y)
+            };
+        }
+        
+        template<typename U>
+        [[nodiscard]] TVector2 operator*(const TVector2<U>& other) const noexcept
+        {
+            return {
+                x * static_cast<T>(other.x),
+                y * static_cast<T>(other.y)
+            };
+        }
+        
+        template<typename U>
+        [[nodiscard]] TVector2 operator/(const TVector2<U>& other) const noexcept
+        {
+            return {
+                x / static_cast<T>(other.x),
+                y / static_cast<T>(other.y)
+            };
+        }
+
+        template<typename U>
+        [[nodiscard]] TVector2 operator+(const U other) const noexcept
+        {
+            return {x + static_cast<T>(other), y + static_cast<T>(other)};
+        }
+
+        template<typename U>
+        [[nodiscard]] TVector2 operator-(const U other) const noexcept
+        {
+            return {x - static_cast<T>(other), y - static_cast<T>(other)};
+        }
+
+        template<typename U>
+        [[nodiscard]] TVector2 operator*(const U other) const noexcept
+        {
+            return {x * static_cast<T>(other), y * static_cast<T>(other)};
+        }
+
+        template<typename U>
+        [[nodiscard]] TVector2 operator/(const U other) const noexcept
+        {
+            return {x / static_cast<T>(other), y / static_cast<T>(other)};
+        }
 
         TVector2& operator+=(const TVector2& other) noexcept {x += other.x; y += other.y; return *this;}
         TVector2& operator-=(const TVector2& other) noexcept {x -= other.x; y -= other.y; return *this;}

@@ -5,6 +5,7 @@
 #include <Tails/Maths/Vector2.hpp>
 #include <Tails/Maths/Rect.hpp>
 #include <Tails/Maths/Colour.hpp>
+#include <Tails/Maths/Transform2D.hpp>
 
 #include <memory>
 
@@ -50,20 +51,31 @@ namespace tails
         [[nodiscard]] SVector2u getOutputSize() const;
 
         void render(const IRenderItem& item);
-        // TODO - various other render functions
-        // TODO - pass in extra transform or something so rect is not absolute
-        void render(const SFloatRect& rect, SColour colour = SColour::white) const;
+        
+        void render(
+            const STransform2D& transform,
+            SVector2f size,
+            SColour colour = SColour::white
+        ) const;
         
         /**
          * Renders a texture as an image to the screen
          * @param texture Texture asset to render
-         * @param position Where on screen to render
+         * @param transform A transform for how to render the texture
          * @param size Size to override the texture's size. Set to 0 to keep texture size
          * @param tint Colour tint for the texture
          */
         void render(
             const std::shared_ptr<CTexture>& texture,
-            SVector2f position,
+            const STransform2D& transform,
+            SVector2f size = {},
+            SColour tint = SColour::white
+        ) const;
+
+        void render(
+            const std::shared_ptr<CTexture>& texture,
+            SIntRect textureRect,
+            const STransform2D& transform,
             SVector2f size = {},
             SColour tint = SColour::white
         ) const;

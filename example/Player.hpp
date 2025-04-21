@@ -8,7 +8,7 @@
 
 namespace tails
 {
-    class CSpriteComponent;
+    class CAnimatedSpriteComponent;
     
     namespace input
     {
@@ -35,7 +35,7 @@ private:
     void handleStartShooting(tails::input::SActionValue actionValue);
     void handleStopShooting(tails::input::SActionValue actionValue);
     
-    tails::CSpriteComponent* m_spriteComponent;
+    tails::CAnimatedSpriteComponent* m_spriteComponent;
     tails::input::SActionHandle m_moveDownAction;
     tails::input::SActionHandle m_moveRightAction;
     tails::input::SActionHandle m_sprintAction;

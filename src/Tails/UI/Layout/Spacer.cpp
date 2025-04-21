@@ -11,6 +11,6 @@ namespace tails::ui
 
     void CSpacer::onPaint(const SLayoutData& myLayout, const CRenderer& renderer, const float deltaSeconds) const
     {
-        renderer.render(myLayout.getRect(), debugColour);
+        renderer.render(myLayout.transform, myLayout.size, debugColour);
     }
 }

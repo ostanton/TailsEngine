@@ -16,6 +16,11 @@ namespace tails
             return position.x >= other.position.x && position.x + size.x <= other.position.x + other.size.x
                 && position.y >= other.position.y && position.y + size.y <= other.position.y + other.size.y;
         }
+
+        [[nodiscard]] bool isZero() const noexcept
+        {
+            return position.isZero() && size.isZero();
+        }
     };
 
     using SFloatRect = TRect<float>;

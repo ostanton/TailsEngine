@@ -7,4 +7,5 @@ target_sources(
         PrimitiveComponent.cpp
         SpriteComponent.cpp
         CameraComponent.cpp
+        AnimatedSpriteComponent.cpp
 )

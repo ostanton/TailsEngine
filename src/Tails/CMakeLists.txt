@@ -10,6 +10,7 @@ target_sources(
         Debug.cpp
         Filesystem.cpp
         Window.cpp
+        Animation.cpp
 )
 
 add_subdirectory(Assets)

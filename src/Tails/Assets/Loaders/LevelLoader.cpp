@@ -15,6 +15,7 @@ namespace tails
         }
         
         level->loadFinished();
+        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded level '%s'", path.getData());
         return level;
     }
 }

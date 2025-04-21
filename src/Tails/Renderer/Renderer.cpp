@@ -75,7 +75,11 @@ namespace tails
         item.onRender(*this);
     }
 
-    void CRenderer::render(const SFloatRect& rect, const SColour colour) const
+    void CRenderer::render(
+        const STransform2D& transform,
+        const SVector2f size,
+        const SColour colour
+    ) const
     {
         /**
          * TODO - separate into two things:
@@ -85,14 +89,30 @@ namespace tails
          * Is that better than this? Going through that array is fast yeah, but we can just render
          * here since we're here already. What do we gain from separating them into two passes?
          */
-        const SDL_FRect myRect {rect.position.x, rect.position.y, rect.size.x, rect.size.y};
+        const SDL_FRect myRect {
+            transform.position.x,
+            transform.position.y,
+            size.x * transform.scale2D.x,
+            size.y * transform.scale2D.y
+        };
         SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
         SDL_RenderFillRect(m_renderer, &myRect);
     }
 
     void CRenderer::render(
         const std::shared_ptr<CTexture>& texture,
-        const SVector2f position,
+        const STransform2D& transform,
+        const SVector2f size,
+        const SColour tint
+    ) const
+    {
+        render(texture, {}, transform, size, tint);
+    }
+
+    void CRenderer::render(
+        const std::shared_ptr<CTexture>& texture,
+        const SIntRect textureRect,
+        const STransform2D& transform,
         const SVector2f size,
         const SColour tint
     ) const
@@ -110,6 +130,11 @@ namespace tails
             TAILS_LOG(Renderer, Warning, "Render texture is invalid");
             return;
         }
+
+        const SVector2f resized {
+            (size.isZero() ? static_cast<float>(texture->getSize().x) : size.x) * transform.scale2D.x,
+            (size.isZero() ? static_cast<float>(texture->getSize().y) : size.y) * transform.scale2D.y
+        };
         
         if (!texture->getInternal())
         {
@@ -118,8 +143,8 @@ namespace tails
                     m_renderer,
                     SDL_PIXELFORMAT_RGBA32,
                     SDL_TEXTUREACCESS_STATIC,
-                    size.isZero() ? static_cast<int>(texture->getSize().x) : static_cast<int>(size.x),
-                    size.isZero() ? static_cast<int>(texture->getSize().y) : static_cast<int>(size.y)
+                    static_cast<int>(resized.x),
+                    static_cast<int>(resized.y)
                 )))
             {
                 TAILS_LOG_VA(Renderer, Error, "Failed to update texture for rendering, '%s'", SDL_GetError());
@@ -141,10 +166,35 @@ namespace tails
             return;
         }
         
-        const SDL_FRect destRect {position.x, position.y, size.x, size.y};
+        SDL_FRect srcRect;
+        if (textureRect.isZero())
+        {
+            srcRect = SDL_FRect {
+                0.f,
+                0.f,
+                static_cast<float>(texture->getSize().x),
+                static_cast<float>(texture->getSize().y)
+            };
+        }
+        else
+        {
+            srcRect = SDL_FRect {
+                static_cast<float>(textureRect.position.x),
+                static_cast<float>(textureRect.position.y),
+                static_cast<float>(textureRect.size.x),
+                static_cast<float>(textureRect.size.y)
+            };
+        }
+        
+        const SDL_FRect destRect {
+            transform.position.x,
+            transform.position.y,
+            resized.x,
+            resized.y
+        };
         // TODO - rendering the texture crashes the PSP!!!
 #ifndef TAILS_OS_PSP
-        if (!SDL_RenderTexture(m_renderer, tex, nullptr, &destRect))
+        if (!SDL_RenderTexture(m_renderer, tex, &srcRect, &destRect))
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to render texture, '%s'", SDL_GetError());
         }

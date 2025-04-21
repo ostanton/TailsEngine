@@ -16,8 +16,8 @@ namespace tails::ui
     void CImage::onPaint(const SLayoutData& myLayout, const CRenderer& renderer, const float deltaSeconds) const
     {
         if (texture)
-            renderer.render(texture, myLayout.transform.position, myLayout.size, tint);
+            renderer.render(texture, myLayout.transform, myLayout.size, tint);
         else
-            renderer.render(myLayout.getRect(), tint);
+            renderer.render(myLayout.transform, myLayout.size, tint);
     }
 }

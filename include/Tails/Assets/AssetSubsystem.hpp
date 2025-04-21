@@ -15,6 +15,7 @@ namespace tails
 {
     class IAsset;
     class IAssetLoader;
+    struct SAssetPath;
 }
 
 namespace tails::assets
@@ -52,6 +53,13 @@ namespace tails::assets
      * @return Shared pointer to loaded asset
      */
     TAILS_API std::shared_ptr<IAsset> loadAsset(u8 assetType, const CString& path);
+
+    /**
+     * Loads an asset from file, via an asset path object
+     * @param assetPath The asset path
+     * @return Shared pointer to loaded asset
+     */
+    TAILS_API std::shared_ptr<IAsset> loadAsset(const SAssetPath& assetPath);
 
     /**
      * Loads an asset from file, relative to executable

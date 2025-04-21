@@ -21,6 +21,7 @@ namespace tails::world
     void init()
     {
         // open empty level
+        TAILS_LOG(WorldSubsystem, Message, "Loading default empty level");
         gCurrentLevel = assets::loadAsset<CLevel>({});
 
         TAILS_LOG(WorldSubsystem, Message, "Initialised");

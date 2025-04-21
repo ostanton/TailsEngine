@@ -10,7 +10,6 @@
 #include <Tails/World/ActorRegistry.hpp>
 #include <Tails/UI/WidgetSubsystem.hpp>
 #include <Tails/UI/Layout/StackBox.hpp>
-#include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/UI/Layout/Canvas.hpp>
 
 class CTestActor : public tails::CActor
@@ -96,3 +95,4 @@ private:
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")
+

@@ -22,11 +22,11 @@ namespace tails
 
         // right and bottom (size) is offset by left and top (position) for us by SDL
         if (!texture)
-            renderer.render({transform.position, size}, colour);
+            renderer.render(transform, size, colour);
         else
             renderer.render(
                 texture,
-                transform.position,
+                transform,
                 useTextureSize ? SVector2f {} : size,
                 colour
             );

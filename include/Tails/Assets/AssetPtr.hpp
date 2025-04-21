@@ -4,7 +4,6 @@
 #include <Tails/Core.hpp>
 #include <Tails/Assets/AssetType.hpp>
 #include <Tails/String.hpp>
-#include <Tails/Log.hpp>
 
 #include <memory>
 
@@ -29,6 +28,7 @@ namespace tails
         CString path;
 
         [[nodiscard]] std::shared_ptr<IAsset> load() const;
+        [[nodiscard]] CString getFullPath() const;
     };
 
     /**

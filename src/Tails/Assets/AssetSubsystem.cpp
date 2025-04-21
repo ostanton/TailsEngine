@@ -3,8 +3,10 @@
 #include <Tails/Assets/Loaders/SoundLoader.hpp>
 #include <Tails/Assets/Loaders/LevelLoader.hpp>
 #include <Tails/Assets/Asset.hpp>
+#include <Tails/Assets/AssetPtr.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/String.hpp>
+#include <Tails/Filesystem.hpp>
 
 #include <unordered_map>
 
@@ -57,8 +59,9 @@ namespace tails::assets
 
     std::shared_ptr<IAsset> loadAsset(const u8 assetType, const CString& path)
     {
+        CString fullPath = fs::getBasePath() + path;
         // if the path is already loaded as an asset, use it instead of loading a new one
-        if (const SHandle handle = {path.getData(), assetType}; validHandle(handle))
+        if (const SHandle handle = {fullPath.getData(), assetType}; validHandle(handle))
             return gLoadedAssets[handle].lock();
         
         auto const loader = getLoader(assetType);
@@ -68,15 +71,20 @@ namespace tails::assets
             return nullptr;
         }
 
-        auto result = loader->load(path);
+        auto result = loader->load(fullPath);
         if (!result)
         {
-            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load asset at path '%s'", path.getData());
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load asset at path '%s'", fullPath.getData());
             return nullptr;
         }
 
-        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded asset at path '%s'", path.getData());
+        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded asset at path '%s'", fullPath.getData());
         return result;
+    }
+
+    std::shared_ptr<IAsset> loadAsset(const SAssetPath& assetPath)
+    {
+        return loadAsset(assetPath.assetType, assetPath.path);
     }
 
     std::shared_ptr<IAsset> getAsset(const SHandle& handle)

@@ -12,6 +12,7 @@ target_sources(
         Debug.hpp
         Filesystem.hpp
         Window.hpp
+        Animation.hpp
 )
 
 add_subdirectory(Assets)

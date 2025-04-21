@@ -45,16 +45,19 @@ namespace tails
         [[nodiscard]] CPrimitiveComponent* getRootComponent() const;
 
         void setTransform(const STransform2D& transform);
-        [[nodiscard]] const STransform2D& getTransform() const;
+        [[nodiscard]] const STransform2D& getTransform() const noexcept;
 
         void setPosition(SVector2f position);
-        [[nodiscard]] SVector2f getPosition() const;
+        [[nodiscard]] SVector2f getPosition() const noexcept;
 
         void setRotation(float rotation);
-        [[nodiscard]] float getRotation() const;
+        [[nodiscard]] float getRotation() const noexcept;
 
         void setScale(SVector2f scale);
-        [[nodiscard]] SVector2f getScale() const;
+        [[nodiscard]] SVector2f getScale() const noexcept;
+
+        void setVisible(bool visible);
+        [[nodiscard]] bool isVisible() const noexcept;
 
         /**
          * Destroy ourself
