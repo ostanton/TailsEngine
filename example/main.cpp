@@ -11,6 +11,9 @@
 #include <Tails/UI/WidgetSubsystem.hpp>
 #include <Tails/UI/Layout/StackBox.hpp>
 #include <Tails/UI/Layout/Canvas.hpp>
+#include <Tails/Memory.hpp>
+#include <Tails/Log.hpp>
+#include <Tails/Templated/StaticArray.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -39,6 +42,15 @@ public:
 };
 
 TAILS_REGISTER_ACTOR(CTestActor2, "TestActor2")
+
+struct STestStruct
+{
+    STestStruct(const int j)
+        : i(j)
+    {}
+    
+    int i {0};
+};
 
 class CExampleApp final : public tails::IApplication
 {
@@ -82,6 +94,18 @@ private:
         auto const myWidgetSlot = CCanvas::slotAsCanvasSlot(m_myWidget);
         myWidgetSlot->position.x = 16.f;
         myWidgetSlot->position.y = 16.f;
+
+        auto const testStruct = mem::alloc<STestStruct>();
+        TAILS_LOG_VA(Game, Message, "Test Struct value: %d", testStruct->i);
+        mem::construct(*testStruct, 7);
+        TAILS_LOG_VA(Game, Message, "Test Struct value: %d", testStruct->i);
+        mem::destroy(testStruct);
+
+        TStaticArray<int, 5> numbers {4, 2, 6, 4, 8};
+        for (auto i : numbers)
+        {
+            TAILS_LOG_VA(Game, Message, "Number is: %d", i);
+        }
         return true;
     }
 
@@ -95,4 +119,3 @@ private:
 };
 
 TAILS_IMPLEMENT_ENTRY_POINT(CExampleApp, "My GAME!")
-

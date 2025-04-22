@@ -11,6 +11,7 @@ target_sources(
         Filesystem.cpp
         Window.cpp
         Animation.cpp
+        Memory.cpp
 )
 
 add_subdirectory(Assets)

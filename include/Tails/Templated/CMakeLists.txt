@@ -8,4 +8,7 @@ target_sources(
         Bitset.hpp
         Expected.hpp
         SharedRef.hpp
+        StaticArray.hpp
+        Array.hpp
+        UniquePtr.hpp
 )
