@@ -13,6 +13,13 @@ TAILS_REGISTER_ACTOR(CPlayer, "Player")
 
 CPlayer::CPlayer()
 {
+    auto const spriteComponent = createComponent<tails::CSpriteComponent>();
+    spriteComponent->texture = m_sprite.load();
+    spriteComponent->size = {64.f, 64.f};
+    spriteComponent->useTextureSize = false;
+    spriteComponent->colour = tails::SColour::red;
+    setRootComponent(spriteComponent);
+    
     m_spriteComponent = createComponent<tails::CAnimatedSpriteComponent>();
     m_spriteComponent->tint = tails::SColour::green;
     m_spriteComponent->animationPlayer.spriteSheet = m_sprite.load();
@@ -26,15 +33,7 @@ CPlayer::CPlayer()
         true
     });
     m_spriteComponent->animationPlayer.playAnimation("test");
-    setRootComponent(m_spriteComponent);
-    
-
-    //auto const spriteComponent = createComponent<tails::CSpriteComponent>();
-    //spriteComponent->texture = m_sprite.load();
-    //spriteComponent->size = {64.f, 64.f};
-    //spriteComponent->useTextureSize = false;
-    //spriteComponent->colour = tails::SColour::red;
-    //spriteComponent->setParent(m_spriteComponent);
+    m_spriteComponent->setParent(getRootComponent());
 
     m_currentSpeed = m_walkSpeed;
 

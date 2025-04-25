@@ -1,5 +1,4 @@
 #include <Tails/Renderer/Renderer.hpp>
-#include <Tails/Renderer/RenderItem.hpp>
 #include <Tails/Assets/Texture.hpp>
 #include <Tails/Window.hpp>
 #include <Tails/Log.hpp>
@@ -68,11 +67,6 @@ namespace tails
         SVector2i size;
         SDL_GetRenderOutputSize(m_renderer, &size.x, &size.y);
         return SVector2u {size};
-    }
-
-    void CRenderer::render(const IRenderItem& item)
-    {
-        item.onRender(*this);
     }
 
     void CRenderer::render(

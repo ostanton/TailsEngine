@@ -2,7 +2,6 @@
 #define TAILS_ACTOR_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Renderer/RenderItem.hpp>
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Templated/Bitset.hpp>
 
@@ -15,6 +14,7 @@ namespace tails
     class CLayer;
     class CActorComponent;
     class CPrimitiveComponent;
+    class CRenderer;
 
     /**
      * Actor within a level. It is made up of components, but is still inheritable,
@@ -23,7 +23,7 @@ namespace tails
      * 
      * TODO - batch render these somehow. Get their underlying SDL structures maybe
      */
-    class TAILS_API CActor : IRenderItem
+    class TAILS_API CActor
     {
         friend CLevel;
         friend CLayer;
@@ -39,7 +39,7 @@ namespace tails
         CActor(CActor&&) noexcept = default;
         CActor& operator=(const CActor&) = delete;
         CActor& operator=(CActor&&) noexcept = default;
-        ~CActor() override;
+        virtual ~CActor();
         
         [[nodiscard]] CLevel* getLevel() const;
         [[nodiscard]] CPrimitiveComponent* getRootComponent() const;
@@ -84,6 +84,8 @@ namespace tails
         void setLayer(int layer);
         [[nodiscard]] int getLayer() const noexcept;
 
+        void onRender(CRenderer& renderer) const;
+
         TBitset<EFlags> flags;
 
     protected:
@@ -96,8 +98,6 @@ namespace tails
         virtual void onOverlap(CActor* otherActor);
         
     private:
-        void onRender(CRenderer& renderer) const final;
-        
         CActorComponent* addComponent(std::unique_ptr<CActorComponent> component);
         
         CLevel* m_owningLevel {nullptr};

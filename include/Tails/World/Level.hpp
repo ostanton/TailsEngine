@@ -2,7 +2,6 @@
 #define TAILS_LEVEL_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Renderer/RenderItem.hpp>
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Assets/Asset.hpp>
 
@@ -17,11 +16,12 @@ namespace tails
     class CLayer;
     class CCameraComponent;
     class CLevelLoader;
+    class CRenderer;
 
     /**
      * A game level, containing actors, layers, etc. to tick and render
      */
-    class TAILS_API CLevel final : public IRenderItem, public IAsset
+    class TAILS_API CLevel final : public IAsset
     {
         friend CLevelLoader;
         
@@ -120,7 +120,7 @@ namespace tails
         void destroyActor(const CActor* actor);
         
         void onTick(float deltaSeconds);
-        void onRender(CRenderer& renderer) const override;
+        void onRender(CRenderer& renderer) const;
 
         /**
          * Deletes and erases any actors that are pending destroy

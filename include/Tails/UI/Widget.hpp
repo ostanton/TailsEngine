@@ -25,7 +25,7 @@ namespace tails::ui
      *
      * TODO - some way to traverse the widget hierarchy vertically, like Unreal's FWidgetPath
      */
-    class TAILS_API CWidget : protected std::enable_shared_from_this<CWidget>
+    class TAILS_API CWidget : public std::enable_shared_from_this<CWidget>
     {
     public:
         CWidget() = default;

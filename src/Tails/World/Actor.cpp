@@ -105,6 +105,16 @@ namespace tails
         return m_layer;
     }
 
+    void CActor::onRender(CRenderer& renderer) const
+    {
+        // TODO - batch rendering???
+        renderer.render(*m_rootComponent);
+        m_rootComponent->forEachChild([&renderer](const CPrimitiveComponent* child)
+        {
+            renderer.render(*child);
+        });
+    }
+
     void CActor::onInitComponents()
     {
         for (const auto& component : m_components)
@@ -164,16 +174,6 @@ namespace tails
 
     void CActor::onOverlap(CActor* otherActor)
     {
-    }
-
-    void CActor::onRender(CRenderer& renderer) const
-    {
-        // TODO - batch rendering???
-        renderer.render(*m_rootComponent);
-        m_rootComponent->forEachChild([&renderer](const CPrimitiveComponent* child)
-        {
-            renderer.render(*child);
-        });
     }
 
     CActorComponent* CActor::addComponent(std::unique_ptr<CActorComponent> component)

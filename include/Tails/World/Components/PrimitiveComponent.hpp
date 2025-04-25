@@ -3,12 +3,13 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/World/Components/ActorComponent.hpp>
-#include <Tails/Renderer/RenderItem.hpp>
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Maths/Rect.hpp>
 
 namespace tails
 {
+    class CRenderer;
+    
     enum class ECollisionType : u8
     {
         Block,
@@ -22,7 +23,7 @@ namespace tails
      *
      * TODO - iterators to help iterate over the tree structure
      */
-    class TAILS_API CPrimitiveComponent : public CActorComponent, public IRenderItem
+    class TAILS_API CPrimitiveComponent : public CActorComponent
     {
     public:
         void setParent(CPrimitiveComponent* parent);
@@ -35,14 +36,14 @@ namespace tails
 
         [[nodiscard]] bool isOverlapping(const CPrimitiveComponent* other) const noexcept;
         
+        virtual void onRender(CRenderer& renderer) const;
+        
         STransform2D transform {0.f, 0.f, 1.f};
         bool visible {true};
         ECollisionType collisionType {ECollisionType::Block};
         u8 collisionMask {0};
 
     protected:
-        void onRender(CRenderer& renderer) const override;
-
         void onOverlap(CPrimitiveComponent* otherComponent);
 
     private:

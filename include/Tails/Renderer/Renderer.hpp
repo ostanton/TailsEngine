@@ -14,7 +14,6 @@ struct SDL_Surface;
 
 namespace tails
 {
-    class IRenderItem;
     class CString;
     class CTexture;
     class CWindow;
@@ -50,7 +49,8 @@ namespace tails
 
         [[nodiscard]] SVector2u getOutputSize() const;
 
-        void render(const IRenderItem& item);
+        template<typename T>
+        void render(const T& item);
         
         void render(
             const STransform2D& transform,
@@ -98,6 +98,12 @@ namespace tails
         /** Surface we render to when using software rendering without a window */
         SDL_Surface* m_surface;
     };
+
+    template <typename T>
+    void CRenderer::render(const T& item)
+    {
+        item.onRender(*this);
+    }
 }
 
 #endif // TAILS_RENDERER_HPP
