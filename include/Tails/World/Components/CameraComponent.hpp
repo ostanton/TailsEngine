@@ -2,7 +2,7 @@
 #define TAILS_CAMERA_COMPONENT_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/World/Components/PrimitiveComponent.hpp>
+#include <Tails/World/Components/Component.hpp>
 #include <Tails/Maths/Rect.hpp>
 
 namespace tails
@@ -12,15 +12,16 @@ namespace tails
      *
      * TODO - offscreen rendering? Really doesn't need to be its own component does it?
      */
-    class TAILS_API CCameraComponent : public CPrimitiveComponent
+    class TAILS_API CCameraComponent : public IComponent
     {
     public:
-        [[nodiscard]] SFloatRect getGlobalBounds() const noexcept override;
-
         void activate();
         [[nodiscard]] bool isActive() const noexcept;
         
         SFloatRect bounds;
+
+    protected:
+        void onTick(float deltaSeconds) override;
     };
 }
 

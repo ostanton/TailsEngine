@@ -4,6 +4,7 @@
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Assets/Asset.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <vector>
 #include <memory>
@@ -58,7 +59,7 @@ namespace tails
          * @param layer Target layer
          * @return Spawned actor
          */
-        template<typename T> T* spawnActor(const STransform2D& transform, int layer = 0);
+        template<DerivedFrom<CActor> T> T* spawnActor(const STransform2D& transform, int layer = 0);
 
         /**
          * Spawns a registered actor in the level, at the specified transform, in the specified layer,
@@ -69,7 +70,7 @@ namespace tails
          * @param layer Target layer
          * @return Spawned actor
          */
-        template<typename T> T* spawnActor(const CString& name, const STransform2D& transform, int layer = 0);
+        template<DerivedFrom<CActor> T> T* spawnActor(const CString& name, const STransform2D& transform, int layer = 0);
 
         /**
          * Spawns an existing external actor in the level (as if it were spawned new),
@@ -120,7 +121,7 @@ namespace tails
         void destroyActor(const CActor* actor);
         
         void onTick(float deltaSeconds);
-        void onRender(CRenderer& renderer) const;
+        void onRender(const CRenderer& renderer) const;
 
         /**
          * Deletes and erases any actors that are pending destroy
@@ -151,13 +152,13 @@ namespace tails
         return static_cast<u8>(EAssetType::Level);
     }
 
-    template<typename T>
+    template<DerivedFrom<CActor> T>
     T* CLevel::spawnActor(const STransform2D& transform, const int layer)
     {
         return static_cast<T*>(spawnActor(std::make_unique<T>(), transform, layer));
     }
 
-    template<typename T>
+    template<DerivedFrom<CActor> T>
     T* CLevel::spawnActor(const CString& name, const STransform2D& transform, const int layer)
     {
         return static_cast<T*>(spawnActor(name, transform, layer));

@@ -24,13 +24,23 @@ CPlayer::CPlayer()
     m_spriteComponent->tint = tails::SColour::green;
     m_spriteComponent->animationPlayer.spriteSheet = m_sprite.load();
     m_spriteComponent->animationPlayer.addAnimation("test", {
-        {
-            tails::SFrame {{{0, 0}, {4, 4}}, 1.f},
-            tails::SFrame {{{4, 4}, {4, 4}}, 1.f}
+        .frames = {
+            {
+                .bounds = {
+                    .position = {0, 0},
+                    .size = {4, 4}
+                },
+                .playRate = 1.f
+            },
+            {
+                .bounds = {
+                    .position = {4, 4},
+                    .size = {4, 4}
+                },
+                .playRate = 1.f
+            }
         },
-        10,
-        0,
-        true
+        .frameRate = 10
     });
     m_spriteComponent->animationPlayer.playAnimation("test");
     m_spriteComponent->setParent(getRootComponent());

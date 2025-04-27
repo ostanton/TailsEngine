@@ -1,12 +1,14 @@
 #ifndef TAILS_BITSET_HPP
 #define TAILS_BITSET_HPP
 
+#include <Tails/Concepts.hpp>
+
 #include <type_traits>
 #include <initializer_list>
 
 namespace tails
 {
-    template<typename EnumType, typename FlagSize = std::underlying_type_t<EnumType>>
+    template<Enum EnumType, typename FlagSize = std::underlying_type_t<EnumType>>
     class TBitset final
     {
         static_assert(std::is_enum_v<EnumType>, "Cannot use TBitset with a non-enum type");

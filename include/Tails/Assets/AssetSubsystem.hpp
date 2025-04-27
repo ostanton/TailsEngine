@@ -7,6 +7,7 @@
 #include <Tails/Assets/AssetType.hpp>
 #include <Tails/Assets/AssetDeleter.hpp>
 #include <Tails/String.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <memory>
 #include <type_traits>
@@ -34,9 +35,9 @@ namespace tails::assets
     }
 
     template<typename LoaderT>
+    requires impl::hasAssetType<LoaderT>
     void registerLoader()
     {
-        static_assert(impl::hasAssetType<LoaderT>, "Asset loader must have nested 'AssetType' alias");
         registerLoader(
             std::make_unique<LoaderT>(),
             getAssetType<typename LoaderT::AssetType>(),
@@ -67,7 +68,7 @@ namespace tails::assets
      * @param path Path to the file (relative to executable) to load
      * @return Shared pointer to loaded asset
      */
-    template<typename T>
+    template<DerivedFrom<IAsset> T>
     std::shared_ptr<T> loadAsset(const CString& path)
     {
         return std::static_pointer_cast<T>(
@@ -85,7 +86,8 @@ namespace tails::assets
 
     std::shared_ptr<IAsset> allocateAsset(const std::shared_ptr<IAsset>& asset, const CString& path, u8 type);
 
-    template<typename T, typename... ArgsT>
+    template<DerivedFrom<IAsset> T, typename... ArgsT>
+    requires ConstructibleFrom<T, ArgsT...>
     std::shared_ptr<T> allocateAsset(const CString& path, ArgsT&&... args)
     {
         return std::static_pointer_cast<T>(

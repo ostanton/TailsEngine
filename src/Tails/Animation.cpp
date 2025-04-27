@@ -37,7 +37,7 @@ namespace tails
 
     bool SAnimationPlayer::containsAnimation(const std::string_view name) const noexcept
     {
-        return animations.find(name) != animations.end();
+        return animations.contains(name);
     }
 
     void SAnimationPlayer::playAnimation(const std::string_view name) noexcept

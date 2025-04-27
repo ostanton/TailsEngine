@@ -1,5 +1,4 @@
 #include <Tails/Assets/Loaders/TextureLoader.hpp>
-#include <Tails/Assets/Texture.hpp>
 #include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/String.hpp>

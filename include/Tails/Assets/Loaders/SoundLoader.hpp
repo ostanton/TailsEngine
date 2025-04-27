@@ -3,11 +3,10 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Assets/Loaders/AssetLoader.hpp>
+#include <Tails/Assets/Sound.hpp>
 
 namespace tails
 {
-    class CSound;
-    
     class TAILS_API CSoundLoader : public IAssetLoader
     {
     public:

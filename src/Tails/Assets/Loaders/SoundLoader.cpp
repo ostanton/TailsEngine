@@ -1,5 +1,4 @@
 #include <Tails/Assets/Loaders/SoundLoader.hpp>
-#include <Tails/Assets/Sound.hpp>
 #include <Tails/Assets/AssetSubsystem.hpp>
 
 namespace tails

@@ -14,6 +14,7 @@ target_sources(
         Window.hpp
         Animation.hpp
         Memory.hpp
+        Concepts.hpp
 )
 
 add_subdirectory(Assets)

@@ -3,6 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Delegates/Delegate.hpp>
+#include <Tails/Concepts.hpp>
 
 // TODO - make assert not rely on this, in header at least
 #include <iostream>
@@ -48,7 +49,7 @@ namespace tails
             return m_delegates.size() - 1;
         }
 
-        template<typename LambdaT>
+        template<Invocable<void, ArgsT...> LambdaT>
         DelegateHandle addLambda(LambdaT&& lambda)
         {
             return add(Delegate::createLambda(std::forward<LambdaT>(lambda)));
@@ -59,13 +60,13 @@ namespace tails
             return add(Delegate::createStatic(function));
         }
 
-        template<typename T>
+        template<UserType T>
         DelegateHandle addRaw(T* obj, RawFuncSignature<T> function)
         {
             return add(Delegate::createRaw(obj, function));
         }
 
-        template<typename T>
+        template<UserType T>
         DelegateHandle addRaw(T* obj, ConstRawFuncSignature<T> function)
         {
             return add(Delegate::createRaw(obj, function));

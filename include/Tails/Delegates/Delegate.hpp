@@ -3,6 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Delegates/DelegateBase.hpp>
+#include <Tails/Concepts.hpp>
 
 // TODO - make assert not rely on this, in header at least
 #include <iostream>
@@ -38,7 +39,7 @@ namespace tails
         TDelegate& operator=(TDelegate&&) noexcept = default;
         ~TDelegate() = default;
         
-        template<typename LambdaT>
+        template<Invocable<RetT, ArgsT...> LambdaT>
         static TDelegate createLambda(LambdaT&& lambda)
         {
             TDelegate handle;
@@ -53,7 +54,7 @@ namespace tails
             return handle;
         }
 
-        template<typename T>
+        template<UserType T>
         static TDelegate createRaw(T* obj, RawFuncSignature<T> function)
         {
             TDelegate handle;
@@ -61,7 +62,7 @@ namespace tails
             return handle;
         }
 
-        template<typename T>
+        template<UserType T>
         static TDelegate createRaw(T* obj, ConstRawFuncSignature<T> function)
         {
             TDelegate handle;
@@ -69,7 +70,7 @@ namespace tails
             return handle;
         }
 
-        template<typename LambdaT>
+        template<Invocable<RetT, ArgsT...> LambdaT>
         void bindLambda(LambdaT&& lambda)
         {
             m_delegate = std::make_unique<TLambdaDelegate<LambdaT, RetT, ArgsT...>>(std::forward<LambdaT>(lambda));
@@ -80,13 +81,13 @@ namespace tails
             m_delegate = std::make_unique<TStaticDelegate<RetT, ArgsT...>>(function);
         }
 
-        template<typename T>
+        template<UserType T>
         void bindRaw(T* obj, RawFuncSignature<T> function)
         {
             m_delegate = std::make_unique<TRawDelegate<false, T, RetT, ArgsT...>>(obj, function);
         }
 
-        template<typename T>
+        template<UserType T>
         void bindRaw(T* obj, ConstRawFuncSignature<T> function)
         {
             m_delegate = std::make_unique<TRawDelegate<true, T, RetT, ArgsT...>>(obj, function);

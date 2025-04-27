@@ -3,6 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Memory.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <memory>
 
@@ -22,6 +23,7 @@ namespace tails
     using TUniquePtr = std::unique_ptr<T, TUniqueDeleter<T>>;
 
     template<typename T, typename... ArgsT>
+    requires ConstructibleFrom<T, ArgsT...>
     [[nodiscard]] constexpr TUniquePtr<T> makeUnique(ArgsT&&... args)
     {
         return TUniquePtr<T>(mem::newObject<T>(std::forward<ArgsT>(args)...));

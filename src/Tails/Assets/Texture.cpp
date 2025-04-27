@@ -1,5 +1,6 @@
 #include <Tails/Assets/Texture.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/Memory.hpp>
 
 #include <SDL3/SDL_render.h>
 
@@ -20,10 +21,10 @@ namespace tails
         , m_size(other.m_size)
         , m_channels(other.m_channels)
     {
-        m_pixels = static_cast<u8*>(SDL_malloc(other.getPixelCount()));
-        SDL_memcpy(m_pixels, other.m_pixels, other.getPixelCount());
-        m_internal = static_cast<SDL_Texture*>(SDL_malloc(sizeof(SDL_Texture)));
-        SDL_memcpy(m_internal, other.m_internal, sizeof(SDL_Texture));
+        m_pixels = static_cast<u8*>(mem::alloc(other.getPixelCount()));
+        mem::copy(m_pixels, other.m_pixels, other.getPixelCount());
+        m_internal = mem::alloc<SDL_Texture>();
+        mem::copy<SDL_Texture>(m_internal, other.m_internal);
     }
 
     CTexture::CTexture(CTexture&& other) noexcept
@@ -45,10 +46,10 @@ namespace tails
         
         m_size = other.m_size;
         m_channels = other.m_channels;
-        m_pixels = static_cast<u8*>(SDL_malloc(other.getPixelCount()));
-        SDL_memcpy(m_pixels, other.m_pixels, other.getPixelCount());
-        m_internal = static_cast<SDL_Texture*>(SDL_malloc(sizeof(SDL_Texture)));
-        SDL_memcpy(m_internal, other.m_internal, sizeof(SDL_Texture));
+        m_pixels = static_cast<u8*>(mem::alloc(other.getPixelCount()));
+        mem::copy(m_pixels, other.m_pixels, other.getPixelCount());
+        m_internal = mem::alloc<SDL_Texture>();
+        mem::copy(m_internal, other.m_internal, sizeof(SDL_Texture));
         return *this;
     }
 
@@ -70,7 +71,7 @@ namespace tails
     CTexture::~CTexture()
     {
         if (m_pixels)
-            SDL_free(m_pixels);
+            mem::freeT(m_pixels);
         
         if (m_internal)
             SDL_DestroyTexture(m_internal);

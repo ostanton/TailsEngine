@@ -2,7 +2,7 @@
 #define TAILS_ANIMATED_SPRITE_COMPONENT_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/World/Components/PrimitiveComponent.hpp>
+#include <Tails/World/Components/Component.hpp>
 #include <Tails/Animation.hpp>
 
 namespace tails
@@ -10,17 +10,15 @@ namespace tails
     /**
      * Component wrapper for an SAnimationPlayer
      */
-    class TAILS_API CAnimatedSpriteComponent : public CPrimitiveComponent
+    class TAILS_API CAnimatedSpriteComponent : public IComponent
     {
     public:
-        [[nodiscard]] SFloatRect getGlobalBounds() const noexcept override;
-        
         SAnimationPlayer animationPlayer;
         SColour tint;
 
     protected:
         void onTick(float deltaSeconds) override;
-        void onRender(CRenderer& renderer) const override;
+        void onRender(const CRenderer& renderer) const override;
     };
 }
 

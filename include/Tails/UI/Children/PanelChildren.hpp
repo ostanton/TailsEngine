@@ -3,12 +3,15 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/UI/Children/Children.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <deque>
 
 namespace tails::ui
 {
-    template<typename SlotT>
+    struct ISlot;
+    
+    template<DerivedFrom<ISlot> SlotT>
     struct TAILS_API TPanelChildren final : IChildren
     {
         using Iterator = typename std::deque<SlotT>::iterator;

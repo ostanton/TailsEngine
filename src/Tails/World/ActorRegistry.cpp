@@ -17,7 +17,7 @@ namespace tails::impl
     
     std::unique_ptr<CActor> allocateActor(const CString& name)
     {
-        if (getActorRegistryMap().find(name) != getActorRegistryMap().end())
+        if (getActorRegistryMap().contains(name))
             return getActorRegistryMap()[name]();
 
         return nullptr;
@@ -25,7 +25,7 @@ namespace tails::impl
 
     bool registerActorImpl(const CString& name, AllocateActorFunc allocFunc)
     {
-        if (getActorRegistryMap().find(name) != getActorRegistryMap().end())
+        if (getActorRegistryMap().contains(name))
         {
             TAILS_LOG_VA(ActorRegistry, Error,
                 "Failed to register '%s', it already exists in the registry", name.getData());

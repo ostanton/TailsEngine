@@ -1,6 +1,6 @@
 #include <Tails/World/Actor.hpp>
 #include <Tails/World/Level.hpp>
-#include <Tails/World/Components/PrimitiveComponent.hpp>
+#include <Tails/World/Components/ActorComponent.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 
 namespace tails
@@ -12,7 +12,7 @@ namespace tails
         return m_owningLevel;
     }
 
-    CPrimitiveComponent* CActor::getRootComponent() const
+    IComponent* CActor::getRootComponent() const
     {
         return m_rootComponent;
     }
@@ -92,7 +92,8 @@ namespace tails
         //                overlapping = true;
         //        }, true);
         //}, true);
-        return m_rootComponent->isOverlapping(other->getRootComponent());
+        //return m_rootComponent->isOverlapping(other->getRootComponent());
+        return false;
     }
 
     void CActor::setLayer(const int layer)
@@ -105,14 +106,9 @@ namespace tails
         return m_layer;
     }
 
-    void CActor::onRender(CRenderer& renderer) const
+    void CActor::onRender(const CRenderer& renderer) const
     {
-        // TODO - batch rendering???
         renderer.render(*m_rootComponent);
-        m_rootComponent->forEachChild([&renderer](const CPrimitiveComponent* child)
-        {
-            renderer.render(*child);
-        });
     }
 
     void CActor::onInitComponents()
@@ -125,22 +121,10 @@ namespace tails
         // if no root component exists, create one. One should always exist
         if (!m_rootComponent)
         {
-            bool containsPrimitive {false};
-            for (const auto& component : m_components)
-            {
-                // very sad! surely there's a better way than casting each one??
-                if (auto const primitive = dynamic_cast<CPrimitiveComponent*>(component.get()))
-                {
-                    m_rootComponent = primitive;
-                    containsPrimitive = true;
-                    break;
-                }
-            }
-            
-            if (containsPrimitive)
-                return;
-            
-            m_rootComponent = createComponent<CPrimitiveComponent>();
+            if (m_components.empty())
+                createComponent<CActorComponent>();
+
+            m_rootComponent = m_components.front().get();
             m_rootComponent->onInit();
         }
     }
@@ -158,17 +142,25 @@ namespace tails
         }
     }
 
-    void CActor::setRootComponent(CPrimitiveComponent* rootComponent)
+    void CActor::setRootComponent(IComponent* rootComponent)
     {
         if (!rootComponent)
             return;
         
-        if (rootComponent->getOwningActor() != this)
+        if (rootComponent->getOwner() != this)
             return;
         
-        if (rootComponent->getParent())
+        if (auto const parent = rootComponent->getParent())
+        {
+            parent->m_children.erase(std::ranges::find(
+                parent->m_children.begin(),
+                parent->m_children.end(),
+                rootComponent
+            ));
             rootComponent->setParent(nullptr);
+        }
 
+        // TODO - add immediate other components as children of this new root component
         m_rootComponent = rootComponent;
     }
 
@@ -176,11 +168,11 @@ namespace tails
     {
     }
 
-    CActorComponent* CActor::addComponent(std::unique_ptr<CActorComponent> component)
+    IComponent* CActor::addComponent(std::unique_ptr<IComponent> component)
     {
         m_components.emplace_back(std::move(component));
         auto& result = *m_components.back();
-        result.m_owningActor = this;
+        result.m_owner = this;
         return &result;
     }
 }

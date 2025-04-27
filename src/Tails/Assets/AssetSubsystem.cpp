@@ -51,7 +51,7 @@ namespace tails::assets
 
     IAssetLoader* getLoader(const u8 assetType)
     {
-        if (gAssetLoaders.find(assetType) != gAssetLoaders.end())
+        if (gAssetLoaders.contains(assetType))
             return gAssetLoaders[assetType].get();
 
         return nullptr;
@@ -100,7 +100,7 @@ namespace tails::assets
         if (!handle.isValid())
             return false;
 
-        return gLoadedAssets.find(handle) != gLoadedAssets.end();
+        return gLoadedAssets.contains(handle);
     }
 
     void SAssetDeleter::operator()(const IAsset* asset) const noexcept
@@ -127,7 +127,7 @@ namespace tails::assets
     {
         gLastAssetIndex = SHandle {path, type};
         
-        if (gLoadedAssets.find(gLastAssetIndex) == gLoadedAssets.end())
+        if (!gLoadedAssets.contains(gLastAssetIndex))
             gLoadedAssets.emplace(gLastAssetIndex, asset);
         else
             gLoadedAssets[gLastAssetIndex] = asset;

@@ -22,7 +22,7 @@ namespace tails::audio
 
         SBus* getBus(const SBusHandle handle)
         {
-            if (gBuses.find(handle) != gBuses.end())
+            if (gBuses.contains(handle))
                 return &gBuses[handle];
 
             return nullptr;

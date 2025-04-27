@@ -2,6 +2,7 @@
 #define TAILS_SHARED_REF_HPP
 
 #include <Tails/Core.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <memory>
 #include <iostream>
@@ -36,6 +37,7 @@ namespace tails
     };
 
     template<typename T, typename... ArgsT>
+    requires ConstructibleFrom<T, ArgsT...>
     TSharedRef<T> makeSharedRef(ArgsT&&... args)
     {
         return std::make_shared<T>(std::forward<ArgsT>(args)...);

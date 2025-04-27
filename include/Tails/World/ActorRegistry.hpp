@@ -2,6 +2,7 @@
 #define TAILS_ACTOR_REGISTRY_HPP
 
 #include <Tails/Core.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <memory>
 
@@ -14,7 +15,7 @@ namespace tails
     {
         using AllocateActorFunc = std::unique_ptr<CActor>(*)();
         
-        template<typename T>
+        template<DerivedFrom<CActor> T>
         std::unique_ptr<CActor> allocateActor()
         {
             return std::make_unique<T>();

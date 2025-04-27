@@ -2,6 +2,7 @@
 #define TAILS_MEMORY_HPP
 
 #include <Tails/Core.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <utility>
 
@@ -53,6 +54,7 @@ namespace tails::mem
      * @param args Constructor arguments
      */
     template<typename T, typename... ArgsT>
+    requires ConstructibleFrom<T, ArgsT...>
     constexpr void construct(T& obj, ArgsT&&... args)
     {
         new (&obj) T(std::forward<ArgsT>(args)...);
@@ -67,6 +69,7 @@ namespace tails::mem
      * @return Allocated object
      */
     template<typename T, typename... ArgsT>
+    requires ConstructibleFrom<T, ArgsT...>
     constexpr T* newObject(ArgsT&&... args)
     {
         auto const ptr = alloc<T>();
@@ -82,9 +85,9 @@ namespace tails::mem
     template<typename T>
     void destruct(T* obj)
     {
-        if constexpr (!std::is_destructible_v<T>)
+        if constexpr (!Destructible<T>)
             return;
-        
+
         if (!obj)
             return;
 

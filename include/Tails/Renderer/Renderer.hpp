@@ -6,6 +6,7 @@
 #include <Tails/Maths/Rect.hpp>
 #include <Tails/Maths/Colour.hpp>
 #include <Tails/Maths/Transform2D.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <memory>
 
@@ -49,8 +50,8 @@ namespace tails
 
         [[nodiscard]] SVector2u getOutputSize() const;
 
-        template<typename T>
-        void render(const T& item);
+        template<RenderItem T>
+        void render(const T& item) const;
         
         void render(
             const STransform2D& transform,
@@ -99,8 +100,8 @@ namespace tails
         SDL_Surface* m_surface;
     };
 
-    template <typename T>
-    void CRenderer::render(const T& item)
+    template <RenderItem T>
+    void CRenderer::render(const T& item) const
     {
         item.onRender(*this);
     }

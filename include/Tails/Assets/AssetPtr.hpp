@@ -4,6 +4,7 @@
 #include <Tails/Core.hpp>
 #include <Tails/Assets/AssetType.hpp>
 #include <Tails/String.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <memory>
 
@@ -18,7 +19,7 @@ namespace tails
     struct TAILS_API SAssetPath final
     {
         SAssetPath(u8 inAssetType, CString inPath = {});
-        template<typename AssetTypeT>
+        template<Enum AssetTypeT>
         SAssetPath(const AssetTypeT inAssetType, CString inPath = {})
             : assetType(getAssetType(inAssetType)), path(std::move(inPath))
         {}
@@ -36,7 +37,7 @@ namespace tails
      * of the generic @code IAsset@endcode 
      * @tparam T Asset class
      */
-    template<typename T>
+    template<DerivedFrom<IAsset> T>
     class TAssetPtr final
     {
     public:

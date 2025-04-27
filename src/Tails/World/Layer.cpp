@@ -14,7 +14,7 @@ namespace tails
         }
     }
 
-    void CLayer::onRender(CRenderer& renderer) const
+    void CLayer::onRender(const CRenderer& renderer) const
     {
         for (usize i {0}; i < m_actors.size(); i++)
         {

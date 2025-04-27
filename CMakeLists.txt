@@ -103,7 +103,7 @@ message("--")
 message("-- Tails: Linking libraries '${TAILS_LIBS}'")
 message("--")
 target_link_libraries(Tails PUBLIC ${TAILS_LIBS})
-target_compile_features(Tails PUBLIC cxx_std_17)
+target_compile_features(Tails PUBLIC cxx_std_20)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(Tails PRIVATE /W3 /WX)

@@ -2,10 +2,9 @@
 #define TAILS_SPRITE_COMPONENT_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/World/Components/PrimitiveComponent.hpp>
+#include <Tails/World/Components/Component.hpp>
 #include <Tails/Maths/Vector2.hpp>
 #include <Tails/Maths/Colour.hpp>
-#include <Tails/Maths/Rect.hpp>
 
 #include <memory>
 
@@ -13,11 +12,10 @@ namespace tails
 {
     class CTexture;
     
-    class TAILS_API CSpriteComponent : public CPrimitiveComponent
+    class TAILS_API CSpriteComponent : public IComponent
     {
     public:
         [[nodiscard]] SVector2f getCentre() const noexcept;
-        [[nodiscard]] SFloatRect getGlobalBounds() const noexcept override;
 
         SVector2f size;
         SColour colour;
@@ -25,7 +23,8 @@ namespace tails
         bool useTextureSize {false};
 
     protected:
-        void onRender(CRenderer& renderer) const override;
+        void onTick(float deltaSeconds) override;
+        void onRender(const CRenderer& renderer) const override;
     };
 }
 

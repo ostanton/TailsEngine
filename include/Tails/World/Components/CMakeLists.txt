@@ -3,8 +3,8 @@ project(Tails)
 target_sources(
     Tails
     PRIVATE
+        Component.hpp
         ActorComponent.hpp
-        PrimitiveComponent.hpp
         SpriteComponent.hpp
         CameraComponent.hpp
         AnimatedSpriteComponent.hpp

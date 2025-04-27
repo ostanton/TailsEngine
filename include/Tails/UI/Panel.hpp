@@ -4,6 +4,7 @@
 #include <Tails/Core.hpp>
 #include <Tails/UI/Widget.hpp>
 #include <Tails/UI/Slot.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <vector>
 #include <memory>
@@ -23,7 +24,7 @@ namespace tails::ui
         [[nodiscard]] SVector2f getDesiredSize() const noexcept override = 0;
         [[nodiscard]] IChildren& getChildren() noexcept override = 0;
         
-        template<typename T>
+        template<DerivedFrom<CWidget> T>
         ISlot* addChild()
         {
             return addChild(std::make_shared<T>());

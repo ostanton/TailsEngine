@@ -16,7 +16,7 @@ namespace tails::world
 {
     TAILS_API void init();
     TAILS_API void tick(float deltaSeconds);
-    TAILS_API void render(CRenderer& renderer);
+    TAILS_API void render(const CRenderer& renderer);
     TAILS_API void cleanup();
     TAILS_API void deinit();
     TAILS_API CLevel* openLevel(const CString& path);

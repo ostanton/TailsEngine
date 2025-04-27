@@ -8,15 +8,12 @@ namespace tails
         return size / 2.f + transform.position;
     }
 
-    SFloatRect CSpriteComponent::getGlobalBounds() const noexcept
+    void CSpriteComponent::onTick(float deltaSeconds)
     {
-        return {transform.position, transform.position + size};
     }
 
-    void CSpriteComponent::onRender(CRenderer& renderer) const
+    void CSpriteComponent::onRender(const CRenderer& renderer) const
     {
-        CPrimitiveComponent::onRender(renderer);
-
         if (!visible)
             return;
 
@@ -30,5 +27,7 @@ namespace tails
                 useTextureSize ? SVector2f {} : size,
                 colour
             );
+
+        IComponent::onRender(renderer);
     }
 }

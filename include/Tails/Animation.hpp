@@ -29,9 +29,9 @@ namespace tails
     struct TAILS_API SAnimation final
     {
         std::vector<SFrame> frames;
-        usize frameRate;
-        usize currentFrame;
-        bool loop;
+        usize frameRate {10};
+        usize currentFrame {0};
+        bool loop {true};
     };
 
     struct TAILS_API SAnimationPlayer final

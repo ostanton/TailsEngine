@@ -3,6 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Memory.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <initializer_list>
 
@@ -51,6 +52,7 @@ namespace tails
         }
 
         template<typename... ArgsT>
+        requires ConstructibleFrom<T, ArgsT...>
         T* emplace(ArgsT&&... args)
         {
             if (m_size >= m_capacity)

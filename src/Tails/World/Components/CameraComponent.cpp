@@ -4,17 +4,9 @@
 
 namespace tails
 {
-    SFloatRect CCameraComponent::getGlobalBounds() const noexcept
-    {
-        return {
-            transform.position + bounds.position,
-            transform.position + bounds.size
-        };
-    }
-
     void CCameraComponent::activate()
     {
-        auto const owner = getOwningActor();
+        auto const owner = getOwner();
         if (!owner)
             return;
 
@@ -27,7 +19,7 @@ namespace tails
 
     bool CCameraComponent::isActive() const noexcept
     {
-        auto const owner = getOwningActor();
+        auto const owner = getOwner();
         if (!owner)
             return false;
 
@@ -36,5 +28,9 @@ namespace tails
             return false;
 
         return level->activeCamera == this;
+    }
+
+    void CCameraComponent::onTick(float deltaSeconds)
+    {
     }
 }

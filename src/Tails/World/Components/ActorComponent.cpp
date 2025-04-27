@@ -2,15 +2,6 @@
 
 namespace tails
 {
-    CActor* CActorComponent::getOwningActor() const
-    {
-        return m_owningActor;
-    }
-
-    void CActorComponent::onInit()
-    {
-    }
-
     void CActorComponent::onTick(float deltaSeconds)
     {
     }

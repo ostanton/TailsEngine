@@ -2,6 +2,7 @@
 #define TAILS_WIDGET_SUBSYSTEM_HPP
 
 #include <Tails/Core.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <memory>
 
@@ -48,7 +49,7 @@ namespace tails::ui
     TAILS_API ISlot* addWidget(std::shared_ptr<CWidget> content);
     TAILS_API ISlot* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent);
     
-    template<typename ParentT>
+    template<DerivedFrom<CPanel> ParentT>
     typename ParentT::SSlot* setupWidget(
         std::shared_ptr<CWidget> content,
         const std::shared_ptr<ParentT>& parent
@@ -57,7 +58,7 @@ namespace tails::ui
         return static_cast<typename ParentT::SSlot*>(setupWidget(std::move(content), parent));
     }
 
-    template<typename T>
+    template<DerivedFrom<CWidget> T>
     std::shared_ptr<T> createWidget(const std::shared_ptr<CWidget>& parent)
     {
         auto widget = std::make_shared<T>();
@@ -66,7 +67,7 @@ namespace tails::ui
         return widget;
     }
     
-    template<typename T>
+    template<DerivedFrom<CWidget> T>
     ISlot* addWidget()
     {
         return addWidget(std::make_shared<T>());

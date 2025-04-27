@@ -3,10 +3,13 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/UI/Children/Children.hpp>
+#include <Tails/Concepts.hpp>
 
 namespace tails::ui
 {
-    template<typename SlotT>
+    struct ISlot;
+    
+    template<DerivedFrom<ISlot> SlotT>
     struct TAILS_API TSingleChildren final : IChildren
     {
         TSingleChildren(CWidget* inOwner, std::shared_ptr<CWidget> content)

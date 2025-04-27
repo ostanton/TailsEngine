@@ -3,11 +3,10 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Assets/Loaders/AssetLoader.hpp>
+#include <Tails/World/Level.hpp>
 
 namespace tails
 {
-    class CLevel;
-
     /**
      * TODO - make different level loaders for different level types (LDtk, Tiled, etc.)
      */

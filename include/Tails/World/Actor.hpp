@@ -4,6 +4,7 @@
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Templated/Bitset.hpp>
+#include <Tails/Concepts.hpp>
 
 #include <vector>
 #include <memory>
@@ -12,8 +13,7 @@ namespace tails
 {
     class CLevel;
     class CLayer;
-    class CActorComponent;
-    class CPrimitiveComponent;
+    class IComponent;
     class CRenderer;
 
     /**
@@ -42,7 +42,7 @@ namespace tails
         virtual ~CActor();
         
         [[nodiscard]] CLevel* getLevel() const;
-        [[nodiscard]] CPrimitiveComponent* getRootComponent() const;
+        [[nodiscard]] IComponent* getRootComponent() const;
 
         void setTransform(const STransform2D& transform);
         [[nodiscard]] const STransform2D& getTransform() const noexcept;
@@ -75,7 +75,7 @@ namespace tails
          * @tparam T Component class
          * @return Created component
          */
-        template<typename T>
+        template<DerivedFrom<IComponent> T>
         T* createComponent()
         {
             return static_cast<T*>(addComponent(std::make_unique<T>()));
@@ -84,7 +84,7 @@ namespace tails
         void setLayer(int layer);
         [[nodiscard]] int getLayer() const noexcept;
 
-        void onRender(CRenderer& renderer) const;
+        void onRender(const CRenderer& renderer) const;
 
         TBitset<EFlags> flags;
 
@@ -93,18 +93,18 @@ namespace tails
         virtual void onSpawn();
         virtual void onTick(float deltaSeconds);
 
-        void setRootComponent(CPrimitiveComponent* rootComponent);
+        void setRootComponent(IComponent* rootComponent);
 
         virtual void onOverlap(CActor* otherActor);
         
     private:
-        CActorComponent* addComponent(std::unique_ptr<CActorComponent> component);
+        IComponent* addComponent(std::unique_ptr<IComponent> component);
         
         CLevel* m_owningLevel {nullptr};
         // TODO - could store these somewhere else more optimally. For later, the Actor's interface for
         // its components would stay the same so it can wait for a while
-        std::vector<std::unique_ptr<CActorComponent>> m_components;
-        CPrimitiveComponent* m_rootComponent {nullptr};
+        std::vector<std::unique_ptr<IComponent>> m_components;
+        IComponent* m_rootComponent {nullptr};
         /** The current layer this actor is on */
         int m_layer {0};
     };

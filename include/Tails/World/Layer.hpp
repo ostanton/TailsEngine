@@ -24,7 +24,7 @@ namespace tails
 
     public:
         void onTick(float deltaSeconds);
-        void onRender(CRenderer& renderer) const;
+        void onRender(const CRenderer& renderer) const;
         
     private:
         void addActor(CActor* actor);

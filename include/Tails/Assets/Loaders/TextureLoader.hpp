@@ -3,11 +3,10 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Assets/Loaders/AssetLoader.hpp>
+#include <Tails/Assets/Texture.hpp>
 
 namespace tails
 {
-    class CTexture;
-    
     class TAILS_API CTextureLoader : public IAssetLoader
     {
     public:

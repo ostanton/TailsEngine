@@ -1,6 +1,5 @@
 #include <Tails/Assets/Loaders/LevelLoader.hpp>
 #include <Tails/Assets/AssetSubsystem.hpp>
-#include <Tails/World/Level.hpp>
 #include <Tails/Log.hpp>
 
 namespace tails

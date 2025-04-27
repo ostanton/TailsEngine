@@ -1,6 +1,8 @@
 #ifndef TAILS_DELEGATE_BASE_HPP
 #define TAILS_DELEGATE_BASE_HPP
 
+#include <Tails/Concepts.hpp>
+
 #include <type_traits>
 
 namespace tails
@@ -27,6 +29,7 @@ namespace tails
     };
 
     template<typename LambdaT, typename RetT, typename... ArgsT>
+    requires Invocable<LambdaT, RetT, ArgsT...>
     class TLambdaDelegate final : public IDelegate<RetT, ArgsT...>
     {
     public:
@@ -90,7 +93,7 @@ namespace tails
         };
     }
 
-    template<bool Const, typename T, typename RetT, typename... ArgsT>
+    template<bool Const, UserType T, typename RetT, typename... ArgsT>
     class TRawDelegate final : public IDelegate<RetT, ArgsT...>
     {
     public:
