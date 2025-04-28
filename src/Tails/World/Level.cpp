@@ -83,7 +83,7 @@ namespace tails
         auto& result = *m_actors.back();
         m_layers[layer].m_actors.push_back(&result);
         result.m_layer = layer;
-        result.m_owningLevel = this;
+        result.m_owningLevel = std::static_pointer_cast<CLevel>(shared_from_this());
         result.setTransform(transform);
         return &result;
     }

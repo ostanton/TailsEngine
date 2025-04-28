@@ -42,6 +42,7 @@ namespace tails
         virtual ~CActor();
         
         [[nodiscard]] CLevel* getLevel() const;
+        [[nodiscard]] std::weak_ptr<CLevel> getLevelWeak() const;
         [[nodiscard]] IComponent* getRootComponent() const;
 
         void setTransform(const STransform2D& transform);
@@ -100,7 +101,7 @@ namespace tails
     private:
         IComponent* addComponent(std::unique_ptr<IComponent> component);
         
-        CLevel* m_owningLevel {nullptr};
+        std::weak_ptr<CLevel> m_owningLevel;
         // TODO - could store these somewhere else more optimally. For later, the Actor's interface for
         // its components would stay the same so it can wait for a while
         std::vector<std::unique_ptr<IComponent>> m_components;

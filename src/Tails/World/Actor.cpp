@@ -9,6 +9,14 @@ namespace tails
 
     CLevel* CActor::getLevel() const
     {
+        if (const auto level = m_owningLevel.lock())
+            return level.get();
+
+        return nullptr;
+    }
+
+    std::weak_ptr<CLevel> CActor::getLevelWeak() const
+    {
         return m_owningLevel;
     }
 

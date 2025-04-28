@@ -56,10 +56,10 @@ namespace tails::world
         TAILS_LOG(WorldSubsystem, Message, "Deinitialised");
     }
 
-    CLevel* openLevel(const CString& path)
+    std::shared_ptr<CLevel> openLevel(const CString& path)
     {
         gTargetLevel = assets::loadAsset<CLevel>(path);
-        return gTargetLevel.get();
+        return gTargetLevel;
     }
 
     void openLevel(std::shared_ptr<CLevel> level)
@@ -67,13 +67,13 @@ namespace tails::world
         gTargetLevel = std::move(level);
     }
 
-    CLevel* getCurrentLevel()
+    std::shared_ptr<CLevel> getCurrentLevel()
     {
-        return gCurrentLevel.get();
+        return gCurrentLevel;
     }
 
-    CLevel* getTargetLevel()
+    std::shared_ptr<CLevel> getTargetLevel()
     {
-        return gTargetLevel.get();
+        return gTargetLevel;
     }
 }
