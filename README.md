@@ -14,7 +14,7 @@ You can think of it almost like a game-focused wrapper for SDL more than its own
 
 Dependent libraries (SDL3, etc.) are downloaded automatically via CMake's FetchContent if not already available.
 
-- C++17
+- C++20
 - [CMake](https://cmake.org/)
 - [SDL3](https://libsdl.org/)
 
