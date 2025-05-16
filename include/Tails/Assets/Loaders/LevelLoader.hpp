@@ -2,21 +2,19 @@
 #define TAILS_LEVEL_LOADER_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Assets/Loaders/AssetLoader.hpp>
-#include <Tails/World/Level.hpp>
+#include <Tails/String.hpp>
+
+#include <memory>
 
 namespace tails
 {
-    /**
-     * TODO - make different level loaders for different level types (LDtk, Tiled, etc.)
-     */
-    class TAILS_API CLevelLoader : public IAssetLoader
-    {
-    public:
-        using AssetType = CLevel;
+    class IAsset;
+}
 
-        std::shared_ptr<IAsset> load(const CString& path) override;
-    };
+namespace tails::assets::level
+{
+    TAILS_API std::shared_ptr<IAsset> load(const CString& path);
+    TAILS_API std::shared_ptr<IAsset> load(u8* memory, usize size);
 }
 
 #endif // TAILS_LEVEL_LOADER_HPP

@@ -16,43 +16,55 @@ namespace tails::assets
     {
         SHandle gLastAssetIndex;
         std::unordered_map<SHandle, std::weak_ptr<IAsset>> gLoadedAssets;
-        std::unordered_map<u8, std::unique_ptr<IAssetLoader>> gAssetLoaders;
+        std::unordered_map<u8, LoadFileSignature> gFileLoaders;
+        std::unordered_map<u8, LoadMemorySignature> gMemoryLoaders;
     }
 
     void init()
     {
         // register default engine asset loaders
-        registerLoader<CTextureLoader>();
-        registerLoader<CSoundLoader>();
-        registerLoader<CLevelLoader>();
+        registerFileLoader(getAssetType(EAssetType::Texture), texture::load);
+        registerFileLoader(getAssetType(EAssetType::Sound), sound::load);
+        registerFileLoader(getAssetType(EAssetType::Level), level::load);
+
+        registerMemoryLoader(getAssetType(EAssetType::Texture), texture::load);
+        registerMemoryLoader(getAssetType(EAssetType::Sound), sound::load);
+        registerMemoryLoader(getAssetType(EAssetType::Level), level::load);
 
         TAILS_LOG(AssetSubsystem, Message, "Initialised");
     }
 
     void deinit()
     {
-        gAssetLoaders.clear();
+        gFileLoaders.clear();
+        gMemoryLoaders.clear();
         gLoadedAssets.clear();
 
         TAILS_LOG(AssetSubsystem, Message, "Deinitialised");
     }
 
-    void registerLoader(std::unique_ptr<IAssetLoader> loader, const u8 assetType, const char* debugName)
+    void registerFileLoader(u8 assetType, LoadFileSignature function)
     {
-        const auto result = gAssetLoaders.try_emplace(assetType, std::move(loader));
-        if (!result.second)
-        {
-            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to register loader '%s'", debugName);
-            return;
-        }
-
-        TAILS_LOG_VA(AssetSubsystem, Message, "Registered loader '%s'", debugName);
+        gFileLoaders.emplace(assetType, function);
     }
 
-    IAssetLoader* getLoader(const u8 assetType)
+    void registerMemoryLoader(u8 assetType, LoadMemorySignature function)
     {
-        if (gAssetLoaders.contains(assetType))
-            return gAssetLoaders[assetType].get();
+        gMemoryLoaders.emplace(assetType, function);
+    }
+
+    LoadFileSignature getFileLoader(const u8 assetType)
+    {
+        if (gFileLoaders.contains(assetType))
+            return gFileLoaders[assetType];
+
+        return nullptr;
+    }
+
+    LoadMemorySignature getMemoryLoader(const u8 assetType)
+    {
+        if (gMemoryLoaders.contains(assetType))
+            return gMemoryLoaders[assetType];
 
         return nullptr;
     }
@@ -64,14 +76,14 @@ namespace tails::assets
         if (const SHandle handle = {fullPath.getData(), assetType}; validHandle(handle))
             return gLoadedAssets[handle].lock();
         
-        auto const loader = getLoader(assetType);
+        auto const loader = getFileLoader(assetType);
         if (!loader)
         {
             TAILS_LOG(AssetSubsystem, Error, "Failed to find asset loader");
             return nullptr;
         }
 
-        auto result = loader->load(fullPath);
+        auto result = loader(fullPath);
         if (!result)
         {
             TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load asset at path '%s'", fullPath.getData());

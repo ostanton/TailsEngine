@@ -13,4 +13,5 @@ target_sources(
         CompoundWidget.cpp
 )
 
+add_subdirectory(Input)
 add_subdirectory(Layout)

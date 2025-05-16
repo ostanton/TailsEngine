@@ -24,28 +24,13 @@ namespace tails::assets
     TAILS_API void init();
     TAILS_API void deinit();
 
-    TAILS_API void registerLoader(std::unique_ptr<IAssetLoader> loader, u8 assetType, const char* debugName);
+    using LoadFileSignature = std::shared_ptr<IAsset>(*)(const CString&);
+    using LoadMemorySignature = std::shared_ptr<IAsset>(*)(u8*, usize);
+    TAILS_API void registerFileLoader(u8 assetType, LoadFileSignature function);
+    TAILS_API void registerMemoryLoader(u8 assetType, LoadMemorySignature function);
 
-    namespace impl
-    {
-        template<typename T, typename = void>
-        constexpr inline bool hasAssetType = false;
-        template<typename T>
-        constexpr inline bool hasAssetType<T, std::void_t<typename T::AssetType>> = true;
-    }
-
-    template<typename LoaderT>
-    requires impl::hasAssetType<LoaderT>
-    void registerLoader()
-    {
-        registerLoader(
-            std::make_unique<LoaderT>(),
-            getAssetType<typename LoaderT::AssetType>(),
-            typeid(LoaderT).name()
-        );
-    }
-
-    TAILS_API IAssetLoader* getLoader(u8 assetType);
+    TAILS_API LoadFileSignature getFileLoader(u8 assetType);
+    TAILS_API LoadMemorySignature getMemoryLoader(u8 assetType);
 
     /**
      * Loads an asset from file, relative to executable

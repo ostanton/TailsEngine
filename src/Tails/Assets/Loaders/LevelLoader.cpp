@@ -1,10 +1,11 @@
 #include <Tails/Assets/Loaders/LevelLoader.hpp>
 #include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/World/Level.hpp>
 
-namespace tails
+namespace tails::assets::level
 {
-    std::shared_ptr<IAsset> CLevelLoader::load(const CString& path)
+    std::shared_ptr<IAsset> load(const CString& path)
     {
         auto level = assets::allocateAsset<CLevel>(path);
         if (!level)
@@ -16,5 +17,10 @@ namespace tails
         level->loadFinished();
         TAILS_LOG_VA(AssetSubsystem, Message, "Loaded level '%s'", path.getData());
         return level;
+    }
+
+    std::shared_ptr<IAsset> load(u8* memory, usize size)
+    {
+        return nullptr;
     }
 }

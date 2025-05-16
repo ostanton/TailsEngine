@@ -2,18 +2,19 @@
 #define TAILS_SOUND_LOADER_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Assets/Loaders/AssetLoader.hpp>
-#include <Tails/Assets/Sound.hpp>
+#include <Tails/String.hpp>
+
+#include <memory>
 
 namespace tails
 {
-    class TAILS_API CSoundLoader : public IAssetLoader
-    {
-    public:
-        using AssetType = CSound;
-        
-        std::shared_ptr<IAsset> load(const CString& path) override;
-    };
+    class IAsset;
+}
+
+namespace tails::assets::sound
+{
+    TAILS_API std::shared_ptr<IAsset> load(const CString& path);
+    TAILS_API std::shared_ptr<IAsset> load(u8* memory, usize size);
 }
 
 #endif // TAILS_SOUND_LOADER_HPP

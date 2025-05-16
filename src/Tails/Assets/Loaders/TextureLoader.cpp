@@ -3,6 +3,7 @@
 #include <Tails/Log.hpp>
 #include <Tails/String.hpp>
 #include <Tails/Filesystem.hpp>
+#include <Tails/Assets/Texture.hpp>
 
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_error.h>
@@ -15,9 +16,9 @@
 #define STBI_FAILURE_USERMSG
 #include <stb_image.h>
 
-namespace tails
+namespace tails::assets::texture
 {
-    std::shared_ptr<IAsset> CTextureLoader::load(const CString& path)
+    std::shared_ptr<IAsset> load(const CString& path)
     {
         usize dataSize {0};
         auto const fileData {fs::loadFile(path, &dataSize)};
@@ -53,5 +54,10 @@ namespace tails
             static_cast<unsigned int>(channels),
             data
         );
+    }
+
+    std::shared_ptr<IAsset> load(u8* memory, usize size)
+    {
+        return nullptr;
     }
 }

@@ -30,15 +30,23 @@ namespace tails
         TSharedRef& operator=(TSharedRef&&) = default;
         ~TSharedRef() = default;
 
-        [[nodiscard]] std::shared_ptr<T> toSharedPtr() const noexcept {return m_ptr;}
-        
+        TSharedRef& operator=(std::nullptr_t) = delete;
+        TSharedRef& operator=(std::shared_ptr<T> ptr)
+        {
+            TAILS_ASSERT(ptr != nullptr, "Creating a shared ref from null shared_ptr is not allowed!");
+            m_ptr = std::move(ptr);
+            return *this;
+        }
+
+        explicit operator std::shared_ptr<T>() const {return m_ptr;}
+
     private:
         std::shared_ptr<T> m_ptr;
     };
 
     template<typename T, typename... ArgsT>
     requires ConstructibleFrom<T, ArgsT...>
-    TSharedRef<T> makeSharedRef(ArgsT&&... args)
+    TSharedRef<T> makeShared(ArgsT&&... args)
     {
         return std::make_shared<T>(std::forward<ArgsT>(args)...);
     }
