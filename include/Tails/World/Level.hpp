@@ -16,7 +16,6 @@ namespace tails
     class CString;
     class CLayer;
     class CCameraComponent;
-    class CLevelLoader;
     class CRenderer;
 
     /**
@@ -24,13 +23,11 @@ namespace tails
      */
     class TAILS_API CLevel final : public IAsset
     {
-        friend CLevelLoader;
-        
     public:
-        using ActorIterator = std::vector<std::unique_ptr<CActor>>::iterator;
-        using ConstActorIterator = std::vector<std::unique_ptr<CActor>>::const_iterator;
-        using LayersMap = std::map<int, CLayer>;
         using ActorsVector = std::vector<std::unique_ptr<CActor>>;
+        using ActorIterator = ActorsVector::iterator;
+        using ConstActorIterator = ActorsVector::const_iterator;
+        using LayersMap = std::map<int, CLayer>;
 
         CLevel();
         explicit CLevel(ActorsVector&& actors);

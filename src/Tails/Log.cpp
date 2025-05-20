@@ -1,16 +1,19 @@
 #include <Tails/Log.hpp>
+
+#ifdef TAILS_ENABLE_LOGGING
 #include <Tails/String.hpp>
-
 #include <SDL3/SDL_log.h>
-
 #include <cstdarg>
+#endif // TAILS_ENABLE_LOGGING
 
 namespace tails::logger
 {
     void init()
     {
+#ifdef TAILS_ENABLE_LOGGING
         // SDL_Log saves to a file already, so I don't need to do that. Might as well keep this around anyway
         TAILS_LOG(LoggerSubsystem, Message, "Initialised");
+#endif // TAILS_ENABLE_LOGGING
     }
 
     void log(const ECategory category, const ESeverity severity, const char* fmt, ...)

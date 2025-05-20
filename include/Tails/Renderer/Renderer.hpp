@@ -22,6 +22,9 @@ namespace tails
     /**
      * Renderer which can be used with a window (GPU rendering via graphics context)
      * or without (software rendering)
+     *
+     * TODO - turn into free functions (tails::render::etc). Although might be worth having it be a class
+     * anyway, in case we want some global renderer and possible offline software renderers?
      */
     class TAILS_API CRenderer final
     {
