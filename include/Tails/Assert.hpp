@@ -11,7 +11,7 @@ namespace tails::impl
         const char* message,
         const char* function,
         const char* file,
-        int line
+        u16 line
     );
 }
 

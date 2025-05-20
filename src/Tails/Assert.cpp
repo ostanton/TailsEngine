@@ -1,6 +1,8 @@
 #include <Tails/Assert.hpp>
 
+#ifdef TAILS_ENABLE_ASSERTS
 #include <iostream>
+#endif // TAILS_ENABLE_ASSERTS
 
 namespace tails::impl
 {
@@ -9,7 +11,7 @@ namespace tails::impl
         const char* message,
         const char* function,
         const char* file,
-        const int line
+        const u16 line
     )
     {
 #ifdef TAILS_ENABLE_ASSERTS
