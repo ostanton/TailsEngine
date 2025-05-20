@@ -1,7 +1,9 @@
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/Maths/Maths.hpp>
 
 #include <SDL3/SDL_keyboard.h>
+#include <SDL3/SDL_joystick.h>
 #include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_mouse.h>
 
@@ -11,6 +13,11 @@ namespace tails::input
     {
         SDL_Gamepad* gGamepad {nullptr};
         std::vector<SAction> gActions;
+    }
+
+    bool SActionValue::operator==(const SActionValue& other) const noexcept
+    {
+        return maths::nearlyEqual(m_value, other.m_value, 0.01f);
     }
 
     bool SActionValue::isActive() const noexcept
@@ -26,6 +33,8 @@ namespace tails::input
     SAction::SAction(CString inName, std::vector<SKeyDataPair> inKeys)
         : name(std::move(inName))
         , keys(std::move(inKeys))
+        , currentValue()
+        , lastValue()
     {
     }
 
@@ -96,11 +105,12 @@ namespace tails::input
         {
             if (action.currentValue != action.lastValue)
                 action.lastValue = action.currentValue;
-        
+
             for (const auto& key : action.keys)
             {
                 const bool active {key.isActive()};
-                
+                // TODO - get the sum of all active keys of this action instead of the first or most recent
+
                 if (key.key.isDigital())
                 {
                     if (active)
@@ -108,7 +118,7 @@ namespace tails::input
                         action.currentValue = key.magnitude;
                         break;
                     }
-                    
+
                     action.currentValue = false;
                 }
 
@@ -119,7 +129,7 @@ namespace tails::input
                         action.currentValue = val * key.magnitude;
                         break;
                     }
-                    
+
                     action.currentValue = 0.f;
                 }
             }
@@ -162,19 +172,18 @@ namespace tails::input
 
     i16 getKeyValueRaw(const SKey key)
     {
-        constexpr i16 maxValue {32767};
         switch (key.type)
         {
         case EKeyType::Keyboard:
             if (auto const keyState = SDL_GetKeyboardState(nullptr);
                 keyState && keyState[SDL_GetScancodeFromKey(key.code, nullptr)])
             {
-                return maxValue;
+                return SDL_JOYSTICK_AXIS_MAX;
             }
             break;
             
         case EKeyType::GamepadButton:
-            return SDL_GetGamepadButton(gGamepad, static_cast<SDL_GamepadButton>(key.code)) ? maxValue : 0;
+            return SDL_GetGamepadButton(gGamepad, static_cast<SDL_GamepadButton>(key.code)) ? SDL_JOYSTICK_AXIS_MAX : 0;
             
         case EKeyType::GamepadAxis:
             return SDL_GetGamepadAxis(gGamepad, static_cast<SDL_GamepadAxis>(key.code));
@@ -183,7 +192,7 @@ namespace tails::input
             {
                 const auto mouseFlags = SDL_GetMouseState(nullptr, nullptr);
                 const auto keyMask = SDL_BUTTON_MASK(key.code);
-                return (mouseFlags & keyMask) == keyMask ? maxValue : 0;
+                return (mouseFlags & keyMask) == keyMask ? SDL_JOYSTICK_AXIS_MAX : 0;
             }
             
         case EKeyType::MouseMove:
@@ -195,7 +204,7 @@ namespace tails::input
 
     float getKeyValueNormalised(const SKey key)
     {
-        return static_cast<float>(getKeyValueRaw(key)) / 32767.f; // max SDL axis value
+        return static_cast<float>(getKeyValueRaw(key)) / static_cast<float>(SDL_JOYSTICK_AXIS_MAX);
     }
 
     SActionHandle addAction(SAction action)

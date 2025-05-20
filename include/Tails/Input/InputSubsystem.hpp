@@ -31,13 +31,12 @@ namespace tails::input
     struct TAILS_API SActionValue final
     {
         SActionValue() = default;
-        SActionValue(const bool val) : m_value(val ? 1.f : 0.f, 0.f) {}
-        SActionValue(const float val) : m_value(val, 0.f) {}
+        SActionValue(const bool val) : m_value(val ? 1.f : 0.f) {}
+        SActionValue(const float val) : m_value(val) {}
 
-        // TODO - check for > 0 instead of equality
-        [[nodiscard]] bool operator==(const SActionValue& other) const noexcept {return m_value == other.m_value;}
+        [[nodiscard]] bool operator==(const SActionValue& other) const noexcept;
         [[nodiscard]] bool operator!=(const SActionValue& other) const noexcept {return !(*this == other);}
-        
+
         template<typename T>
         [[nodiscard]] T get() const noexcept
         {
@@ -47,12 +46,12 @@ namespace tails::input
 
         [[nodiscard]] bool isActive() const noexcept;
 
-        [[nodiscard]] bool operator<(const float other) const noexcept {return m_value.x < other;}
-        [[nodiscard]] bool operator>(const float other) const noexcept {return m_value.x > other;}
-        
+        [[nodiscard]] bool operator<(const float other) const noexcept {return m_value < other;}
+        [[nodiscard]] bool operator>(const float other) const noexcept {return m_value > other;}
+
     private:
-        // X is the axis for scalar and digital actions
-        SVector2f m_value;
+        // scalar value, with digital values resolving to true if > 0.f
+        float m_value;
     };
 
     TAILS_DECLARE_MULTICAST_DELEGATE_VA_PARAMS(SOnActionBinding, SActionValue);
@@ -112,14 +111,14 @@ namespace tails::input
     template<>
     inline bool SActionValue::get() const noexcept
     {
-        // either axis is non-zero
-        return m_value.x != 0.f || m_value.y != 0.f;
+        // true if scalar is non-zero
+        return m_value != 0.f;
     }
 
     template<>
     inline float SActionValue::get() const noexcept
     {
-        return m_value.x;
+        return m_value;
     }
 }
 

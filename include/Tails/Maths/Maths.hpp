@@ -5,14 +5,14 @@
 
 namespace tails::maths
 {
-    template<typename T> [[nodiscard]] constexpr T square(T x) noexcept {return x * x;}
-    template<typename T> [[nodiscard]] constexpr T cube(T x) noexcept {return x * x * x;}
-    template<typename T> [[nodiscard]] constexpr T sqrt(T x) noexcept {return std::sqrt(x);}
-    template<typename T> [[nodiscard]] constexpr T invSqrt(T x) noexcept {return static_cast<T>(1) / sqrt(x);}
-    template<typename T> [[nodiscard]] constexpr T fInvSqrt(T x) noexcept
+    template<typename T> [[nodiscard]] constexpr T square(const T x) noexcept {return x * x;}
+    template<typename T> [[nodiscard]] constexpr T cube(const T x) noexcept {return x * x * x;}
+    template<typename T> [[nodiscard]] constexpr T sqrt(const T x) noexcept {return std::sqrt(x);}
+    template<typename T> [[nodiscard]] constexpr T invSqrt(const T x) noexcept {return static_cast<T>(1) / sqrt(x);}
+    template<typename T> [[nodiscard]] constexpr T fInvSqrt(const T x) noexcept
     {
         // id-tech fast inverse sqrt
-        // I don't understand it, but it works :D
+        // I don't understand it, but I think it works :/ (:D)
         const float x2 = x * 0.5f;
         constexpr float threeHalves {1.5f};
         float y = x;
@@ -22,10 +22,17 @@ namespace tails::maths
         y = y * (threeHalves - x2 * y * y);
         return y;
     }
-    template<typename T> [[nodiscard]] constexpr T abs(T x) noexcept {return x > static_cast<T>(0) ? x : -x;}
-    template<typename T> [[nodiscard]] constexpr T max(T a, T b) noexcept {return a > b ? a : b;}
-    template<typename T> [[nodiscard]] constexpr T min(T a, T b) noexcept {return a < b ? a : b;}
-    template<typename T, typename U> [[nodiscard]] constexpr T power(T x, U exp) noexcept {return std::pow(x, exp);}
+    template<typename T> [[nodiscard]] constexpr T abs(const T x) noexcept {return x > static_cast<T>(0) ? x : -x;}
+    template<typename T> [[nodiscard]] constexpr T max(const T a, const T b) noexcept {return a > b ? a : b;}
+    template<typename T> [[nodiscard]] constexpr T min(const T a, const T b) noexcept {return a < b ? a : b;}
+    template<typename T, typename U> [[nodiscard]] constexpr T power(const T x, const U exp) noexcept {return std::pow(x, exp);}
+    template<typename T>
+    [[nodiscard]] constexpr bool nearlyEqual(const T a, const T b, const T tolerance) noexcept
+    {
+        const T absA {abs(a)};
+        const T absB {abs(b)};
+        return abs(a - b) <= (absA < absB ? absB : absA) * tolerance;
+    }
 }
 
 #endif // TAILS_MATHS_HPP
