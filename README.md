@@ -49,28 +49,22 @@ add_executable(MyGame main.cpp)
 target_link_libraries(MyGame PRIVATE ostanton::Tails)
 ```
 
-The `main.cpp` must then declare what application subclass to use, like so:
+A minimal `main.cpp` is like so:
 
 ```cpp
 #include <Tails/Application.hpp>
-#include <Tails/EntryPoint.hpp>
 
-class CMyApp : public tails::IApplication
+int main(int argc, char* argv[])
 {
-public:
-    CMyApp()
-        : IApplication({1280, 720})
-    {}
-
-private:
-    void onInputEvent(const tails::CEvent& ev) override
-    {
-        if (ev.is<tails::CEvent::SClosed>())
-            exit();
-    }
-};
-
-TAILS_IMPLEMENT_ENTRY_POINT(CMyApp, "My Game!")
+    using namespace tails;
+    app::init(argc, argv);
+    app::run();
+    app::deinit();
+    return 0;
+}
 ```
+
+Each of these application functions are more or less just a wrapper around calling various subsystem functions of the same name.
+So if you want to insert your own subsystem between default engine subsystems, just disect whatever function you need in main.
 
 For a more in-depth example, see the [example](example/) folder.
