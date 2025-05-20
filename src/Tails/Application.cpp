@@ -1,5 +1,4 @@
 #include <Tails/Application.hpp>
-#include <Tails/EntryPoint.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Audio/AudioSubsystem.hpp>
@@ -8,6 +7,7 @@
 #include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/Window.hpp>
 
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_hints.h>
@@ -15,7 +15,7 @@
 
 #ifdef TAILS_OS_PSP
 #include <pspkernel.h>
-PSP_MODULE_INFO(gAppCreateData.name, 0, 1, 0);
+PSP_MODULE_INFO("Tails Engine", 0, 1, 0); // TODO - probably have to set with a #define TAILS_GAME_NAME or something
 #endif // TAILS_OS_PSP
 
 // TODO - multiple threads. The main thread where ticking, rendering, etc. is done, then
@@ -25,65 +25,36 @@ PSP_MODULE_INFO(gAppCreateData.name, 0, 1, 0);
 
 namespace tails
 {
+    float SFrameInfo::getDeltaSeconds() const
+    {
+        return static_cast<float>((currentTime - previousTime) * 1000) /
+            static_cast<float>(SDL_GetPerformanceFrequency()) * 0.001f;
+    }
+}
+
+namespace tails::app
+{
     namespace
     {
-        IApplication* gApplication {nullptr};
-        float gDeltaSeconds {0.f};
+        SFrameInfo gCurrentFrameInfo;
+        bool gShouldExit;
+        u64 gStartTime;
+        // TODO - make it stop being a class (same with renderer!)
+        // only one window and one renderer will ever exist!
+        CWindow gWindow {"Tails Engine", {1280, 720}};
     }
 
-    int SEntryPoint::main(const int argc, char* argv[], IApplication& app)
+    bool init(int argc, char* argv[])
     {
-        gApplication = &app;
+        if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMEPAD))
+            return false;
 
-        // TODO - abstract into user-friendly arg struct
-        if (!app.init(argc, argv))
-            return 0;
-
-        app.run();
-        app.shutdown();
-
-        return 0;
-    }
-
-    IApplication& getApplication() noexcept
-    {
-        return *gApplication;
-    }
-
-    float getDeltaSeconds() noexcept
-    {
-        return gDeltaSeconds;
-    }
-
-    float getFPS() noexcept
-    {
-        return 1.f / gDeltaSeconds;
-    }
-
-    CWindow& getWindow() noexcept
-    {
-        return gApplication->window;
-    }
-
-    IApplication::IApplication(const SVector2u windowSize)
-        : window(gAppCreateData.name, windowSize)
-    {
-    }
-
-    IApplication& IApplication::get()
-    {
-        return *gApplication;
-    }
-
-    void IApplication::exit()
-    {
-        window.close();
-    }
-
-    bool IApplication::init(int argc, char* argv[])
-    {
-        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMEPAD);
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
+
+        // initialise global application variables
+        gCurrentFrameInfo = {};
+        gShouldExit = false;
+        gStartTime = SDL_GetPerformanceCounter();
 
         // init Tails systems
         logger::init();
@@ -93,33 +64,11 @@ namespace tails
         debug::init();
         world::init();
         ui::init();
-        
+
         return true;
     }
 
-    void IApplication::run()
-    {
-        TAILS_LOG(Application, Message, "Starting main loop");
-        auto timeNow = SDL_GetPerformanceCounter();
-        
-        while (!shouldExit())
-        {
-            const auto timeLast = timeNow;
-            timeNow = SDL_GetPerformanceCounter();
-            gDeltaSeconds =
-                static_cast<float>((timeNow - timeLast) * 1000) /
-                    static_cast<float>(SDL_GetPerformanceFrequency()) * 0.001f;
-            
-            pollInput();
-            tick(gDeltaSeconds);
-            render();
-            cleanup();
-        }
-
-        TAILS_LOG(Application, Message, "Finished main loop");
-    }
-
-    void IApplication::shutdown()
+    void deinit()
     {
         TAILS_LOG(Application, Message, "Shutting down application");
         ui::deinit();
@@ -128,46 +77,74 @@ namespace tails
         audio::deinit();
         input::deinit();
         assets::deinit();
-        
+    
         SDL_Quit();
         TAILS_LOG(Application, Message, "Application shutdown successfully");
     }
 
-    void IApplication::pollInput()
+    bool shouldExit()
     {
-        while (const auto ev = window.pollEvent())
+        return gShouldExit;
+    }
+
+    void run()
+    {
+        while (!gShouldExit)
         {
-            onInputEvent(*ev);
+            startFrame();
+            pollInput();
+            tick(gCurrentFrameInfo.getDeltaSeconds());
+            render();
+            endFrame();
+        }
+    }
+
+    void startFrame()
+    {
+        gCurrentFrameInfo.previousTime = gCurrentFrameInfo.currentTime;
+        gCurrentFrameInfo.currentTime = SDL_GetPerformanceCounter();
+    }
+
+    void pollInput(const PollInputCallback callback)
+    {
+        while (const auto ev = gWindow.pollEvent())
+        {
+            if (callback)
+                callback(*ev);
             ui::processEvent(*ev);
         }
     }
 
-    void IApplication::tick(const float deltaSeconds)
+    void tick(const float deltaSeconds)
     {
         input::tick();
         debug::tick(deltaSeconds);
         world::tick(deltaSeconds);
     }
 
-    void IApplication::render()
+    void render()
     {
-        window.getRenderer().clear();
+        gWindow.getRenderer().clear();
 
-        world::render(window.getRenderer());
-        // TODO - might want this on a separate thread in the future
-        ui::paint(window.getRenderer(), gDeltaSeconds);
-        debug::render(window.getRenderer());
+        world::render(gWindow.getRenderer());
+        ui::paint(gWindow.getRenderer(), gCurrentFrameInfo.getDeltaSeconds());
+        debug::render(gWindow.getRenderer());
 
-        window.getRenderer().present();
+        gWindow.getRenderer().present();
     }
 
-    void IApplication::cleanup()
+    void endFrame()
     {
         world::cleanup();
     }
 
-    bool IApplication::shouldExit() const
+    void exit()
     {
-        return !window.isOpen();
+        gShouldExit = true;
+    }
+
+    const SFrameInfo& getCurrentFrameInfo() noexcept
+    {
+        return gCurrentFrameInfo;
     }
 }

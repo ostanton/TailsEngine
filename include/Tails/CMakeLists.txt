@@ -8,7 +8,6 @@ target_sources(
         Profiler.hpp
         String.hpp
         Application.hpp
-        EntryPoint.hpp
         Debug.hpp
         Filesystem.hpp
         Window.hpp

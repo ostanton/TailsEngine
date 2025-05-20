@@ -2,77 +2,34 @@
 #define TAILS_APPLICATION_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Window.hpp>
-#include <Tails/Renderer/Renderer.hpp>
 
 namespace tails
 {
-    class CString;
-    class IApplication;
-    class IEventPoller;
     class CEvent;
-    struct SEntryPoint;
 
-    /**
-     * Structure for general application creation data. Used as a global variable so different
-     * platforms can use it no matter how they perform their own setups
-     */
-    struct TAILS_API SAppCreateData
+    struct TAILS_API SFrameInfo
     {
-        const char* name;
+        u64 currentTime;
+        u64 previousTime;
+        [[nodiscard]] float getDeltaSeconds() const;
     };
 
-    extern SAppCreateData gAppCreateData;
-
-    [[nodiscard]] TAILS_API IApplication& getApplication() noexcept;
-    [[nodiscard]] TAILS_API float getDeltaSeconds() noexcept;
-    [[nodiscard]] TAILS_API float getFPS() noexcept;
-    [[nodiscard]] TAILS_API CWindow& getWindow() noexcept;
-
-    /**
-     * Platform-agnostic application. Creates the necessary things like a window, etc. for the specific
-     * platform, and polls events, renders, etc. for it. E.g.:
-     * - If on Windows, create a window, poll window events, render to window, etc.
-     * - If on PSP, setup PSP module info, create window, poll, etc.
-     */
-    class TAILS_API IApplication
+    namespace app
     {
-        friend SEntryPoint;
-        
-    public:
-        IApplication() = delete;
-        explicit IApplication(SVector2u windowSize);
-        IApplication(const IApplication&) = default;
-        IApplication(IApplication&&) noexcept = default;
-        IApplication& operator=(const IApplication&) = default;
-        IApplication& operator=(IApplication&&) noexcept = default;
-        virtual ~IApplication() = default;
+        using PollInputCallback = void(*)(const CEvent&);
+        TAILS_API bool init(int argc, char* argv[]);
+        TAILS_API void deinit();
+        TAILS_API bool shouldExit();
+        TAILS_API void run();
+        TAILS_API void startFrame();
+        TAILS_API void pollInput(PollInputCallback callback = nullptr); // TODO - do we want this?
+        TAILS_API void tick(float deltaSeconds);
+        TAILS_API void render();
+        TAILS_API void endFrame();
+        TAILS_API void exit();
 
-        [[nodiscard]] static IApplication& get();
-
-        virtual void exit();
-
-        CWindow window;
-
-    protected:
-        // TODO - could abstract args to a more user-friendly struct
-        virtual bool init(int argc, char* argv[]);
-        virtual void run();
-        virtual void shutdown();
-
-        void pollInput();
-
-        /**
-         * Where you specify how this application handles various hard-coded actions (like closing, etc.)
-         * @param ev Last polled event
-         */
-        virtual void onInputEvent(const CEvent& ev) = 0;
-        virtual void tick(float deltaSeconds);
-        void render();
-        virtual void cleanup();
-
-        [[nodiscard]] virtual bool shouldExit() const;
-    };
+        TAILS_API const SFrameInfo& getCurrentFrameInfo() noexcept;
+    }
 }
 
 #endif // TAILS_APPLICATION_HPP

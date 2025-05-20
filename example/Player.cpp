@@ -144,14 +144,14 @@ void CPlayer::handleMoveDown(const tails::input::SActionValue actionValue)
 {
     move({
         0.f,
-        actionValue.get<float>() * m_currentSpeed * tails::getDeltaSeconds()
+        actionValue.get<float>() * m_currentSpeed * tails::app::getCurrentFrameInfo().getDeltaSeconds()
     });
 }
 
 void CPlayer::handleMoveRight(const tails::input::SActionValue actionValue)
 {
     move({
-        actionValue.get<float>() * m_currentSpeed * tails::getDeltaSeconds(),
+        actionValue.get<float>() * m_currentSpeed * tails::app::getCurrentFrameInfo().getDeltaSeconds(),
         0.f
     });
 }
