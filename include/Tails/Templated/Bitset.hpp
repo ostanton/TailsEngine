@@ -3,25 +3,26 @@
 
 #include <Tails/Concepts.hpp>
 
-#include <type_traits>
 #include <initializer_list>
 
 namespace tails
 {
-    template<Enum EnumType, typename FlagSize = std::underlying_type_t<EnumType>>
+    /**
+     * Basic bitset wrapper. Assumes enumerator value are bits (like 1 << 0, 1 << 1, etc.)
+     * @tparam EnumType Enumeration type
+     * @tparam FlagSize Size of the enumeration/bit set (defaults to underlying value of EnumType)
+     */
+    template<Enum EnumType, Integral FlagSize = std::underlying_type_t<EnumType>>
     class TBitset final
     {
-        static_assert(std::is_enum_v<EnumType>, "Cannot use TBitset with a non-enum type");
-        static_assert(std::is_integral_v<FlagSize>, "Cannot use TBitset with a non-integer flag size");
-        
     public:
         using UnderlyingType = std::underlying_type_t<EnumType>;
         
         constexpr TBitset() noexcept = default;
-        constexpr explicit TBitset(FlagSize flags) noexcept
+        constexpr TBitset(FlagSize flags) noexcept
             : m_flags(flags)
         {}
-        constexpr explicit TBitset(std::initializer_list<EnumType> bits) noexcept
+        constexpr TBitset(std::initializer_list<EnumType> bits) noexcept
         {
             for (const auto bit : bits)
             {
@@ -58,6 +59,8 @@ namespace tails
         {
             return (m_flags & static_cast<UnderlyingType>(bit)) == static_cast<UnderlyingType>(bit);
         }
+
+        [[nodiscard]] constexpr bool anyBitSet() const noexcept {return m_flags != 0;}
         
     private:
         FlagSize m_flags {0};

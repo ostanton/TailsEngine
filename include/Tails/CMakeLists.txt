@@ -10,7 +10,6 @@ target_sources(
         Application.hpp
         Debug.hpp
         Filesystem.hpp
-        Window.hpp
         Animation.hpp
         Memory.hpp
         Concepts.hpp

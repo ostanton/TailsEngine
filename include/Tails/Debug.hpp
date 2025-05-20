@@ -3,16 +3,11 @@
 
 #include <Tails/Core.hpp>
 
-namespace tails
-{
-    class CRenderer;
-}
-
 namespace tails::debug
 {
     TAILS_API void init();
     TAILS_API void tick(float deltaSeconds);
-    TAILS_API void render(const CRenderer& renderer);
+    TAILS_API void render();
     TAILS_API void deinit();
 
     TAILS_API void addOnScreenDebugMessage(float duration, const char* fmt, ...);

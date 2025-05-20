@@ -12,6 +12,9 @@ namespace tails
         u8 b {255};
         u8 a {255};
 
+        [[nodiscard]] bool operator==(const SColour& other) const noexcept;
+        [[nodiscard]] bool operator!=(const SColour& other) const noexcept;
+
         static SColour red;
         static SColour yellow;
         static SColour green;

@@ -99,7 +99,6 @@ namespace tails
     }
 
     void SAnimationPlayer::render(
-        const CRenderer& renderer,
         const STransform2D& transform,
         const SColour colour
     ) const
@@ -110,17 +109,17 @@ namespace tails
         if (auto const currentAnim = getPlayingAnimation())
         {
             const auto& bounds = currentAnim->frames[currentAnim->currentFrame].bounds;
-            renderer.render(
+            render::texture(
                 spriteSheet,
-                bounds,
                 transform,
                 SVector2f {bounds.size},
-                colour
+                colour,
+                bounds
             );
         }
         else
         {
-            renderer.render(spriteSheet, transform, {}, colour);
+            render::texture(spriteSheet, transform, {}, colour);
         }
     }
 }

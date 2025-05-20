@@ -7,11 +7,6 @@
 
 namespace tails
 {
-    class CRenderer;
-    
-    template<typename T>
-    concept RenderItem = requires(T t, const CRenderer& renderer) {t.onRender(renderer);};
-
     template<typename DerivedT, typename BaseT>
     concept DerivedFrom = std::derived_from<DerivedT, BaseT>;
 
@@ -32,6 +27,9 @@ namespace tails
 
     template<typename T>
     concept UserType = std::is_class_v<T>;
+
+    template<typename T>
+    concept Integral = std::integral<T>;
 }
 
 #endif // TAILS_CONCEPTS_HPP

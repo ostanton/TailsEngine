@@ -46,7 +46,7 @@ namespace tails::ui
         m_slot.slot.content = std::move(content);
     }
 
-    void CCompoundWidget::onPaint(const SLayoutData& myLayout, const CRenderer& renderer, const float deltaSeconds) const
+    void CCompoundWidget::onPaint(const SLayoutData& myLayout, const float deltaSeconds) const
     {
         CTransformedWidgets widgets;
         onLayoutChildren(myLayout, widgets);
@@ -59,6 +59,6 @@ namespace tails::ui
         if (widget->visibility == EVisibility::Hidden)
             return;
         
-        widget->paint(layout, renderer, deltaSeconds);
+        widget->paint(layout, deltaSeconds);
     }
 }

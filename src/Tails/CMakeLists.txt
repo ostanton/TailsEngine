@@ -7,9 +7,9 @@ target_sources(
         Profiler.cpp
         String.cpp
         Application.cpp
+        ApplicationImpl.hpp
         Debug.cpp
         Filesystem.cpp
-        Window.cpp
         Animation.cpp
         Memory.cpp
         Assert.cpp

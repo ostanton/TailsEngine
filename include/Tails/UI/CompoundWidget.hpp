@@ -30,7 +30,7 @@ namespace tails::ui
         void setContent(std::shared_ptr<CWidget> content);
         
     protected:
-        void onPaint(const SLayoutData& myLayout, const CRenderer& renderer, float deltaSeconds) const override;
+        void onPaint(const SLayoutData& myLayout, float deltaSeconds) const override;
 
         TSingleChildren<SSlot> m_slot;
     };

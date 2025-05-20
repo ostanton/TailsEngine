@@ -7,10 +7,10 @@ namespace tails
         animationPlayer.tick(deltaSeconds);
     }
 
-    void CAnimatedSpriteComponent::onRender(const CRenderer& renderer) const
+    void CAnimatedSpriteComponent::onRender() const
     {
-        animationPlayer.render(renderer, transform, tint);
+        animationPlayer.render(transform, tint);
 
-        IComponent::onRender(renderer);
+        IComponent::onRender();
     }
 }

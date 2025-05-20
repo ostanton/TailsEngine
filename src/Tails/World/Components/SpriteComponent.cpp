@@ -12,22 +12,22 @@ namespace tails
     {
     }
 
-    void CSpriteComponent::onRender(const CRenderer& renderer) const
+    void CSpriteComponent::onRender() const
     {
         if (!visible)
             return;
 
         // right and bottom (size) is offset by left and top (position) for us by SDL
         if (!texture)
-            renderer.render(transform, size, colour);
+            render::rect(transform, size, colour);
         else
-            renderer.render(
+            render::texture(
                 texture,
                 transform,
                 useTextureSize ? SVector2f {} : size,
                 colour
             );
 
-        IComponent::onRender(renderer);
+        IComponent::onRender();
     }
 }

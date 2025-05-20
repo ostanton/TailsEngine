@@ -51,14 +51,15 @@ namespace tails::debug
 #endif // TAILS_DEBUG
     }
 
-    void render(const CRenderer& renderer)
+    void render()
     {
 #ifdef TAILS_DEBUG
         for (const auto& message : gDebugMessages)
         {
-            renderer.renderDebugText(
+            render::debugText(
                 {
                     0.f,
+                    1.f,
                     static_cast<float>(gDebugMessages.size()) * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE
                 },
                 message.message

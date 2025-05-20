@@ -47,10 +47,28 @@ namespace tails
     const SKey EKeys::Y {SDLK_Y, EKeyType::Keyboard};
     const SKey EKeys::Z {SDLK_Z, EKeyType::Keyboard};
 
+    const SKey EKeys::Zero {SDLK_0, EKeyType::Keyboard};
+    const SKey EKeys::One {SDLK_1, EKeyType::Keyboard};
+    const SKey EKeys::Two {SDLK_2, EKeyType::Keyboard};
+    const SKey EKeys::Three {SDLK_3, EKeyType::Keyboard};
+    const SKey EKeys::Four {SDLK_4, EKeyType::Keyboard};
+    const SKey EKeys::Five {SDLK_5, EKeyType::Keyboard};
+    const SKey EKeys::Six {SDLK_6, EKeyType::Keyboard};
+    const SKey EKeys::Seven {SDLK_7, EKeyType::Keyboard};
+    const SKey EKeys::Eight {SDLK_8, EKeyType::Keyboard};
+    const SKey EKeys::Nine {SDLK_9, EKeyType::Keyboard};
+
     const SKey EKeys::Up {SDLK_UP, EKeyType::Keyboard};
     const SKey EKeys::Down {SDLK_DOWN, EKeyType::Keyboard};
     const SKey EKeys::Left {SDLK_LEFT, EKeyType::Keyboard};
     const SKey EKeys::Right {SDLK_RIGHT, EKeyType::Keyboard};
+
+    const SKey EKeys::Backspace {SDLK_BACKSPACE, EKeyType::Keyboard};
+    const SKey EKeys::Tab {SDLK_TAB, EKeyType::Keyboard};
+    const SKey EKeys::Enter {SDLK_RETURN, EKeyType::Keyboard};
+    const SKey EKeys::SpaceBar {SDLK_SPACE, EKeyType::Keyboard};
+    const SKey EKeys::CapsLock {SDLK_CAPSLOCK, EKeyType::Keyboard};
+    const SKey EKeys::Escape {SDLK_ESCAPE, EKeyType::Keyboard};
 
     const SKey EKeys::LeftMouseButton {SDL_BUTTON_LEFT, EKeyType::MouseButton};
     const SKey EKeys::RightMouseButton {SDL_BUTTON_RIGHT, EKeyType::MouseButton};

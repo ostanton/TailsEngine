@@ -24,11 +24,16 @@ namespace tails
 
         [[nodiscard]] bool isScalar() const noexcept;
         [[nodiscard]] bool isDigital() const noexcept;
+
+        [[nodiscard]] bool operator==(const SKey&) const noexcept = default;
+        [[nodiscard]] bool operator!=(const SKey&) const noexcept = default;
     };
 
     /**
      * Static keys that function like an enum. At the moment it uses keycodes, but could
      * think about using scancodes in the future
+     *
+     * TODO - commented out keys I haven't got around to defining yet!
      */
     struct TAILS_API EKeys
     {
@@ -61,27 +66,28 @@ namespace tails
         static const SKey Y;
         static const SKey Z;
 
-        //static const SKey Zero;
-        //static const SKey One;
-        //static const SKey Two;
-        //static const SKey Three;
-        //static const SKey Four;
-        //static const SKey Five;
-        //static const SKey Six;
-        //static const SKey Seven;
-        //static const SKey Eight;
-        //static const SKey Nine;
+        static const SKey Zero;
+        static const SKey One;
+        static const SKey Two;
+        static const SKey Three;
+        static const SKey Four;
+        static const SKey Five;
+        static const SKey Six;
+        static const SKey Seven;
+        static const SKey Eight;
+        static const SKey Nine;
 
         static const SKey Up;
         static const SKey Down;
         static const SKey Left;
         static const SKey Right;
 
-        //static const SKey Backspace;
-        //static const SKey Tab;
-        //static const SKey Enter;
-        //static const SKey SpaceBar;
-        //static const SKey CapsLock;
+        static const SKey Backspace;
+        static const SKey Tab;
+        static const SKey Enter;
+        static const SKey SpaceBar;
+        static const SKey CapsLock;
+        static const SKey Escape;
 
         //static const SKey Insert;
         //static const SKey Home;

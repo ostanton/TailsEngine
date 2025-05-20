@@ -9,7 +9,6 @@ namespace tails
 {
     class CActor;
     class CLevel;
-    class CRenderer;
     
     /**
      * A layer within a level. Higher layers render in front of lower layers
@@ -24,7 +23,7 @@ namespace tails
 
     public:
         void onTick(float deltaSeconds);
-        void onRender(const CRenderer& renderer) const;
+        void onRender() const;
         
     private:
         void addActor(CActor* actor);

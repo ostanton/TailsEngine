@@ -9,7 +9,6 @@
 namespace tails
 {
     class CActor;
-    class CRenderer;
 
     enum class ECollisionType : u8
     {
@@ -38,7 +37,7 @@ namespace tails
         void setParent(IComponent* parent) noexcept;
         [[nodiscard]] IComponent* getParent() const noexcept;
 
-        virtual void onRender(const CRenderer& renderer) const;
+        virtual void onRender() const;
 
         STransform2D transform {0.f, 0.f, 1.f};
         bool visible {true};

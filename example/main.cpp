@@ -59,8 +59,11 @@ namespace
 
     void pollInputCallback(const tails::CEvent& ev)
     {
-        if (ev.is<tails::CEvent::SClosed>())
-            tails::app::exit();
+        if (auto const keyEv = ev.getIf<tails::CEvent::SKeyDown>())
+        {
+            if (keyEv->key == tails::EKeys::Escape)
+                tails::app::exit();
+        }
     }
 }
 
@@ -68,7 +71,12 @@ int main(const int argc, char* argv[])
 {
     using namespace tails;
 
-    if (!app::init(argc, argv))
+    const SWindowInfo windowInfo {
+        .title = "My game!",
+        .size = {1920, 1080},
+        .flags = {EWindowFlags::Resizable, EWindowFlags::Fullscreen}
+    };
+    if (!app::init(argc, argv, windowInfo))
         return -1;
 
     // testing shenanigans
@@ -110,8 +118,7 @@ int main(const int argc, char* argv[])
     // default run sequence
     //app::run();
 
-    // customised run sequence with custom input polling callback (to close the window with the close button)
-    // TODO - pretty sure we want closing the window as a default!!
+    // customised run sequence with custom input polling callback (to close the window with the escape key)
     while (!app::shouldExit())
     {
         app::startFrame();
@@ -124,4 +131,3 @@ int main(const int argc, char* argv[])
     app::deinit();
     return 0;
 }
-

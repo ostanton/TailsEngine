@@ -39,6 +39,8 @@ namespace tails
         }
 
         explicit operator std::shared_ptr<T>() const {return m_ptr;}
+        [[nodiscard]] T* operator->() const noexcept {return m_ptr.get();}
+        [[nodiscard]] T& operator*() const noexcept {return *m_ptr;}
 
     private:
         std::shared_ptr<T> m_ptr;

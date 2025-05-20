@@ -7,11 +7,14 @@
 #include <Tails/Assets/AssetSubsystem.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Log.hpp>
-#include <Tails/Window.hpp>
+#include <Tails/Input/Event.hpp>
+
+#include "ApplicationImpl.hpp"
 
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_hints.h>
 #include <SDL3/SDL_timer.h>
+#include <SDL3/SDL_video.h>
 
 #ifdef TAILS_OS_PSP
 #include <pspkernel.h>
@@ -39,12 +42,42 @@ namespace tails::app
         SFrameInfo gCurrentFrameInfo;
         bool gShouldExit;
         u64 gStartTime;
-        // TODO - make it stop being a class (same with renderer!)
-        // only one window and one renderer will ever exist!
-        CWindow gWindow {"Tails Engine", {1280, 720}};
+        SDL_Window* gWindowPtr {nullptr};
+
+        SDL_WindowFlags getSDLWindowFlags(const TBitset<EWindowFlags> flags)
+        {
+            if (!flags.anyBitSet())
+                return 0;
+
+            SDL_WindowFlags result {0};
+            if (flags.isBitSet(EWindowFlags::Resizable))
+                result |= SDL_WINDOW_RESIZABLE;
+
+            if (flags.isBitSet(EWindowFlags::Fullscreen))
+                result |= SDL_WINDOW_FULLSCREEN;
+
+            if (flags.isBitSet(EWindowFlags::Borderless))
+                result |= SDL_WINDOW_BORDERLESS;
+
+            if (flags.isBitSet(EWindowFlags::Minimised))
+                result |= SDL_WINDOW_MINIMIZED;
+
+            if (flags.isBitSet(EWindowFlags::Maximised))
+                result |= SDL_WINDOW_MAXIMIZED;
+
+            return result;
+        }
     }
 
-    bool init(int argc, char* argv[])
+    namespace impl
+    {
+        SDL_Window* getWindow()
+        {
+            return gWindowPtr;
+        }
+    }
+
+    bool init(int argc, char* argv[], const SWindowInfo& windowInfo)
     {
         if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMEPAD))
             return false;
@@ -55,9 +88,18 @@ namespace tails::app
         gCurrentFrameInfo = {};
         gShouldExit = false;
         gStartTime = SDL_GetPerformanceCounter();
+        gWindowPtr = SDL_CreateWindow(
+            windowInfo.title,
+            static_cast<int>(windowInfo.size.x),
+            static_cast<int>(windowInfo.size.y),
+            getSDLWindowFlags(windowInfo.flags)
+        );
+        if (!gWindowPtr)
+            return false;
 
         // init Tails systems
         logger::init();
+        render::init();
         assets::init();
         input::init();
         audio::init();
@@ -77,7 +119,10 @@ namespace tails::app
         audio::deinit();
         input::deinit();
         assets::deinit();
-    
+        render::deinit();
+
+        SDL_DestroyWindow(gWindowPtr);
+        gWindowPtr = nullptr;
         SDL_Quit();
         TAILS_LOG(Application, Message, "Application shutdown successfully");
     }
@@ -107,11 +152,66 @@ namespace tails::app
 
     void pollInput(const PollInputCallback callback)
     {
-        while (const auto ev = gWindow.pollEvent())
+        SDL_Event ev;
+        while (SDL_PollEvent(&ev))
         {
+            TOptional<CEvent> evt;
+            switch (ev.type)
+            {
+            case SDL_EVENT_QUIT:
+                evt.emplace(CEvent::SClosed {});
+                break;
+            case SDL_EVENT_WINDOW_RESIZED:
+                evt.emplace(CEvent::SResized {
+                    .size = {ev.window.data1, ev.window.data2}
+                });
+                break;
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                evt.emplace(CEvent::SMouseButtonDown {
+                    .button = static_cast<mouse::EButton>(ev.button.button),
+                    .position = {ev.button.x, ev.button.y}
+                });
+                break;
+            case SDL_EVENT_MOUSE_BUTTON_UP:
+                evt.emplace(CEvent::SMouseButtonUp {
+                    .button = static_cast<mouse::EButton>(ev.button.button),
+                    .position = {ev.button.x, ev.button.y}
+                });
+                break;
+            case SDL_EVENT_MOUSE_MOTION:
+                evt.emplace(CEvent::SMouseMove {
+                    .position = {ev.motion.x, ev.motion.y}
+                });
+                break;
+            case SDL_EVENT_KEY_DOWN:
+                evt.emplace(CEvent::SKeyDown {
+                    .key = {
+                        .code = ev.key.key,
+                        .type = EKeyType::Keyboard
+                    }
+                });
+                break;
+            case SDL_EVENT_KEY_UP:
+                evt.emplace(CEvent::SKeyUp {
+                    .key = {
+                        .code = ev.key.key,
+                        .type = EKeyType::Keyboard
+                    }
+                });
+                break;
+            default:
+                break;
+            }
+
+            if (!evt)
+                continue;
+
             if (callback)
-                callback(*ev);
-            ui::processEvent(*ev);
+                callback(*evt);
+            ui::processEvent(*evt);
+
+            if (evt->is<CEvent::SClosed>())
+                exit();
         }
     }
 
@@ -124,13 +224,13 @@ namespace tails::app
 
     void render()
     {
-        gWindow.getRenderer().clear();
+        render::clear();
 
-        world::render(gWindow.getRenderer());
-        ui::paint(gWindow.getRenderer(), gCurrentFrameInfo.getDeltaSeconds());
-        debug::render(gWindow.getRenderer());
+        world::render();
+        ui::paint(gCurrentFrameInfo.getDeltaSeconds());
+        debug::render();
 
-        gWindow.getRenderer().present();
+        render::present();
     }
 
     void endFrame()

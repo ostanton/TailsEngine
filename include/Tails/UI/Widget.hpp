@@ -7,11 +7,6 @@
 
 #include <memory>
 
-namespace tails
-{
-    class CRenderer;
-}
-
 namespace tails::ui
 {
     struct ISlot;
@@ -39,7 +34,7 @@ namespace tails::ui
         [[nodiscard]] virtual SVector2f getDesiredSize() const noexcept = 0;
         [[nodiscard]] virtual IChildren& getChildren() noexcept = 0;
 
-        void paint(const SLayoutData& myLayout, const CRenderer& renderer, float deltaSeconds);
+        void paint(const SLayoutData& myLayout, float deltaSeconds);
 
         ISlot* slot {nullptr};
         EVisibility visibility {EVisibility::Visible};
@@ -50,7 +45,7 @@ namespace tails::ui
             const SLayoutData& myLayout,
             CTransformedWidgets& transformedWidgets
         ) const = 0;
-        virtual void onPaint(const SLayoutData& myLayout, const CRenderer& renderer, float deltaSeconds) const = 0;
+        virtual void onPaint(const SLayoutData& myLayout, float deltaSeconds) const = 0;
     };
 }
 

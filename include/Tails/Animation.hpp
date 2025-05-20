@@ -15,7 +15,6 @@ namespace tails
 {
     class CTexture;
     class CString;
-    class CRenderer;
     
     struct TAILS_API SFrame final
     {
@@ -56,7 +55,6 @@ namespace tails
 
         void tick(float deltaSeconds);
         void render(
-            const CRenderer& renderer,
             const STransform2D& transform,
             SColour colour
         ) const;

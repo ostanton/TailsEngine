@@ -14,7 +14,6 @@ namespace tails
     class CLevel;
     class CLayer;
     class IComponent;
-    class CRenderer;
 
     /**
      * Actor within a level. It is made up of components, but is still inheritable,
@@ -85,7 +84,7 @@ namespace tails
         void setLayer(int layer);
         [[nodiscard]] int getLayer() const noexcept;
 
-        void onRender(const CRenderer& renderer) const;
+        void onRender() const;
 
         TBitset<EFlags> flags;
 

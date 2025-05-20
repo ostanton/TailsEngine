@@ -13,11 +13,11 @@ namespace tails::ui
         return useCustomSize ? customSize : SVector2f {texture->getSize()};
     }
 
-    void CImage::onPaint(const SLayoutData& myLayout, const CRenderer& renderer, const float deltaSeconds) const
+    void CImage::onPaint(const SLayoutData& myLayout, const float deltaSeconds) const
     {
         if (texture)
-            renderer.render(texture, myLayout.transform, myLayout.size, tint);
+            render::texture(texture, myLayout.transform, myLayout.size, tint);
         else
-            renderer.render(myLayout.transform, myLayout.size, tint);
+            render::rect(myLayout.transform, myLayout.size, tint);
     }
 }

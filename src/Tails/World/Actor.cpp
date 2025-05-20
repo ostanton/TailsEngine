@@ -1,7 +1,6 @@
 #include <Tails/World/Actor.hpp>
 #include <Tails/World/Level.hpp>
 #include <Tails/World/Components/ActorComponent.hpp>
-#include <Tails/Renderer/Renderer.hpp>
 
 namespace tails
 {
@@ -114,9 +113,9 @@ namespace tails
         return m_layer;
     }
 
-    void CActor::onRender(const CRenderer& renderer) const
+    void CActor::onRender() const
     {
-        renderer.render(*m_rootComponent);
+        m_rootComponent->onRender();
     }
 
     void CActor::onInitComponents()

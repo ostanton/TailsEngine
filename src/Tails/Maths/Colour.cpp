@@ -12,4 +12,17 @@ namespace tails
     SColour SColour::transparent {0, 0, 0, 0};
     SColour SColour::white {};
     SColour SColour::black {0, 0, 0};
+
+    bool SColour::operator==(const SColour& other) const noexcept
+    {
+        return r == other.r
+            && g == other.g
+            && b == other.b
+            && a == other.a;
+    }
+
+    bool SColour::operator!=(const SColour& other) const noexcept
+    {
+        return !(*this == other);
+    }
 }

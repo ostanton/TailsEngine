@@ -1,6 +1,5 @@
 #include <Tails/World/WorldSubsystem.hpp>
 #include <Tails/World/Level.hpp>
-#include <Tails/Renderer/Renderer.hpp>
 #include <Tails/World/Actor.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/String.hpp>
@@ -32,9 +31,9 @@ namespace tails::world
         gCurrentLevel->onTick(deltaSeconds);
     }
 
-    void render(const CRenderer& renderer)
+    void render()
     {
-        renderer.render(*gCurrentLevel);
+        gCurrentLevel->onRender();
     }
 
     void cleanup()

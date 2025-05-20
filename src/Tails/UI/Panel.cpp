@@ -16,7 +16,7 @@ namespace tails::ui
         getChildren().clearChildren();
     }
 
-    void CPanel::onPaint(const SLayoutData& myLayout, const CRenderer& renderer, const float deltaSeconds) const
+    void CPanel::onPaint(const SLayoutData& myLayout, const float deltaSeconds) const
     {
         CTransformedWidgets widgets;
         onLayoutChildren(myLayout, widgets);
@@ -26,7 +26,7 @@ namespace tails::ui
             if (widget->visibility != EVisibility::Visible)
                 continue;
             
-            widget->paint(layoutData, renderer, deltaSeconds);
+            widget->paint(layoutData, deltaSeconds);
         }
     }
 }

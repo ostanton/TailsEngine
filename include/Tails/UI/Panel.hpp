@@ -39,7 +39,7 @@ namespace tails::ui
         ) const override = 0;
         
     protected:
-        void onPaint(const SLayoutData& myLayout, const CRenderer& renderer, float deltaSeconds) const override;
+        void onPaint(const SLayoutData& myLayout, float deltaSeconds) const override;
         
         virtual std::unique_ptr<ISlot> makeSlot(std::shared_ptr<CWidget> content) = 0;
     };

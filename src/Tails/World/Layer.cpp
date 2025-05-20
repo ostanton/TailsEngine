@@ -1,6 +1,5 @@
 #include <Tails/World/Layer.hpp>
 #include <Tails/World/Actor.hpp>
-#include <Tails/Renderer/Renderer.hpp>
 
 #include <algorithm>
 
@@ -14,11 +13,11 @@ namespace tails
         }
     }
 
-    void CLayer::onRender(const CRenderer& renderer) const
+    void CLayer::onRender() const
     {
         for (usize i {0}; i < m_actors.size(); i++)
         {
-            renderer.render(*m_actors[i]);
+            m_actors[i]->onRender();
         }
     }
 

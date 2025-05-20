@@ -1,5 +1,4 @@
 #include <Tails/World/Components/Component.hpp>
-#include <Tails/Renderer/Renderer.hpp>
 
 #include <algorithm>
 
@@ -35,11 +34,11 @@ namespace tails
         return m_parent;
     }
 
-    void IComponent::onRender(const CRenderer& renderer) const
+    void IComponent::onRender() const
     {
         for (auto const child : m_children)
         {
-            renderer.render(*child);
+            child->onRender();
         }
     }
 

@@ -16,7 +16,6 @@ namespace tails
     class CString;
     class CLayer;
     class CCameraComponent;
-    class CRenderer;
 
     /**
      * A game level, containing actors, layers, etc. to tick and render
@@ -118,7 +117,7 @@ namespace tails
         void destroyActor(const CActor* actor);
         
         void onTick(float deltaSeconds);
-        void onRender(const CRenderer& renderer) const;
+        void onRender() const;
 
         /**
          * Deletes and erases any actors that are pending destroy
