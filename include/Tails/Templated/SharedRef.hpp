@@ -3,9 +3,9 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Concepts.hpp>
+#include <Tails/Assert.hpp>
 
 #include <memory>
-#include <iostream>
 
 namespace tails
 {

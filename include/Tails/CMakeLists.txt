@@ -15,6 +15,7 @@ target_sources(
         Animation.hpp
         Memory.hpp
         Concepts.hpp
+        Assert.hpp
 )
 
 add_subdirectory(Assets)

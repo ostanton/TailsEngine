@@ -12,6 +12,7 @@ target_sources(
         Window.cpp
         Animation.cpp
         Memory.cpp
+        Assert.cpp
 )
 
 add_subdirectory(Assets)

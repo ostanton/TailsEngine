@@ -15,6 +15,8 @@
 #include <Tails/Log.hpp>
 #include <Tails/Templated/StaticArray.hpp>
 
+#include "Tails/Assert.hpp"
+
 class CTestActor : public tails::CActor
 {
 public:

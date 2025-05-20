@@ -9,6 +9,8 @@
 #include <Tails/Debug.hpp>
 #include <Tails/World/ActorRegistry.hpp>
 
+#include <iostream>
+
 TAILS_REGISTER_ACTOR(CPlayer, "Player")
 
 CPlayer::CPlayer()

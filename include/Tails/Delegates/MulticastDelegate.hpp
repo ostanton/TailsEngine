@@ -4,9 +4,8 @@
 #include <Tails/Core.hpp>
 #include <Tails/Delegates/Delegate.hpp>
 #include <Tails/Concepts.hpp>
+#include <Tails/Assert.hpp>
 
-// TODO - make assert not rely on this, in header at least
-#include <iostream>
 #include <vector>
 
 namespace tails

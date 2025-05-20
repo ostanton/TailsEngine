@@ -22,7 +22,7 @@
 #elif defined(__PSP__) || defined(PSP) // defined(__unix__)
     #define TAILS_OS_PSP
 #else // defined(__unix__)
-    #error Tails: OS is not supported
+    #define TAILS_OS_UNKNOWN
 #endif // _WIN32
 
 #ifdef _MSC_VER
@@ -31,16 +31,20 @@
     #define TAILS_COMPILER_GCC
 #elif defined(__clang__) // defined(__GNUC__)
     #define TAILS_COMPILER_CLANG
+#else // defined(__clang__)
+    #define TAILS_COMPILER_UNKNOWN
 #endif // _MSC_VER
 
 // TODO - import DLLs
-#ifdef TAILS_BUILD_SHARED
-    #ifdef TAILS_OS_WIN32
+#ifdef TAILS_OS_WIN32
+    #ifdef TAILS_BUILD_SHARED
         #define TAILS_API __declspec(dllexport)
-    #endif // TAILS_OS_WIN32
-#else // TAILS_BUILD_SHARED
+    #else // TAILS_BUILD_SHARED
+        #define TAILS_API
+    #endif // TAILS_BUILD_SHARED
+#else // TAILS_OS_WIN32
     #define TAILS_API
-#endif // TAILS_BUILD_SHARED
+#endif // TAILS_OS_WIN32
 
 #ifdef TAILS_COMPILER_MSVC
     #define TAILS_FUNCTION_NAME __FUNCSIG__
@@ -50,24 +54,6 @@
 
 #define TAILS_FILE_NAME __FILE__
 #define TAILS_LINE __LINE__
-
-// TODO - abstract away std::cerr somehow
-#ifdef TAILS_ENABLE_ASSERTS
-    /**
-     * Asserts if the condition evaluates to false, printing why with a message
-     * @param COND Assert condition. Resolves to a boolean
-     * @param MSG Error message
-     */
-    #define TAILS_ASSERT(COND, MSG) \
-        (!static_cast<bool>(COND)) ? \
-            (std::cerr \
-            << "Tails: Assertion failed: " << (#COND) << '\n' \
-            << "       Context: " << TAILS_FUNCTION_NAME << '\n' \
-            << "       In file \"" << TAILS_FILE_NAME << "\" on line " << TAILS_LINE << '\n' \
-            << "       Message: " << (MSG) << '\n', abort(), 0) : 1
-#else // TAILS_ENABLE_ASSERTS
-    #define TAILS_ASSERT(COND, MSG)
-#endif // TAILS_ENABLE_ASSERTS
 
 #include <cstdint>
 #include <cstddef>
