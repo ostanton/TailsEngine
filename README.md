@@ -31,6 +31,8 @@ Since Tails uses SDL3, it more or less supports all the platforms SDL3 supports.
 
 ## How to use
 
+### CMake
+
 A simple FetchContent in CMake to this repo and then linking it should suffice. Something akin to:
 
 ```cmake
@@ -48,6 +50,26 @@ FetchContent_MakeAvailable(Tails)
 add_executable(MyGame main.cpp)
 target_link_libraries(MyGame PRIVATE ostanton::Tails)
 ```
+
+### Zig
+
+This is still early on and WIP, so don't rely on it, but (I don't think it actually works at the moment either):
+
+```
+zig fetch --save git+https://github.com/ostanton/TailsEngine
+```
+
+```zig
+// zig.build
+const tails_dep = b.dependency("tails", .{
+    .target = target,
+    .optimize = optimize,
+    // etc.
+});
+exe.linkLibrary(tails_dep.artifact("tails"));
+```
+
+### `main.cpp`
 
 A minimal `main.cpp` is like so:
 
