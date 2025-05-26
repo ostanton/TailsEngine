@@ -60,7 +60,7 @@ zig fetch --save git+https://github.com/ostanton/TailsEngine
 ```
 
 ```zig
-// zig.build
+// build.zig
 const tails_dep = b.dependency("tails", .{
     .target = target,
     .optimize = optimize,
