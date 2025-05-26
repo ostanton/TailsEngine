@@ -12,15 +12,16 @@ You can think of it almost like a game-focused wrapper for SDL more than its own
 
 ## Dependencies
 
-Dependent libraries (SDL3, etc.) are downloaded automatically via CMake's FetchContent if not already available.
+Dependent libraries (SDL3, etc.) are downloaded automatically via CMake's FetchContent (or Zig's build system if you are using that) if not already available.
 
 - C++20
-- [CMake](https://cmake.org/)
+- [CMake](https://cmake.org/) or [Zig](https://ziglang.org/)
 - [SDL3](https://libsdl.org/)
 
 ## Compilers
 
-I personally use MSVC and GCC for Windows and Linux compilation respectively. I don't know if other compilers will work out the box.
+I mainly use MSVC because I develop on Windows, however I do use GCC for PSP builds and Clang for Zig builds.
+All three of those compilers should work fine.
 
 ## Platforms
 
