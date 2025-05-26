@@ -54,7 +54,7 @@ target_link_libraries(MyGame PRIVATE ostanton::Tails)
 
 ### Zig
 
-This is still early on and WIP, so don't rely on it, but (I don't think it actually works at the moment either):
+This is still early on and WIP, so don't rely on it, but:
 
 ```
 zig fetch --save git+https://github.com/ostanton/TailsEngine
