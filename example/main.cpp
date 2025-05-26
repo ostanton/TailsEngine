@@ -13,8 +13,7 @@
 #include <Tails/Memory.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/Templated/StaticArray.hpp>
-
-#include "Tails/Input/Event.hpp"
+#include <Tails/Input/Event.hpp>
 
 class CTestActor : public tails::CActor
 {

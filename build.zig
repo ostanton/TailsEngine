@@ -37,7 +37,7 @@ pub fn build(b: *std.Build) !void {
     const compile_flags = &[_][]const u8{
         "-Wall",
         "-Werror",
-        "-std=c++2a",
+        "-std=c++20",
     };
 
     const sdl_dep = b.dependency("sdl", .{
@@ -67,9 +67,15 @@ pub fn build(b: *std.Build) !void {
     var sources = std.ArrayList([]const u8).init(b.allocator);
     {
         const tails_src = "src/Tails";
-        const abs_tails_src = b.pathJoin(&.{ b.build_root.path.?, "src/Tails" });
-        std.debug.print("Absolute Tails src = '{s}'\n", .{abs_tails_src});
-        var dir = try std.fs.openDirAbsolute(abs_tails_src, .{ .iterate = true });
+        var dir = try std.fs.openDirAbsolute(
+            b.pathJoin(&.{
+                b.build_root.path.?,
+                tails_src,
+            }),
+            .{
+                .iterate = true,
+            },
+        );
 
         var walker = try dir.walk(b.allocator);
         defer walker.deinit();
@@ -87,13 +93,15 @@ pub fn build(b: *std.Build) !void {
         .language = .cpp,
     });
 
-    const lib_mod = lib.root_module;
-    if (enable_asserts)
-        lib_mod.addCMacro("TAILS_ENABLE_ASSERTS", "");
-    if (enable_profiling)
-        lib_mod.addCMacro("TAILS_ENABLE_PROFILING", "");
-    if (enable_logging)
-        lib_mod.addCMacro("TAILS_ENABLE_LOGGING", "");
+    {
+        const lib_mod = lib.root_module;
+        if (enable_asserts)
+            lib_mod.addCMacro("TAILS_ENABLE_ASSERTS", "");
+        if (enable_profiling)
+            lib_mod.addCMacro("TAILS_ENABLE_PROFILING", "");
+        if (enable_logging)
+            lib_mod.addCMacro("TAILS_ENABLE_LOGGING", "");
+    }
 
     b.installArtifact(lib);
 
@@ -111,6 +119,7 @@ pub fn build(b: *std.Build) !void {
                 "example/Player.cpp",
             },
             .flags = compile_flags,
+            .language = .cpp,
         });
         example_exe.addIncludePath(b.path("include"));
         b.installArtifact(example_exe);

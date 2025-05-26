@@ -57,6 +57,9 @@ namespace tails::logger
         case ECategory::Game:
             str += "Game               ";
             break;
+        case ECategory::Profiler:
+            str += "Profiler           ";
+            break;
         default:
             str += "Unknown            ";
             break;

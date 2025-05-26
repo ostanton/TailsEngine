@@ -29,6 +29,8 @@ namespace tails
 }
 
 #ifdef TAILS_ENABLE_PROFILING
+    // TODO - get some actual name for this. If it's unnamed the compiler just destructs it immediately
+    // instead of at end of scope
     #define TAILS_PROFILE_SCOPE(NAME, CATEGORY) \
         ::tails::CScopeProfiler {NAME, ::tails::EProfilerCategory::CATEGORY}
     #define TAILS_PROFILE_FUNCTION() TAILS_PROFILE_SCOPE(TAILS_FUNCTION_NAME, Game)
