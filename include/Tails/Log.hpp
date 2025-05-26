@@ -2,6 +2,8 @@
 #define TAILS_LOG_HPP
 
 #include <Tails/Core.hpp>
+#include <Tails/Format.hpp>
+#include <Tails/String.hpp>
 
 namespace tails::logger
 {
@@ -26,19 +28,12 @@ namespace tails::logger
         Renderer,
         Game // Any non-Tails engine logs
     };
-    
+
     TAILS_API void init();
-    TAILS_API void log(ECategory category, ESeverity severity, const char* fmt, ...);
+    TAILS_API void log(ECategory category, ESeverity severity, const CString& msg);
 }
 
 #ifdef TAILS_ENABLE_LOGGING
-
-// TODO - have some TAILS_FMT macro or something so we don't need two different log macros
-/**
- * Basic string formatter, used in @code TAILS_LOG@endcode macro
- * @param FMT C-style formatted string
- */
-#define TAILS_FMT(FMT, ...) FMT, __VA_ARGS__
 
 /**
  * Logs a string message to the console and a log file
@@ -57,19 +52,17 @@ namespace tails::logger
  * Logs a formatted string to the console and a log file
  * @param CATEGORY Logging category, Game if not logging a specific engine system
  * @param SEVERITY Message, Warning, Error, etc.
- * @param FMT C-style formatted message
+ * @param FMT C++ std::format string
  */
 #define TAILS_LOG_VA(CATEGORY, SEVERITY, FMT, ...) \
     ::tails::logger::log( \
         ::tails::logger::ECategory::CATEGORY, \
         ::tails::logger::ESeverity::SEVERITY, \
-        FMT, \
-        __VA_ARGS__ \
+        TAILS_FMT(FMT, __VA_ARGS__) \
     )
 
 #else // TAILS_ENABLE_LOGGING
 
-#define TAILS_FMT(FMT, ...)
 #define TAILS_LOG(CATEGORY, SEVERITY, MSG)
 #define TAILS_LOG_VA(CATEGORY, SEVERITY, FMT, ...)
 

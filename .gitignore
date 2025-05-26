@@ -11,6 +11,8 @@ CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
 TailsEngine.kdev4
+.zig-cache
+zig-out
 
 # Prerequisites
 *.d

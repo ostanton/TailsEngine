@@ -86,11 +86,11 @@ namespace tails::assets
         auto result = loader(fullPath);
         if (!result)
         {
-            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load asset at path '%s'", fullPath.getData());
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load asset at path '{}'", fullPath.getData());
             return nullptr;
         }
 
-        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded asset at path '%s'", fullPath.getData());
+        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded asset at path '{}'", fullPath.getData());
         return result;
     }
 
@@ -119,7 +119,7 @@ namespace tails::assets
     {
         if (!validHandle(handle))
         {
-            TAILS_LOG_VA(AssetSubsystem, Message, "Failed to delete asset with invalid handle '%s'", handle.getDebugPath().getData());
+            TAILS_LOG_VA(AssetSubsystem, Message, "Failed to delete asset with invalid handle '{}'", handle.getDebugPath().getData());
             return;
         }
 
@@ -127,7 +127,7 @@ namespace tails::assets
         {
             delete asset;
             gLoadedAssets.erase(handle);
-            TAILS_LOG_VA(AssetSubsystem, Message, "Deleted asset with handle '%s'", handle.getDebugPath().getData());
+            TAILS_LOG_VA(AssetSubsystem, Message, "Deleted asset with handle '{}'", handle.getDebugPath().getData());
         }
     }
 

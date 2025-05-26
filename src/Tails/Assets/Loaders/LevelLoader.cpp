@@ -10,12 +10,12 @@ namespace tails::assets::level
         auto level = assets::allocateAsset<CLevel>(path);
         if (!level)
         {
-            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load level '%s'", path.getData());
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load level '{}'", path.getData());
             return nullptr;
         }
         
         level->loadFinished();
-        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded level '%s'", path.getData());
+        TAILS_LOG_VA(AssetSubsystem, Message, "Loaded level '{}'", path.getData());
         return level;
     }
 

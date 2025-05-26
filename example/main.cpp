@@ -104,16 +104,17 @@ int main(const int argc, char* argv[])
     myWidgetSlot->position.y = 16.f;
 
     auto const testStruct = mem::alloc<STestStruct>();
-    TAILS_LOG_VA(Game, Message, "Test Struct value: %d", testStruct->i);
+    TAILS_LOG_VA(Game, Message, "Test Struct value: {}", testStruct->i);
     mem::construct(*testStruct, 7);
-    TAILS_LOG_VA(Game, Message, "Test Struct value: %d", testStruct->i);
+    TAILS_LOG_VA(Game, Message, "Test Struct value: {}", testStruct->i);
     mem::destroy(testStruct);
 
-    TStaticArray<int, 5> numbers {4, 2, 6, 4, 8};
-    for (const auto i : numbers)
-    {
-        TAILS_LOG_VA(Game, Message, "Number is: %d", i);
-    }
+    // clang things i is unused! So commenting out for now
+    //TStaticArray<int, 5> numbers {4, 2, 6, 4, 8};
+    //for (const auto i : numbers)
+    //{
+    //    TAILS_LOG(Game, Message, TAILS_FMT("Number is: {}", i));
+    //}
 
     // default run sequence
     //app::run();

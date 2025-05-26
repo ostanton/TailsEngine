@@ -1,0 +1,19 @@
+.{
+    .name = .tails,
+    .version = "0.0.1",
+    .fingerprint = 0xea8d5f63b7dee9e,
+    .dependencies = .{
+        .sdl = .{
+            .url = "git+https://github.com/castholm/SDL.git#0ab7c9830bf17c1a2404461a88c0fdedf95309a4",
+            .hash = "sdl-0.2.3+3.2.14-7uIn9Gh6fgEdV7R2A723rZxtbgkVd0PHIs2rvshLBqgV",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "example/",
+        "include/",
+        "src/",
+        "README.md",
+    },
+}

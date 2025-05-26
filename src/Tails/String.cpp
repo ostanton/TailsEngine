@@ -1,11 +1,22 @@
 #include <Tails/String.hpp>
 
+#include <string_view>
 #include <ostream>
 
 namespace tails
 {
     CString::CString(const char* str)
         : m_string(str)
+    {
+    }
+
+    CString::CString(const std::string_view str)
+        : m_string(str)
+    {
+    }
+
+    CString::CString(impl::CStringImpl str)
+        : m_string(std::move(str))
     {
     }
 

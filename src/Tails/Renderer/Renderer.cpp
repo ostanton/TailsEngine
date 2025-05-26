@@ -67,7 +67,7 @@ namespace tails::render
                     static_cast<int>(resized.y)
                 )))
             {
-                TAILS_LOG_VA(Renderer, Error, "Failed to create texture for rendering, '%s'", SDL_GetError());
+                TAILS_LOG_VA(Renderer, Error, "Failed to create texture for rendering, '{}'", SDL_GetError());
                 return;
             }
         }
@@ -76,7 +76,7 @@ namespace tails::render
 
         if (!SDL_SetRenderDrawColor(gRendererPtr, tint.r, tint.g, tint.b, tint.a))
         {
-            TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '%s'", SDL_GetError());
+            TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '{}'", SDL_GetError());
             return;
         }
 
@@ -111,12 +111,12 @@ namespace tails::render
         // TODO - crashes PSP
         if (!SDL_RenderTexture(gRendererPtr, tex, &srcRect, &destRect))
         {
-            TAILS_LOG_VA(Renderer, Error, "Failed to render texture, '%s'", SDL_GetError());
+            TAILS_LOG_VA(Renderer, Error, "Failed to render texture, '{}'", SDL_GetError());
         }
 #else // TAILS_OS_PSP
         if (!SDL_RenderRect(gRendererPtr, &destRect))
         {
-            TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '%s'", SDL_GetError());
+            TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '{}'", SDL_GetError());
         }
 #endif // TAILS_OS_PSP
     }
@@ -137,7 +137,7 @@ namespace tails::render
         {
             if (!SDL_SetRenderDrawColor(gRendererPtr, fillColour.r, fillColour.g, fillColour.b, fillColour.a))
             {
-                TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '%s'", SDL_GetError());
+                TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '{}'", SDL_GetError());
             }
             const SDL_FRect rect {
                 .x = transform.position.x,
@@ -147,7 +147,7 @@ namespace tails::render
             };
             if (!SDL_RenderFillRect(gRendererPtr, &rect))
             {
-                TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '%s'", SDL_GetError());
+                TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '{}'", SDL_GetError());
             }
         }
 
@@ -155,7 +155,7 @@ namespace tails::render
         {
             if (!SDL_SetRenderDrawColor(gRendererPtr, outlineColour.r, outlineColour.g, outlineColour.b, outlineColour.a))
             {
-                TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '%s'", SDL_GetError());
+                TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '{}'", SDL_GetError());
             }
             const SDL_FRect rect {
                 .x = transform.position.x,
@@ -165,7 +165,7 @@ namespace tails::render
             };
             if (!SDL_RenderFillRect(gRendererPtr, &rect))
             {
-                TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '%s'", SDL_GetError());
+                TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '{}'", SDL_GetError());
             }
         }
     }
@@ -180,14 +180,14 @@ namespace tails::render
 #ifdef TAILS_DEBUG
         if (!SDL_SetRenderDrawColor(gRendererPtr, colour.r, colour.g, colour.b, colour.a))
         {
-            TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '%s'", SDL_GetError());
+            TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '{}'", SDL_GetError());
             return;
         }
 #ifndef TAILS_OS_PSP
         // TODO - crashes PSP
         if (!SDL_RenderDebugText(gRendererPtr, transform.position.x, transform.position.y, string.getData()))
         {
-            TAILS_LOG_VA(Renderer, Error, "Failed to render text '%s', '%s'", string.getData(), SDL_GetError());
+            TAILS_LOG_VA(Renderer, Error, "Failed to render text '{}', '{}'", string.getData(), SDL_GetError());
         }
 #endif // TAILS_OS_PSP
 #endif // TAILS_DEBUG

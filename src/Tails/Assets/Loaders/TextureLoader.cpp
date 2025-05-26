@@ -25,7 +25,7 @@ namespace tails::assets::texture
         
         if (!fileData)
         {
-            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load texture file '%s', '%s'", path.getData(), SDL_GetError());
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load texture file '{}', '{}'", path.getData(), SDL_GetError());
             return nullptr;
         }
         
@@ -42,7 +42,7 @@ namespace tails::assets::texture
         
         if (!data)
         {
-            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to read texture data '%s', '%s'", path.getData(), stbi_failure_reason());
+            TAILS_LOG_VA(AssetSubsystem, Error, "Failed to read texture data '{}', '{}'", path.getData(), stbi_failure_reason());
             SDL_free(fileData);
             stbi_image_free(data);
             return nullptr;

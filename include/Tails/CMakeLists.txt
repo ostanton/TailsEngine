@@ -14,6 +14,7 @@ target_sources(
         Memory.hpp
         Concepts.hpp
         Assert.hpp
+        Format.hpp
 )
 
 add_subdirectory(Assets)

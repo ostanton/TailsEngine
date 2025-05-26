@@ -2,6 +2,8 @@
 #define TAILS_DEBUG_HPP
 
 #include <Tails/Core.hpp>
+#include <Tails/Format.hpp>
+#include <Tails/String.hpp>
 
 namespace tails::debug
 {
@@ -10,7 +12,7 @@ namespace tails::debug
     TAILS_API void render();
     TAILS_API void deinit();
 
-    TAILS_API void addOnScreenDebugMessage(float duration, const char* fmt, ...);
+    TAILS_API void addOnScreenDebugMessage(float duration, const CString& msg);
 }
 
 #ifdef TAILS_DEBUG
@@ -19,7 +21,7 @@ namespace tails::debug
     ::tails::debug::addOnScreenDebugMessage(DURATION, MSG)
 
 #define TAILS_DEBUG_PRINTF(DURATION, MSG, ...) \
-    ::tails::debug::addOnScreenDebugMessage(DURATION, MSG, __VA_ARGS__)
+    ::tails::debug::addOnScreenDebugMessage(DURATION, TAILS_FMT(MSG, __VA_ARGS__))
 
 #else
 

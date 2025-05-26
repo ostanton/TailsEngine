@@ -76,7 +76,7 @@ namespace tails::input
             return;
         }
 
-        TAILS_LOG_VA(InputSubsystem, Message, "Found %d gamepads", count);
+        TAILS_LOG_VA(InputSubsystem, Message, "Found {} gamepads", count);
         if (count <= 0)
         {
             SDL_free(joysticks);
@@ -91,7 +91,7 @@ namespace tails::input
         }
         else
         {
-            TAILS_LOG_VA(InputSubsystem, Message, "Using '%s' gamepad", SDL_GetGamepadName(gGamepad));
+            TAILS_LOG_VA(InputSubsystem, Message, "Using '{}' gamepad", SDL_GetGamepadName(gGamepad));
         }
 
         SDL_free(joysticks);

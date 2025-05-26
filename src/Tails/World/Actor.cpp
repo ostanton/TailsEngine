@@ -2,6 +2,8 @@
 #include <Tails/World/Level.hpp>
 #include <Tails/World/Components/ActorComponent.hpp>
 
+#include <ranges>
+
 namespace tails
 {
     CActor::~CActor() = default;

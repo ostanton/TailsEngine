@@ -5,11 +5,9 @@
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/String.hpp>
 
-#include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_render.h>
 
 #include <vector>
-#include <cstdarg>
 #endif // TAILS_DEBUG
 
 namespace tails::debug
@@ -19,7 +17,7 @@ namespace tails::debug
 #ifdef TAILS_DEBUG
         struct SDebugMessage
         {
-            const char* message;
+            CString message;
             float duration;
             float timer;
         };
@@ -77,25 +75,14 @@ namespace tails::debug
 #endif // TAILS_DEBUG
     }
 
-    void addOnScreenDebugMessage(const float duration, const char* fmt, ...)
+    void addOnScreenDebugMessage(const float duration, const CString& msg)
     {
 #ifdef TAILS_DEBUG
-        std::va_list args;
-        va_start(args, fmt);
-        const int len {SDL_vsnprintf(nullptr, 0, fmt, args)};
-        va_end(args);
-
-        auto const msg {static_cast<char*>(SDL_malloc(len + 1))};
-        va_start(args, fmt);
-        if (SDL_vsnprintf(msg, len + 1, fmt, args) < 0)
-        {
-            TAILS_LOG(DebugSubsystem, Error, "Failed to format on-screen debug message");
-            va_end(args);
-            return;
-        }
-        va_end(args);
-        
-        gDebugMessages.push_back({msg, duration, 0.f});
+        gDebugMessages.push_back({
+            .message = msg,
+            .duration = duration,
+            .timer = 0.f
+        });
 #endif // TAILS_DEBUG
     }
 }

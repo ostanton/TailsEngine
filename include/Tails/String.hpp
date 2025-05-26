@@ -22,6 +22,8 @@ namespace tails
         CString(const char* str);
         CString(const CString&) = default;
         CString(CString&&) noexcept = default;
+        CString(std::string_view str);
+        CString(impl::CStringImpl str);
 
         CString& operator=(const char* str);
         CString& operator=(const CString&) = default;

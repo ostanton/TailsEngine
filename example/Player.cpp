@@ -113,6 +113,7 @@ CPlayer::CPlayer()
 void CPlayer::shoot()
 {
     TAILS_DEBUG_PRINT(2.f, "SHOOT!");
+    TAILS_DEBUG_PRINTF(2.f, "Hello! {}", 2);
     auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), -10);
     bullet->moveDirection = {1.f, 0.f};
 }

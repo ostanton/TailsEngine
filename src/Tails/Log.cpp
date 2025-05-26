@@ -2,8 +2,10 @@
 
 #ifdef TAILS_ENABLE_LOGGING
 #include <Tails/String.hpp>
+#include <Tails/Memory.hpp>
 #include <SDL3/SDL_log.h>
 #include <cstdarg>
+#include <iostream>
 #endif // TAILS_ENABLE_LOGGING
 
 namespace tails::logger
@@ -16,7 +18,7 @@ namespace tails::logger
 #endif // TAILS_ENABLE_LOGGING
     }
 
-    void log(const ECategory category, const ESeverity severity, const char* fmt, ...)
+    void log(const ECategory category, const ESeverity severity, const CString& msg)
     {
 #ifdef TAILS_ENABLE_LOGGING
         CString str;
@@ -73,25 +75,10 @@ namespace tails::logger
             break;
         }
 
-        str += fmt;
-        fmt = str.getData();
-        
-        std::va_list args;
-        va_start(args, fmt);
-        const int len {SDL_vsnprintf(nullptr, 0, fmt, args)};
-        va_end(args);
-
-        auto const msg {static_cast<char*>(SDL_malloc(len + 1))};
-        va_start(args, fmt);
-        if (SDL_vsnprintf(msg, len + 1, fmt, args) < 0)
-        {
-            SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL_vsnprintf failed!");
-            va_end(args);
-            return;
-        }
-        va_end(args);
-        
-        SDL_Log(msg); // dunno how to make my own log category so this'll have to do!
+        str += msg;
+        // for now, as zig's clang hates non-literal format strings!
+        std::cout << str << '\n';
+        //SDL_Log(str.getData()); // dunno how to make my own log category so this'll have to do!
 #endif // TAILS_ENABLE_LOGGING
     }
 }
