@@ -66,8 +66,10 @@ pub fn build(b: *std.Build) !void {
 
     var sources = std.ArrayList([]const u8).init(b.allocator);
     {
-        const tails_src = b.path("src/Tails").src_path.sub_path;
-        var dir = try std.fs.cwd().openDir(tails_src, .{ .iterate = true });
+        const tails_src = "src/Tails";
+        const abs_tails_src = b.pathJoin(&.{ b.build_root.path.?, "src/Tails" });
+        std.debug.print("Absolute Tails src = '{s}'\n", .{abs_tails_src});
+        var dir = try std.fs.openDirAbsolute(abs_tails_src, .{ .iterate = true });
 
         var walker = try dir.walk(b.allocator);
         defer walker.deinit();
