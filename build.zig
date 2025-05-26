@@ -66,7 +66,8 @@ pub fn build(b: *std.Build) !void {
 
     var sources = std.ArrayList([]const u8).init(b.allocator);
     {
-        var dir = try std.fs.cwd().openDir("src/Tails", .{ .iterate = true });
+        const tails_src = b.path("src/Tails").src_path.sub_path;
+        var dir = try std.fs.cwd().openDir(tails_src, .{ .iterate = true });
 
         var walker = try dir.walk(b.allocator);
         defer walker.deinit();
@@ -74,7 +75,7 @@ pub fn build(b: *std.Build) !void {
         while (try walker.next()) |entry| {
             const ext = std.fs.path.extension(entry.basename);
             if (std.mem.eql(u8, ext, ".cpp")) {
-                try sources.append(b.pathJoin(&.{ "src/Tails", entry.path }));
+                try sources.append(b.pathJoin(&.{ tails_src, entry.path }));
             }
         }
     }
