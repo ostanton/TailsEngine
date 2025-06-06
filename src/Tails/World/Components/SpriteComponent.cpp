@@ -28,6 +28,6 @@ namespace tails
                 colour
             );
 
-        IComponent::onRender();
+        CComponent::onRender();
     }
 }

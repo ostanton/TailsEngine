@@ -1,6 +1,6 @@
 #include <Tails/World/Actor.hpp>
 #include <Tails/World/Level.hpp>
-#include <Tails/World/Components/ActorComponent.hpp>
+#include <Tails/World/Components/Component.hpp>
 
 #include <ranges>
 
@@ -21,7 +21,7 @@ namespace tails
         return m_owningLevel;
     }
 
-    IComponent* CActor::getRootComponent() const
+    CComponent* CActor::getRootComponent() const
     {
         return m_rootComponent;
     }
@@ -131,7 +131,7 @@ namespace tails
         if (!m_rootComponent)
         {
             if (m_components.empty())
-                createComponent<CActorComponent>();
+                createComponent<CComponent>();
 
             m_rootComponent = m_components.front().get();
             m_rootComponent->onInit();
@@ -151,7 +151,7 @@ namespace tails
         }
     }
 
-    void CActor::setRootComponent(IComponent* rootComponent)
+    void CActor::setRootComponent(CComponent* rootComponent)
     {
         if (!rootComponent)
             return;
@@ -177,7 +177,7 @@ namespace tails
     {
     }
 
-    IComponent* CActor::addComponent(std::unique_ptr<IComponent> component)
+    CComponent* CActor::addComponent(std::unique_ptr<CComponent> component)
     {
         m_components.emplace_back(std::move(component));
         auto& result = *m_components.back();

@@ -10,7 +10,7 @@ namespace tails
     /**
      * Component wrapper for an SAnimationPlayer
      */
-    class TAILS_API CAnimatedSpriteComponent : public IComponent
+    class TAILS_API CAnimatedSpriteComponent : public CComponent
     {
     public:
         SAnimationPlayer animationPlayer;

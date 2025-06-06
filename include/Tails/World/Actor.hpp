@@ -13,7 +13,7 @@ namespace tails
 {
     class CLevel;
     class CLayer;
-    class IComponent;
+    class CComponent;
 
     /**
      * Actor within a level. It is made up of components, but is still inheritable,
@@ -42,7 +42,7 @@ namespace tails
         
         [[nodiscard]] CLevel* getLevel() const;
         [[nodiscard]] std::weak_ptr<CLevel> getLevelWeak() const;
-        [[nodiscard]] IComponent* getRootComponent() const;
+        [[nodiscard]] CComponent* getRootComponent() const;
 
         void setTransform(const STransform2D& transform);
         [[nodiscard]] const STransform2D& getTransform() const noexcept;
@@ -75,7 +75,7 @@ namespace tails
          * @tparam T Component class
          * @return Created component
          */
-        template<DerivedFrom<IComponent> T>
+        template<DerivedFrom<CComponent> T>
         T* createComponent()
         {
             return static_cast<T*>(addComponent(std::make_unique<T>()));
@@ -93,18 +93,18 @@ namespace tails
         virtual void onSpawn();
         virtual void onTick(float deltaSeconds);
 
-        void setRootComponent(IComponent* rootComponent);
+        void setRootComponent(CComponent* rootComponent);
 
         virtual void onOverlap(CActor* otherActor);
-        
+
     private:
-        IComponent* addComponent(std::unique_ptr<IComponent> component);
+        CComponent* addComponent(std::unique_ptr<CComponent> component);
         
         std::weak_ptr<CLevel> m_owningLevel;
         // TODO - could store these somewhere else more optimally. For later, the Actor's interface for
         // its components would stay the same so it can wait for a while
-        std::vector<std::unique_ptr<IComponent>> m_components;
-        IComponent* m_rootComponent {nullptr};
+        std::vector<std::unique_ptr<CComponent>> m_components;
+        CComponent* m_rootComponent {nullptr};
         /** The current layer this actor is on */
         int m_layer {0};
     };

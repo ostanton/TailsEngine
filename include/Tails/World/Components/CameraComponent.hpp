@@ -12,7 +12,7 @@ namespace tails
      *
      * TODO - offscreen rendering? Really doesn't need to be its own component does it?
      */
-    class TAILS_API CCameraComponent : public IComponent
+    class TAILS_API CCameraComponent : public CComponent
     {
     public:
         void activate();

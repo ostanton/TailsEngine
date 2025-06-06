@@ -18,24 +18,24 @@ namespace tails
     };
 
     /**
-     * Base interface for actor components. They are arranged in a tree within their owning actor
+     * Base class for actor components. They are arranged in a tree within their owning actor
      */
-    class TAILS_API IComponent
+    class TAILS_API CComponent
     {
         friend CActor;
-        
+
     public:
-        IComponent() = default;
-        IComponent(const IComponent&) = default;
-        IComponent(IComponent&&) = default;
-        IComponent& operator=(const IComponent&) = default;
-        IComponent& operator=(IComponent&&) = default;
-        virtual ~IComponent() = default;
+        CComponent() = default;
+        CComponent(const CComponent&) = default;
+        CComponent(CComponent&&) = default;
+        CComponent& operator=(const CComponent&) = default;
+        CComponent& operator=(CComponent&&) = default;
+        virtual ~CComponent() = default;
 
         [[nodiscard]] CActor* getOwner() const noexcept;
 
-        void setParent(IComponent* parent) noexcept;
-        [[nodiscard]] IComponent* getParent() const noexcept;
+        void setParent(CComponent* parent) noexcept;
+        [[nodiscard]] CComponent* getParent() const noexcept;
 
         virtual void onRender() const;
 
@@ -45,14 +45,14 @@ namespace tails
 
     protected:
         virtual void onInit();
-        virtual void onTick(float deltaSeconds) = 0;
+        virtual void onTick(float deltaSeconds);
 
     private:
-        void addChild(IComponent* child) noexcept;
+        void addChild(CComponent* child) noexcept;
         
         CActor* m_owner {nullptr};
-        IComponent* m_parent {nullptr};
-        std::vector<IComponent*> m_children;
+        CComponent* m_parent {nullptr};
+        std::vector<CComponent*> m_children;
     };
 }
 

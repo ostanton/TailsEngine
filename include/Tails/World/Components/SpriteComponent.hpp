@@ -12,7 +12,7 @@ namespace tails
 {
     class CTexture;
     
-    class TAILS_API CSpriteComponent : public IComponent
+    class TAILS_API CSpriteComponent : public CComponent
     {
     public:
         [[nodiscard]] SVector2f getCentre() const noexcept;

@@ -4,12 +4,12 @@
 
 namespace tails
 {
-    CActor* IComponent::getOwner() const noexcept
+    CActor* CComponent::getOwner() const noexcept
     {
         return m_owner;
     }
 
-    void IComponent::setParent(IComponent* parent) noexcept
+    void CComponent::setParent(CComponent* parent) noexcept
     {
         if (!parent)
             return;
@@ -29,12 +29,12 @@ namespace tails
         m_parent->m_children.push_back(this);
     }
 
-    IComponent* IComponent::getParent() const noexcept
+    CComponent* CComponent::getParent() const noexcept
     {
         return m_parent;
     }
 
-    void IComponent::onRender() const
+    void CComponent::onRender() const
     {
         for (auto const child : m_children)
         {
@@ -42,11 +42,15 @@ namespace tails
         }
     }
 
-    void IComponent::onInit()
+    void CComponent::onInit()
     {
     }
 
-    void IComponent::addChild(IComponent* child) noexcept
+    void CComponent::onTick(float deltaSeconds)
+    {
+    }
+
+    void CComponent::addChild(CComponent* child) noexcept
     {
         if (!child)
             return;

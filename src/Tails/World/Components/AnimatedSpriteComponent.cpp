@@ -11,6 +11,6 @@ namespace tails
     {
         animationPlayer.render(transform, tint);
 
-        IComponent::onRender();
+        CComponent::onRender();
     }
 }
