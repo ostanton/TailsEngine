@@ -4,6 +4,7 @@
 #include <Tails/Core.hpp>
 #include <Tails/Memory.hpp>
 #include <Tails/Concepts.hpp>
+#include <Tails/Maths/Maths.hpp>
 
 #include <initializer_list>
 
@@ -19,6 +20,9 @@ namespace tails
     public:
         TArray()
             : m_ptr(mem::alloc<T>()), m_size(0), m_capacity(1)
+        {}
+        TArray(const usize capacity)
+            : m_ptr(mem::alloc<T>(capacity)), m_size(0), m_capacity(capacity)
         {}
         TArray(const std::initializer_list<T>& list)
             : m_ptr(mem::alloc<T>(list.size())), m_size(list.size()), m_capacity(list.size())
@@ -42,9 +46,7 @@ namespace tails
         T* add(const T& element)
         {
             if (m_size >= m_capacity)
-            {
                 resize(m_capacity * 2);
-            }
 
             m_ptr[m_size] = element;
             m_size++;
@@ -74,18 +76,43 @@ namespace tails
         }
 
         [[nodiscard]] usize size() const noexcept {return m_size;}
+        void clear() {m_size = 0;}
 
         void resize(const usize capacity) noexcept
         {
-            m_capacity = capacity;
-            T* temp = m_ptr;
-            m_ptr = mem::alloc<T>(m_capacity);
-            for (usize i = 0; i < m_size; i++)
+            T* newPtr {mem::alloc<T>(capacity)};
+            const usize minSize {maths::min(m_size, capacity)};
+            for (usize i {0}; i < minSize; i++)
             {
-                m_ptr[i] = temp[i];
+                newPtr[i] = m_ptr[i];
             }
-            mem::destroy(temp);
+
+            mem::destroy(m_ptr);
+            m_ptr = newPtr;
+            m_size = minSize;
+            m_capacity = capacity;
         }
+
+        template<Predicate<const T&, const T&> PredT>
+        void sort(PredT predicate)
+        {
+            const T* lastItem {nullptr};
+            for (usize i; i < m_size; i++)
+            {
+                if (!lastItem)
+                    continue;
+
+                if (predicate(*lastItem, m_ptr[i]))
+                {
+                    // TODO
+                }
+
+                lastItem = &m_ptr[i];
+            }
+        }
+
+        T& operator[](const usize index) noexcept {return m_ptr[index];}
+        const T& operator[](const usize index) const noexcept {return m_ptr[index];}
 
     private:
         T* m_ptr;

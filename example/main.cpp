@@ -14,6 +14,7 @@
 #include <Tails/Log.hpp>
 #include <Tails/Templated/StaticArray.hpp>
 #include <Tails/Input/Event.hpp>
+#include <Tails/Templated/Array.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -107,6 +108,14 @@ int main(const int argc, char* argv[])
     mem::construct(*testStruct, 7);
     TAILS_LOG_VA(Game, Message, "Test Struct value: {}", testStruct->i);
     mem::destroy(testStruct);
+
+    TArray<STestStruct> testStructs;
+    testStructs.add(STestStruct {55});
+    testStructs.emplace(76);
+    for (usize i; i < testStructs.size(); i++)
+    {
+        TAILS_LOG(Game, Message, TAILS_FMT("TestStruct {} value: {}", i, testStructs[i].i));
+    }
 
     // clang things i is unused! So commenting out for now
     //TStaticArray<int, 5> numbers {4, 2, 6, 4, 8};
