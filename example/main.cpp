@@ -112,7 +112,7 @@ int main(const int argc, char* argv[])
     TArray<STestStruct> testStructs;
     testStructs.add(STestStruct {55});
     testStructs.emplace(76);
-    for (usize i; i < testStructs.size(); i++)
+    for (usize i {0}; i < testStructs.size(); i++)
     {
         TAILS_LOG(Game, Message, TAILS_FMT("TestStruct {} value: {}", i, testStructs[i].i));
     }
