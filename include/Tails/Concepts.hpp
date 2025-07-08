@@ -26,7 +26,7 @@ namespace tails
     };
 
     template<typename T, typename... ArgsT>
-    concept Predicate = std::predicate<T, ArgsT>;
+    concept Predicate = std::predicate<T, ArgsT...>;
 
     template<typename T>
     concept UserType = std::is_class_v<T>;
