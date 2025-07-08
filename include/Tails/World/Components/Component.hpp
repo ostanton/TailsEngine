@@ -9,12 +9,13 @@
 namespace tails
 {
     class CActor;
+    class CLevel;
 
     enum class ECollisionType : u8
     {
         Block,
         Overlap,
-        None
+        None,
     };
 
     /**
@@ -33,12 +34,16 @@ namespace tails
         virtual ~CComponent() = default;
 
         [[nodiscard]] CActor* getOwner() const noexcept;
+        [[nodiscard]] CLevel* getLevel() const noexcept;
 
         void setParent(CComponent* parent) noexcept;
         [[nodiscard]] CComponent* getParent() const noexcept;
 
+        [[nodiscard]] STransform2D getScreenSpaceTransform() const noexcept;
+
         virtual void onRender() const;
 
+        /** World space transform. When rendering, convert this to screen space */
         STransform2D transform {0.f, 0.f, 1.f};
         bool visible {true};
         ECollisionType collisionType {ECollisionType::Block};

@@ -19,9 +19,6 @@ namespace tails
         [[nodiscard]] bool isActive() const noexcept;
         
         SFloatRect bounds;
-
-    protected:
-        void onTick(float deltaSeconds) override;
     };
 }
 

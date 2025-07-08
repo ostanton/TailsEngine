@@ -23,6 +23,8 @@ namespace tails::render
     TAILS_API void deinit();
     TAILS_API void clear(SColour colour = SColour::black);
     TAILS_API void present();
+    TAILS_API void setViewport(SFloatRect rect);
+    TAILS_API SFloatRect getViewport();
     TAILS_API SVector2u getResolution();
 
     /**

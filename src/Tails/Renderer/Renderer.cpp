@@ -35,6 +35,18 @@ namespace tails::render
         SDL_RenderPresent(gRendererPtr);
     }
 
+    void setViewport(SFloatRect rect)
+    {
+        // TODO
+        //SDL_SetRenderViewport(gRendererPtr, )
+    }
+
+    SFloatRect getViewport()
+    {
+        // TODO
+        return {};
+    }
+
     SVector2u getResolution()
     {
         SVector2i resolution;

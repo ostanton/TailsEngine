@@ -75,7 +75,7 @@ namespace tails::assets
         // if the path is already loaded as an asset, use it instead of loading a new one
         if (const SHandle handle = {fullPath.getData(), assetType}; validHandle(handle))
             return gLoadedAssets[handle].lock();
-        
+
         auto const loader = getFileLoader(assetType);
         if (!loader)
         {

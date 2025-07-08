@@ -6,6 +6,8 @@
 
 #include <algorithm>
 
+#include "Tails/Renderer/Renderer.hpp"
+
 namespace tails
 {
     CLevel::CLevel() = default;
@@ -114,6 +116,18 @@ namespace tails
         {
             it->get()->flags.setBit(CActor::PendingKill);
         }
+    }
+
+    SVector2f CLevel::toScreenSpace(const SVector2f point) const
+    {
+        // TODO - this does not account for a camera and the world size, etc.!!!
+        auto [position, size] = render::getViewport();
+        constexpr SVector2f worldSize {100.f}; // TODO - replace with actual world size
+        const SVector2f scaleFactor {size / worldSize};
+        return {
+            position.x + point.x * scaleFactor.x,
+            position.y + (worldSize.y - point.y) * scaleFactor.y
+        };
     }
 
     void CLevel::onTick(const float deltaSeconds)

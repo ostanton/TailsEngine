@@ -1,4 +1,6 @@
 #include <Tails/World/Components/Component.hpp>
+#include <Tails/World/Actor.hpp>
+#include <Tails/World/Level.hpp>
 
 #include <algorithm>
 
@@ -7,6 +9,14 @@ namespace tails
     CActor* CComponent::getOwner() const noexcept
     {
         return m_owner;
+    }
+
+    CLevel* CComponent::getLevel() const noexcept
+    {
+        if (!m_owner)
+            return nullptr;
+
+        return m_owner->getLevel();
     }
 
     void CComponent::setParent(CComponent* parent) noexcept
@@ -32,6 +42,15 @@ namespace tails
     CComponent* CComponent::getParent() const noexcept
     {
         return m_parent;
+    }
+
+    STransform2D CComponent::getScreenSpaceTransform() const noexcept
+    {
+        // TODO
+        if (auto const level = getLevel())
+            return {};
+
+        return {};
     }
 
     void CComponent::onRender() const

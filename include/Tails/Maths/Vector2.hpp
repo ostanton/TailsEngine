@@ -15,25 +15,25 @@ namespace tails
     template<typename T>
     struct TVector2 final
     {
-        TVector2() = default;
-        TVector2(const T val)
+        constexpr TVector2() = default;
+        constexpr TVector2(const T val)
             : x(val), y(val)
         {}
-        TVector2(const T inX, const T inY)
+        constexpr TVector2(const T inX, const T inY)
             : x(inX), y(inY)
         {}
         
         template<typename U>
-        explicit TVector2(const TVector2<U>& other)
+        constexpr explicit TVector2(const TVector2<U>& other)
             : x(static_cast<T>(other.x)), y(static_cast<T>(other.y))
         {}
-        TVector2(const TVector2&) = default;
+        constexpr TVector2(const TVector2&) = default;
 
         template<typename U>
-        explicit TVector2(TVector2<U>&& other)
+        constexpr explicit TVector2(TVector2<U>&& other)
             : x(static_cast<T>(std::move(other.x))), y(static_cast<T>(std::move(other.y)))
         {}
-        TVector2(TVector2&&) noexcept = default;
+        constexpr TVector2(TVector2&&) noexcept = default;
 
         template<typename U>
         TVector2& operator=(const TVector2<U>& other)

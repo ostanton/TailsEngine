@@ -22,13 +22,13 @@ namespace tails::assets::texture
     {
         usize dataSize {0};
         auto const fileData {fs::loadFile(path, &dataSize)};
-        
+
         if (!fileData)
         {
             TAILS_LOG_VA(AssetSubsystem, Error, "Failed to load texture file '{}', '{}'", path.getData(), SDL_GetError());
             return nullptr;
         }
-        
+
         int w, h, channels;
         auto data = stbi_load_from_memory(
             fileData,
@@ -39,12 +39,12 @@ namespace tails::assets::texture
             4
         );
         //auto data = stbi_load(path, &w, &h, &channels, 4);
-        
+
         if (!data)
         {
             TAILS_LOG_VA(AssetSubsystem, Error, "Failed to read texture data '{}', '{}'", path.getData(), stbi_failure_reason());
-            SDL_free(fileData);
             stbi_image_free(data);
+            SDL_free(fileData);
             return nullptr;
         }
 

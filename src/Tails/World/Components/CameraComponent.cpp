@@ -29,8 +29,4 @@ namespace tails
 
         return level->activeCamera == this;
     }
-
-    void CCameraComponent::onTick(float deltaSeconds)
-    {
-    }
 }

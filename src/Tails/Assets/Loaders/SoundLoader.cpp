@@ -7,7 +7,7 @@ namespace tails::assets::sound
     std::shared_ptr<IAsset> load(const CString& path)
     {
         // TODO - load sound!
-        return assets::allocateAsset<CSound>(path);
+        return nullptr;
     }
 
     std::shared_ptr<IAsset> load(u8* memory, usize size)

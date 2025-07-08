@@ -33,7 +33,7 @@ namespace tails
     };
 
     /**
-     * Same as @code SAssetPtr@endcode, however it caches the loaded asset, and returns it as the correct type, instead
+     * Same as @code SAssetPath@endcode however it caches the loaded asset, and returns it as the correct type, instead
      * of the generic @code IAsset@endcode 
      * @tparam T Asset class
      */
@@ -55,9 +55,23 @@ namespace tails
             return *this;
         }
 
-        void setPath(const char* path) noexcept {m_assetPath.path = path;}
+        /**
+         * Sets the relative path to the target file
+         * @param path Relative to executable
+         */
+        void setPath(CString path) noexcept {m_assetPath.path = std::move(path);}
+
+        /**
+         * Gets the internal asset path for this asset
+         * @return Internal asset path
+         */
         [[nodiscard]] const SAssetPath& getAssetPath() const noexcept {return m_assetPath;}
-        
+
+        /**
+         * Loads the asset if it's not cached (not been loaded before or was unloaded),
+         * or returns the cache if it's already loaded
+         * @return Pointer to loaded asset
+         */
         [[nodiscard]] std::shared_ptr<T> load() noexcept
         {
             if (!m_cached)

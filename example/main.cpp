@@ -12,9 +12,12 @@
 #include <Tails/UI/Layout/Canvas.hpp>
 #include <Tails/Memory.hpp>
 #include <Tails/Log.hpp>
-#include <Tails/Templated/StaticArray.hpp>
 #include <Tails/Input/Event.hpp>
 #include <Tails/Templated/Array.hpp>
+#include <Tails/Audio/AudioSubsystem.hpp>
+#include <Tails/Audio/BusHandle.hpp>
+#include <Tails/Assets/Sound.hpp>
+#include <Tails/Assets/AssetPtr.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -71,6 +74,7 @@ int main(const int argc, char* argv[])
 {
     using namespace tails;
 
+    // app initialisation
     const SWindowInfo windowInfo {
         .title = "My game!",
         .size = {1920, 1080},
@@ -79,42 +83,68 @@ int main(const int argc, char* argv[])
     if (!app::init(argc, argv, windowInfo))
         return -1;
 
-    // testing shenanigans
-    auto const level = world::getCurrentLevel();
-    if (!level)
-        return 0;
-
-    auto const player = level->spawnActor(
-        "Player",
-        {
-            {50.f, 50.f},
-            0.f,
-            {1.f, 1.f}
-        },
-        -5
-    );
-    level->spawnActor("TestActor", {{96.f, 96.f}, 0.f, {1.f, 1.f}});
-    player->setLayer(5);
-
-    gMyWidget = ui::createWidget<CMyWidget>(ui::getRootPanel());
-    const std::vector colours {SColour::magenta, SColour::blue, SColour::green, SColour::red};
-    gMyWidget->refreshContents(colours);
-    auto const myWidgetSlot = ui::CCanvas::slotAsCanvasSlot(gMyWidget);
-    myWidgetSlot->position.x = 16.f;
-    myWidgetSlot->position.y = 16.f;
-
-    auto const testStruct = mem::alloc<STestStruct>();
-    TAILS_LOG_VA(Game, Message, "Test Struct value: {}", testStruct->i);
-    mem::construct(*testStruct, 7);
-    TAILS_LOG_VA(Game, Message, "Test Struct value: {}", testStruct->i);
-    mem::destroy(testStruct);
-
-    TArray<STestStruct> testStructs;
-    testStructs.add(STestStruct {55});
-    testStructs.emplace(76);
-    for (usize i {0}; i < testStructs.size(); i++)
+    // world and levels
     {
-        TAILS_LOG(Game, Message, TAILS_FMT("TestStruct {} value: {}", i, testStructs[i].i));
+        auto const level = world::getCurrentLevel();
+        if (!level)
+            return 0;
+
+        auto const player = level->spawnActor(
+            "Player",
+            {
+                {50.f, 50.f},
+                0.f,
+                {1.f, 1.f}
+            },
+            -5
+        );
+        level->spawnActor(
+            "TestActor",
+            {
+                {96.f, 96.f},
+                0.f,
+                {1.f, 1.f}
+            }
+        );
+        player->setLayer(5);
+    }
+
+    // widgets
+    {
+        gMyWidget = ui::createWidget<CMyWidget>(ui::getRootPanel());
+        const std::vector colours {SColour::magenta, SColour::blue, SColour::green, SColour::red};
+        gMyWidget->refreshContents(colours);
+        auto const myWidgetSlot = ui::CCanvas::slotAsCanvasSlot(gMyWidget);
+        myWidgetSlot->position.x = 16.f;
+        myWidgetSlot->position.y = 16.f;
+    }
+
+    // memory functions
+    {
+        auto const testStruct = mem::alloc<STestStruct>();
+        TAILS_LOG_VA(Game, Message, "Test Struct value: {}", testStruct->i);
+        mem::construct(*testStruct, 7);
+        TAILS_LOG_VA(Game, Message, "Test Struct value: {}", testStruct->i);
+        mem::destroy(testStruct);
+    }
+
+    // dynamic array
+    {
+        TArray<STestStruct> testStructs;
+        testStructs.add(STestStruct {55});
+        testStructs.emplace(76);
+        for (usize i {0}; i < testStructs.size(); i++)
+        {
+            TAILS_LOG(Game, Message, TAILS_FMT("TestStruct {} value: {}", i, testStructs[i].i));
+        }
+    }
+
+    // sounds
+    {
+        // doesn't play the sound (yet), just testing that it fails gracefully
+        TAssetPtr<CSound> mySound {"test_sound.wav"};
+        auto testBusHandle = audio::addBus("test_bus");
+        testBusHandle.playSound(mySound.load());
     }
 
     // clang things i is unused! So commenting out for now

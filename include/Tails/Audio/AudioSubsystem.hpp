@@ -3,27 +3,30 @@
 
 #include <Tails/Core.hpp>
 
-#include <memory>
-
 namespace tails
 {
-    class CSound;
+    class CString;
 }
 
 namespace tails::audio
 {
-    struct SBus;
-    using SBusHandle = usize;
+    struct SBusHandle;
+
+    struct TAILS_API SConcurrencySettings final
+    {
+        usize maxSounds {10};
+    };
     
     TAILS_API void init();
     TAILS_API void deinit();
-    TAILS_API SBusHandle addBus();
+    TAILS_API SBusHandle addBus(
+        CString name,
+        float volume = 1.f,
+        SConcurrencySettings concurrencySettings = {}
+    );
+    TAILS_API SBusHandle getHandleFromName(const CString& name);
     TAILS_API void removeBus(SBusHandle handle);
-    TAILS_API void setBusVolume(SBusHandle handle, float volume);
-    TAILS_API float getBusVolume(SBusHandle handle);
-    TAILS_API bool isBusPlaying(SBusHandle handle);
-    TAILS_API void playSoundInBus(SBusHandle handle, std::shared_ptr<CSound> sound);
-    TAILS_API void stopBus(SBusHandle handle);
+    TAILS_API void removeBus(const CString& name);
 }
 
 #endif // TAILS_AUDIO_SUBSYSTEM_HPP

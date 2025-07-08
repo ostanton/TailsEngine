@@ -10,10 +10,10 @@ namespace tails
 
     CLevel* CActor::getLevel() const
     {
-        if (const auto level = m_owningLevel.lock())
-            return level.get();
+        if (m_owningLevel.expired())
+            return nullptr;
 
-        return nullptr;
+        return m_owningLevel.lock().get();
     }
 
     std::weak_ptr<CLevel> CActor::getLevelWeak() const
@@ -78,7 +78,8 @@ namespace tails
 
     void CActor::destroy() const
     {
-        getLevel()->destroyActor(this);
+        if (!getLevelWeak().expired())
+            getLevelWeak().lock()->destroyActor(this);
     }
 
     void CActor::move(const SVector2f offset)
@@ -107,7 +108,8 @@ namespace tails
 
     void CActor::setLayer(const int layer)
     {
-        getLevel()->setActorLayer(this, layer);
+        if (!getLevelWeak().expired())
+            getLevelWeak().lock()->setActorLayer(this, layer);
     }
 
     int CActor::getLayer() const noexcept

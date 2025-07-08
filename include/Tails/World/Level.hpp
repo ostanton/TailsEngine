@@ -115,6 +115,8 @@ namespace tails
 
         void setActorLayer(CActor* actor, int layer);
         void destroyActor(const CActor* actor);
+
+        [[nodiscard]] SVector2f toScreenSpace(SVector2f point) const;
         
         void onTick(float deltaSeconds);
         void onRender() const;
@@ -133,7 +135,7 @@ namespace tails
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
         CCameraComponent* activeCamera {nullptr};
-        
+
     private:
         [[nodiscard]] bool containsActor(const CActor* actor) const;
         [[nodiscard]] CLayer* getLayerFromActor(const CActor* actor);

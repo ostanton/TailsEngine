@@ -11,7 +11,7 @@ namespace tails
     {
         using CStringImpl = std::string;
     }
-    
+
     /**
      * Dynamic string of characters
      */

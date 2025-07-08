@@ -29,8 +29,16 @@ namespace tails::ui
         CWidget& operator=(const CWidget&) = default;
         CWidget& operator=(CWidget&&) = default;
         virtual ~CWidget() = default;
-        
-        /** This widget's desired size to draw at */
+
+        /**
+         * This widget's desired size to draw at
+         *
+         * TODO - make this "calculateDesiredSize" instead, and cache it into a different "getDesiredSize" function?
+         * That way each time we get the desired size, if we don't want to recalculate it (e.g. we're outside
+         * a layout pass function) then we get the cached version from the last pass that was done.
+         * 
+         * @return Desired size
+         */
         [[nodiscard]] virtual SVector2f getDesiredSize() const noexcept = 0;
         [[nodiscard]] virtual IChildren& getChildren() noexcept = 0;
 
