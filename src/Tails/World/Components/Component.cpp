@@ -46,9 +46,8 @@ namespace tails
 
     STransform2D CComponent::getScreenSpaceTransform() const noexcept
     {
-        // TODO
         if (auto const level = getLevel())
-            return {};
+            return level->worldToScreen(transform);
 
         return {};
     }

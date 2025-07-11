@@ -14,7 +14,7 @@ namespace tails
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
     private:
-        SDL_AudioStream* m_internal {nullptr};
+        [[maybe_unused]] SDL_AudioStream* m_internal {nullptr};
     };
 
     template<>
