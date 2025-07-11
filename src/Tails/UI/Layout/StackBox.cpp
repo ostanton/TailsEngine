@@ -55,7 +55,7 @@ namespace tails::ui
         return dynamic_cast<SSlot*>(addChild(std::move(content)));
     }
 
-    std::unique_ptr<ISlot> CStackBox::makeSlot(std::shared_ptr<CWidget> content)
+    std::unique_ptr<SSlotBase> CStackBox::makeSlot(std::shared_ptr<CWidget> content)
     {
         return std::make_unique<SSlot>(this, std::move(content));
     }

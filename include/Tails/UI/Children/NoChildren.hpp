@@ -11,11 +11,11 @@ namespace tails::ui
         using IChildren::IChildren;
         
         [[nodiscard]] usize size() const noexcept override {return 0;}
-        [[nodiscard]] const ISlot* getSlotAt(usize index) const noexcept override {return nullptr;}
+        [[nodiscard]] const SSlotBase* getSlotAt(usize index) const noexcept override {return nullptr;}
         [[nodiscard]] std::shared_ptr<CWidget> getChildAt(usize index) noexcept override {return nullptr;}
         [[nodiscard]] std::shared_ptr<const CWidget> getChildAt(usize index) const noexcept override {return nullptr;}
 
-        ISlot* addChild(std::shared_ptr<CWidget> child) override {return nullptr;}
+        SSlotBase* addChild(std::shared_ptr<CWidget> child) override {return nullptr;}
         void clearChildren() override {}
     };
 }

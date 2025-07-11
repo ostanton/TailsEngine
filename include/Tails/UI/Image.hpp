@@ -18,7 +18,11 @@ namespace tails::ui
     {
     public:
         [[nodiscard]] SVector2f getDesiredSize() const noexcept override;
-        void onPaint(const SLayoutData& myLayout, float deltaSeconds) const override;
+        void onPaint(
+            const SLayoutData& myLayout,
+            CDrawElementList& drawElements,
+            float deltaSeconds
+        ) const override;
 
         std::shared_ptr<CTexture> texture;
         SVector2f customSize {32.f, 32.f};

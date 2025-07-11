@@ -7,7 +7,7 @@
 
 namespace tails::ui
 {
-    struct ISlot;
+    struct SSlotBase;
     class CWidget;
     
     /**
@@ -26,14 +26,14 @@ namespace tails::ui
         virtual ~IChildren() = default;
 
         [[nodiscard]] virtual usize size() const noexcept = 0;
-        [[nodiscard]] virtual const ISlot* getSlotAt(usize index) const noexcept = 0;
+        [[nodiscard]] virtual const SSlotBase* getSlotAt(usize index) const noexcept = 0;
         [[nodiscard]] virtual std::shared_ptr<CWidget> getChildAt(usize index) noexcept = 0;
         [[nodiscard]] virtual std::shared_ptr<const CWidget> getChildAt(usize index) const noexcept = 0;
 
-        virtual ISlot* addChild(std::shared_ptr<CWidget> child) = 0;
+        virtual SSlotBase* addChild(std::shared_ptr<CWidget> child) = 0;
         virtual void clearChildren() = 0;
 
-        CWidget* owner {nullptr};
+        CWidget* owner;
     };
 }
 

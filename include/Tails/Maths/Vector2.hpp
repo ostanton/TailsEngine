@@ -138,6 +138,15 @@ namespace tails
         TVector2& operator*=(const TVector2& other) noexcept {x *= other.x; y *= other.y; return *this;}
         TVector2& operator/=(const TVector2& other) noexcept {x /= other.x; y /= other.y; return *this;}
 
+        template<typename U>
+        TVector2& operator+=(const U other) noexcept {x += other; y += other; return *this;}
+        template<typename U>
+        TVector2& operator-=(const U other) noexcept {x -= other; y -= other; return *this;}
+        template<typename U>
+        TVector2& operator*=(const U other) noexcept {x *= other; y *= other; return *this;}
+        template<typename U>
+        TVector2& operator/=(const U other) noexcept {x /= other; y /= other; return *this;}
+
         [[nodiscard]] TVector2 operator-() const noexcept {return {-x, -y};}
 
         [[nodiscard]] T distanceSquared(const TVector2 other) const noexcept

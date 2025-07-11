@@ -17,15 +17,14 @@ namespace tails
     class CFont;
 }
 
+// TODO - BIG CHANGE! favour rendering batches of vertices instead of hard texture/rect/text/etc
 namespace tails::render
 {
     TAILS_API void init();
     TAILS_API void deinit();
     TAILS_API void clear(SColour colour = SColour::black);
     TAILS_API void present();
-    TAILS_API void setViewport(SFloatRect rect);
-    TAILS_API SFloatRect getViewport();
-    TAILS_API SVector2u getResolution();
+    TAILS_API SVector2f getResolution();
 
     /**
      * Renders a textured rectangle
@@ -69,6 +68,12 @@ namespace tails::render
         const CString& string,
         SColour colour = SColour::white,
         const std::shared_ptr<CFont>& font = nullptr
+    );
+
+    TAILS_API void quad(
+        const STransform2D& transform,
+        SVector2f size,
+        SColour colour = SColour::white
     );
 }
 

@@ -1,6 +1,7 @@
 #include <Tails/UI/Layout/Spacer.hpp>
 #include <Tails/UI/LayoutData.hpp>
 #include <Tails/Renderer/Renderer.hpp>
+#include <Tails/UI/Rendering/DrawElementList.hpp>
 
 namespace tails::ui
 {
@@ -9,8 +10,13 @@ namespace tails::ui
         return desiredSize;
     }
 
-    void CSpacer::onPaint(const SLayoutData& myLayout, const float deltaSeconds) const
+    void CSpacer::onPaint(
+        const SLayoutData& myLayout,
+        CDrawElementList& drawElements,
+        const float deltaSeconds
+    ) const
     {
-        render::rect(myLayout.transform, myLayout.size, debugColour);
+        drawElements.add(myLayout, debugColour);
+        //render::rect(myLayout.transform, myLayout.size, debugColour);
     }
 }

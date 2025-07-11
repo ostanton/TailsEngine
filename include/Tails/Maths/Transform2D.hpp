@@ -5,6 +5,10 @@
 
 namespace tails
 {
+    /**
+     * TODO - make matrix transform
+     * @tparam T Transform type
+     */
     template<typename T>
     struct TTransform2D final
     {

@@ -11,6 +11,7 @@ namespace tails
     class IAsset;
 }
 
+// TODO - level loaders for specific formats (LDtk, Tiled, etc.)
 namespace tails::assets::level
 {
     TAILS_API std::shared_ptr<IAsset> load(const CString& path);

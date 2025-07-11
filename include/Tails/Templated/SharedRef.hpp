@@ -30,6 +30,8 @@ namespace tails
         TSharedRef& operator=(TSharedRef&&) = default;
         ~TSharedRef() = default;
 
+        [[nodiscard]] std::shared_ptr<T> toSharedPtr() const {return m_ptr;}
+
         TSharedRef& operator=(std::nullptr_t) = delete;
         TSharedRef& operator=(std::shared_ptr<T> ptr)
         {

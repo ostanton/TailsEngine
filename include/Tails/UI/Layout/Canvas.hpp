@@ -10,9 +10,9 @@ namespace tails::ui
     class TAILS_API CCanvas final : public CPanel
     {
     public:
-        struct TAILS_API SSlot final : ISlot
+        struct TAILS_API SSlot final : SSlotBase
         {
-            using ISlot::ISlot;
+            using SSlotBase::SSlotBase;
 
             SVector2f position;
             /** Whether to use the widget's desired size, or override it with the slot's size */
@@ -29,7 +29,7 @@ namespace tails::ui
         [[nodiscard]] static SSlot* slotAsCanvasSlot(const std::shared_ptr<CWidget>& content) noexcept;
 
     private:
-        std::unique_ptr<ISlot> makeSlot(std::shared_ptr<CWidget> content) override;
+        std::unique_ptr<SSlotBase> makeSlot(std::shared_ptr<CWidget> content) override;
 
         TPanelChildren<SSlot> m_slots;
     };

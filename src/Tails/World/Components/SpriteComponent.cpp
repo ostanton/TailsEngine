@@ -1,5 +1,6 @@
 #include <Tails/World/Components/SpriteComponent.hpp>
 #include <Tails/Renderer/Renderer.hpp>
+#include <Tails/World/Level.hpp>
 
 namespace tails
 {
@@ -12,12 +13,20 @@ namespace tails
     {
     }
 
-    void CSpriteComponent::onRender() const
+    void CSpriteComponent::onRender(CLevelRenderBatch& renderBatch) const
     {
         if (!visible)
             return;
 
+        renderBatch.addItem(
+            transform,
+            colour,
+            size,
+            texture
+        );
+
         // right and bottom (size) is offset by left and top (position) for us by SDL
+        /*
         if (!texture)
             render::rect(transform, size, colour);
         else
@@ -27,7 +36,8 @@ namespace tails
                 useTextureSize ? SVector2f {} : size,
                 colour
             );
+        */
 
-        CComponent::onRender();
+        CComponent::onRender(renderBatch);
     }
 }

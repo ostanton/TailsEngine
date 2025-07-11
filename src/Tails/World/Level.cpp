@@ -3,10 +3,9 @@
 #include <Tails/World/ActorRegistry.hpp>
 #include <Tails/World/Layer.hpp>
 #include <Tails/World/CameraActor.hpp>
+#include <Tails/Renderer/Renderer.hpp>
 
 #include <algorithm>
-
-#include "Tails/Renderer/Renderer.hpp"
 
 namespace tails
 {
@@ -118,15 +117,62 @@ namespace tails
         }
     }
 
-    SVector2f CLevel::toScreenSpace(const SVector2f point) const
+    SVector2f CLevel::worldToScreen(const SVector2f worldPoint) const
     {
-        // TODO - this does not account for a camera and the world size, etc.!!!
-        auto [position, size] = render::getViewport();
-        constexpr SVector2f worldSize {100.f}; // TODO - replace with actual world size
-        const SVector2f scaleFactor {size / worldSize};
+        const auto resolution = render::getResolution();
+
+        // Get point relative to camera with zoom
+        const auto relative = (worldPoint - camera.position) * camera.zoom;
+
+        // Rotate around camera centre
+        const double cosA {std::cos(camera.rotation)};
+        const double sinA {std::sin(camera.rotation)};
+        const SVector2d rotated = {
+            relative.x * cosA - relative.y * sinA,
+            relative.x * sinA + relative.y * cosA
+        };
+
+        // Move to screen space
+        return SVector2f {rotated + resolution / 2.f};
+    }
+
+    STransform2D CLevel::worldToScreen(const STransform2D& worldTransform) const
+    {
         return {
-            position.x + point.x * scaleFactor.x,
-            position.y + (worldSize.y - point.y) * scaleFactor.y
+            .position = worldToScreen(worldTransform.position),
+            .rotation = static_cast<float>((worldTransform.rotation - camera.rotation) * (180.f / M_PI)),
+            .scale2D = worldTransform.scale2D * camera.zoom,
+        };
+    }
+
+    SVector2f CLevel::screenToWorld(const SVector2f screenPoint) const
+    {
+        const auto resolution = render::getResolution();
+
+        // Move origin to camera centre
+        const auto relative = screenPoint - resolution / 2.f;
+
+        // Apply inverse rotation
+        const double cosA {std::cos(-camera.rotation)};
+        const double sinA {std::sin(-camera.rotation)};
+
+        SVector2d unrotated = {
+            relative.x * cosA - relative.y * sinA,
+            relative.x * sinA + relative.y * cosA
+        };
+
+        // Undo zoom
+        unrotated /= camera.zoom;
+
+        return SVector2f {unrotated + camera.position};
+    }
+
+    STransform2D CLevel::screenToWorld(const STransform2D& screenTransform) const
+    {
+        return {
+            .position = screenToWorld(screenTransform.position),
+            .rotation = screenTransform.rotation,
+            .scale2D = screenTransform.scale2D / camera.zoom,
         };
     }
 
@@ -140,10 +186,28 @@ namespace tails
 
     void CLevel::onRender() const
     {
+        CLevelRenderBatch renderBatch;
         // TODO - render in camera view or something idk
         for (const auto& [id, layer] : m_layers)
         {
-            layer.onRender();
+            layer.onRender(renderBatch);
+        }
+
+        for (const auto& item : renderBatch.items)
+        {
+            if (item.texture)
+                render::texture(
+                    item.texture,
+                    worldToScreen(item.transform),
+                    item.size,
+                    item.colour
+                );
+            else
+                render::rect(
+                    worldToScreen(item.transform),
+                    item.size,
+                    item.colour
+                );
         }
     }
 

@@ -11,6 +11,8 @@
 
 #include <iostream>
 
+#include "Tails/Log.hpp"
+
 TAILS_REGISTER_ACTOR(CPlayer, "Player")
 
 CPlayer::CPlayer()
@@ -116,6 +118,7 @@ void CPlayer::shoot()
     //TAILS_DEBUG_PRINTF(2.f, "Hello! {}", 2);
     auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), -10);
     bullet->moveDirection = {1.f, 0.f};
+    getLevel()->camera.rotate(1.f);
 }
 
 void CPlayer::onTick(const float deltaSeconds)
@@ -129,6 +132,8 @@ void CPlayer::onTick(const float deltaSeconds)
         m_shootTimer = m_fireRate;
         shoot();
     }
+
+    getLevel()->camera.position = getPosition();
 }
 
 void CPlayer::onOverlap(CActor* otherActor)

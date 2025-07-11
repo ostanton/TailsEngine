@@ -36,7 +36,7 @@ namespace tails::ui
 {
     class CWidget;
     class CPanel;
-    struct ISlot;
+    struct SSlotBase;
     
     TAILS_API void init();
     TAILS_API void processEvent(const CEvent& ev);
@@ -45,8 +45,8 @@ namespace tails::ui
 
     [[nodiscard]] TAILS_API const std::shared_ptr<CPanel>& getRootPanel() noexcept;
     
-    TAILS_API ISlot* addWidget(std::shared_ptr<CWidget> content);
-    TAILS_API ISlot* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent);
+    TAILS_API SSlotBase* addWidget(std::shared_ptr<CWidget> content);
+    TAILS_API SSlotBase* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent);
     
     template<DerivedFrom<CPanel> ParentT>
     typename ParentT::SSlot* setupWidget(
@@ -67,7 +67,7 @@ namespace tails::ui
     }
     
     template<DerivedFrom<CWidget> T>
-    ISlot* addWidget()
+    SSlotBase* addWidget()
     {
         return addWidget(std::make_shared<T>());
     }

@@ -68,12 +68,15 @@ namespace tails
 
     void CActor::setVisible(const bool visible)
     {
-        m_rootComponent->visible = visible;
+        if (visible)
+            flags.setBit(IsVisible);
+        else
+            flags.clearBit(IsVisible);
     }
 
     bool CActor::isVisible() const noexcept
     {
-        return m_rootComponent->visible;
+        return flags.isBitSet(IsVisible);
     }
 
     void CActor::destroy() const
@@ -117,9 +120,12 @@ namespace tails
         return m_layer;
     }
 
-    void CActor::onRender() const
+    void CActor::onRender(CLevelRenderBatch& renderBatch) const
     {
-        m_rootComponent->onRender();
+        if (!flags.isBitSet(IsVisible))
+            return;
+
+        m_rootComponent->onRender(renderBatch);
     }
 
     void CActor::onInitComponents()

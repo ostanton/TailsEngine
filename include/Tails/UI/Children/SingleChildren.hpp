@@ -7,9 +7,9 @@
 
 namespace tails::ui
 {
-    struct ISlot;
+    struct SSlotBase;
     
-    template<DerivedFrom<ISlot> SlotT>
+    template<DerivedFrom<SSlotBase> SlotT>
     struct TAILS_API TSingleChildren final : IChildren
     {
         TSingleChildren(CWidget* inOwner, std::shared_ptr<CWidget> content)
@@ -17,7 +17,7 @@ namespace tails::ui
         {}
 
         [[nodiscard]] usize size() const noexcept override {return 1;}
-        [[nodiscard]] const ISlot* getSlotAt(const usize index) const noexcept override
+        [[nodiscard]] const SSlotBase* getSlotAt(const usize index) const noexcept override
         {
             return &slot;
         }
@@ -30,7 +30,7 @@ namespace tails::ui
             return slot.content;
         }
 
-        ISlot* addChild(std::shared_ptr<CWidget> child) override
+        SSlotBase* addChild(std::shared_ptr<CWidget> child) override
         {
             slot.content = std::move(child);
             return &slot;

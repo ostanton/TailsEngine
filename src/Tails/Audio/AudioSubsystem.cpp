@@ -6,7 +6,7 @@
 
 #include <SDL3/SDL_audio.h>
 
-#include <unordered_map>
+#include <vector>
 
 namespace tails::audio
 {

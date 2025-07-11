@@ -21,4 +21,5 @@ target_sources(
 add_subdirectory(Children)
 add_subdirectory(Input)
 add_subdirectory(Layout)
+add_subdirectory(Rendering)
 add_subdirectory(Style)

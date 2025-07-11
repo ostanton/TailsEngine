@@ -15,3 +15,4 @@ target_sources(
 
 add_subdirectory(Input)
 add_subdirectory(Layout)
+add_subdirectory(Rendering)

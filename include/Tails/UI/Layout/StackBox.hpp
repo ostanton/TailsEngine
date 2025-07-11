@@ -13,10 +13,10 @@ namespace tails::ui
     class TAILS_API CStackBox final : public CPanel
     {
     public:
-        struct TAILS_API SSlot final : ISlot
+        struct TAILS_API SSlot final : SSlotBase
         {
-            using ISlot::ISlot;
-            
+            using SSlotBase::SSlotBase;
+
             EHorizontalAlignment hAlign;
             EVerticalAlignment vAlign;
             SMargin margin;
@@ -35,7 +35,7 @@ namespace tails::ui
         EOrientation orientation {EOrientation::Vertical};
 
     private:
-        std::unique_ptr<ISlot> makeSlot(std::shared_ptr<CWidget> content) override;
+        std::unique_ptr<SSlotBase> makeSlot(std::shared_ptr<CWidget> content) override;
 
         TPanelChildren<SSlot> m_slots;
     };

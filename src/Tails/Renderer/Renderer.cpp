@@ -35,24 +35,11 @@ namespace tails::render
         SDL_RenderPresent(gRendererPtr);
     }
 
-    void setViewport(SFloatRect rect)
+    SVector2f getResolution()
     {
-        // TODO
-        //SDL_SetRenderViewport(gRendererPtr, )
-    }
-
-    SFloatRect getViewport()
-    {
-        // TODO
-        return {};
-    }
-
-    SVector2u getResolution()
-    {
-        SVector2i resolution;
-        SDL_RendererLogicalPresentation presentation;
-        SDL_GetRenderLogicalPresentation(gRendererPtr, &resolution.x, &resolution.y, &presentation);
-        return SVector2u {resolution};
+        SDL_FRect res;
+        SDL_GetRenderLogicalPresentationRect(gRendererPtr, &res);
+        return {res.w, res.h};
     }
 
     void texture(
@@ -121,7 +108,7 @@ namespace tails::render
 
 #ifndef TAILS_OS_PSP
         // TODO - crashes PSP
-        if (!SDL_RenderTexture(gRendererPtr, tex, &srcRect, &destRect))
+        if (!SDL_RenderTextureRotated(gRendererPtr, tex, &srcRect, &destRect, transform.rotation, nullptr, SDL_FLIP_NONE))
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to render texture, '{}'", SDL_GetError());
         }
@@ -175,7 +162,7 @@ namespace tails::render
                 .w = resized.x,
                 .h = resized.y
             };
-            if (!SDL_RenderFillRect(gRendererPtr, &rect))
+            if (!SDL_RenderRect(gRendererPtr, &rect))
             {
                 TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '{}'", SDL_GetError());
             }
@@ -203,5 +190,61 @@ namespace tails::render
         }
 #endif // TAILS_OS_PSP
 #endif // TAILS_DEBUG
+    }
+
+    void quad(const STransform2D& transform, const SVector2f size, const SColour colour)
+    {
+        const SDL_FColor sdlColour {
+            .r = static_cast<float>(colour.r),
+            .g = static_cast<float>(colour.g),
+            .b = static_cast<float>(colour.b),
+            .a = static_cast<float>(colour.a),
+        };
+        const SDL_Vertex vertices[] = {
+            SDL_Vertex {
+                .position = SDL_FPoint {
+                    .x = transform.position.x,
+                    .y = transform.position.y
+                },
+                .color = sdlColour,
+                .tex_coord = {0.f, 0.f},
+            },
+            SDL_Vertex {
+                .position = SDL_FPoint {
+                    .x = transform.position.x,
+                    .y = transform.position.y + size.y
+                },
+                .color = sdlColour,
+                .tex_coord = {1.f, 0.f},
+            },
+            SDL_Vertex {
+                .position = SDL_FPoint {
+                    .x = transform.position.x + size.x,
+                    .y = transform.position.y
+                },
+                .color = sdlColour,
+                .tex_coord = {1.f, 1.f},
+            },
+            SDL_Vertex {
+                .position = SDL_FPoint {
+                    .x = transform.position.x + size.x,
+                    .y = transform.position.y + size.y
+                },
+                .color = sdlColour,
+                .tex_coord = {0.f, 1.f},
+            },
+        };
+        const int indices[] = {
+            0, 1, 2,
+            2, 3, 0
+        };
+        SDL_RenderGeometry(
+            gRendererPtr,
+            nullptr,
+            vertices,
+            4,
+            indices,
+            6
+        );
     }
 }

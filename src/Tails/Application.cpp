@@ -90,12 +90,19 @@ namespace tails::app
         gStartTime = SDL_GetPerformanceCounter();
         gWindowPtr = SDL_CreateWindow(
             windowInfo.title,
-            static_cast<int>(windowInfo.size.x),
-            static_cast<int>(windowInfo.size.y),
+            0,
+            0,
             getSDLWindowFlags(windowInfo.flags)
         );
         if (!gWindowPtr)
             return false;
+
+        // Setup window
+        SDL_SetWindowMinimumSize(
+            gWindowPtr,
+            static_cast<int>(windowInfo.minSize.x),
+            static_cast<int>(windowInfo.minSize.y)
+        );
 
         // init Tails systems
         logger::init();
@@ -106,6 +113,13 @@ namespace tails::app
         debug::init();
         world::init();
         ui::init();
+
+        // Force renderer to update to match window size
+        SDL_SetWindowSize(
+            gWindowPtr,
+            static_cast<int>(windowInfo.size.x),
+            static_cast<int>(windowInfo.size.y)
+        );
 
         return true;
     }

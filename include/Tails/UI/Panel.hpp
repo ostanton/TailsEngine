@@ -25,12 +25,12 @@ namespace tails::ui
         [[nodiscard]] IChildren& getChildren() noexcept override = 0;
         
         template<DerivedFrom<CWidget> T>
-        ISlot* addChild()
+        SSlotBase* addChild()
         {
             return addChild(std::make_shared<T>());
         }
         
-        ISlot* addChild(std::shared_ptr<CWidget> content);
+        SSlotBase* addChild(std::shared_ptr<CWidget> content);
         void clearChildren();
 
         void onLayoutChildren(
@@ -39,9 +39,13 @@ namespace tails::ui
         ) const override = 0;
         
     protected:
-        void onPaint(const SLayoutData& myLayout, float deltaSeconds) const override;
+        void onPaint(
+            const SLayoutData& myLayout,
+            CDrawElementList& drawElements,
+            float deltaSeconds
+        ) const override;
         
-        virtual std::unique_ptr<ISlot> makeSlot(std::shared_ptr<CWidget> content) = 0;
+        virtual std::unique_ptr<SSlotBase> makeSlot(std::shared_ptr<CWidget> content) = 0;
     };
 }
 

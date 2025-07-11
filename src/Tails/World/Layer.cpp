@@ -13,11 +13,11 @@ namespace tails
         }
     }
 
-    void CLayer::onRender() const
+    void CLayer::onRender(CLevelRenderBatch& renderBatch) const
     {
         for (usize i {0}; i < m_actors.size(); i++)
         {
-            m_actors[i]->onRender();
+            m_actors[i]->onRender(renderBatch);
         }
     }
 

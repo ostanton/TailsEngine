@@ -18,7 +18,7 @@ namespace tails
 
     protected:
         void onTick(float deltaSeconds) override;
-        void onRender() const override;
+        void onRender(CLevelRenderBatch& renderBatch) const override;
     };
 }
 

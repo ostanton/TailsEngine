@@ -9,30 +9,31 @@
 
 namespace tails::ui
 {
-    struct ISlot;
+    struct SSlotBase;
     
-    template<DerivedFrom<ISlot> SlotT>
+    template<DerivedFrom<SSlotBase> SlotT>
     struct TAILS_API TPanelChildren final : IChildren
     {
-        using Iterator = typename std::deque<SlotT>::iterator;
-        using ConstIterator = typename std::deque<SlotT>::const_iterator;
+        using SlotContainer = std::deque<SlotT>;
+        using Iterator = typename SlotContainer::iterator;
+        using ConstIterator = typename SlotContainer::const_iterator;
 
         using IChildren::IChildren;
-        
+
         [[nodiscard]] usize size() const noexcept override {return slots.size();}
-        [[nodiscard]] const ISlot* getSlotAt(const usize index) const noexcept override {return &slots[index];}
-        
+        [[nodiscard]] const SSlotBase* getSlotAt(const usize index) const noexcept override {return &slots[index];}
+
         [[nodiscard]] std::shared_ptr<CWidget> getChildAt(const usize index) noexcept override
         {
             return getSlotAt(index)->content;
         }
-        
+
         [[nodiscard]] std::shared_ptr<const CWidget> getChildAt(const usize index) const noexcept override
         {
             return getSlotAt(index)->content;
         }
 
-        ISlot* addChild(std::shared_ptr<CWidget> child) override
+        SSlotBase* addChild(std::shared_ptr<CWidget> child) override
         {
             slots.emplace_back(owner, std::move(child));
             slots.back().content->slot = &slots.back();
@@ -53,7 +54,7 @@ namespace tails::ui
          * deque and not vector because vectors invalidate when resizing, and I don't want more
          * pointer stuff, like vector<unique_ptr<SlotT>>
          */
-        std::deque<SlotT> slots;
+        SlotContainer slots;
     };
 }
 

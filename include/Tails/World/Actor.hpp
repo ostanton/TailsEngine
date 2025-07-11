@@ -14,6 +14,7 @@ namespace tails
     class CLevel;
     class CLayer;
     class CComponent;
+    class CLevelRenderBatch;
 
     /**
      * Actor within a level. It is made up of components, but is still inheritable,
@@ -30,16 +31,17 @@ namespace tails
     public:
         enum EFlags : u8
         {
-            PendingKill = 1 << 0
+            PendingKill = 1 << 0,
+            IsVisible = 1 << 1,
         };
-        
+
         CActor() = default;
         CActor(const CActor&) = delete;
         CActor(CActor&&) noexcept = default;
         CActor& operator=(const CActor&) = delete;
         CActor& operator=(CActor&&) noexcept = default;
         virtual ~CActor();
-        
+
         [[nodiscard]] CLevel* getLevel() const;
         [[nodiscard]] std::weak_ptr<CLevel> getLevelWeak() const;
         [[nodiscard]] CComponent* getRootComponent() const;
@@ -84,9 +86,9 @@ namespace tails
         void setLayer(int layer);
         [[nodiscard]] int getLayer() const noexcept;
 
-        void onRender() const;
+        void onRender(CLevelRenderBatch& renderBatch) const;
 
-        TBitset<EFlags> flags;
+        TBitset<EFlags> flags {IsVisible};
 
     protected:
         virtual void onInitComponents();

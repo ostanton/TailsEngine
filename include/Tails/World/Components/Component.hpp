@@ -10,6 +10,7 @@ namespace tails
 {
     class CActor;
     class CLevel;
+    class CLevelRenderBatch;
 
     enum class ECollisionType : u8
     {
@@ -41,7 +42,7 @@ namespace tails
 
         [[nodiscard]] STransform2D getScreenSpaceTransform() const noexcept;
 
-        virtual void onRender() const;
+        virtual void onRender(CLevelRenderBatch& renderBatch) const;
 
         /** World space transform. When rendering, convert this to screen space */
         STransform2D transform {0.f, 0.f, 1.f};

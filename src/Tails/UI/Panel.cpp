@@ -6,7 +6,7 @@ namespace tails::ui
 {
     CPanel::~CPanel() = default;
 
-    ISlot* CPanel::addChild(std::shared_ptr<CWidget> content)
+    SSlotBase* CPanel::addChild(std::shared_ptr<CWidget> content)
     {
         return getChildren().addChild(std::move(content));
     }
@@ -16,7 +16,11 @@ namespace tails::ui
         getChildren().clearChildren();
     }
 
-    void CPanel::onPaint(const SLayoutData& myLayout, const float deltaSeconds) const
+    void CPanel::onPaint(
+        const SLayoutData& myLayout,
+        CDrawElementList& drawElements,
+        const float deltaSeconds
+    ) const
     {
         CTransformedWidgets widgets;
         onLayoutChildren(myLayout, widgets);
@@ -26,7 +30,7 @@ namespace tails::ui
             if (widget->visibility != EVisibility::Visible)
                 continue;
             
-            widget->paint(layoutData, deltaSeconds);
+            widget->paint(layoutData, drawElements, deltaSeconds);
         }
     }
 }

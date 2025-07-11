@@ -53,11 +53,11 @@ namespace tails
         return {};
     }
 
-    void CComponent::onRender() const
+    void CComponent::onRender(CLevelRenderBatch& renderBatch) const
     {
         for (auto const child : m_children)
         {
-            child->onRender();
+            child->onRender(renderBatch);
         }
     }
 

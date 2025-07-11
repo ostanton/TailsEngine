@@ -6,9 +6,9 @@ namespace tails::ui
     {
     }
 
-    void CWidget::paint(const SLayoutData& myLayout, const float deltaSeconds)
+    void CWidget::paint(const SLayoutData& myLayout, CDrawElementList& drawElements, const float deltaSeconds)
     {
         onTick(deltaSeconds);
-        onPaint(myLayout, deltaSeconds);
+        onPaint(myLayout, drawElements, deltaSeconds);
     }
 }

@@ -29,6 +29,7 @@ namespace tails
     {
         const char* title {"Tails Engine"};
         SVector2u size {1280, 720};
+        SVector2u minSize {640, 360};
         TBitset<EWindowFlags> flags {EWindowFlags::Resizable};
     };
 

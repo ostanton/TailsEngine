@@ -75,10 +75,8 @@ int main(const int argc, char* argv[])
     using namespace tails;
 
     // app initialisation
-    const SWindowInfo windowInfo {
+    constexpr SWindowInfo windowInfo {
         .title = "My game!",
-        .size = {1920, 1080},
-        .flags = {EWindowFlags::Resizable, EWindowFlags::Fullscreen}
     };
     if (!app::init(argc, argv, windowInfo))
         return -1;

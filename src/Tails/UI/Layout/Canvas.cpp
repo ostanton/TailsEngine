@@ -2,6 +2,8 @@
 #include <Tails/UI/LayoutData.hpp>
 #include <Tails/UI/TransformedWidgets.hpp>
 
+#include "Tails/UI/Rendering/DrawElementList.hpp"
+
 namespace tails::ui
 {
     CCanvas::CCanvas()
@@ -41,7 +43,7 @@ namespace tails::ui
         return dynamic_cast<SSlot*>(content->slot);
     }
 
-    std::unique_ptr<ISlot> CCanvas::makeSlot(std::shared_ptr<CWidget> content)
+    std::unique_ptr<SSlotBase> CCanvas::makeSlot(std::shared_ptr<CWidget> content)
     {
         return std::make_unique<SSlot>(this, std::move(content));
     }

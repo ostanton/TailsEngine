@@ -4,15 +4,17 @@
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Vector2.hpp>
 #include <Tails/UI/Visibility.hpp>
+#include <Tails/Templated/SharedRef.hpp>
 
 #include <memory>
 
 namespace tails::ui
 {
-    struct ISlot;
+    struct SSlotBase;
     struct SLayoutData;
     class CTransformedWidgets;
     struct IChildren;
+    class CDrawElementList;
 
     /**
      * Abstract base widget class. Has pure virtual functions for painting,
@@ -42,9 +44,9 @@ namespace tails::ui
         [[nodiscard]] virtual SVector2f getDesiredSize() const noexcept = 0;
         [[nodiscard]] virtual IChildren& getChildren() noexcept = 0;
 
-        void paint(const SLayoutData& myLayout, float deltaSeconds);
+        void paint(const SLayoutData& myLayout, CDrawElementList& drawElements, float deltaSeconds);
 
-        ISlot* slot {nullptr};
+        SSlotBase* slot {nullptr};
         EVisibility visibility {EVisibility::Visible};
 
     protected:
@@ -53,7 +55,17 @@ namespace tails::ui
             const SLayoutData& myLayout,
             CTransformedWidgets& transformedWidgets
         ) const = 0;
-        virtual void onPaint(const SLayoutData& myLayout, float deltaSeconds) const = 0;
+        virtual void onPaint(
+            const SLayoutData& myLayout,
+            CDrawElementList& drawElements,
+            float deltaSeconds
+        ) const = 0;
+
+        template<typename T>
+        TSharedRef<T> sharedThis(T* self)
+        {
+            return std::static_pointer_cast<T>(self);
+        }
     };
 }
 

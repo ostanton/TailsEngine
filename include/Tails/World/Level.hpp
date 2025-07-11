@@ -3,8 +3,11 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Transform2D.hpp>
+#include <Tails/Maths/Colour.hpp>
+#include <Tails/Maths/Rect.hpp>
 #include <Tails/Assets/Asset.hpp>
 #include <Tails/Concepts.hpp>
+#include <Tails/World/Camera.hpp>
 
 #include <vector>
 #include <memory>
@@ -16,6 +19,42 @@ namespace tails
     class CString;
     class CLayer;
     class CCameraComponent;
+    class CTexture;
+    class CLevel;
+
+    /**
+     * Render-only information for every entity's components in a level
+     *
+     * TODO - should probably take into account layers too. Can probably just
+     * sort the items array by some layer number
+     */
+    class CLevelRenderBatch
+    {
+        friend CLevel;
+
+    public:
+        void addItem(
+            const STransform2D& worldTransform,
+            const SColour colour,
+            const SVector2f size,
+            const std::shared_ptr<CTexture>& texture
+        )
+        {
+            items.emplace_back(worldTransform, colour, size, texture);
+        }
+
+    private:
+        struct SItem
+        {
+            STransform2D transform;
+            SColour colour;
+            SVector2f size;
+            std::shared_ptr<CTexture> texture;
+        };
+
+        std::vector<SItem> items;
+        // TODO - some conversion from world space to screen space
+    };
 
     /**
      * A game level, containing actors, layers, etc. to tick and render
@@ -116,7 +155,11 @@ namespace tails
         void setActorLayer(CActor* actor, int layer);
         void destroyActor(const CActor* actor);
 
-        [[nodiscard]] SVector2f toScreenSpace(SVector2f point) const;
+        [[nodiscard]] SVector2f worldToScreen(SVector2f worldPoint) const;
+        [[nodiscard]] STransform2D worldToScreen(const STransform2D& worldTransform) const;
+
+        [[nodiscard]] SVector2f screenToWorld(SVector2f screenPoint) const;
+        [[nodiscard]] STransform2D screenToWorld(const STransform2D& screenTransform) const;
         
         void onTick(float deltaSeconds);
         void onRender() const;
@@ -135,6 +178,7 @@ namespace tails
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
         CCameraComponent* activeCamera {nullptr};
+        SCamera camera;
 
     private:
         [[nodiscard]] bool containsActor(const CActor* actor) const;

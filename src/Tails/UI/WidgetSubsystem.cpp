@@ -2,6 +2,7 @@
 #include <Tails/UI/Layout/Canvas.hpp>
 #include <Tails/UI/LayoutData.hpp>
 #include <Tails/UI/TransformedWidgets.hpp>
+#include <Tails/UI/Rendering/DrawElementList.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Log.hpp>
 
@@ -11,11 +12,11 @@ namespace tails::ui
     {
         std::shared_ptr<CPanel> gRootPanel;
     }
-    
+
     void init()
     {
         gRootPanel = std::make_shared<CCanvas>();
-        
+
         TAILS_LOG(WidgetSubsystem, Message, "Initialised");
     }
 
@@ -30,7 +31,27 @@ namespace tails::ui
         SLayoutData layoutData;
         layoutData.transform.scale2D = 1.f;
         layoutData.size = render::getResolution();
-        gRootPanel->paint(layoutData, deltaSeconds);
+
+        // Gather the widgets as draw element data, then render them
+        CDrawElementList drawElements;
+        gRootPanel->paint(layoutData, drawElements, deltaSeconds);
+
+        for (const auto& element : drawElements)
+        {
+            if (element.texture)
+                render::texture(
+                    element.texture,
+                    {element.position, 0.f, {1.f}},
+                    element.size,
+                    element.colour
+                );
+            else
+                render::rect(
+                    {element.position, 0.f, {1.f}},
+                    element.size,
+                    element.colour
+                );
+        }
     }
 
     void deinit()
@@ -45,12 +66,12 @@ namespace tails::ui
         return gRootPanel;
     }
 
-    ISlot* addWidget(std::shared_ptr<CWidget> content)
+    SSlotBase* addWidget(std::shared_ptr<CWidget> content)
     {
         return gRootPanel->addChild(std::move(content));
     }
 
-    ISlot* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent)
+    SSlotBase* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent)
     {
         return parent->getChildren().addChild(std::move(content));
     }

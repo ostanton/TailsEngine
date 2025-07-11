@@ -15,9 +15,9 @@ namespace tails::ui
     class TAILS_API CCompoundWidget : public CWidget
     {
     public:
-        struct SSlot : ISlot
+        struct TAILS_API SSlot : SSlotBase
         {
-            using ISlot::ISlot;
+            using SSlotBase::SSlotBase;
         };
 
         CCompoundWidget();
@@ -28,9 +28,13 @@ namespace tails::ui
         void onLayoutChildren(const SLayoutData& myLayout, CTransformedWidgets& transformedWidgets) const override;
 
         void setContent(std::shared_ptr<CWidget> content);
-        
+
     protected:
-        void onPaint(const SLayoutData& myLayout, float deltaSeconds) const override;
+        void onPaint(
+            const SLayoutData& myLayout,
+            CDrawElementList& drawElements,
+            float deltaSeconds
+        ) const override;
 
         TSingleChildren<SSlot> m_slot;
     };

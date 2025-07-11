@@ -9,6 +9,7 @@ target_sources(
         ActorRegistry.cpp
         Layer.cpp
         CameraActor.cpp
+        Camera.cpp
 )
 
 add_subdirectory(Components)

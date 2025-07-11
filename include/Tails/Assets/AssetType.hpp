@@ -35,6 +35,7 @@ namespace tails
         Sound,
         Level,
         Font,
+        // TODO - future types could include UI layouts (XML or my own DSL), etc.
         Custom // user-defined, this index + user-defined index == asset type ID
     };
 
