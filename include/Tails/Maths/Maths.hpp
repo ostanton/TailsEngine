@@ -2,9 +2,11 @@
 #define TAILS_MATHS_HPP
 
 #include <cmath>
+#include <numbers>
 
 namespace tails::maths
 {
+    template<typename T> constexpr T pi {std::numbers::pi_v<T>};
     template<typename T> [[nodiscard]] constexpr T square(const T x) noexcept {return x * x;}
     template<typename T> [[nodiscard]] constexpr T cube(const T x) noexcept {return x * x * x;}
     template<typename T> [[nodiscard]] constexpr T sqrt(const T x) noexcept {return std::sqrt(x);}
@@ -32,6 +34,14 @@ namespace tails::maths
         const T absA {abs(a)};
         const T absB {abs(b)};
         return abs(a - b) <= (absA < absB ? absB : absA) * tolerance;
+    }
+    template<typename T> [[nodiscard]] constexpr T degToRad(T degrees) noexcept
+    {
+        return degrees * pi<T> / static_cast<T>(180);
+    }
+    template<typename T> [[nodiscard]] constexpr T radToDeg(T radians) noexcept
+    {
+        return radians * static_cast<T>(180) / pi<T>;
     }
 }
 

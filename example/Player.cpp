@@ -118,7 +118,7 @@ void CPlayer::shoot()
     //TAILS_DEBUG_PRINTF(2.f, "Hello! {}", 2);
     auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), -10);
     bullet->moveDirection = {1.f, 0.f};
-    getLevel()->camera.rotate(1.f);
+    getLevel()->camera.zoom -= 0.05f;
 }
 
 void CPlayer::onTick(const float deltaSeconds)

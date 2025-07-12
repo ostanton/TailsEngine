@@ -79,34 +79,16 @@ namespace tails
         return flags.isBitSet(IsVisible);
     }
 
-    void CActor::destroy() const
+    void CActor::destroy()
     {
-        if (!getLevelWeak().expired())
-            getLevelWeak().lock()->destroyActor(this);
+        // End of this frame the level will cleanup all pending kill actors
+        flags.setBit(PendingKill);
+        onDespawn();
     }
 
     void CActor::move(const SVector2f offset)
     {
         m_rootComponent->transform.translate(offset);
-    }
-
-    bool CActor::isOverlapping(const CActor* other) const noexcept
-    {
-        if (!other || other == this)
-            return false;
-
-        //bool overlapping {false};
-        //m_rootComponent->forEachChild([other, &overlapping](CPrimitiveComponent* myComp)
-        //{
-        //    if (!overlapping)
-        //        other->m_rootComponent->forEachChild([myComp, &overlapping](CPrimitiveComponent* otherComp)
-        //        {
-        //            if (myComp->isOverlapping(otherComp))
-        //                overlapping = true;
-        //        }, true);
-        //}, true);
-        //return m_rootComponent->isOverlapping(other->getRootComponent());
-        return false;
     }
 
     void CActor::setLayer(const int layer)
@@ -126,6 +108,23 @@ namespace tails
             return;
 
         m_rootComponent->onRender(renderBatch);
+    }
+
+    bool CActor::isCollidingWith(const CActor* other) const noexcept
+    {
+        if (!other)
+            return false;
+
+        for (const auto& myComp : m_components)
+        {
+            for (const auto& otherComp : other->m_components)
+            {
+                if (myComp->getWorldBounds().intersects(otherComp->getWorldBounds()))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     void CActor::onInitComponents()
@@ -148,7 +147,6 @@ namespace tails
 
     void CActor::onSpawn()
     {
-        
     }
 
     void CActor::onTick(const float deltaSeconds)
@@ -156,6 +154,15 @@ namespace tails
         for (const auto& component : m_components)
         {
             component->onTick(deltaSeconds);
+        }
+    }
+
+    void CActor::onDespawn()
+    {
+        // deinit components
+        for (const auto& component : m_components)
+        {
+            component->onDeinit();
         }
     }
 

@@ -21,13 +21,14 @@ namespace tails
      * much the same way Unreal Engine's actors and components work. Its transform
      * is its root component's transform. It does not have a transform by itself
      * 
-     * TODO - batch render these somehow. Get their underlying SDL structures maybe
+     * TODO - Make sure this 100% just inherits the root component transformations
+     * Even collisions are just depending on if its components are colliding.
      */
     class TAILS_API CActor
     {
         friend CLevel;
         friend CLayer;
-        
+
     public:
         enum EFlags : u8
         {
@@ -64,11 +65,9 @@ namespace tails
         /**
          * Destroy ourself
          */
-        void destroy() const;
-        
-        void move(SVector2f offset);
+        void destroy();
 
-        [[nodiscard]] bool isOverlapping(const CActor* other) const noexcept;
+        void move(SVector2f offset);
 
         /**
          * Generally use this in the constructor of this actor. Then, if the created component is a
@@ -88,12 +87,15 @@ namespace tails
 
         void onRender(CLevelRenderBatch& renderBatch) const;
 
+        [[nodiscard]] bool isCollidingWith(const CActor* other) const noexcept;
+
         TBitset<EFlags> flags {IsVisible};
 
     protected:
         virtual void onInitComponents();
         virtual void onSpawn();
         virtual void onTick(float deltaSeconds);
+        virtual void onDespawn();
 
         void setRootComponent(CComponent* rootComponent);
 

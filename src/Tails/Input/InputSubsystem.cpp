@@ -1,6 +1,7 @@
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/Maths/Maths.hpp>
+#include <Tails/Input/Mouse.hpp>
 
 #include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_joystick.h>
@@ -192,10 +193,31 @@ namespace tails::input
             {
                 const auto mouseFlags = SDL_GetMouseState(nullptr, nullptr);
                 const auto keyMask = SDL_BUTTON_MASK(key.code);
-                return (mouseFlags & keyMask) == keyMask ? SDL_JOYSTICK_AXIS_MAX : 0;
+                if ((mouseFlags & keyMask) == keyMask)
+                    return SDL_JOYSTICK_AXIS_MAX;
             }
-            
+            break;
+
         case EKeyType::MouseMove:
+            {
+                float x, y;
+                SDL_GetRelativeMouseState(&x, &y);
+                // "de-normalise" the mouse delta, even though it's not really normalised to begin with
+                // TODO - do we want this behaviour? Do we do a straight cast? What's the best approach here?
+                // Could leave it like this and check for mouse move in the normalised function?
+                // But it still wouldn't be normalised!
+                switch (key.code)
+                {
+                case static_cast<KeyCode>(mouse::EAxis::X):
+                    return static_cast<i16>(SDL_JOYSTICK_AXIS_MAX * x);
+                case static_cast<KeyCode>(mouse::EAxis::Y):
+                    return static_cast<i16>(SDL_JOYSTICK_AXIS_MAX * y);
+                default:
+                    break;
+                }
+            }
+            break;
+
         case EKeyType::MouseWheel:
             break;
         }
@@ -222,5 +244,17 @@ namespace tails::input
         }
 
         return nullptr;
+    }
+
+    SVector2f getMousePosition(bool relativeToWindow)
+    {
+        float x;
+        float y;
+        if (relativeToWindow)
+            SDL_GetMouseState(&x, &y);
+        else
+            SDL_GetGlobalMouseState(&x, &y);
+
+        return {x, y};
     }
 }

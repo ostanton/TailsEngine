@@ -3,6 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Transform2D.hpp>
+#include <Tails/Maths/Rect.hpp>
 
 #include <vector>
 
@@ -21,6 +22,12 @@ namespace tails
 
     /**
      * Base class for actor components. They are arranged in a tree within their owning actor
+     *
+     * TODO - components need:
+     * - Position (relative to parent, or world-space if it is the root)
+     * - Rotation (^)
+     * - Scale (^)
+     * - Pivot (0..1 if possible (e.g. 0.5 is always centre), however that may not be possible)
      */
     class TAILS_API CComponent
     {
@@ -40,11 +47,14 @@ namespace tails
         void setParent(CComponent* parent) noexcept;
         [[nodiscard]] CComponent* getParent() const noexcept;
 
-        [[nodiscard]] STransform2D getScreenSpaceTransform() const noexcept;
+        [[nodiscard]] STransform2D getWorldTransform() const noexcept;
 
         virtual void onRender(CLevelRenderBatch& renderBatch) const;
 
-        /** World space transform. When rendering, convert this to screen space */
+        [[nodiscard]] virtual SFloatRect getLocalBounds() const noexcept;
+        [[nodiscard]] SFloatRect getWorldBounds() const noexcept;
+
+        /** Transform relative to parent component. If the parent, this is the world transform */
         STransform2D transform {0.f, 0.f, 1.f};
         bool visible {true};
         ECollisionType collisionType {ECollisionType::Block};
@@ -52,6 +62,7 @@ namespace tails
     protected:
         virtual void onInit();
         virtual void onTick(float deltaSeconds);
+        virtual void onDeinit();
 
     private:
         void addChild(CComponent* child) noexcept;

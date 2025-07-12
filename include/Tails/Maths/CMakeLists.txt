@@ -9,4 +9,5 @@ target_sources(
         Transform2D.hpp
         Maths.hpp
         Circle.hpp
+        Matrix2D.hpp
 )

@@ -14,7 +14,7 @@ namespace tails::ui
      */
     struct TAILS_API SSlotBase
     {
-        SSlotBase() = default;
+        SSlotBase() = delete;
         SSlotBase(CWidget* inOwner, std::shared_ptr<CWidget> inContent)
             : owner(inOwner), content(std::move(inContent))
         {}

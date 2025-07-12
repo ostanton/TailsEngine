@@ -55,7 +55,7 @@ namespace tails::world
         TAILS_LOG(WorldSubsystem, Message, "Deinitialised");
     }
 
-    std::shared_ptr<CLevel> openLevel(const CString& path)
+    const std::shared_ptr<CLevel>& openLevel(const CString& path)
     {
         gTargetLevel = assets::loadAsset<CLevel>(path);
         return gTargetLevel;

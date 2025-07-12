@@ -153,14 +153,24 @@ namespace tails
         void finishActorSpawn(CActor* actor) const;
 
         void setActorLayer(CActor* actor, int layer);
-        void destroyActor(const CActor* actor);
 
         [[nodiscard]] SVector2f worldToScreen(SVector2f worldPoint) const;
         [[nodiscard]] STransform2D worldToScreen(const STransform2D& worldTransform) const;
 
         [[nodiscard]] SVector2f screenToWorld(SVector2f screenPoint) const;
         [[nodiscard]] STransform2D screenToWorld(const STransform2D& screenTransform) const;
-        
+
+        void setActiveCamera(CCameraComponent* cameraComponent);
+
+        /**
+         * Referenced camera object should outlive how long it remains active for
+         * @param camera New active camera reference
+         */
+        void setActiveCamera(SCamera& camera);
+
+        [[nodiscard]] SCamera& getActiveCamera() noexcept;
+        [[nodiscard]] const SCamera& getActiveCamera() const noexcept;
+
         void onTick(float deltaSeconds);
         void onRender() const;
 
@@ -177,6 +187,7 @@ namespace tails
 
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
+        // TODO - refactor so we only track the component for debug reasons (and rename!)
         CCameraComponent* activeCamera {nullptr};
         SCamera camera;
 
@@ -186,6 +197,14 @@ namespace tails
 
         LayersMap m_layers;
         ActorsVector m_actors;
+
+        /**
+         * Should never be null (is set on level load, etc.),
+         * and generally points to a camera on a CCameraComponent (doesn't have to)
+         *
+         * TODO - could this be const?
+         */
+        SCamera* m_activeCamera {nullptr};
     };
 
     template<>

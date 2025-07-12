@@ -44,12 +44,12 @@ namespace tails
         return m_parent;
     }
 
-    STransform2D CComponent::getScreenSpaceTransform() const noexcept
+    STransform2D CComponent::getWorldTransform() const noexcept
     {
-        if (auto const level = getLevel())
-            return level->worldToScreen(transform);
+        if (m_parent)
+            return m_parent->getWorldTransform().combine(transform);
 
-        return {};
+        return transform;
     }
 
     void CComponent::onRender(CLevelRenderBatch& renderBatch) const
@@ -60,11 +60,34 @@ namespace tails
         }
     }
 
+    SFloatRect CComponent::getLocalBounds() const noexcept
+    {
+        return {};
+    }
+
+    SFloatRect CComponent::getWorldBounds() const noexcept
+    {
+        const auto local = getLocalBounds();
+        const auto worldTransform = getWorldTransform();
+
+        const SVector2f worldMin {};
+        const SVector2f worldMax {};
+
+        return {
+            .position = {maths::min(worldMin.x, worldMax.x), maths::min(worldMin.y, worldMax.y)},
+            .size = {maths::min(worldMin.x, worldMax.x), maths::min(worldMin.y, worldMax.y)}
+        };
+    }
+
     void CComponent::onInit()
     {
     }
 
     void CComponent::onTick(float deltaSeconds)
+    {
+    }
+
+    void CComponent::onDeinit()
     {
     }
 

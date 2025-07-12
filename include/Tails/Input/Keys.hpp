@@ -89,15 +89,15 @@ namespace tails
         static const SKey CapsLock;
         static const SKey Escape;
 
-        //static const SKey Insert;
-        //static const SKey Home;
-        //static const SKey PageUp;
-        //static const SKey PageDown;
-        //static const SKey End;
-        //static const SKey Pause;
+        static const SKey Insert;
+        static const SKey Home;
+        static const SKey PageUp;
+        static const SKey PageDown;
+        static const SKey End;
+        static const SKey Pause;
 
-        //static const SKey NumLock;
-        //static const SKey ScrollLock;
+        static const SKey NumLock;
+        static const SKey ScrollLock;
 
         static const SKey LeftMouseButton;
         static const SKey RightMouseButton;
@@ -105,21 +105,21 @@ namespace tails
         static const SKey SpecialMouseButton1;
         static const SKey SpecialMouseButton2;
 
-        //static const SKey MouseX;
-        //static const SKey MouseY;
-        //static const SKey MouseScrollUp;
-        //static const SKey MouseScrollDown;
+        static const SKey MouseX;
+        static const SKey MouseY;
+        static const SKey MouseScrollUp;
+        static const SKey MouseScrollDown;
 
-        //static const SKey NumpadZero;
-        //static const SKey NumpadOne;
-        //static const SKey NumpadTwo;
-        //static const SKey NumpadThree;
-        //static const SKey NumpadFour;
-        //static const SKey NumpadFive;
-        //static const SKey NumpadSix;
-        //static const SKey NumpadSeven;
-        //static const SKey NumpadEight;
-        //static const SKey NumpadNine;
+        static const SKey NumpadZero;
+        static const SKey NumpadOne;
+        static const SKey NumpadTwo;
+        static const SKey NumpadThree;
+        static const SKey NumpadFour;
+        static const SKey NumpadFive;
+        static const SKey NumpadSix;
+        static const SKey NumpadSeven;
+        static const SKey NumpadEight;
+        static const SKey NumpadNine;
 
         //static const SKey Multiply;
         //static const SKey Add;

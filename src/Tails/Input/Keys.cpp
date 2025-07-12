@@ -1,4 +1,5 @@
 #include <Tails/Input/Keys.hpp>
+#include <Tails/Input/Mouse.hpp>
 
 #include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_gamepad.h>
@@ -70,11 +71,37 @@ namespace tails
     const SKey EKeys::CapsLock {SDLK_CAPSLOCK, EKeyType::Keyboard};
     const SKey EKeys::Escape {SDLK_ESCAPE, EKeyType::Keyboard};
 
+    const SKey EKeys::Insert {SDLK_INSERT, EKeyType::Keyboard};
+    const SKey EKeys::Home {SDLK_HOME, EKeyType::Keyboard};
+    const SKey EKeys::PageUp {SDLK_PAGEUP, EKeyType::Keyboard};
+    const SKey EKeys::PageDown {SDLK_PAGEDOWN, EKeyType::Keyboard};
+    const SKey EKeys::End {SDLK_END, EKeyType::Keyboard};
+    const SKey EKeys::Pause {SDLK_PAUSE, EKeyType::Keyboard};
+
+    const SKey EKeys::NumLock {SDL_KMOD_NUM, EKeyType::Keyboard};
+    const SKey EKeys::ScrollLock {SDL_KMOD_SCROLL, EKeyType::Keyboard};
+
     const SKey EKeys::LeftMouseButton {SDL_BUTTON_LEFT, EKeyType::MouseButton};
     const SKey EKeys::RightMouseButton {SDL_BUTTON_RIGHT, EKeyType::MouseButton};
     const SKey EKeys::MiddleMouseButton {SDL_BUTTON_MIDDLE, EKeyType::MouseButton};
     const SKey EKeys::SpecialMouseButton1 {SDL_BUTTON_X1, EKeyType::MouseButton};
     const SKey EKeys::SpecialMouseButton2 {SDL_BUTTON_X2, EKeyType::MouseButton};
+
+    const SKey EKeys::MouseX {static_cast<KeyCode>(mouse::EAxis::X), EKeyType::MouseMove};
+    const SKey EKeys::MouseY {static_cast<KeyCode>(mouse::EAxis::Y), EKeyType::MouseMove};
+    const SKey EKeys::MouseScrollUp {static_cast<KeyCode>(mouse::EScrollDirection::Up), EKeyType::MouseWheel};
+    const SKey EKeys::MouseScrollDown {static_cast<KeyCode>(mouse::EScrollDirection::Down), EKeyType::MouseWheel};
+
+    const SKey EKeys::NumpadZero {SDLK_KP_0, EKeyType::Keyboard};
+    const SKey EKeys::NumpadOne {SDLK_KP_1, EKeyType::Keyboard};
+    const SKey EKeys::NumpadTwo {SDLK_KP_2, EKeyType::Keyboard};
+    const SKey EKeys::NumpadThree {SDLK_KP_3, EKeyType::Keyboard};
+    const SKey EKeys::NumpadFour {SDLK_KP_4, EKeyType::Keyboard};
+    const SKey EKeys::NumpadFive {SDLK_KP_5, EKeyType::Keyboard};
+    const SKey EKeys::NumpadSix {SDLK_KP_6, EKeyType::Keyboard};
+    const SKey EKeys::NumpadSeven {SDLK_KP_7, EKeyType::Keyboard};
+    const SKey EKeys::NumpadEight {SDLK_KP_8, EKeyType::Keyboard};
+    const SKey EKeys::NumpadNine {SDLK_KP_9, EKeyType::Keyboard};
 
     const SKey EKeys::GamepadDPadUp {SDL_GAMEPAD_BUTTON_DPAD_UP, EKeyType::GamepadButton};
     const SKey EKeys::GamepadDPadDown {SDL_GAMEPAD_BUTTON_DPAD_DOWN, EKeyType::GamepadButton};

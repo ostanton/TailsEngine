@@ -93,7 +93,7 @@ namespace tails
     class TReference final
     {
     public:
-        TReference() = default;
+        TReference() = delete;
         constexpr TReference(T& val)
             : m_ptr(&val)
         {}

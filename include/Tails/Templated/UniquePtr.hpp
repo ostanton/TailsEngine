@@ -14,7 +14,7 @@ namespace tails
     {
         constexpr void operator()(T* ptr) const noexcept
         {
-            static_assert(0 < sizeof(T), "Cannot delete and incomplete type");
+            static_assert(0 < sizeof(T), "Cannot delete an incomplete type");
             mem::destroy(ptr);
         }
     };

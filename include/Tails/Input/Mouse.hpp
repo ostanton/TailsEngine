@@ -7,11 +7,23 @@ namespace tails::mouse
 {
     enum class EButton : u8
     {
-        Left,
+        Left = 1,
         Middle,
         Right,
         Special1,
         Special2
+    };
+
+    enum class EAxis : u8
+    {
+        X,
+        Y,
+    };
+
+    enum class EScrollDirection : u8
+    {
+        Up,
+        Down,
     };
 }
 

@@ -102,11 +102,12 @@ namespace tails::input
     TAILS_API void init();
     TAILS_API void tick();
     TAILS_API void deinit();
-    TAILS_API bool isKeyPressed(SKey key);
-    TAILS_API i16 getKeyValueRaw(SKey key);
-    TAILS_API float getKeyValueNormalised(SKey key);
+    TAILS_API [[nodiscard]] bool isKeyPressed(SKey key);
+    TAILS_API [[nodiscard]] i16 getKeyValueRaw(SKey key);
+    TAILS_API [[nodiscard]] float getKeyValueNormalised(SKey key);
     TAILS_API SActionHandle addAction(SAction action);
-    TAILS_API SAction* getActionFromName(const CString& name);
+    TAILS_API [[nodiscard]] SAction* getActionFromName(const CString& name);
+    TAILS_API [[nodiscard]] SVector2f getMousePosition(bool relativeToWindow = true);
 
     template<>
     inline bool SActionValue::get() const noexcept

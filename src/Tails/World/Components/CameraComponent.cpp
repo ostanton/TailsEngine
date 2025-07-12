@@ -14,7 +14,7 @@ namespace tails
         if (!level)
             return;
 
-        level->activeCamera = this;
+        level->setActiveCamera(this);
     }
 
     bool CCameraComponent::isActive() const noexcept
@@ -27,6 +27,26 @@ namespace tails
         if (!level)
             return false;
 
-        return level->activeCamera == this;
+        return &level->getActiveCamera() == &camera;
+    }
+
+    void CCameraComponent::onTick(float deltaSeconds)
+    {
+        CComponent::onTick(deltaSeconds);
+
+        camera.position = getWorldTransform().position;
+        camera.rotation = getWorldTransform().rotation;
+    }
+
+    void CCameraComponent::onDeinit()
+    {
+        CComponent::onDeinit();
+
+        if (auto const level = getLevel();
+            isActive() && level)
+        {
+            // tell the level to switch to another camera because we just got destroyed
+            level->setActiveCamera(nullptr);
+        }
     }
 }

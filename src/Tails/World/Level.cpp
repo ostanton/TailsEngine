@@ -7,6 +7,8 @@
 
 #include <algorithm>
 
+#include "Tails/World/Components/CameraComponent.hpp"
+
 namespace tails
 {
     CLevel::CLevel() = default;
@@ -109,14 +111,6 @@ namespace tails
         actor->m_layer = layer;
     }
 
-    void CLevel::destroyActor(const CActor* actor)
-    {
-        if (const auto it = getActorIterator(actor); it != m_actors.end())
-        {
-            it->get()->flags.setBit(CActor::PendingKill);
-        }
-    }
-
     SVector2f CLevel::worldToScreen(const SVector2f worldPoint) const
     {
         const auto resolution = render::getResolution();
@@ -174,6 +168,36 @@ namespace tails
             .rotation = screenTransform.rotation,
             .scale2D = screenTransform.scale2D / camera.zoom,
         };
+    }
+
+    void CLevel::setActiveCamera(CCameraComponent* cameraComponent)
+    {
+        // TODO - I don't think we want to rely on a valid camera component to be the active camera
+        // should probably only rely on a valid SCamera object (or pointer)
+        if (!cameraComponent)
+        {
+            // Fallback to default camera
+            return;
+        }
+
+        m_activeCamera = &cameraComponent->camera;
+        activeCamera = cameraComponent;
+    }
+
+    void CLevel::setActiveCamera(SCamera& camera)
+    {
+        m_activeCamera = &camera;
+        activeCamera = nullptr;
+    }
+
+    SCamera& CLevel::getActiveCamera() noexcept
+    {
+        return *m_activeCamera;
+    }
+
+    const SCamera& CLevel::getActiveCamera() const noexcept
+    {
+        return *m_activeCamera;
     }
 
     void CLevel::onTick(const float deltaSeconds)

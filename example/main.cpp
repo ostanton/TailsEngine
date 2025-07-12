@@ -19,6 +19,8 @@
 #include <Tails/Assets/Sound.hpp>
 #include <Tails/Assets/AssetPtr.hpp>
 
+#include "Tails/Input/InputSubsystem.hpp"
+
 class CTestActor : public tails::CActor
 {
 public:
@@ -40,7 +42,7 @@ public:
     {
         auto const sprite = createComponent<tails::CSpriteComponent>();
         sprite->size = {32.f, 32.f};
-        sprite->colour = tails::SColour::magenta;
+        sprite->colour = tails::SColour::cyan;
         setRootComponent(sprite);
     }
 };
@@ -90,7 +92,7 @@ int main(const int argc, char* argv[])
         auto const player = level->spawnActor(
             "Player",
             {
-                {50.f, 50.f},
+                {0.f},
                 0.f,
                 {1.f, 1.f}
             },
@@ -155,12 +157,20 @@ int main(const int argc, char* argv[])
     // default run sequence
     //app::run();
 
+    auto level = world::getCurrentLevel();
+    auto testActor = level->spawnActor<CTestActor2>(
+        {{}, 0.f, {2.f}},
+        6
+    );
     // customised run sequence with custom input polling callback (to close the window with the escape key)
     while (!app::shouldExit())
     {
         app::startFrame();
         app::pollInput(pollInputCallback);
         app::tick(app::getCurrentFrameInfo().getDeltaSeconds());
+        auto mousePos = level->screenToWorld(input::getMousePosition());
+        //testActor->setPosition(mousePos);
+        level->camera.position = mousePos;
         app::render();
         app::endFrame();
     }
@@ -168,3 +178,4 @@ int main(const int argc, char* argv[])
     app::deinit();
     return 0;
 }
+

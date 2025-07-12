@@ -27,7 +27,7 @@ All three of those compilers should work fine.
 
 Since Tails uses SDL3, it more or less supports all the platforms SDL3 supports. However, these are the platforms I know work:
 - Windows
-- Linux (Ubuntu)
+- Linux (Ubuntu and Arch)
 - PSP (native & emulator)
 
 ## How to use
