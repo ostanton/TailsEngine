@@ -8,6 +8,7 @@
 namespace tails
 {
     class CEvent;
+    struct SWindowInfo;
 
     struct TAILS_API SFrameInfo
     {
@@ -16,32 +17,15 @@ namespace tails
         [[nodiscard]] float getDeltaSeconds() const;
     };
 
-    enum class EWindowFlags : u8
-    {
-        Resizable = 1 << 0,
-        Fullscreen = 1 << 1,
-        Borderless = 1 << 2,
-        Minimised = 1 << 3,
-        Maximised = 1 << 4,
-    };
-
-    struct TAILS_API SWindowInfo
-    {
-        const char* title {"Tails Engine"};
-        SVector2u size {1280, 720};
-        SVector2u minSize {640, 360};
-        TBitset<EWindowFlags> flags {EWindowFlags::Resizable};
-    };
-
     namespace app
     {
         using PollInputCallback = void(*)(const CEvent&);
-        TAILS_API bool init(int argc, char* argv[], const SWindowInfo& windowInfo = {});
+        TAILS_API bool init(int argc, char* argv[], const SWindowInfo& windowInfo);
         TAILS_API void deinit();
         TAILS_API bool shouldExit();
         TAILS_API void run();
         TAILS_API void startFrame();
-        TAILS_API void pollInput(PollInputCallback callback = nullptr); // TODO - do we want this?
+        TAILS_API void pollInput(PollInputCallback callback = nullptr);
         TAILS_API void tick(float deltaSeconds);
         TAILS_API void render();
         TAILS_API void endFrame();

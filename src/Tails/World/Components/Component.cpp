@@ -94,7 +94,7 @@ namespace tails
 
     SFloatRect CComponent::getWorldBounds() const noexcept
     {
-        // TODO
+        // TODO - transform the local bounds into world bounds via its world transform/matrix
         //const auto local = getLocalBounds();
         //const auto worldTransform = getWorldTransform();
 

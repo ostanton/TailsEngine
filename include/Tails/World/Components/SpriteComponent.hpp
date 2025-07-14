@@ -17,6 +17,8 @@ namespace tails
     public:
         [[nodiscard]] SVector2f getCentre() const noexcept;
 
+        SFloatRect getLocalBounds() const noexcept override;
+
         SVector2f size;
         SColour colour;
         std::shared_ptr<CTexture> texture;

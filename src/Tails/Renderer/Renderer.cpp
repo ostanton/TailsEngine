@@ -1,8 +1,9 @@
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Assets/Texture.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/Maths/FloatColour.hpp>
 
-#include "../ApplicationImpl.hpp"
+#include "../WindowImpl.hpp"
 
 #include <SDL3/SDL_render.h>
 
@@ -16,7 +17,8 @@ namespace tails::render
     void init()
     {
         // TODO - maybe want to have getting the window be a bit cleaner?? Have this cpp in Application.cpp??
-        gRendererPtr = SDL_CreateRenderer(app::impl::getWindow(), nullptr);
+        auto const window = window::impl::getWindow();
+        gRendererPtr = SDL_CreateRenderer(window, nullptr);
     }
 
     void deinit()
@@ -148,12 +150,12 @@ namespace tails::render
             const SVector2f position {matrix.transform(points[i])};
             vertices[i].position.x = position.x;
             vertices[i].position.y = position.y;
-            // TODO - some SFloatColour struct
+            const SFloatColour fillColourF {fillColour};
             vertices[i].color = {
-                .r = static_cast<float>(fillColour.r) / 255,
-                .g = static_cast<float>(fillColour.g) / 255,
-                .b = static_cast<float>(fillColour.b) / 255,
-                .a = static_cast<float>(fillColour.a) / 255
+                .r = fillColourF.r,
+                .g = fillColourF.g,
+                .b = fillColourF.b,
+                .a = fillColourF.a
             };
             vertices[i].tex_coord = {.x = 0.f, .y = 0.f};
         }

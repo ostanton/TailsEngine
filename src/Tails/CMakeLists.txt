@@ -7,12 +7,13 @@ target_sources(
         Profiler.cpp
         String.cpp
         Application.cpp
-        ApplicationImpl.hpp
         Debug.cpp
         Filesystem.cpp
         Animation.cpp
         Memory.cpp
         Assert.cpp
+        Window.cpp
+        WindowImpl.hpp
 )
 
 add_subdirectory(Assets)

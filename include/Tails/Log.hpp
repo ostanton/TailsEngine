@@ -26,6 +26,7 @@ namespace tails::logger
         WidgetSubsystem,
         ActorRegistry,
         Renderer,
+        Window,
         Profiler,
         Game // Any non-Tails engine logs
     };

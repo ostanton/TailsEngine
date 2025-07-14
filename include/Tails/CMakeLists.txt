@@ -15,6 +15,7 @@ target_sources(
         Concepts.hpp
         Assert.hpp
         Format.hpp
+        Window.hpp
 )
 
 add_subdirectory(Assets)

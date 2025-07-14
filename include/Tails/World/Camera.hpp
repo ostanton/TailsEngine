@@ -5,6 +5,7 @@
 #include <Tails/Maths/Vector2.hpp>
 #include <Tails/Maths/Angle.hpp>
 #include <Tails/Maths/Matrix3.hpp>
+#include <Tails/Maths/Rect.hpp>
 
 namespace tails
 {
@@ -12,7 +13,7 @@ namespace tails
     struct TTransform2D;
 
     /**
-     * Structure for a camera view, typically into a level
+     * Structure for a camera view (orthographic 2D), typically into a level
      */
     struct TAILS_API SCamera
     {
@@ -28,8 +29,11 @@ namespace tails
         [[nodiscard]] SMatrix3f getProjectionMatrix() const noexcept;
 
         [[nodiscard]] SVector2f worldToView(SVector2f worldPoint) const noexcept;
+        [[nodiscard]] SFloatRect worldToView(const SFloatRect& worldRect) const noexcept;
         [[nodiscard]] TTransform2D<float> worldToView(const TTransform2D<float>& worldTransform) const noexcept;
+
         [[nodiscard]] SVector2f viewToWorld(SVector2f viewPoint) const noexcept;
+        [[nodiscard]] SFloatRect viewToWorld(const SFloatRect& viewRect) const noexcept;
         [[nodiscard]] TTransform2D<float> viewToWorld(const TTransform2D<float>& viewTransform) const noexcept;
     };
 }

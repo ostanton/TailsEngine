@@ -1,5 +1,6 @@
 #include <Tails/Application.hpp>
 #include <Tails/Renderer/Renderer.hpp>
+#include <Tails/Window.hpp>
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Audio/AudioSubsystem.hpp>
 #include <Tails/UI/WidgetSubsystem.hpp>
@@ -9,12 +10,9 @@
 #include <Tails/Log.hpp>
 #include <Tails/Input/Event.hpp>
 
-#include "ApplicationImpl.hpp"
-
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_hints.h>
 #include <SDL3/SDL_timer.h>
-#include <SDL3/SDL_video.h>
 
 #ifdef TAILS_OS_PSP
 #include <pspkernel.h>
@@ -42,39 +40,6 @@ namespace tails::app
         SFrameInfo gCurrentFrameInfo;
         bool gShouldExit;
         u64 gStartTime;
-        SDL_Window* gWindowPtr {nullptr};
-
-        SDL_WindowFlags getSDLWindowFlags(const TBitset<EWindowFlags> flags)
-        {
-            if (!flags.anyBitSet())
-                return 0;
-
-            SDL_WindowFlags result {0};
-            if (flags.isBitSet(EWindowFlags::Resizable))
-                result |= SDL_WINDOW_RESIZABLE;
-
-            if (flags.isBitSet(EWindowFlags::Fullscreen))
-                result |= SDL_WINDOW_FULLSCREEN;
-
-            if (flags.isBitSet(EWindowFlags::Borderless))
-                result |= SDL_WINDOW_BORDERLESS;
-
-            if (flags.isBitSet(EWindowFlags::Minimised))
-                result |= SDL_WINDOW_MINIMIZED;
-
-            if (flags.isBitSet(EWindowFlags::Maximised))
-                result |= SDL_WINDOW_MAXIMIZED;
-
-            return result;
-        }
-    }
-
-    namespace impl
-    {
-        SDL_Window* getWindow()
-        {
-            return gWindowPtr;
-        }
     }
 
     bool init(int argc, char* argv[], const SWindowInfo& windowInfo)
@@ -88,21 +53,9 @@ namespace tails::app
         gCurrentFrameInfo = {};
         gShouldExit = false;
         gStartTime = SDL_GetPerformanceCounter();
-        gWindowPtr = SDL_CreateWindow(
-            windowInfo.title,
-            0,
-            0,
-            getSDLWindowFlags(windowInfo.flags)
-        );
-        if (!gWindowPtr)
-            return false;
 
-        // Setup window
-        SDL_SetWindowMinimumSize(
-            gWindowPtr,
-            static_cast<int>(windowInfo.minSize.x),
-            static_cast<int>(windowInfo.minSize.y)
-        );
+        if (!window::init(windowInfo))
+            return false;
 
         // init Tails systems
         logger::init();
@@ -113,13 +66,6 @@ namespace tails::app
         debug::init();
         world::init();
         ui::init();
-
-        // Force renderer to update to match window size
-        SDL_SetWindowSize(
-            gWindowPtr,
-            static_cast<int>(windowInfo.size.x),
-            static_cast<int>(windowInfo.size.y)
-        );
 
         return true;
     }
@@ -135,8 +81,7 @@ namespace tails::app
         assets::deinit();
         render::deinit();
 
-        SDL_DestroyWindow(gWindowPtr);
-        gWindowPtr = nullptr;
+        window::deinit();
         SDL_Quit();
         TAILS_LOG(Application, Message, "Application shutdown successfully");
     }
@@ -166,65 +111,17 @@ namespace tails::app
 
     void pollInput(const PollInputCallback callback)
     {
-        SDL_Event ev;
-        while (SDL_PollEvent(&ev))
+        TOptional<CEvent> ev;
+        while ((ev = window::pollInput()).isValid())
         {
-            TOptional<CEvent> evt;
-            switch (ev.type)
-            {
-            case SDL_EVENT_QUIT:
-                evt.emplace(CEvent::SClosed {});
-                break;
-            case SDL_EVENT_WINDOW_RESIZED:
-                evt.emplace(CEvent::SResized {
-                    .size = {ev.window.data1, ev.window.data2}
-                });
-                break;
-            case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                evt.emplace(CEvent::SMouseButtonDown {
-                    .button = static_cast<mouse::EButton>(ev.button.button),
-                    .position = {ev.button.x, ev.button.y}
-                });
-                break;
-            case SDL_EVENT_MOUSE_BUTTON_UP:
-                evt.emplace(CEvent::SMouseButtonUp {
-                    .button = static_cast<mouse::EButton>(ev.button.button),
-                    .position = {ev.button.x, ev.button.y}
-                });
-                break;
-            case SDL_EVENT_MOUSE_MOTION:
-                evt.emplace(CEvent::SMouseMove {
-                    .position = {ev.motion.x, ev.motion.y}
-                });
-                break;
-            case SDL_EVENT_KEY_DOWN:
-                evt.emplace(CEvent::SKeyDown {
-                    .key = {
-                        .code = ev.key.key,
-                        .type = EKeyType::Keyboard
-                    }
-                });
-                break;
-            case SDL_EVENT_KEY_UP:
-                evt.emplace(CEvent::SKeyUp {
-                    .key = {
-                        .code = ev.key.key,
-                        .type = EKeyType::Keyboard
-                    }
-                });
-                break;
-            default:
-                break;
-            }
-
-            if (!evt)
+            if (!ev)
                 continue;
 
             if (callback)
-                callback(*evt);
-            ui::processEvent(*evt);
+                callback(*ev);
+            ui::processEvent(*ev);
 
-            if (evt->is<CEvent::SClosed>())
+            if (ev->is<CEvent::SClosed>())
                 exit();
         }
     }

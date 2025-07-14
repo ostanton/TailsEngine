@@ -4,6 +4,8 @@
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Maths.hpp>
 
+#include <compare>
+
 namespace tails
 {
     /**
@@ -54,7 +56,7 @@ namespace tails
          */
         [[nodiscard]] constexpr T asDegrees() const noexcept {return maths::radToDeg(m_angle);}
 
-        constexpr auto operator<=>(const TAngle& other) const = default;
+        constexpr auto operator<=>(const TAngle& other) const noexcept = default;
 
         template<typename U>
         constexpr TAngle operator+(const TAngle<U>& other) const noexcept

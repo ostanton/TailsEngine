@@ -61,6 +61,10 @@ namespace tails
 
         virtual void onRender(CLevelRenderBatch& renderBatch) const;
 
+        /**
+         * Gets the component's local bounding rectangle (with any local transformations applied)
+         * @return Local bounding box
+         */
         [[nodiscard]] virtual SFloatRect getLocalBounds() const noexcept;
         [[nodiscard]] SFloatRect getWorldBounds() const noexcept;
 

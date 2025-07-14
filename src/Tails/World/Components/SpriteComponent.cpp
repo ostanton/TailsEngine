@@ -9,6 +9,12 @@ namespace tails
         return size / 2.f + transform.getPosition();
     }
 
+    SFloatRect CSpriteComponent::getLocalBounds() const noexcept
+    {
+        // TODO - transform with local transformation matrix?
+        return {transform.getPosition(), size};
+    }
+
     void CSpriteComponent::onTick(float deltaSeconds)
     {
     }

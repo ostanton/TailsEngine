@@ -12,4 +12,5 @@ target_sources(
         Matrix3.hpp
         Angle.hpp
         Vector3.hpp
+        FloatColour.hpp
 )

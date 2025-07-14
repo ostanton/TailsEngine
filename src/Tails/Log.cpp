@@ -2,9 +2,7 @@
 
 #ifdef TAILS_ENABLE_LOGGING
 #include <Tails/String.hpp>
-#include <Tails/Memory.hpp>
 #include <SDL3/SDL_log.h>
-#include <cstdarg>
 #include <iostream>
 #endif // TAILS_ENABLE_LOGGING
 
@@ -53,6 +51,9 @@ namespace tails::logger
             break;
         case ECategory::Renderer:
             str += "Renderer           ";
+            break;
+        case ECategory::Window:
+            str += "Window             ";
             break;
         case ECategory::Game:
             str += "Game               ";

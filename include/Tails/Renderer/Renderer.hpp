@@ -29,7 +29,7 @@ namespace tails::render
     /**
      * Renders a textured rectangle
      * @param texture Texture ref
-     * @param transform Screen-space transform
+     * @param screenTransform Screen-space transform
      * @param size Local size. Can be 0 or {} for the texture's size
      * @param tint Tint colour
      * @param textureRect Portion of texture to render. Can be 0 or {} for the whole texture
@@ -44,7 +44,7 @@ namespace tails::render
 
     /**
      * Renders a coloured rectangle
-     * @param transform Screen-space transform
+     * @param screenTransform Screen-space transform
      * @param size Local size
      * @param fillColour Fill colour
      * @param outlineColour Outline colour
@@ -58,7 +58,7 @@ namespace tails::render
 
     /**
      * Renders debug text, only in debug builds
-     * @param transform Screen-space transform
+     * @param screenTransform Screen-space transform
      * @param string String to render
      * @param colour Colour of the text
      * @param font Target font

@@ -15,6 +15,8 @@ namespace tails
     template<typename T>
     struct TVector2 final
     {
+        using ArithmeticType = T;
+
         constexpr TVector2() = default;
         constexpr TVector2(const T val)
             : x(val), y(val)

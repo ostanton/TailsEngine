@@ -18,10 +18,9 @@
 #include <Tails/Audio/BusHandle.hpp>
 #include <Tails/Assets/Sound.hpp>
 #include <Tails/Assets/AssetPtr.hpp>
-
-#include "Tails/Debug.hpp"
-#include "Tails/Input/InputSubsystem.hpp"
-#include "Tails/Renderer/Renderer.hpp"
+#include <Tails/Window.hpp>
+#include <Tails/Debug.hpp>
+#include <Tails/Input/InputSubsystem.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -174,3 +173,4 @@ int main(const int argc, char* argv[])
     app::deinit();
     return 0;
 }
+
