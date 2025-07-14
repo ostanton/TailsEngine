@@ -20,7 +20,7 @@ namespace tails
             : m_angle(radians)
         {}
 
-        static constexpr TAngle identity {};
+        static const TAngle identity;
 
         /**
          * Creates an angle object from the given radians
@@ -79,6 +79,9 @@ namespace tails
         /** The angle in radians */
         T m_angle {static_cast<T>(0)};
     };
+
+    template<typename T>
+    const TAngle<T> TAngle<T>::identity {};
 
     using SFloatAngle = TAngle<float>;
     using SDoubleAngle = TAngle<double>;

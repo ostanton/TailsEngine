@@ -31,13 +31,13 @@ namespace tails
          * Internal matrix 2D array, row-major.
          * Access like @code matrix[row][col]@endcode
          */
-        T matrix[3][3] {static_cast<T>(0)};
-
-        static constexpr TMatrix3 identity {
-            1, 0, 0,
-            0, 1, 0,
-            0, 0, 1
+        T matrix[3][3] = {
+            {static_cast<T>(0)},
+            {static_cast<T>(0)},
+            {static_cast<T>(0)}
         };
+
+        static const TMatrix3 identity;
 
         /**
          * Gets the transpose of this matrix
@@ -155,6 +155,13 @@ namespace tails
             result.matrix[2][2] = matrix[2][0] * other.matrix[0][2] + matrix[2][1] * other.matrix[1][2] + matrix[2][2] * other.matrix[2][2];
             return result;
         }
+    };
+
+    template<typename T>
+    const TMatrix3<T> TMatrix3<T>::identity {
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
     };
 
     using SMatrix3f = TMatrix3<float>;

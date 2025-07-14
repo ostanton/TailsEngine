@@ -91,7 +91,7 @@ int main(const int argc, char* argv[])
         if (!level)
             return 0;
 
-        auto const player = level->spawnActor(
+        level->spawnActor(
             "Player",
             {
                 {0.f},
@@ -150,16 +150,6 @@ int main(const int argc, char* argv[])
     // default run sequence
     //app::run();
 
-    auto matrixToString = [](const SMatrix3f& matrix) -> CString
-    {
-        return std::format(
-            "[ {} , {} , {} ]\n[ {} , {} , {} ]\n[ {} , {} , {} ]",
-            matrix.matrix[0][0], matrix.matrix[0][1], matrix.matrix[0][2],
-            matrix.matrix[1][0], matrix.matrix[1][1], matrix.matrix[1][2],
-            matrix.matrix[2][0], matrix.matrix[2][1], matrix.matrix[2][2]
-        );
-    };
-
     auto level = world::getCurrentLevel();
     auto testActor = level->spawnActor<CTestActor2>(
         {{}, 0.f, {2.f}},
@@ -171,6 +161,7 @@ int main(const int argc, char* argv[])
         app::startFrame();
         app::pollInput(pollInputCallback);
         app::tick(app::getCurrentFrameInfo().getDeltaSeconds());
+        // doesn't work at the moment!
         auto mousePos = level->screenToWorld(input::getMousePosition());
         testActor->setPosition(mousePos);
         app::render();
