@@ -3,18 +3,34 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Vector2.hpp>
+#include <Tails/Maths/Angle.hpp>
+#include <Tails/Maths/Matrix3.hpp>
 
 namespace tails
 {
+    template<typename>
+    struct TTransform2D;
+
+    /**
+     * Structure for a camera view, typically into a level
+     *
+     * TODO - view matrix?
+     */
     struct TAILS_API SCamera
     {
         SVector2f position {0.f};
         /** In radians */
-        double rotation {0};
+        SFloatAngle rotation;
         float zoom {1.f};
 
-        void rotate(float degrees) noexcept;
-        [[nodiscard]] float getRotationDegrees() const noexcept;
+        void rotate(SFloatAngle angle) noexcept;
+
+        [[nodiscard]] SMatrix3f getViewMatrix() const noexcept;
+        [[nodiscard]] SMatrix3f getProjectionMatrix() const noexcept;
+
+        [[nodiscard]] SVector2f getViewSize() const noexcept;
+
+        [[nodiscard]] TTransform2D<float> worldToView(const TTransform2D<float>& transform) const noexcept;
     };
 }
 

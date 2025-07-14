@@ -17,6 +17,7 @@ namespace tails::render
     {
         // TODO - maybe want to have getting the window be a bit cleaner?? Have this cpp in Application.cpp??
         gRendererPtr = SDL_CreateRenderer(app::impl::getWindow(), nullptr);
+        //SDL_SetRenderLogicalPresentation(gRendererPtr, 1280, 720, SDL_LOGICAL_PRESENTATION_LETTERBOX);
     }
 
     void deinit()
@@ -51,8 +52,8 @@ namespace tails::render
     )
     {
         const SVector2f resized {
-            (size.isZero() ? static_cast<float>(texture->getSize().x) : size.y) * transform.scale2D.x,
-            (size.isZero() ? static_cast<float>(texture->getSize().y) : size.y) * transform.scale2D.y
+            (size.isZero() ? static_cast<float>(texture->getSize().x) : size.y) * transform.getScale().x,
+            (size.isZero() ? static_cast<float>(texture->getSize().y) : size.y) * transform.getScale().y
         };
 
         if (!texture->getInternal())
@@ -100,15 +101,15 @@ namespace tails::render
         }
 
         const SDL_FRect destRect = {
-            .x = transform.position.x,
-            .y = transform.position.y,
+            .x = transform.getPosition().x,
+            .y = transform.getPosition().y,
             .w = resized.x,
             .h = resized.y
         };
 
 #ifndef TAILS_OS_PSP
         // TODO - crashes PSP
-        if (!SDL_RenderTextureRotated(gRendererPtr, tex, &srcRect, &destRect, transform.rotation, nullptr, SDL_FLIP_NONE))
+        if (!SDL_RenderTextureRotated(gRendererPtr, tex, &srcRect, &destRect, transform.getRotation().asDegrees(), nullptr, SDL_FLIP_NONE))
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to render texture, '{}'", SDL_GetError());
         }
@@ -128,8 +129,8 @@ namespace tails::render
     )
     {
         const SVector2f resized {
-            size.x * transform.scale2D.x,
-            size.y * transform.scale2D.y
+            size.x * transform.getScale().x,
+            size.y * transform.getScale().y
         };
 
         if (fillColour != SColour::transparent)
@@ -139,8 +140,8 @@ namespace tails::render
                 TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '{}'", SDL_GetError());
             }
             const SDL_FRect rect {
-                .x = transform.position.x,
-                .y = transform.position.y,
+                .x = transform.getPosition().x,
+                .y = transform.getPosition().y,
                 .w = resized.x,
                 .h = resized.y
             };
@@ -157,8 +158,8 @@ namespace tails::render
                 TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '{}'", SDL_GetError());
             }
             const SDL_FRect rect {
-                .x = transform.position.x,
-                .y = transform.position.y,
+                .x = transform.getPosition().x,
+                .y = transform.getPosition().y,
                 .w = resized.x,
                 .h = resized.y
             };
@@ -184,7 +185,7 @@ namespace tails::render
         }
 #ifndef TAILS_OS_PSP
         // TODO - crashes PSP
-        if (!SDL_RenderDebugText(gRendererPtr, transform.position.x, transform.position.y, string.getData()))
+        if (!SDL_RenderDebugText(gRendererPtr, transform.getPosition().x, transform.getPosition().y, string.getData()))
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to render text '{}', '{}'", string.getData(), SDL_GetError());
         }
@@ -203,32 +204,32 @@ namespace tails::render
         const SDL_Vertex vertices[] = {
             SDL_Vertex {
                 .position = SDL_FPoint {
-                    .x = transform.position.x,
-                    .y = transform.position.y
+                    .x = transform.getPosition().x,
+                    .y = transform.getPosition().y
                 },
                 .color = sdlColour,
                 .tex_coord = {0.f, 0.f},
             },
             SDL_Vertex {
                 .position = SDL_FPoint {
-                    .x = transform.position.x,
-                    .y = transform.position.y + size.y
+                    .x = transform.getPosition().x,
+                    .y = transform.getPosition().y + size.y
                 },
                 .color = sdlColour,
                 .tex_coord = {1.f, 0.f},
             },
             SDL_Vertex {
                 .position = SDL_FPoint {
-                    .x = transform.position.x + size.x,
-                    .y = transform.position.y
+                    .x = transform.getPosition().x + size.x,
+                    .y = transform.getPosition().y
                 },
                 .color = sdlColour,
                 .tex_coord = {1.f, 1.f},
             },
             SDL_Vertex {
                 .position = SDL_FPoint {
-                    .x = transform.position.x + size.x,
-                    .y = transform.position.y + size.y
+                    .x = transform.getPosition().x + size.x,
+                    .y = transform.getPosition().y + size.y
                 },
                 .color = sdlColour,
                 .tex_coord = {0.f, 1.f},

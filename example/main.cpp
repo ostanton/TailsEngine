@@ -19,7 +19,9 @@
 #include <Tails/Assets/Sound.hpp>
 #include <Tails/Assets/AssetPtr.hpp>
 
+#include "Tails/Debug.hpp"
 #include "Tails/Input/InputSubsystem.hpp"
+#include "Tails/Renderer/Renderer.hpp"
 
 class CTestActor : public tails::CActor
 {
@@ -95,18 +97,9 @@ int main(const int argc, char* argv[])
                 {0.f},
                 0.f,
                 {1.f, 1.f}
-            },
-            -5
-        );
-        level->spawnActor(
-            "TestActor",
-            {
-                {96.f, 96.f},
-                0.f,
-                {1.f, 1.f}
             }
         );
-        player->setLayer(5);
+        level->spawnActor("TestActor", STransform2D::identity());
     }
 
     // widgets
@@ -157,6 +150,16 @@ int main(const int argc, char* argv[])
     // default run sequence
     //app::run();
 
+    auto matrixToString = [](const SMatrix3f& matrix) -> CString
+    {
+        return std::format(
+            "[ {} , {} , {} ]\n[ {} , {} , {} ]\n[ {} , {} , {} ]",
+            matrix.matrix[0][0], matrix.matrix[0][1], matrix.matrix[0][2],
+            matrix.matrix[1][0], matrix.matrix[1][1], matrix.matrix[1][2],
+            matrix.matrix[2][0], matrix.matrix[2][1], matrix.matrix[2][2]
+        );
+    };
+
     auto level = world::getCurrentLevel();
     auto testActor = level->spawnActor<CTestActor2>(
         {{}, 0.f, {2.f}},
@@ -169,8 +172,7 @@ int main(const int argc, char* argv[])
         app::pollInput(pollInputCallback);
         app::tick(app::getCurrentFrameInfo().getDeltaSeconds());
         auto mousePos = level->screenToWorld(input::getMousePosition());
-        //testActor->setPosition(mousePos);
-        level->camera.position = mousePos;
+        testActor->setPosition(mousePos);
         app::render();
         app::endFrame();
     }
@@ -178,4 +180,3 @@ int main(const int argc, char* argv[])
     app::deinit();
     return 0;
 }
-

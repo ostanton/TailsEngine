@@ -8,10 +8,9 @@
 #include <Tails/Application.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/World/ActorRegistry.hpp>
+#include <Tails/World/Components/CameraComponent.hpp>
 
 #include <iostream>
-
-#include "Tails/Log.hpp"
 
 TAILS_REGISTER_ACTOR(CPlayer, "Player")
 
@@ -23,39 +22,17 @@ CPlayer::CPlayer()
     spriteComponent->useTextureSize = false;
     spriteComponent->colour = tails::SColour::red;
     setRootComponent(spriteComponent);
-    
-    m_spriteComponent = createComponent<tails::CAnimatedSpriteComponent>();
-    m_spriteComponent->tint = tails::SColour::green;
-    m_spriteComponent->animationPlayer.spriteSheet = m_sprite.load();
-    m_spriteComponent->animationPlayer.addAnimation("test", {
-        .frames = {
-            {
-                .bounds = {
-                    .position = {0, 0},
-                    .size = {4, 4}
-                },
-                .playRate = 1.f
-            },
-            {
-                .bounds = {
-                    .position = {4, 4},
-                    .size = {4, 4}
-                },
-                .playRate = 1.f
-            }
-        },
-        .frameRate = 10
-    });
-    m_spriteComponent->animationPlayer.playAnimation("test");
-    m_spriteComponent->setParent(getRootComponent());
+
+    m_cameraComponent = createComponent<tails::CCameraComponent>();
+    m_cameraComponent->setParent(spriteComponent);
 
     m_currentSpeed = m_walkSpeed;
 
     m_moveDownAction = tails::input::addAction({
         "MoveDown",
         {
-            tails::EKeys::Down,
-            {tails::EKeys::Up, -1.f},
+            {tails::EKeys::Down, -1.f},
+            tails::EKeys::Up,
             {tails::EKeys::GamepadLeftStickY, 1.f, 0.2f},
             tails::EKeys::GamepadDPadDown,
             {tails::EKeys::GamepadDPadUp, -1.f}
@@ -118,7 +95,15 @@ void CPlayer::shoot()
     //TAILS_DEBUG_PRINTF(2.f, "Hello! {}", 2);
     auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), -10);
     bullet->moveDirection = {1.f, 0.f};
-    getLevel()->camera.zoom -= 0.05f;
+    //m_cameraComponent->camera.zoom -= 0.05f;
+    m_cameraComponent->transform.rotate(tails::SFloatAngle::degrees(1.f));
+}
+
+void CPlayer::onSpawn()
+{
+    CActor::onSpawn();
+
+    getLevel()->setActiveCamera(m_cameraComponent);
 }
 
 void CPlayer::onTick(const float deltaSeconds)
@@ -132,8 +117,6 @@ void CPlayer::onTick(const float deltaSeconds)
         m_shootTimer = m_fireRate;
         shoot();
     }
-
-    getLevel()->camera.position = getPosition();
 }
 
 void CPlayer::onOverlap(CActor* otherActor)

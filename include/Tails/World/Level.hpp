@@ -78,14 +78,9 @@ namespace tails
 
         /**
          * Call when the map finishes loading, and all actors, etc. are spawned. When loading from a file,
-         * this should be the last function called on the level, before it's make current
+         * this should be the last function called on the level, before it's made current
          */
-        void loadFinished();
-
-        /**
-         * Call when loading a level from file, after spawning the actors
-         */
-        void initActors() const;
+        void finishLoad();
 
         /**
          * Spawns an actor in the level, at the specified transform, in the specified layer
@@ -154,11 +149,9 @@ namespace tails
 
         void setActorLayer(CActor* actor, int layer);
 
-        [[nodiscard]] SVector2f worldToScreen(SVector2f worldPoint) const;
         [[nodiscard]] STransform2D worldToScreen(const STransform2D& worldTransform) const;
 
         [[nodiscard]] SVector2f screenToWorld(SVector2f screenPoint) const;
-        [[nodiscard]] STransform2D screenToWorld(const STransform2D& screenTransform) const;
 
         void setActiveCamera(CCameraComponent* cameraComponent);
 
@@ -170,6 +163,8 @@ namespace tails
 
         [[nodiscard]] SCamera& getActiveCamera() noexcept;
         [[nodiscard]] const SCamera& getActiveCamera() const noexcept;
+        [[nodiscard]] CCameraComponent* getActiveCameraComponent() noexcept;
+        [[nodiscard]] const CCameraComponent* getActiveCameraComponent() const noexcept;
 
         void onTick(float deltaSeconds);
         void onRender() const;
@@ -178,7 +173,7 @@ namespace tails
          * Deletes and erases any actors that are pending destroy
          */
         void cleanupActors();
-        
+
         [[nodiscard]] ActorIterator getActorIterator(const CActor* actor);
         [[nodiscard]] ConstActorIterator getActorIterator(const CActor* actor) const;
         [[nodiscard]] const ActorsVector& getActors() const;
@@ -187,14 +182,17 @@ namespace tails
 
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
-        // TODO - refactor so we only track the component for debug reasons (and rename!)
-        CCameraComponent* activeCamera {nullptr};
-        SCamera camera;
-
     private:
+        void initActors() const;
         [[nodiscard]] bool containsActor(const CActor* actor) const;
         [[nodiscard]] CLayer* getLayerFromActor(const CActor* actor);
 
+        /*
+         * TODO - rethink how we want to do layers (they can just be ints in the actors, no?)
+         * Not sure how effects and other stuff would work, maybe a separate vector/map for each (SoA kinda thing).
+         * Actors would just have their render batch sorted by their layer index then, instead of layers being
+         * some weird view into the level actors vector
+         */
         LayersMap m_layers;
         ActorsVector m_actors;
 
@@ -205,6 +203,8 @@ namespace tails
          * TODO - could this be const?
          */
         SCamera* m_activeCamera {nullptr};
+        /** The component which owns the active camera, can be null */
+        CCameraComponent* m_activeCameraComponent {nullptr};
     };
 
     template<>

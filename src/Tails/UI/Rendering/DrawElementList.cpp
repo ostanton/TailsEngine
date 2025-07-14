@@ -10,8 +10,8 @@ namespace tails::ui
     )
     {
         m_elements.emplace_back(
-            layoutData.transform.position,
-            layoutData.size * layoutData.transform.scale2D,
+            layoutData.transform.getPosition(),
+            layoutData.size * layoutData.transform.getScale(),
             colour,
             texture.toSharedPtr()
         );
@@ -20,8 +20,8 @@ namespace tails::ui
     void CDrawElementList::add(const SLayoutData& layoutData, SColour colour)
     {
         m_elements.emplace_back(
-            layoutData.transform.position,
-            layoutData.size * layoutData.transform.scale2D,
+            layoutData.transform.getPosition(),
+            layoutData.size * layoutData.transform.getScale(),
             colour,
             nullptr
         );

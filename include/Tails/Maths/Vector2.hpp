@@ -188,7 +188,11 @@ namespace tails
 
         [[nodiscard]] static T distanceSquared(TVector2 a, TVector2 b) noexcept;
         [[nodiscard]] static T distance(TVector2 a, TVector2 b) noexcept;
-        
+
+        static constexpr TVector2 right {1, 0};
+        static constexpr TVector2 up {0, 1};
+        static constexpr TVector2 identity {0, 0};
+
         T x {};
         T y {};
     };

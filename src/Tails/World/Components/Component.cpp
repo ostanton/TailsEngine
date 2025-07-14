@@ -44,12 +44,36 @@ namespace tails
         return m_parent;
     }
 
+    SVector2f CComponent::getWorldPosition() const noexcept
+    {
+        SMatrix3f worldMatrix {getWorldMatrix()};
+        return {worldMatrix.matrix[0][2], worldMatrix.matrix[1][2]};
+    }
+
+    SFloatAngle CComponent::getWorldRotation() const noexcept
+    {
+        return getWorldTransform().getRotation();
+    }
+
+    SVector2f CComponent::getWorldScale() const noexcept
+    {
+        return getWorldTransform().getScale();
+    }
+
     STransform2D CComponent::getWorldTransform() const noexcept
     {
         if (m_parent)
-            return m_parent->getWorldTransform().combine(transform);
+            return {m_parent->getWorldMatrix() * transform.getMatrix()};
 
         return transform;
+    }
+
+    SMatrix3f CComponent::getWorldMatrix() const noexcept
+    {
+        if (m_parent)
+            return m_parent->getWorldMatrix() * transform.getMatrix();
+
+        return transform.getMatrix();
     }
 
     void CComponent::onRender(CLevelRenderBatch& renderBatch) const
@@ -67,8 +91,9 @@ namespace tails
 
     SFloatRect CComponent::getWorldBounds() const noexcept
     {
-        const auto local = getLocalBounds();
-        const auto worldTransform = getWorldTransform();
+        // TODO
+        //const auto local = getLocalBounds();
+        //const auto worldTransform = getWorldTransform();
 
         const SVector2f worldMin {};
         const SVector2f worldMax {};

@@ -1,0 +1,164 @@
+#ifndef TAILS_MATRIX_3_HPP
+#define TAILS_MATRIX_3_HPP
+
+#include <Tails/Core.hpp>
+#include <Tails/Maths/Vector2.hpp>
+#include <Tails/Maths/Rect.hpp>
+
+namespace tails
+{
+    /**
+     * Row-major 3x3 matrix structure, used internally by Tails Engine and can be converted
+     * to and from the more user-friendly Transform2D.
+     */
+    template<typename T>
+    struct TMatrix3 final
+    {
+        constexpr TMatrix3() noexcept = default;
+        constexpr TMatrix3(
+            const T a00, const T a01, const T a02,
+            const T a10, const T a11, const T a12,
+            const T a20, const T a21, const T a22
+        )
+            : matrix {
+                {a00, a01, a02},
+                {a10, a11, a12},
+                {a20, a21, a22}
+            }
+        {}
+
+        /**
+         * Internal matrix 2D array, row-major.
+         * Access like @code matrix[row][col]@endcode
+         */
+        T matrix[3][3] {static_cast<T>(0)};
+
+        static constexpr TMatrix3 identity {
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+        };
+
+        /**
+         * Gets the transpose of this matrix
+         * @return Matrix's transpose
+         */
+        [[nodiscard]] constexpr TMatrix3 transpose() const noexcept
+        {
+            TMatrix3 result;
+            result.matrix[0][0] = matrix[0][0];
+            result.matrix[0][1] = matrix[1][0];
+            result.matrix[0][2] = matrix[2][0];
+            result.matrix[1][0] = matrix[0][1];
+            result.matrix[1][1] = matrix[1][1];
+            result.matrix[1][2] = matrix[2][1];
+            result.matrix[2][0] = matrix[0][2];
+            result.matrix[2][1] = matrix[1][2];
+            result.matrix[2][2] = matrix[2][2];
+            return result;
+        }
+
+        /**
+         * Gets the inverse of this matrix, or returns the identity if there is no valid inverse
+         * @return Inverse or identity if invalid inverse
+         */
+        [[nodiscard]] constexpr TMatrix3 inverse() const noexcept
+        {
+            // only if we have an inverse (determinant is != 0)
+            if (const T det {determinant()}; det != static_cast<T>(0))
+            {
+                TMatrix3 result;
+                result.matrix[0][0] = (matrix[1][1] * matrix[2][2] - matrix[2][1] * matrix[1][2]) / det;
+                result.matrix[0][1] = (matrix[0][2] * matrix[2][1] - matrix[0][1] * matrix[2][2]) / det;
+                result.matrix[0][2] = (matrix[0][1] * matrix[1][2] - matrix[0][2] * matrix[1][1]) / det;
+                result.matrix[1][0] = (matrix[1][2] * matrix[2][0] - matrix[1][0] * matrix[2][2]) / det;
+                result.matrix[1][1] = (matrix[0][0] * matrix[2][2] - matrix[0][2] * matrix[2][0]) / det;
+                result.matrix[1][2] = (matrix[1][0] * matrix[0][2] - matrix[0][0] * matrix[1][2]) / det;
+                result.matrix[2][0] = (matrix[1][0] * matrix[2][1] - matrix[2][0] * matrix[1][1]) / det;
+                result.matrix[2][1] = (matrix[2][0] * matrix[0][1] - matrix[0][0] * matrix[2][1]) / det;
+                result.matrix[2][2] = (matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]) / det;
+                return result;
+            }
+
+            // otherwise return identity
+            return identity();
+        }
+
+        /**
+         * Gets the matrix's determinant
+         * @return Determinant
+         */
+        [[nodiscard]] constexpr T determinant() const noexcept
+        {
+            return
+                matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) -
+                matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) +
+                matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+        }
+
+        [[nodiscard]] constexpr TVector2<T> getTranslation() const noexcept
+        {
+            return {matrix[0][2], matrix[1][2]};
+        }
+
+        [[nodiscard]] constexpr TVector2<T> transform(const TVector2<T> point) const noexcept
+        {
+            return {
+                matrix[0][0] * point.x + matrix[0][1] * point.y + matrix[0][2],
+                matrix[1][0] * point.x + matrix[1][1] * point.y + matrix[1][2]
+            };
+        }
+
+        [[nodiscard]] constexpr TRect<T> transform(const TRect<T> rect) const noexcept
+        {
+            const TVector2<T> corners[] = {
+                rect.position,
+                {rect.position.x + rect.size.x, rect.position.y},
+                {rect.position.x, rect.position.y + rect.size.y},
+                {rect.position.x + rect.size.x, rect.position.y + rect.size.y}
+            };
+
+            for (u8 i {0}; i < 4; i++)
+                corners[i] = transform(corners[i]);
+
+            T minX {corners[0].x};
+            T maxX {corners[0].x};
+            T minY {corners[0].y};
+            T maxY {corners[0].y};
+
+            for (u8 i {1}; i < 4; i++)
+            {
+                if (corners[i].x < minX)
+                    minX = corners[i].x;
+                if (corners[i].x > maxX)
+                    maxX = corners[i].x;
+                if (corners[i].y < minY)
+                    minY = corners[i].y;
+                if (corners[i].y > maxY)
+                    maxY = corners[i].y;
+            }
+
+            return {{minX, minY}, {maxX - minX, maxY - minY}};
+        }
+
+        constexpr TMatrix3 operator*(const TMatrix3& other) const noexcept
+        {
+            TMatrix3 result;
+            result.matrix[0][0] = matrix[0][0] * other.matrix[0][0] + matrix[0][1] * other.matrix[1][0] + matrix[0][2] * other.matrix[2][0];
+            result.matrix[0][1] = matrix[0][0] * other.matrix[0][1] + matrix[0][1] * other.matrix[1][1] + matrix[0][2] * other.matrix[2][1];
+            result.matrix[0][2] = matrix[0][0] * other.matrix[0][2] + matrix[0][1] * other.matrix[1][2] + matrix[0][2] * other.matrix[2][2];
+            result.matrix[1][0] = matrix[1][0] * other.matrix[0][0] + matrix[1][1] * other.matrix[1][0] + matrix[1][2] * other.matrix[2][0];
+            result.matrix[1][1] = matrix[1][0] * other.matrix[0][1] + matrix[1][1] * other.matrix[1][1] + matrix[1][2] * other.matrix[2][1];
+            result.matrix[1][2] = matrix[1][0] * other.matrix[0][2] + matrix[1][1] * other.matrix[1][2] + matrix[1][2] * other.matrix[2][2];
+            result.matrix[2][0] = matrix[2][0] * other.matrix[0][0] + matrix[2][1] * other.matrix[1][0] + matrix[2][2] * other.matrix[2][0];
+            result.matrix[2][1] = matrix[2][0] * other.matrix[0][1] + matrix[2][1] * other.matrix[1][1] + matrix[2][2] * other.matrix[2][1];
+            result.matrix[2][2] = matrix[2][0] * other.matrix[0][2] + matrix[2][1] * other.matrix[1][2] + matrix[2][2] * other.matrix[2][2];
+            return result;
+        }
+    };
+
+    using SMatrix3f = TMatrix3<float>;
+    using SMatrix3d = TMatrix3<double>;
+}
+
+#endif // TAILS_MATRIX_3_HPP

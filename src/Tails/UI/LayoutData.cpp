@@ -13,9 +13,10 @@ namespace tails::ui
             std::move(widget),
             SLayoutData {
                 {
-                    transform.position + localOffset,
-                    transform.rotation,
-                    transform.scale2D
+                    transform.getPosition() + localOffset,
+                    transform.getRotation(),
+                    transform.getScale(),
+                    transform.getOrigin()
                 },
                 localSize
             }
@@ -25,6 +26,6 @@ namespace tails::ui
     SFloatRect SLayoutData::getRect() const noexcept
     {
         // TODO - account for rotation
-        return {transform.position, size * transform.scale2D};
+        return {transform.getPosition(), size * transform.getScale()};
     }
 }

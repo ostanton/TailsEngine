@@ -29,7 +29,7 @@ namespace tails::ui
     {
         // TODO - get window input instead of renderer, get window layout data!
         SLayoutData layoutData;
-        layoutData.transform.scale2D = 1.f;
+        layoutData.transform.setScale(1.f);
         layoutData.size = render::getResolution();
 
         // Gather the widgets as draw element data, then render them

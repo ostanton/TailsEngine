@@ -3,7 +3,6 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/World/Components/Component.hpp>
-#include <Tails/Maths/Rect.hpp>
 #include <Tails/World/Camera.hpp>
 
 namespace tails
@@ -20,9 +19,6 @@ namespace tails
         void activate();
         [[nodiscard]] bool isActive() const noexcept;
 
-        // TODO - redundant
-        SFloatRect bounds;
-        // TODO - make protected/private?
         SCamera camera;
 
     protected:

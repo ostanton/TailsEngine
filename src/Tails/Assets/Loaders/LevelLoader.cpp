@@ -14,7 +14,7 @@ namespace tails::assets::level
             return nullptr;
         }
         
-        level->loadFinished();
+        level->finishLoad();
         TAILS_LOG_VA(AssetSubsystem, Message, "Loaded level '{}'", path.getData());
         return level;
     }

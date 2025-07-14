@@ -8,7 +8,7 @@
 
 namespace tails
 {
-    class CAnimatedSpriteComponent;
+    class CCameraComponent;
     
     namespace input
     {
@@ -25,6 +25,7 @@ public:
     void shoot();
 
 private:
+    void onSpawn() override;
     void onTick(float deltaSeconds) override;
     void onOverlap(CActor* otherActor) override;
     
@@ -34,8 +35,8 @@ private:
     void handleStopSprint(tails::input::SActionValue actionValue);
     void handleStartShooting(tails::input::SActionValue actionValue);
     void handleStopShooting(tails::input::SActionValue actionValue);
-    
-    tails::CAnimatedSpriteComponent* m_spriteComponent;
+
+    tails::CCameraComponent* m_cameraComponent;
     tails::input::SActionHandle m_moveDownAction;
     tails::input::SActionHandle m_moveRightAction;
     tails::input::SActionHandle m_sprintAction;
@@ -43,7 +44,7 @@ private:
 
     float m_currentSpeed;
     float m_sprintSpeed {500.f};
-    float m_walkSpeed {250.f};
+    float m_walkSpeed {1.f};
 
     bool m_wishShoot {false};
     float m_shootTimer {0.f};

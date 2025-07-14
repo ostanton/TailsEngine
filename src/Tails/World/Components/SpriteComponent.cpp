@@ -6,7 +6,7 @@ namespace tails
 {
     SVector2f CSpriteComponent::getCentre() const noexcept
     {
-        return size / 2.f + transform.position;
+        return size / 2.f + transform.getPosition();
     }
 
     void CSpriteComponent::onTick(float deltaSeconds)
@@ -19,7 +19,7 @@ namespace tails
             return;
 
         renderBatch.addItem(
-            transform,
+            getWorldTransform(),
             colour,
             size,
             texture

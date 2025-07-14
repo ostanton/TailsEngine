@@ -47,7 +47,17 @@ namespace tails
         void setParent(CComponent* parent) noexcept;
         [[nodiscard]] CComponent* getParent() const noexcept;
 
+        /**
+         * Gets this component's position in world-space. This is more efficient than
+         * @code getWorldTransform().getPosition()@endcode as rotation and scale do not need
+         * to be calculated
+         * @return World position
+         */
+        [[nodiscard]] SVector2f getWorldPosition() const noexcept;
+        [[nodiscard]] SFloatAngle getWorldRotation() const noexcept;
+        [[nodiscard]] SVector2f getWorldScale() const noexcept;
         [[nodiscard]] STransform2D getWorldTransform() const noexcept;
+        [[nodiscard]] SMatrix3f getWorldMatrix() const noexcept;
 
         virtual void onRender(CLevelRenderBatch& renderBatch) const;
 

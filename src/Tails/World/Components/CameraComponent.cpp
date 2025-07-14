@@ -30,12 +30,12 @@ namespace tails
         return &level->getActiveCamera() == &camera;
     }
 
-    void CCameraComponent::onTick(float deltaSeconds)
+    void CCameraComponent::onTick(const float deltaSeconds)
     {
         CComponent::onTick(deltaSeconds);
 
-        camera.position = getWorldTransform().position;
-        camera.rotation = getWorldTransform().rotation;
+        camera.position = getWorldPosition();
+        camera.rotation = getWorldRotation();
     }
 
     void CCameraComponent::onDeinit()

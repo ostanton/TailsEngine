@@ -7,6 +7,7 @@
 
 #include <algorithm>
 
+#include "Tails/Debug.hpp"
 #include "Tails/World/Components/CameraComponent.hpp"
 
 namespace tails
@@ -23,24 +24,17 @@ namespace tails
 
     CLevel::~CLevel() = default;
 
-    void CLevel::loadFinished()
+    void CLevel::finishLoad()
     {
-        if (!activeCamera)
+        if (!m_activeCamera)
         {
-            activeCamera = spawnActor<CCameraActor>({
-                {0.f, 0.f},
-                0.f,
-                {1.f, 1.f}
-            })->cameraComponent;
-        }
-    }
-
-    void CLevel::initActors() const
-    {
-        for (const auto& actor : m_actors)
-        {
-            actor->onInitComponents();
-            actor->onSpawn();
+            setActiveCamera(
+                spawnActor<CCameraActor>({
+                    {0.f, 0.f},
+                    0.f,
+                    {1.f, 1.f}
+                })->cameraComponent
+            );
         }
     }
 
@@ -111,32 +105,9 @@ namespace tails
         actor->m_layer = layer;
     }
 
-    SVector2f CLevel::worldToScreen(const SVector2f worldPoint) const
-    {
-        const auto resolution = render::getResolution();
-
-        // Get point relative to camera with zoom
-        const auto relative = (worldPoint - camera.position) * camera.zoom;
-
-        // Rotate around camera centre
-        const double cosA {std::cos(camera.rotation)};
-        const double sinA {std::sin(camera.rotation)};
-        const SVector2d rotated = {
-            relative.x * cosA - relative.y * sinA,
-            relative.x * sinA + relative.y * cosA
-        };
-
-        // Move to screen space
-        return SVector2f {rotated + resolution / 2.f};
-    }
-
     STransform2D CLevel::worldToScreen(const STransform2D& worldTransform) const
     {
-        return {
-            .position = worldToScreen(worldTransform.position),
-            .rotation = static_cast<float>((worldTransform.rotation - camera.rotation) * (180.f / M_PI)),
-            .scale2D = worldTransform.scale2D * camera.zoom,
-        };
+        return m_activeCamera->worldToView(worldTransform);
     }
 
     SVector2f CLevel::screenToWorld(const SVector2f screenPoint) const
@@ -147,8 +118,8 @@ namespace tails
         const auto relative = screenPoint - resolution / 2.f;
 
         // Apply inverse rotation
-        const double cosA {std::cos(-camera.rotation)};
-        const double sinA {std::sin(-camera.rotation)};
+        const double cosA {std::cos(-m_activeCamera->rotation.asRadians())};
+        const double sinA {std::sin(-m_activeCamera->rotation.asRadians())};
 
         SVector2d unrotated = {
             relative.x * cosA - relative.y * sinA,
@@ -156,18 +127,9 @@ namespace tails
         };
 
         // Undo zoom
-        unrotated /= camera.zoom;
+        unrotated /= m_activeCamera->zoom;
 
-        return SVector2f {unrotated + camera.position};
-    }
-
-    STransform2D CLevel::screenToWorld(const STransform2D& screenTransform) const
-    {
-        return {
-            .position = screenToWorld(screenTransform.position),
-            .rotation = screenTransform.rotation,
-            .scale2D = screenTransform.scale2D / camera.zoom,
-        };
+        return SVector2f {unrotated + m_activeCamera->position};
     }
 
     void CLevel::setActiveCamera(CCameraComponent* cameraComponent)
@@ -181,13 +143,13 @@ namespace tails
         }
 
         m_activeCamera = &cameraComponent->camera;
-        activeCamera = cameraComponent;
+        m_activeCameraComponent = cameraComponent;
     }
 
     void CLevel::setActiveCamera(SCamera& camera)
     {
         m_activeCamera = &camera;
-        activeCamera = nullptr;
+        m_activeCameraComponent = nullptr;
     }
 
     SCamera& CLevel::getActiveCamera() noexcept
@@ -198,6 +160,16 @@ namespace tails
     const SCamera& CLevel::getActiveCamera() const noexcept
     {
         return *m_activeCamera;
+    }
+
+    CCameraComponent * CLevel::getActiveCameraComponent() noexcept
+    {
+        return m_activeCameraComponent;
+    }
+
+    const CCameraComponent* CLevel::getActiveCameraComponent() const noexcept
+    {
+        return m_activeCameraComponent;
     }
 
     void CLevel::onTick(const float deltaSeconds)
@@ -220,18 +192,22 @@ namespace tails
         for (const auto& item : renderBatch.items)
         {
             if (item.texture)
+            {
                 render::texture(
-                    item.texture,
-                    worldToScreen(item.transform),
-                    item.size,
-                    item.colour
-                );
+                   item.texture,
+                   worldToScreen(item.transform),
+                   item.size,
+                   item.colour
+               );
+            }
             else
-                render::rect(
-                    worldToScreen(item.transform),
-                    item.size,
-                    item.colour
-                );
+            {
+                render::quad(
+                   worldToScreen(item.transform),
+                   item.size,
+                   item.colour
+               );
+            }
         }
     }
 
@@ -243,7 +219,7 @@ namespace tails
             {
                 if (auto const layer = getLayerFromActor(it->get()))
                     layer->removeActor(it->get());
-                
+
                 it = decltype(it)(m_actors.erase(std::next(it).base()));
             }
             else
@@ -282,6 +258,16 @@ namespace tails
     EAssetType CLevel::getAssetType() const noexcept
     {
         return EAssetType::Level;
+    }
+
+    void CLevel::initActors() const
+    {
+        // TODO - two passes for this? one for initialising components, the second for onSpawn?
+        for (const auto& actor : m_actors)
+        {
+            actor->onInitComponents();
+            actor->onSpawn();
+        }
     }
 
     bool CLevel::containsActor(const CActor* actor) const

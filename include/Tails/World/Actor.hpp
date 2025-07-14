@@ -53,8 +53,8 @@ namespace tails
         void setPosition(SVector2f position);
         [[nodiscard]] SVector2f getPosition() const noexcept;
 
-        void setRotation(float rotation);
-        [[nodiscard]] float getRotation() const noexcept;
+        void setRotation(SFloatAngle rotation);
+        [[nodiscard]] SFloatAngle getRotation() const noexcept;
 
         void setScale(SVector2f scale);
         [[nodiscard]] SVector2f getScale() const noexcept;

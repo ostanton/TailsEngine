@@ -38,32 +38,32 @@ namespace tails
 
     void CActor::setPosition(const SVector2f position)
     {
-        m_rootComponent->transform.position = position;
+        m_rootComponent->transform.setPosition(position);
     }
 
     SVector2f CActor::getPosition() const noexcept
     {
-        return m_rootComponent->transform.position;
+        return m_rootComponent->transform.getPosition();
     }
 
-    void CActor::setRotation(const float rotation)
+    void CActor::setRotation(const SFloatAngle rotation)
     {
-        m_rootComponent->transform.rotation = rotation;
+        m_rootComponent->transform.setRotation(rotation);
     }
 
-    float CActor::getRotation() const noexcept
+    SFloatAngle CActor::getRotation() const noexcept
     {
-        return m_rootComponent->transform.rotation;
+        return m_rootComponent->transform.getRotation();
     }
 
     void CActor::setScale(const SVector2f scale)
     {
-        m_rootComponent->transform.scale2D = scale;
+        m_rootComponent->transform.setScale(scale);
     }
 
     SVector2f CActor::getScale() const noexcept
     {
-        return m_rootComponent->transform.scale2D;
+        return m_rootComponent->transform.getScale();
     }
 
     void CActor::setVisible(const bool visible)
