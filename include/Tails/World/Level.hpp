@@ -150,28 +150,28 @@ namespace tails
         void setActorLayer(CActor* actor, int layer);
 
         /**
-         * Transforms a world-space point into screen-space
+         * Transforms a world-space point into screen-space via the active camera
          * @param worldPoint World-space point
          * @return Screen-space point
          */
         [[nodiscard]] SVector2f worldToScreen(SVector2f worldPoint) const noexcept;
 
         /**
-         * Transforms a world-space transform into screen-space
+         * Transforms a world-space transform into screen-space via the active camera
          * @param worldTransform World-space transform
          * @return Screen-space transform
          */
         [[nodiscard]] STransform2D worldToScreen(const STransform2D& worldTransform) const noexcept;
 
         /**
-         * Transforms a screen-space point into world-space
+         * Transforms a screen-space point into world-space via the active camera
          * @param screenPoint Screen-space point
          * @return World-space point
          */
         [[nodiscard]] SVector2f screenToWorld(SVector2f screenPoint) const noexcept;
 
         /**
-         * Transforms a screen-space transform into world-space
+         * Transforms a screen-space transform into world-space via the active camera
          * @param screenTransform Screen-space transform
          * @return World-space transform
          */

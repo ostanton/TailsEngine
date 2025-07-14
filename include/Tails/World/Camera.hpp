@@ -27,8 +27,10 @@ namespace tails
         [[nodiscard]] SMatrix3f getViewMatrix() const noexcept;
         [[nodiscard]] SMatrix3f getProjectionMatrix() const noexcept;
 
-        [[nodiscard]] SVector2f worldToView(SVector2f point) const noexcept;
-        [[nodiscard]] TTransform2D<float> worldToView(const TTransform2D<float>& transform) const noexcept;
+        [[nodiscard]] SVector2f worldToView(SVector2f worldPoint) const noexcept;
+        [[nodiscard]] TTransform2D<float> worldToView(const TTransform2D<float>& worldTransform) const noexcept;
+        [[nodiscard]] SVector2f viewToWorld(SVector2f viewPoint) const noexcept;
+        [[nodiscard]] TTransform2D<float> viewToWorld(const TTransform2D<float>& viewTransform) const noexcept;
     };
 }
 

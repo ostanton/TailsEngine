@@ -117,31 +117,12 @@ namespace tails
 
     SVector2f CLevel::screenToWorld(const SVector2f screenPoint) const noexcept
     {
-        // TODO - use matrices
-        const auto resolution = render::getResolution();
-
-        // Move origin to camera centre
-        const auto relative = screenPoint - resolution / 2.f;
-
-        // Apply inverse rotation
-        const double cosA {std::cos(-m_activeCamera->rotation.asRadians())};
-        const double sinA {std::sin(-m_activeCamera->rotation.asRadians())};
-
-        SVector2d unrotated = {
-            relative.x * cosA - relative.y * sinA,
-            relative.x * sinA + relative.y * cosA
-        };
-
-        // Undo zoom
-        //unrotated /= m_activeCamera->zoom;
-
-        return SVector2f {unrotated + m_activeCamera->position};
+        return m_activeCamera->viewToWorld(screenPoint);
     }
 
-    STransform2D CLevel::screenToWorld(const STransform2D &screenTransform) const noexcept
+    STransform2D CLevel::screenToWorld(const STransform2D& screenTransform) const noexcept
     {
-        // TODO
-        return {};
+        return m_activeCamera->viewToWorld(screenTransform);
     }
 
     void CLevel::setActiveCamera(CCameraComponent* cameraComponent)

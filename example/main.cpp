@@ -174,4 +174,3 @@ int main(const int argc, char* argv[])
     app::deinit();
     return 0;
 }
-

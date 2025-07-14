@@ -17,7 +17,6 @@ namespace tails::render
     {
         // TODO - maybe want to have getting the window be a bit cleaner?? Have this cpp in Application.cpp??
         gRendererPtr = SDL_CreateRenderer(app::impl::getWindow(), nullptr);
-        //SDL_SetRenderLogicalPresentation(gRendererPtr, 1280, 720, SDL_LOGICAL_PRESENTATION_LETTERBOX);
     }
 
     void deinit()

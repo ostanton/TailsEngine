@@ -32,12 +32,15 @@ namespace tails
 
     SMatrix3f SCamera::getProjectionMatrix() const noexcept
     {
-        const float half {height * 0.5f / zoom};
+        const SVector2f windowSize {render::getResolution()};
+        const float windowAspect {windowSize.x / windowSize.y};
+        const float halfHeight {height * 0.5f / zoom};
+        const float halfWidth {halfHeight * windowAspect};
 
-        float left {-half};
-        float right {half};
-        float bottom {-half};
-        float top {half};
+        float left {-halfWidth};
+        float right {halfWidth};
+        float bottom {-halfHeight};
+        float top {halfHeight};
 
         const float rl {right - left};
         const float tb {top - bottom};
@@ -48,10 +51,10 @@ namespace tails
         };
     }
 
-    SVector2f SCamera::worldToView(const SVector2f point) const noexcept
+    SVector2f SCamera::worldToView(const SVector2f worldPoint) const noexcept
     {
         const SMatrix3f worldToNDC {getProjectionMatrix() * getViewMatrix()};
-        const SVector3f ndc {worldToNDC * SVector3f {point.x, point.y, 1.f}};
+        const SVector3f ndc {worldToNDC * SVector3f {worldPoint.x, worldPoint.y, 1.f}};
 
         const SVector2f windowSize {render::getResolution()};
         return {
@@ -60,7 +63,7 @@ namespace tails
         };
     }
 
-    TTransform2D<float> SCamera::worldToView(const TTransform2D<float>& transform) const noexcept
+    TTransform2D<float> SCamera::worldToView(const TTransform2D<float>& worldTransform) const noexcept
     {
         const SVector2f windowSize {render::getResolution()};
 
@@ -69,8 +72,34 @@ namespace tails
             0.f, -windowSize.y / 2.f, windowSize.y / 2.f,
             0.f, 0.f, 1.f
         };
-        const auto screenMatrix = getProjectionMatrix() * getViewMatrix() * transform.getMatrix();
+        const auto screenMatrix = getProjectionMatrix() * getViewMatrix() * worldTransform.getMatrix();
 
         return {ndcToScreenMatric * screenMatrix};
+    }
+
+    SVector2f SCamera::viewToWorld(const SVector2f viewPoint) const noexcept
+    {
+        const SVector2f windowSize {render::getResolution()};
+        const SVector2f ndc {
+            viewPoint.x / windowSize.x * 2.f - 1.f,
+            -(viewPoint.y / windowSize.y * 2.f - 1.f)
+        };
+
+        const SVector3f ndcPoint {ndc.x, ndc.y, 1.f};
+        const SMatrix3f invWorldToNDC {(getProjectionMatrix() * getViewMatrix()).inverse()};
+        const SVector3f worldPoint {invWorldToNDC * ndcPoint};
+        return {worldPoint.x, worldPoint.y};
+    }
+
+    TTransform2D<float> SCamera::viewToWorld(const TTransform2D<float>& viewTransform) const noexcept
+    {
+        const SVector2f windowSize {render::getResolution()};
+        const SMatrix3f screenToNDC {
+            2.f / windowSize.x, 0.f, -1.f,
+            0.f, -2.f / windowSize.y, 1.f,
+            0.f, 0.f, 1.f
+        };
+        const SMatrix3f invViewProj {(getProjectionMatrix() * getViewMatrix()).inverse()};
+        return {invViewProj * screenToNDC * viewTransform.getMatrix()};
     }
 }
