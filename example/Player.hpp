@@ -44,7 +44,7 @@ private:
 
     float m_currentSpeed;
     float m_sprintSpeed {500.f};
-    float m_walkSpeed {1.f};
+    float m_walkSpeed {250.f};
 
     bool m_wishShoot {false};
     float m_shootTimer {0.f};

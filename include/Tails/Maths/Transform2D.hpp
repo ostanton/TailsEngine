@@ -60,21 +60,15 @@ namespace tails
                 return;
             }
 
-            T r0x {a00 / m_scale.x};
-            T r0y {a01 / m_scale.x};
+            const TVector2<T> invScale {1 / m_scale.x, 1 / m_scale.y};
 
-            T r1x {a10 / m_scale.y};
-            T r1y {a11 / m_scale.y};
-
-            m_shear = {
-                r0x * r1x + r0y * r1y,
-                r0x * r1y - r0y * r1x
-            };
+            const T r0x {a00 * invScale.x};
+            const T r0y {a01 * invScale.x};
 
             m_rotation = TAngle<T> {std::atan2(r0y, r0x)};
 
             if (T det {a00 * a11 - a01 * a10}; det < 0)
-                m_scale.y = -m_scale.y;
+                m_scale.y *= -1;
         }
 
         static constexpr TTransform2D identity() noexcept
@@ -108,12 +102,6 @@ namespace tails
             m_isMatrixDirty = true;
         }
 
-        constexpr void setShear(const TVector2<T> shear) noexcept
-        {
-            m_shear = shear;
-            m_isMatrixDirty = true;
-        }
-
         constexpr void setOrigin(const TVector2<T> origin) noexcept
         {
             m_origin = origin;
@@ -138,12 +126,6 @@ namespace tails
             return *this;
         }
 
-        constexpr TTransform2D& shear(const TVector2<T> amount) noexcept
-        {
-            setShear(m_shear + amount);
-            return *this;
-        }
-
         [[nodiscard]] constexpr TVector2<T> getPosition() const noexcept
         {
             return m_position;
@@ -157,11 +139,6 @@ namespace tails
         [[nodiscard]] constexpr TVector2<T> getScale() const noexcept
         {
             return m_scale;
-        }
-
-        [[nodiscard]] constexpr TVector2<T> getShear() const noexcept
-        {
-            return m_shear;
         }
 
         [[nodiscard]] constexpr TVector2<T> getOrigin() const noexcept
@@ -178,12 +155,12 @@ namespace tails
                 const T sinA {std::sin(angle)};
                 m_matrix = TMatrix3<T>::identity;
 
-                m_matrix.matrix[0][0] = m_scale.x * (cosA - m_shear.y * sinA);
-                m_matrix.matrix[0][1] = m_scale.y * (m_shear.x * cosA - sinA);
+                m_matrix.matrix[0][0] = m_scale.x * cosA;
+                m_matrix.matrix[0][1] = -m_scale.y * sinA;
                 m_matrix.matrix[0][2] = m_position.x;
 
-                m_matrix.matrix[1][0] = m_scale.x * (sinA + m_shear.y * cosA);
-                m_matrix.matrix[1][1] = m_scale.y * (m_shear.x * sinA + cosA);
+                m_matrix.matrix[1][0] = m_scale.x * sinA;
+                m_matrix.matrix[1][1] = m_scale.y * cosA;
                 m_matrix.matrix[1][2] = m_position.y;
 
                 m_isMatrixDirty = false;
@@ -195,24 +172,24 @@ namespace tails
         [[nodiscard]] constexpr TMatrix3<T> getInverseMatrix() const noexcept
         {
             // TODO - could cache!
-            return m_matrix.inverse();
+            return getMatrix().inverse();
         }
 
         [[nodiscard]] constexpr TVector2<T> transformPoint(const TVector2<T> point) const noexcept
         {
-            return m_matrix.transform(point);
+            return getMatrix().transform(point);
         }
 
         [[nodiscard]] constexpr TRect<T> transformRect(const TRect<T> rect) const noexcept
         {
-            return m_matrix.transform(rect);
+            return getMatrix().transform(rect);
         }
 
     private:
         TVector2<T> m_position;
         TAngle<T> m_rotation;
         TVector2<T> m_scale {static_cast<T>(1)};
-        TVector2<T> m_shear;
+        /** From 0 (top left) to 1 (bottom right) */
         TVector2<T> m_origin;
         mutable TMatrix3<T> m_matrix;
         mutable bool m_isMatrixDirty {true};

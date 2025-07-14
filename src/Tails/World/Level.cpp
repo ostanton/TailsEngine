@@ -105,13 +105,19 @@ namespace tails
         actor->m_layer = layer;
     }
 
-    STransform2D CLevel::worldToScreen(const STransform2D& worldTransform) const
+    SVector2f CLevel::worldToScreen(const SVector2f worldPoint) const noexcept
+    {
+        return m_activeCamera->worldToView(worldPoint);
+    }
+
+    STransform2D CLevel::worldToScreen(const STransform2D& worldTransform) const noexcept
     {
         return m_activeCamera->worldToView(worldTransform);
     }
 
-    SVector2f CLevel::screenToWorld(const SVector2f screenPoint) const
+    SVector2f CLevel::screenToWorld(const SVector2f screenPoint) const noexcept
     {
+        // TODO - use matrices
         const auto resolution = render::getResolution();
 
         // Move origin to camera centre
@@ -127,18 +133,22 @@ namespace tails
         };
 
         // Undo zoom
-        unrotated /= m_activeCamera->zoom;
+        //unrotated /= m_activeCamera->zoom;
 
         return SVector2f {unrotated + m_activeCamera->position};
     }
 
+    STransform2D CLevel::screenToWorld(const STransform2D &screenTransform) const noexcept
+    {
+        // TODO
+        return {};
+    }
+
     void CLevel::setActiveCamera(CCameraComponent* cameraComponent)
     {
-        // TODO - I don't think we want to rely on a valid camera component to be the active camera
-        // should probably only rely on a valid SCamera object (or pointer)
         if (!cameraComponent)
         {
-            // Fallback to default camera
+            // TODO - Fallback to default camera
             return;
         }
 
@@ -183,7 +193,6 @@ namespace tails
     void CLevel::onRender() const
     {
         CLevelRenderBatch renderBatch;
-        // TODO - render in camera view or something idk
         for (const auto& [id, layer] : m_layers)
         {
             layer.onRender(renderBatch);
@@ -202,7 +211,7 @@ namespace tails
             }
             else
             {
-                render::quad(
+                render::rect(
                    worldToScreen(item.transform),
                    item.size,
                    item.colour

@@ -21,7 +21,8 @@ namespace tails
 
     void CComponent::setParent(CComponent* parent) noexcept
     {
-        if (!parent)
+        // components cannot be parents of themselves
+        if (parent == this)
             return;
 
         // remove from old parent
@@ -36,7 +37,9 @@ namespace tails
 
         // add to new parent
         m_parent = parent;
-        m_parent->m_children.push_back(this);
+
+        if (m_parent)
+            m_parent->m_children.push_back(this);
     }
 
     CComponent* CComponent::getParent() const noexcept

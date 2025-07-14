@@ -17,14 +17,21 @@ TAILS_REGISTER_ACTOR(CPlayer, "Player")
 CPlayer::CPlayer()
 {
     auto const spriteComponent = createComponent<tails::CSpriteComponent>();
-    spriteComponent->texture = m_sprite.load();
+    //spriteComponent->texture = m_sprite.load();
     spriteComponent->size = {64.f, 64.f};
     spriteComponent->useTextureSize = false;
     spriteComponent->colour = tails::SColour::red;
+    spriteComponent->transform.setOrigin({0.5f});
     setRootComponent(spriteComponent);
 
     m_cameraComponent = createComponent<tails::CCameraComponent>();
     m_cameraComponent->setParent(spriteComponent);
+
+    auto const testSprite = createComponent<tails::CSpriteComponent>();
+    testSprite->setParent(spriteComponent);
+    testSprite->size = {32.f, 32.f};
+    testSprite->transform.setPosition({32.f, 32.f});
+    testSprite->colour = tails::SColour::green;
 
     m_currentSpeed = m_walkSpeed;
 
@@ -97,6 +104,7 @@ void CPlayer::shoot()
     bullet->moveDirection = {1.f, 0.f};
     //m_cameraComponent->camera.zoom -= 0.05f;
     m_cameraComponent->transform.rotate(tails::SFloatAngle::degrees(1.f));
+    m_cameraComponent->camera.zoom += 0.1f;
 }
 
 void CPlayer::onSpawn()

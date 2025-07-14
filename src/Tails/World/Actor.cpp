@@ -170,19 +170,11 @@ namespace tails
     {
         if (!rootComponent)
             return;
-        
+
         if (rootComponent->getOwner() != this)
             return;
-        
-        if (auto const parent = rootComponent->getParent())
-        {
-            parent->m_children.erase(std::ranges::find(
-                parent->m_children.begin(),
-                parent->m_children.end(),
-                rootComponent
-            ));
-            rootComponent->setParent(nullptr);
-        }
+
+        rootComponent->setParent(nullptr);
 
         // TODO - add immediate other components as children of this new root component
         m_rootComponent = rootComponent;

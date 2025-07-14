@@ -13,14 +13,13 @@ namespace tails
 
     /**
      * Structure for a camera view, typically into a level
-     *
-     * TODO - view matrix?
      */
     struct TAILS_API SCamera
     {
         SVector2f position {0.f};
         /** In radians */
         SFloatAngle rotation;
+        float height {1000.f};
         float zoom {1.f};
 
         void rotate(SFloatAngle angle) noexcept;
@@ -28,8 +27,7 @@ namespace tails
         [[nodiscard]] SMatrix3f getViewMatrix() const noexcept;
         [[nodiscard]] SMatrix3f getProjectionMatrix() const noexcept;
 
-        [[nodiscard]] SVector2f getViewSize() const noexcept;
-
+        [[nodiscard]] SVector2f worldToView(SVector2f point) const noexcept;
         [[nodiscard]] TTransform2D<float> worldToView(const TTransform2D<float>& transform) const noexcept;
     };
 }

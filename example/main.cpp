@@ -99,7 +99,10 @@ int main(const int argc, char* argv[])
                 {1.f, 1.f}
             }
         );
-        level->spawnActor("TestActor", STransform2D::identity());
+        auto test = level->spawnActor("TestActor", {{}, 0.f, {2.f, 4.f}});
+        auto transform = test->getTransform();
+        transform.setOrigin({0.5f});
+        test->setTransform(transform);
     }
 
     // widgets
@@ -171,3 +174,4 @@ int main(const int argc, char* argv[])
     app::deinit();
     return 0;
 }
+

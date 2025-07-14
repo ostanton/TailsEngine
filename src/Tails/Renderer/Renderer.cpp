@@ -45,15 +45,16 @@ namespace tails::render
 
     void texture(
         const TSharedRef<CTexture>& texture,
-        const STransform2D& transform,
+        const STransform2D& screenTransform,
         const SVector2f size,
         const SColour tint,
         const SIntRect textureRect
     )
     {
+        // TODO - full transform via geometry like rect()
         const SVector2f resized {
-            (size.isZero() ? static_cast<float>(texture->getSize().x) : size.y) * transform.getScale().x,
-            (size.isZero() ? static_cast<float>(texture->getSize().y) : size.y) * transform.getScale().y
+            (size.isZero() ? static_cast<float>(texture->getSize().x) : size.y) * screenTransform.getScale().x,
+            (size.isZero() ? static_cast<float>(texture->getSize().y) : size.y) * screenTransform.getScale().y
         };
 
         if (!texture->getInternal())
@@ -101,15 +102,15 @@ namespace tails::render
         }
 
         const SDL_FRect destRect = {
-            .x = transform.getPosition().x,
-            .y = transform.getPosition().y,
+            .x = screenTransform.getPosition().x,
+            .y = screenTransform.getPosition().y,
             .w = resized.x,
             .h = resized.y
         };
 
 #ifndef TAILS_OS_PSP
         // TODO - crashes PSP
-        if (!SDL_RenderTextureRotated(gRendererPtr, tex, &srcRect, &destRect, transform.getRotation().asDegrees(), nullptr, SDL_FLIP_NONE))
+        if (!SDL_RenderTextureRotated(gRendererPtr, tex, &srcRect, &destRect, screenTransform.getRotation().asDegrees(), nullptr, SDL_FLIP_NONE))
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to render texture, '{}'", SDL_GetError());
         }
@@ -122,56 +123,51 @@ namespace tails::render
     }
 
     void rect(
-        const STransform2D& transform,
+        const STransform2D& screenTransform,
         const SVector2f size,
         const SColour fillColour,
-        const SColour outlineColour
+        const SColour outlineColour // TODO - do we need outline colour?
     )
     {
-        const SVector2f resized {
-            size.x * transform.getScale().x,
-            size.y * transform.getScale().y
+        // TODO - origin doesn't seem to work
+        const SVector2f originOffset {
+            screenTransform.getOrigin().x * size.x,
+            screenTransform.getOrigin().y * size.y
+        };
+        const SVector2f points[4] = {
+            SVector2f {0.f, 0.f} - originOffset,
+            SVector2f {size.x, 0.f} - originOffset,
+            size - originOffset,
+            SVector2f {0.f, size.y} - originOffset,
         };
 
-        if (fillColour != SColour::transparent)
+        SDL_Vertex vertices[4];
+
+        const auto& matrix = screenTransform.getMatrix();
+        for (u8 i {0}; i < 4; i++)
         {
-            if (!SDL_SetRenderDrawColor(gRendererPtr, fillColour.r, fillColour.g, fillColour.b, fillColour.a))
-            {
-                TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '{}'", SDL_GetError());
-            }
-            const SDL_FRect rect {
-                .x = transform.getPosition().x,
-                .y = transform.getPosition().y,
-                .w = resized.x,
-                .h = resized.y
+            const SVector2f position {matrix.transform(points[i])};
+            vertices[i].position.x = position.x;
+            vertices[i].position.y = position.y;
+            // TODO - some SFloatColour struct
+            vertices[i].color = {
+                .r = static_cast<float>(fillColour.r) / 255,
+                .g = static_cast<float>(fillColour.g) / 255,
+                .b = static_cast<float>(fillColour.b) / 255,
+                .a = static_cast<float>(fillColour.a) / 255
             };
-            if (!SDL_RenderFillRect(gRendererPtr, &rect))
-            {
-                TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '{}'", SDL_GetError());
-            }
+            vertices[i].tex_coord = {.x = 0.f, .y = 0.f};
         }
 
-        if (outlineColour != SColour::transparent)
+        const int indices[6] = {0, 1, 2, 2, 3, 0};
+        if (!SDL_RenderGeometry(gRendererPtr, nullptr, vertices, 4, indices, 6))
         {
-            if (!SDL_SetRenderDrawColor(gRendererPtr, outlineColour.r, outlineColour.g, outlineColour.b, outlineColour.a))
-            {
-                TAILS_LOG_VA(Renderer, Error, "Failed to set renderer colour, '{}'", SDL_GetError());
-            }
-            const SDL_FRect rect {
-                .x = transform.getPosition().x,
-                .y = transform.getPosition().y,
-                .w = resized.x,
-                .h = resized.y
-            };
-            if (!SDL_RenderRect(gRendererPtr, &rect))
-            {
-                TAILS_LOG_VA(Renderer, Error, "Failed to render rect, '{}'", SDL_GetError());
-            }
+            TAILS_LOG(Renderer, Error, TAILS_FMT("Failed to render rect, '{}'", SDL_GetError()));
         }
     }
 
     void debugText(
-        const STransform2D& transform,
+        const STransform2D& screenTransform,
         const CString& string,
         const SColour colour,
         const std::shared_ptr<CFont>& font
@@ -185,7 +181,7 @@ namespace tails::render
         }
 #ifndef TAILS_OS_PSP
         // TODO - crashes PSP
-        if (!SDL_RenderDebugText(gRendererPtr, transform.getPosition().x, transform.getPosition().y, string.getData()))
+        if (!SDL_RenderDebugText(gRendererPtr, screenTransform.getPosition().x, screenTransform.getPosition().y, string.getData()))
         {
             TAILS_LOG_VA(Renderer, Error, "Failed to render text '{}', '{}'", string.getData(), SDL_GetError());
         }
@@ -193,7 +189,7 @@ namespace tails::render
 #endif // TAILS_DEBUG
     }
 
-    void quad(const STransform2D& transform, const SVector2f size, const SColour colour)
+    void quad(const STransform2D& screenTransform, const SVector2f size, const SColour colour)
     {
         const SDL_FColor sdlColour {
             .r = static_cast<float>(colour.r),
@@ -204,32 +200,32 @@ namespace tails::render
         const SDL_Vertex vertices[] = {
             SDL_Vertex {
                 .position = SDL_FPoint {
-                    .x = transform.getPosition().x,
-                    .y = transform.getPosition().y
+                    .x = screenTransform.getPosition().x,
+                    .y = screenTransform.getPosition().y
                 },
                 .color = sdlColour,
                 .tex_coord = {0.f, 0.f},
             },
             SDL_Vertex {
                 .position = SDL_FPoint {
-                    .x = transform.getPosition().x,
-                    .y = transform.getPosition().y + size.y
+                    .x = screenTransform.getPosition().x,
+                    .y = screenTransform.getPosition().y + size.y
                 },
                 .color = sdlColour,
                 .tex_coord = {1.f, 0.f},
             },
             SDL_Vertex {
                 .position = SDL_FPoint {
-                    .x = transform.getPosition().x + size.x,
-                    .y = transform.getPosition().y
+                    .x = screenTransform.getPosition().x + size.x,
+                    .y = screenTransform.getPosition().y
                 },
                 .color = sdlColour,
                 .tex_coord = {1.f, 1.f},
             },
             SDL_Vertex {
                 .position = SDL_FPoint {
-                    .x = transform.getPosition().x + size.x,
-                    .y = transform.getPosition().y + size.y
+                    .x = screenTransform.getPosition().x + size.x,
+                    .y = screenTransform.getPosition().y + size.y
                 },
                 .color = sdlColour,
                 .tex_coord = {0.f, 1.f},

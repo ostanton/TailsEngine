@@ -3,6 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Vector2.hpp>
+#include <Tails/Maths/Vector3.hpp>
 #include <Tails/Maths/Rect.hpp>
 
 namespace tails
@@ -23,7 +24,7 @@ namespace tails
             : matrix {
                 {a00, a01, a02},
                 {a10, a11, a12},
-                {a20, a21, a22}
+                {a20, a21, a22},
             }
         {}
 
@@ -34,7 +35,7 @@ namespace tails
         T matrix[3][3] = {
             {static_cast<T>(0)},
             {static_cast<T>(0)},
-            {static_cast<T>(0)}
+            {static_cast<T>(0)},
         };
 
         static const TMatrix3 identity;
@@ -81,7 +82,7 @@ namespace tails
             }
 
             // otherwise return identity
-            return identity();
+            return identity;
         }
 
         /**
@@ -154,6 +155,15 @@ namespace tails
             result.matrix[2][1] = matrix[2][0] * other.matrix[0][1] + matrix[2][1] * other.matrix[1][1] + matrix[2][2] * other.matrix[2][1];
             result.matrix[2][2] = matrix[2][0] * other.matrix[0][2] + matrix[2][1] * other.matrix[1][2] + matrix[2][2] * other.matrix[2][2];
             return result;
+        }
+
+        constexpr TVector3<T> operator*(const TVector3<T> other) const noexcept
+        {
+            return {
+                matrix[0][0] * other.x + matrix[0][1] * other.y + matrix[0][2] * other.z,
+                matrix[1][0] * other.x + matrix[1][1] * other.y + matrix[1][2] * other.z,
+                matrix[2][0] * other.x + matrix[2][1] * other.y + matrix[2][2] * other.z
+            };
         }
     };
 

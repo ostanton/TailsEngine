@@ -29,14 +29,14 @@ namespace tails::render
     /**
      * Renders a textured rectangle
      * @param texture Texture ref
-     * @param transform Global transform
+     * @param transform Screen-space transform
      * @param size Local size. Can be 0 or {} for the texture's size
      * @param tint Tint colour
      * @param textureRect Portion of texture to render. Can be 0 or {} for the whole texture
      */
     TAILS_API void texture(
         const TSharedRef<CTexture>& texture,
-        const STransform2D& transform,
+        const STransform2D& screenTransform,
         SVector2f size,
         SColour tint = SColour::white,
         SIntRect textureRect = {}
@@ -44,13 +44,13 @@ namespace tails::render
 
     /**
      * Renders a coloured rectangle
-     * @param transform Global transform
+     * @param transform Screen-space transform
      * @param size Local size
      * @param fillColour Fill colour
      * @param outlineColour Outline colour
      */
     TAILS_API void rect(
-        const STransform2D& transform,
+        const STransform2D& screenTransform,
         SVector2f size,
         SColour fillColour = SColour::white,
         SColour outlineColour = SColour::transparent
@@ -58,20 +58,20 @@ namespace tails::render
 
     /**
      * Renders debug text, only in debug builds
-     * @param transform Global transform
+     * @param transform Screen-space transform
      * @param string String to render
      * @param colour Colour of the text
      * @param font Target font
      */
     TAILS_API void debugText(
-        const STransform2D& transform,
+        const STransform2D& screenTransform,
         const CString& string,
         SColour colour = SColour::white,
         const std::shared_ptr<CFont>& font = nullptr
     );
 
     TAILS_API void quad(
-        const STransform2D& transform,
+        const STransform2D& screenTransform,
         SVector2f size,
         SColour colour = SColour::white
     );

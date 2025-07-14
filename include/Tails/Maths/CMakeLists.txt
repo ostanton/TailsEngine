@@ -11,4 +11,5 @@ target_sources(
         Circle.hpp
         Matrix3.hpp
         Angle.hpp
+        Vector3.hpp
 )
