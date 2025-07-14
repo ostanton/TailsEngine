@@ -1,10 +1,9 @@
 #include <Tails/Window.hpp>
 #include <Tails/Log.hpp>
+#include <Tails/Input/Event.hpp>
 
 #include <SDL3/SDL_video.h>
 #include <SDL3/SDL_events.h>
-
-#include "Tails/Input/Event.hpp"
 
 namespace tails::window
 {

@@ -46,6 +46,8 @@ namespace tails
     private:
         struct SItem
         {
+            // TODO - have vertices instead of assuming rectangles
+            // and have some shape abstraction for choosing predefined vertices and such
             STransform2D transform;
             SColour colour;
             SVector2f size;

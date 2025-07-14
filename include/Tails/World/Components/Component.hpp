@@ -68,7 +68,7 @@ namespace tails
         [[nodiscard]] virtual SFloatRect getLocalBounds() const noexcept;
         [[nodiscard]] SFloatRect getWorldBounds() const noexcept;
 
-        /** Transform relative to parent component. If the parent, this is the world transform */
+        /** Transform relative to parent component. If the root, this is the world transform */
         STransform2D transform {0.f, 0.f, 1.f};
         bool visible {true};
         ECollisionType collisionType {ECollisionType::Block};

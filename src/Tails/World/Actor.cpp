@@ -31,6 +31,11 @@ namespace tails
         m_rootComponent->transform = transform;
     }
 
+    STransform2D& CActor::getTransform() noexcept
+    {
+        return m_rootComponent->transform;
+    }
+
     const STransform2D& CActor::getTransform() const noexcept
     {
         return m_rootComponent->transform;
@@ -89,6 +94,16 @@ namespace tails
     void CActor::move(const SVector2f offset)
     {
         m_rootComponent->transform.translate(offset);
+    }
+
+    void CActor::rotate(const SFloatAngle angle)
+    {
+        m_rootComponent->transform.rotate(angle);
+    }
+
+    void CActor::scale(const SVector2f factor)
+    {
+        m_rootComponent->transform.scale(factor);
     }
 
     void CActor::setLayer(const int layer)

@@ -48,6 +48,7 @@ namespace tails
         [[nodiscard]] CComponent* getRootComponent() const;
 
         void setTransform(const STransform2D& transform);
+        [[nodiscard]] STransform2D& getTransform() noexcept;
         [[nodiscard]] const STransform2D& getTransform() const noexcept;
 
         void setPosition(SVector2f position);
@@ -68,6 +69,8 @@ namespace tails
         void destroy();
 
         void move(SVector2f offset);
+        void rotate(SFloatAngle angle);
+        void scale(SVector2f factor);
 
         /**
          * Generally use this in the constructor of this actor. Then, if the created component is a
