@@ -16,6 +16,8 @@ namespace tails
     class TAILS_API CCameraComponent : public CComponent
     {
     public:
+        CCameraComponent();
+
         void activate();
         [[nodiscard]] bool isActive() const noexcept;
 

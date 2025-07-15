@@ -27,7 +27,9 @@ public:
 private:
     void onSpawn() override;
     void onTick(float deltaSeconds) override;
-    void onOverlap(CActor* otherActor) override;
+
+    void onStartCollision(CActor* otherActor, tails::CComponent* otherComponent) override;
+    void onEndCollision(CActor* otherActor, tails::CComponent* otherComponent) override;
     
     void handleMoveDown(tails::input::SActionValue actionValue);
     void handleMoveRight(tails::input::SActionValue actionValue);

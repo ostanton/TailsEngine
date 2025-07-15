@@ -52,16 +52,18 @@ namespace tails::debug
     void render()
     {
 #ifdef TAILS_DEBUG
-        for (const auto& message : gDebugMessages)
+        for (usize i {0}; const auto& message : gDebugMessages)
         {
             render::debugText(
                 {
-                    0.f,
-                    1.f,
-                    static_cast<float>(gDebugMessages.size()) * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE
+                    {
+                        0.f,
+                        static_cast<float>(SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * i)
+                    }
                 },
                 message.message
             );
+            i++;
         }
 #endif // TAILS_DEBUG
     }

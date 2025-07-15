@@ -1,11 +1,15 @@
 #include <Tails/Renderer/Renderer.hpp>
+#include <Tails/Renderer/Vertex.hpp>
 #include <Tails/Assets/Texture.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/Maths/FloatColour.hpp>
+#include <Tails/Memory.hpp>
 
 #include "../WindowImpl.hpp"
 
 #include <SDL3/SDL_render.h>
+
+#include <vector>
 
 namespace tails::render
 {
@@ -142,29 +146,19 @@ namespace tails::render
             SVector2f {0.f, size.y} - originOffset,
         };
 
-        SDL_Vertex vertices[4];
+        SVertex vertices[4];
 
         const auto& matrix = screenTransform.getMatrix();
         for (u8 i {0}; i < 4; i++)
         {
             const SVector2f position {matrix.transform(points[i])};
-            vertices[i].position.x = position.x;
-            vertices[i].position.y = position.y;
-            const SFloatColour fillColourF {fillColour};
-            vertices[i].color = {
-                .r = fillColourF.r,
-                .g = fillColourF.g,
-                .b = fillColourF.b,
-                .a = fillColourF.a
-            };
-            vertices[i].tex_coord = {.x = 0.f, .y = 0.f};
+            vertices[i].position = position;
+            vertices[i].colour = fillColour;
+            vertices[i].texCoord = 0.f;
         }
 
         const int indices[6] = {0, 1, 2, 2, 3, 0};
-        if (!SDL_RenderGeometry(gRendererPtr, nullptr, vertices, 4, indices, 6))
-        {
-            TAILS_LOG(Renderer, Error, TAILS_FMT("Failed to render rect, '{}'", SDL_GetError()));
-        }
+        geometry({vertices, 4}, {indices, 6});
     }
 
     void debugText(
@@ -188,6 +182,29 @@ namespace tails::render
         }
 #endif // TAILS_OS_PSP
 #endif // TAILS_DEBUG
+    }
+
+    void debugLines(const std::span<const SVector2f> points, const SFloatColour colour)
+    {
+        if (points.size() < 2)
+            return;
+
+        std::vector<SDL_FPoint> sdlPoints;
+        sdlPoints.reserve(points.size());
+        for (usize i {0}; i < points.size(); i++)
+        {
+            const SVector2f point = points[i];
+            sdlPoints.emplace_back(point.x, point.y);
+        }
+
+        SDL_SetRenderDrawColorFloat(
+            gRendererPtr,
+            colour.r,
+            colour.g,
+            colour.b,
+            colour.a
+        );
+        SDL_RenderLines(gRendererPtr, sdlPoints.data(), static_cast<int>(points.size()));
     }
 
     void quad(const STransform2D& screenTransform, const SVector2f size, const SColour colour)
@@ -244,5 +261,45 @@ namespace tails::render
             indices,
             6
         );
+    }
+
+    void geometry(
+        const std::span<const SVertex> vertices,
+        const std::span<const int> indices,
+        const std::shared_ptr<CTexture>& texture
+    )
+    {
+        // could have some reusable buffer here instead (I think vector uses SBO anyway though)
+        std::vector<SDL_Vertex> sdlVertices {vertices.size()};
+        for (usize i {0}; i < vertices.size(); i++)
+        {
+            const auto& [position, colour, texCoord] = vertices[i];
+            sdlVertices[i].position = {
+                .x = position.x,
+                .y = position.y,
+            };
+            sdlVertices[i].color = {
+                .r = colour.r,
+                .g = colour.g,
+                .b = colour.b,
+                .a = colour.a,
+            };
+            sdlVertices[i].tex_coord = {
+                .x = texCoord.x,
+                .y = texCoord.y,
+            };
+        }
+
+        if (!SDL_RenderGeometry(
+                gRendererPtr,
+                texture ? texture->getInternal() : nullptr,
+                sdlVertices.data(),
+                static_cast<int>(vertices.size()),
+                indices.data(),
+                static_cast<int>(indices.size())
+            ))
+        {
+            TAILS_LOG(Renderer, Error, TAILS_FMT("Failed to render geometry, '{}'", SDL_GetError()));
+        }
     }
 }

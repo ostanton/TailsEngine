@@ -7,24 +7,31 @@
 
 namespace tails
 {
+    /**
+     * A simple static array
+     * @tparam T Element type
+     * @tparam Size Array size
+     */
     template<typename T, usize Size>
     class TStaticArray final
     {
     public:
+        using ElementType = T;
+
         struct SIterator
         {
-            SIterator(T* inPtr)
+            constexpr SIterator(T* inPtr)
                 : ptr(inPtr)
             {}
 
-            [[nodiscard]] T& operator*() const {return *ptr;}
-            [[nodiscard]] T* operator->() const {return ptr;}
+            [[nodiscard]] constexpr T& operator*() const {return *ptr;}
+            [[nodiscard]] constexpr T* operator->() const {return ptr;}
 
-            [[nodiscard]] bool operator==(const SIterator& other) const {return ptr == other.ptr;}
-            [[nodiscard]] bool operator!=(const SIterator& other) const {return !(*this == other);}
+            [[nodiscard]] constexpr bool operator==(const SIterator& other) const {return ptr == other.ptr;}
+            [[nodiscard]] constexpr bool operator!=(const SIterator& other) const {return !(*this == other);}
 
-            SIterator& operator++() {++ptr; return *this;}
-            SIterator operator++(int)
+            constexpr SIterator& operator++() {++ptr; return *this;}
+            constexpr SIterator operator++(int)
             {
                 SIterator tmp = *this;
                 ++ptr;
@@ -34,8 +41,8 @@ namespace tails
             T* ptr;
         };
         
-        TStaticArray() = default;
-        TStaticArray(const std::initializer_list<T>& list)
+        constexpr TStaticArray() = default;
+        constexpr TStaticArray(const std::initializer_list<T>& list)
         {
             if (list.size() > Size)
                 return;
@@ -47,19 +54,19 @@ namespace tails
                 i++;
             }
         }
-        TStaticArray(const TStaticArray&) = default;
-        TStaticArray(TStaticArray&&) noexcept = default;
-        TStaticArray& operator=(const TStaticArray&) = default;
-        TStaticArray& operator=(TStaticArray&&) noexcept = default;
-        ~TStaticArray() = default;
+        constexpr TStaticArray(const TStaticArray&) = default;
+        constexpr TStaticArray(TStaticArray&&) noexcept = default;
+        constexpr TStaticArray& operator=(const TStaticArray&) = default;
+        constexpr TStaticArray& operator=(TStaticArray&&) noexcept = default;
+        constexpr ~TStaticArray() = default;
 
-        [[nodiscard]] T& operator[](const usize index) noexcept {return m_array[index];}
-        [[nodiscard]] const T& operator[](const usize index) const noexcept {return m_array[index];}
+        [[nodiscard]] constexpr T& operator[](const usize index) noexcept {return m_array[index];}
+        [[nodiscard]] constexpr const T& operator[](const usize index) const noexcept {return m_array[index];}
 
-        [[nodiscard]] usize size() const noexcept {return Size;}
+        [[nodiscard]] constexpr usize size() const noexcept {return Size;}
 
-        [[nodiscard]] SIterator begin() noexcept {return m_array;}
-        [[nodiscard]] SIterator end() noexcept {return &m_array[Size];}
+        [[nodiscard]] constexpr SIterator begin() noexcept {return m_array;}
+        [[nodiscard]] constexpr SIterator end() noexcept {return &m_array[Size];}
         
     private:
         T m_array[Size];

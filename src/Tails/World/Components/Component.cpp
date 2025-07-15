@@ -1,6 +1,7 @@
 #include <Tails/World/Components/Component.hpp>
 #include <Tails/World/Actor.hpp>
 #include <Tails/World/Level.hpp>
+#include <Tails/Maths/SAT.hpp>
 
 #include <algorithm>
 
@@ -92,19 +93,31 @@ namespace tails
         return {};
     }
 
-    SFloatRect CComponent::getWorldBounds() const noexcept
+    SFloatOrientedRect CComponent::getWorldBounds() const noexcept
     {
-        // TODO - transform the local bounds into world bounds via its world transform/matrix
-        //const auto local = getLocalBounds();
-        //const auto worldTransform = getWorldTransform();
+        return getWorldMatrix().transformToOrientedRect(getLocalBounds());
+    }
 
-        const SVector2f worldMin {};
-        const SVector2f worldMax {};
+    SSATShape CComponent::getSATShape() const noexcept
+    {
+        const auto corners = getWorldBounds().getCorners();
+        return {{corners[0], corners[1], corners[2], corners[3]}};
+    }
 
-        return {
-            .position = {maths::min(worldMin.x, worldMax.x), maths::min(worldMin.y, worldMax.y)},
-            .size = {maths::min(worldMin.x, worldMax.x), maths::min(worldMin.y, worldMax.y)}
-        };
+    bool CComponent::isCollidingWith(const CComponent* other) const noexcept
+    {
+        if (auto const level = getLevel())
+            return level->areColliding(this, other);
+
+        return false;
+    }
+
+    std::vector<CComponent*> CComponent::getCollidingComponents() const noexcept
+    {
+        if (auto const level = getLevel())
+            return level->getCollisionsFor(this);
+
+        return {};
     }
 
     void CComponent::onInit()
@@ -116,6 +129,18 @@ namespace tails
     }
 
     void CComponent::onDeinit()
+    {
+    }
+
+    void CComponent::onStartCollision(CComponent* otherComponent)
+    {
+    }
+
+    void CComponent::onCollision(CComponent* otherComponent)
+    {
+    }
+
+    void CComponent::onEndCollision(CComponent* otherComponent)
     {
     }
 

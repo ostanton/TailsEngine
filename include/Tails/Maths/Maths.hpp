@@ -1,8 +1,11 @@
 #ifndef TAILS_MATHS_HPP
 #define TAILS_MATHS_HPP
 
+#include <Tails/Core.hpp>
+
 #include <cmath>
 #include <numbers>
+#include <bit>
 
 namespace tails::maths
 {
@@ -11,18 +14,19 @@ namespace tails::maths
     template<typename T> [[nodiscard]] constexpr T cube(const T x) noexcept {return x * x * x;}
     template<typename T> [[nodiscard]] constexpr T sqrt(const T x) noexcept {return std::sqrt(x);}
     template<typename T> [[nodiscard]] constexpr T invSqrt(const T x) noexcept {return static_cast<T>(1) / sqrt(x);}
-    template<typename T> [[nodiscard]] constexpr T fInvSqrt(const T x) noexcept
+    [[nodiscard]] constexpr float fInvSqrt(float x) noexcept
     {
-        // id-tech fast inverse sqrt
+        if (x <= 0.f)
+            return 0.f;
+
+        // based on id-tech fast inverse sqrt.
         // I don't understand it, but I think it works :/ (:D)
-        const float x2 = x * 0.5f;
-        constexpr float threeHalves {1.5f};
-        float y = x;
-        long i = *(long*)&y;
+        const float xHalf = x * 0.5f;
+        u32 i {std::bit_cast<u32>(x)};
         i = 0x5f3759df - (i >> 1);
-        y = *(float*)&i;
-        y = y * (threeHalves - x2 * y * y);
-        return y;
+        x = std::bit_cast<float>(i);
+        x = x * (1.5f - xHalf * x * x);
+        return x;
     }
     template<typename T> [[nodiscard]] constexpr T abs(const T x) noexcept {return x > static_cast<T>(0) ? x : -x;}
     template<typename T> [[nodiscard]] constexpr T max(const T a, const T b) noexcept {return a > b ? a : b;}

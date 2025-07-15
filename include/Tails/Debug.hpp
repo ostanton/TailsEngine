@@ -3,7 +3,11 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Format.hpp>
-#include <Tails/String.hpp>
+
+namespace tails
+{
+    class CString;
+}
 
 namespace tails::debug
 {

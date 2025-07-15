@@ -93,7 +93,7 @@ int main(const int argc, char* argv[])
         level->spawnActor(
             "Player",
             {
-                {0.f},
+                {0.f, -128.f},
                 0.f,
                 {1.f, 1.f}
             }
@@ -142,7 +142,7 @@ int main(const int argc, char* argv[])
         testBusHandle.playSound(mySound.load());
     }
 
-    // clang things i is unused! So commenting out for now
+    // clang thinks i is unused! So commenting out for now
     //TStaticArray<int, 5> numbers {4, 2, 6, 4, 8};
     //for (const auto i : numbers)
     //{
@@ -154,7 +154,7 @@ int main(const int argc, char* argv[])
 
     auto level = world::getCurrentLevel();
     auto testActor = level->spawnActor<CTestActor2>(
-        {{}, 0.f, {2.f}},
+        {{128.f}, 0.f, {2.f}},
         6
     );
     // customised run sequence with custom input polling callback (to close the window with the escape key)
@@ -173,4 +173,3 @@ int main(const int argc, char* argv[])
     app::deinit();
     return 0;
 }
-

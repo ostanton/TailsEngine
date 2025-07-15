@@ -11,8 +11,7 @@ namespace tails
 
     SFloatRect CSpriteComponent::getLocalBounds() const noexcept
     {
-        // TODO - transform with local transformation matrix?
-        return {transform.getPosition(), size};
+        return {{0.f}, size};
     }
 
     void CSpriteComponent::onTick(float deltaSeconds)

@@ -45,10 +45,10 @@ namespace tails
         const float halfHeight {height * 0.5f / zoom};
         const float halfWidth {halfHeight * windowAspect};
 
-        float left {-halfWidth};
-        float right {halfWidth};
-        float bottom {-halfHeight};
-        float top {halfHeight};
+        const float left {-halfWidth};
+        const float right {halfWidth};
+        const float bottom {-halfHeight};
+        const float top {halfHeight};
 
         const float rl {right - left};
         const float tb {top - bottom};
@@ -73,8 +73,37 @@ namespace tails
 
     SFloatRect SCamera::worldToView(const SFloatRect& worldRect) const noexcept
     {
-        // TODO
-        return worldRect;
+        const SVector2f windowSize {getWindowSize()};
+        const SMatrix3f ndcToScreen {
+            windowSize.x / 2.f, 0.f, windowSize.x / 2.f,
+            0.f, -windowSize.y / 2.f, windowSize.y / 2.f,
+            0.f, 0.f, 1.f
+        };
+        return SMatrix3f {ndcToScreen * getProjectionMatrix() * getViewMatrix()}.transform(worldRect);
+    }
+
+    SFloatOrientedRect SCamera::worldToView(const SFloatOrientedRect& worldRect) const noexcept
+    {
+        const SVector2f windowSize {getWindowSize()};
+        const SMatrix3f ndcToScreen {
+            windowSize.x / 2.f, 0.f, windowSize.x / 2.f,
+            0.f, -windowSize.y / 2.f, windowSize.y / 2.f,
+            0.f, 0.f, 1.f
+        };
+
+        const SMatrix3f worldToScreen {ndcToScreen * getProjectionMatrix() * getViewMatrix()};
+
+        const SVector2f screenAxisX {worldToScreen.transformAngle(worldRect.axisX)};
+        const SVector2f screenAxisY {worldToScreen.transformAngle(worldRect.axisY)};
+
+        const SVector2f scale {screenAxisX.length(), screenAxisY.length()};
+
+        return {
+            worldToScreen.transform(worldRect.centre),
+            screenAxisX / scale.x,
+            screenAxisY / scale.y,
+            worldRect.halfExtents * scale
+        };
     }
 
     TTransform2D<float> SCamera::worldToView(const TTransform2D<float>& worldTransform) const noexcept
@@ -107,8 +136,37 @@ namespace tails
 
     SFloatRect SCamera::viewToWorld(const SFloatRect& viewRect) const noexcept
     {
-        // TODO
-        return viewRect;
+        const SVector2f windowSize {getWindowSize()};
+        const SMatrix3f screenToNDC {
+            2.f / windowSize.x, 0.f, -1.f,
+            0.f, -2.f / windowSize.y, 1.f,
+            0.f, 0.f, 1.f
+        };
+        const SMatrix3f invViewProj {(getProjectionMatrix() * getViewMatrix()).inverse()};
+        return SMatrix3f {invViewProj * screenToNDC}.transform(viewRect);
+    }
+
+    SFloatOrientedRect SCamera::viewToWorld(const SFloatOrientedRect& viewRect) const noexcept
+    {
+        const SVector2f windowSize {getWindowSize()};
+        const SMatrix3f screenToNDC {
+            2.f / windowSize.x, 0.f, -1.f,
+            0.f, -2.f / windowSize.y, 1.f,
+            0.f, 0.f, 1.f
+        };
+        const SMatrix3f screenToWorld {(getProjectionMatrix() * getViewMatrix()).inverse() * screenToNDC};
+
+        const SVector2f worldAxisX {screenToWorld.transformAngle(viewRect.axisX)};
+        const SVector2f worldAxisY {screenToWorld.transformAngle(viewRect.axisY)};
+
+        const SVector2f scale {worldAxisX.length(), worldAxisY.length()};
+
+        return {
+            screenToWorld.transform(viewRect.centre),
+            worldAxisX / scale.x,
+            worldAxisY / scale.y,
+            viewRect.halfExtents * scale
+        };
     }
 
     TTransform2D<float> SCamera::viewToWorld(const TTransform2D<float>& viewTransform) const noexcept

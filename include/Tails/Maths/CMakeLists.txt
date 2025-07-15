@@ -13,4 +13,6 @@ target_sources(
         Angle.hpp
         Vector3.hpp
         FloatColour.hpp
+        OrientedRect.hpp
+        SAT.hpp
 )

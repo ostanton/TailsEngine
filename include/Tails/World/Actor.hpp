@@ -90,7 +90,13 @@ namespace tails
 
         void onRender(CLevelRenderBatch& renderBatch) const;
 
+        /**
+         * Tests collision between this actor and the target actor
+         * @param other Actor to test collision against
+         * @return True if they are colliding
+         */
         [[nodiscard]] bool isCollidingWith(const CActor* other) const noexcept;
+        [[nodiscard]] std::vector<CActor*> getCollidingActors() const noexcept;
 
         TBitset<EFlags> flags {IsVisible};
 
@@ -102,7 +108,9 @@ namespace tails
 
         void setRootComponent(CComponent* rootComponent);
 
-        virtual void onOverlap(CActor* otherActor);
+        virtual void onStartCollision(CActor* otherActor, CComponent* otherComponent);
+        virtual void onCollision(CActor* otherActor, CComponent* otherComponent);
+        virtual void onEndCollision(CActor* otherActor, CComponent* otherComponent);
 
     private:
         CComponent* addComponent(std::unique_ptr<CComponent> component);

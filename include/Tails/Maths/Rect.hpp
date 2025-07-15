@@ -5,6 +5,10 @@
 
 namespace tails
 {
+    /**
+     * An axis-aligned bounding box. It does not know about its own rotation
+     * @tparam T Arithmetic type
+     */
     template<typename T>
     struct TRect final
     {

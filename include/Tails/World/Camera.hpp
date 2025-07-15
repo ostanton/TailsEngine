@@ -6,6 +6,7 @@
 #include <Tails/Maths/Angle.hpp>
 #include <Tails/Maths/Matrix3.hpp>
 #include <Tails/Maths/Rect.hpp>
+#include <Tails/Maths/OrientedRect.hpp>
 
 namespace tails
 {
@@ -30,10 +31,12 @@ namespace tails
 
         [[nodiscard]] SVector2f worldToView(SVector2f worldPoint) const noexcept;
         [[nodiscard]] SFloatRect worldToView(const SFloatRect& worldRect) const noexcept;
+        [[nodiscard]] SFloatOrientedRect worldToView(const SFloatOrientedRect& worldRect) const noexcept;
         [[nodiscard]] TTransform2D<float> worldToView(const TTransform2D<float>& worldTransform) const noexcept;
 
         [[nodiscard]] SVector2f viewToWorld(SVector2f viewPoint) const noexcept;
         [[nodiscard]] SFloatRect viewToWorld(const SFloatRect& viewRect) const noexcept;
+        [[nodiscard]] SFloatOrientedRect viewToWorld(const SFloatOrientedRect& viewRect) const noexcept;
         [[nodiscard]] TTransform2D<float> viewToWorld(const TTransform2D<float>& viewTransform) const noexcept;
     };
 }

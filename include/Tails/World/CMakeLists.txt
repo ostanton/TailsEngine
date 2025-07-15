@@ -10,6 +10,7 @@ target_sources(
         Layer.hpp
         CameraActor.hpp
         Camera.hpp
+        CollisionManager.hpp
 )
 
 add_subdirectory(Components)

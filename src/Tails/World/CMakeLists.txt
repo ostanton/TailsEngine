@@ -10,6 +10,7 @@ target_sources(
         Layer.cpp
         CameraActor.cpp
         Camera.cpp
+        CollisionManager.cpp
 )
 
 add_subdirectory(Components)

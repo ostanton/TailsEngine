@@ -5,6 +5,7 @@
 #include <Tails/Maths/Vector2.hpp>
 #include <Tails/Maths/Vector3.hpp>
 #include <Tails/Maths/Rect.hpp>
+#include <Tails/Maths/OrientedRect.hpp>
 
 namespace tails
 {
@@ -112,7 +113,7 @@ namespace tails
 
         [[nodiscard]] constexpr TRect<T> transform(const TRect<T> rect) const noexcept
         {
-            const TVector2<T> corners[] = {
+            TVector2<T> corners[] = {
                 rect.position,
                 {rect.position.x + rect.size.x, rect.position.y},
                 {rect.position.x, rect.position.y + rect.size.y},
@@ -140,6 +141,37 @@ namespace tails
             }
 
             return {{minX, minY}, {maxX - minX, maxY - minY}};
+        }
+
+        [[nodiscard]] constexpr TVector2<T> transformAngle(TVector2<T> unitVector) const noexcept
+        {
+            return {
+                matrix[0][0] * unitVector.x + matrix[0][1] * unitVector.y,
+                matrix[1][0] * unitVector.x + matrix[1][1] * unitVector.y
+            };
+        }
+
+        [[nodiscard]] constexpr TOrientedRect<T> transformToOrientedRect(const TRect<T>& rect) const noexcept
+        {
+            const TVector2<T> halfSize {rect.size * static_cast<T>(0.5)};
+            const TVector2<T> centre {rect.position + halfSize};
+
+            TVector2<T> axisX {transformAngle(TVector2<T> {1, 0})};
+            TVector2<T> axisY {transformAngle(TVector2<T> {0, 1})};
+
+            const TVector2<T> length {axisX.length(), axisY.length()};
+
+            if (length.x != 0)
+                axisX /= length.x;
+            if (length.y != 0)
+                axisY /= length.y;
+
+            return {
+                transform(centre),
+                axisX,
+                axisY,
+                {halfSize.x * length.x, halfSize.y * length.y}
+            };
         }
 
         constexpr TMatrix3 operator*(const TMatrix3& other) const noexcept

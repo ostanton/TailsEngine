@@ -57,7 +57,7 @@ namespace tails::audio
             return;
         }
 
-        TAILS_LOG(AudioSubsystem, Message, TAILS_FMT("Using audio device '{}'", SDL_GetAudioDeviceName(gDeviceId)));
+        TAILS_LOG(AudioSubsystem, Message, TAILS_FMT("Using '{}' audio device", SDL_GetAudioDeviceName(gDeviceId)));
 
         TAILS_LOG(AudioSubsystem, Message, "Initialised");
     }

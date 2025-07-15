@@ -98,6 +98,7 @@ namespace tails
 
     void CActor::rotate(const SFloatAngle angle)
     {
+        // TODO - rotating an actor rotates all actors in a level for some reason!
         m_rootComponent->transform.rotate(angle);
     }
 
@@ -130,16 +131,18 @@ namespace tails
         if (!other)
             return false;
 
-        for (const auto& myComp : m_components)
-        {
-            for (const auto& otherComp : other->m_components)
-            {
-                if (myComp->getWorldBounds().intersects(otherComp->getWorldBounds()))
-                    return true;
-            }
-        }
+        if (auto const level = getLevel())
+            return level->areColliding(this, other);
 
         return false;
+    }
+
+    std::vector<CActor*> CActor::getCollidingActors() const noexcept
+    {
+        if (auto const level = getLevel())
+            return level->getCollisionsFor(this);
+
+        return {};
     }
 
     void CActor::onInitComponents()
@@ -195,7 +198,15 @@ namespace tails
         m_rootComponent = rootComponent;
     }
 
-    void CActor::onOverlap(CActor* otherActor)
+    void CActor::onStartCollision(CActor* otherActor, CComponent* otherComponent)
+    {
+    }
+
+    void CActor::onCollision(CActor* otherActor, CComponent* otherComponent)
+    {
+    }
+
+    void CActor::onEndCollision(CActor* otherActor, CComponent* otherComponent)
     {
     }
 

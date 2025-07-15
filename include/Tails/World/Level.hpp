@@ -5,9 +5,10 @@
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Maths/Colour.hpp>
 #include <Tails/Maths/Rect.hpp>
+#include <Tails/Maths/OrientedRect.hpp>
 #include <Tails/Assets/Asset.hpp>
 #include <Tails/Concepts.hpp>
-#include <Tails/World/Camera.hpp>
+#include <Tails/World/CollisionManager.hpp>
 
 #include <vector>
 #include <memory>
@@ -16,11 +17,14 @@
 namespace tails
 {
     class CActor;
+    class CComponent;
     class CString;
     class CLayer;
     class CCameraComponent;
     class CTexture;
     class CLevel;
+    struct SCamera;
+    struct SSATShape;
 
     /**
      * Render-only information for every entity's components in a level
@@ -28,7 +32,7 @@ namespace tails
      * TODO - should probably take into account layers too. Can probably just
      * sort the items array by some layer number
      */
-    class CLevelRenderBatch
+    class TAILS_API CLevelRenderBatch
     {
         friend CLevel;
 
@@ -40,7 +44,7 @@ namespace tails
             const std::shared_ptr<CTexture>& texture
         )
         {
-            items.emplace_back(worldTransform, colour, size, texture);
+            m_items.emplace_back(worldTransform, colour, size, texture);
         }
 
     private:
@@ -54,8 +58,7 @@ namespace tails
             std::shared_ptr<CTexture> texture;
         };
 
-        std::vector<SItem> items;
-        // TODO - some conversion from world space to screen space
+        std::vector<SItem> m_items;
     };
 
     /**
@@ -159,6 +162,20 @@ namespace tails
         [[nodiscard]] SVector2f worldToScreen(SVector2f worldPoint) const noexcept;
 
         /**
+         * Transforms a world-space AABB into screen-space via the active camera
+         * @param worldRect World-space AABB
+         * @return Screen-space AABB
+         */
+        [[nodiscard]] SFloatRect worldToScreen(const SFloatRect& worldRect) const noexcept;
+
+        /**
+         * Transform a world-space OBB into screen-space via the active camera
+         * @param worldRect World-space OBB
+         * @return Screen-space OBB
+         */
+        [[nodiscard]] SFloatOrientedRect worldToScreen(const SFloatOrientedRect& worldRect) const noexcept;
+
+        /**
          * Transforms a world-space transform into screen-space via the active camera
          * @param worldTransform World-space transform
          * @return Screen-space transform
@@ -171,6 +188,20 @@ namespace tails
          * @return World-space point
          */
         [[nodiscard]] SVector2f screenToWorld(SVector2f screenPoint) const noexcept;
+
+        /**
+         * Transforms a screen-space AABB into world-space via the active camera
+         * @param screenRect Screen-space AABB
+         * @return World-space AABB
+         */
+        [[nodiscard]] SFloatRect screenToWorld(const SFloatRect& screenRect) const noexcept;
+
+        /**
+         * Transforms a screen-space OBB into world-space via the active camera
+         * @param screenRect Screen-space OBB
+         * @return World-space OBB
+         */
+        [[nodiscard]] SFloatOrientedRect screenToWorld(const SFloatOrientedRect& screenRect) const noexcept;
 
         /**
          * Transforms a screen-space transform into world-space via the active camera
@@ -200,6 +231,23 @@ namespace tails
          */
         void cleanupActors();
 
+        /**
+         * Gets the components which are currently colliding with the target component
+         * @param component Component to check collisions on
+         * @return Colliding components
+         */
+        [[nodiscard]] std::vector<CComponent*> getCollisionsFor(const CComponent* component) const noexcept;
+
+        /**
+         * Gets the actors whose components are currently colliding with the target actor's components
+         * @param actor Actor to check collisions on
+         * @return Colliding actors
+         */
+        [[nodiscard]] std::vector<CActor*> getCollisionsFor(const CActor* actor) const noexcept;
+
+        [[nodiscard]] bool areColliding(const CComponent* compA, const CComponent* compB) const noexcept;
+        [[nodiscard]] bool areColliding(const CActor* actorA, const CActor* actorB) const noexcept;
+
         [[nodiscard]] ActorIterator getActorIterator(const CActor* actor);
         [[nodiscard]] ConstActorIterator getActorIterator(const CActor* actor) const;
         [[nodiscard]] const ActorsVector& getActors() const;
@@ -221,6 +269,9 @@ namespace tails
          */
         LayersMap m_layers;
         ActorsVector m_actors;
+
+        CCollisionManager m_collisionManager;
+        std::vector<std::pair<SSATShape, bool>> m_debugSATShapes;
 
         /**
          * Should never be null (is set on level load, etc.),

@@ -102,9 +102,9 @@ void CPlayer::shoot()
     //TAILS_DEBUG_PRINTF(2.f, "Hello! {}", 2);
     auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), -10);
     bullet->moveDirection = {1.f, 0.f};
-    //m_cameraComponent->camera.zoom -= 0.05f;
-    m_cameraComponent->transform.rotate(tails::SFloatAngle::degrees(1.f));
-    m_cameraComponent->camera.zoom += 0.1f;
+    //m_cameraComponent->transform.rotate(tails::SFloatAngle::degrees(1.f));
+    //m_cameraComponent->camera.zoom += 0.1f;
+    scale({1.01f});
 }
 
 void CPlayer::onSpawn()
@@ -125,16 +125,23 @@ void CPlayer::onTick(const float deltaSeconds)
         m_shootTimer = m_fireRate;
         shoot();
     }
+
+    const auto transform = getTransform();
+    TAILS_DEBUG_PRINT(0.f, TAILS_FMT("Player pos: {{ {}, {} }}", transform.getPosition().x, transform.getPosition().y));
 }
 
-void CPlayer::onOverlap(CActor* otherActor)
+void CPlayer::onStartCollision(CActor* otherActor, tails::CComponent* otherComponent)
 {
-    CActor::onOverlap(otherActor);
+    CActor::onStartCollision(otherActor, otherComponent);
 
-    if (otherActor)
-        std::cout << "Overlapping " << otherActor << '\n';
-    else
-        std::cout << "Overlapping INVALID actor!\n";
+    TAILS_DEBUG_PRINT(2.f, "Started collision");
+}
+
+void CPlayer::onEndCollision(CActor* otherActor, tails::CComponent* otherComponent)
+{
+    CActor::onEndCollision(otherActor, otherComponent);
+
+    TAILS_DEBUG_PRINT(2.f, "Ended collision");
 }
 
 void CPlayer::handleMoveDown(const tails::input::SActionValue actionValue)

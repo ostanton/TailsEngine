@@ -4,6 +4,7 @@
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Maths/Rect.hpp>
+#include <Tails/Maths/OrientedRect.hpp>
 
 #include <vector>
 
@@ -12,6 +13,7 @@ namespace tails
     class CActor;
     class CLevel;
     class CLevelRenderBatch;
+    struct SSATShape;
 
     enum class ECollisionType : u8
     {
@@ -22,16 +24,11 @@ namespace tails
 
     /**
      * Base class for actor components. They are arranged in a tree within their owning actor
-     *
-     * TODO - components need:
-     * - Position (relative to parent, or world-space if it is the root)
-     * - Rotation (^)
-     * - Scale (^)
-     * - Pivot (0..1 if possible (e.g. 0.5 is always centre), however that may not be possible)
      */
     class TAILS_API CComponent
     {
         friend CActor;
+        friend CLevel;
 
     public:
         CComponent() = default;
@@ -62,13 +59,28 @@ namespace tails
         virtual void onRender(CLevelRenderBatch& renderBatch) const;
 
         /**
-         * Gets the component's local bounding rectangle (with any local transformations applied)
-         * @return Local bounding box
+         * Gets the component's local bounding rectangle as an axis-aligned bounding box
+         * @return Axis-Aligned Bounding Box
          */
         [[nodiscard]] virtual SFloatRect getLocalBounds() const noexcept;
-        [[nodiscard]] SFloatRect getWorldBounds() const noexcept;
 
-        /** Transform relative to parent component. If the root, this is the world transform */
+        /**
+         * Gets the world bounds of this component as an oriented bounding box, including rotation
+         * @return Oriented Bounding Box
+         */
+        [[nodiscard]] SFloatOrientedRect getWorldBounds() const noexcept;
+
+        /**
+         * Gets the world space SAT shape of this component (defaults to the world bounds if not overriden).
+         * This is used for testing collisions between components
+         * @return Separating Axis Theorem Shape
+         */
+        [[nodiscard]] virtual SSATShape getSATShape() const noexcept;
+
+        [[nodiscard]] bool isCollidingWith(const CComponent* other) const noexcept;
+        [[nodiscard]] std::vector<CComponent*> getCollidingComponents() const noexcept;
+
+        /** Transform relative to its parent component. If the root, this is the world transform */
         STransform2D transform {0.f, 0.f, 1.f};
         bool visible {true};
         ECollisionType collisionType {ECollisionType::Block};
@@ -77,6 +89,10 @@ namespace tails
         virtual void onInit();
         virtual void onTick(float deltaSeconds);
         virtual void onDeinit();
+
+        virtual void onStartCollision(CComponent* otherComponent);
+        virtual void onCollision(CComponent* otherComponent);
+        virtual void onEndCollision(CComponent* otherComponent);
 
     private:
         void addChild(CComponent* child) noexcept;

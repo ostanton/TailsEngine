@@ -5,6 +5,8 @@
 #include <Tails/Maths/Angle.hpp>
 #include <Tails/Maths/Matrix3.hpp>
 
+#include <limits>
+
 namespace tails
 {
     /**
@@ -28,7 +30,7 @@ namespace tails
 
         constexpr TTransform2D(
             const TVector2<T> position,
-            const TAngle<T> rotation = {0},
+            const TAngle<T> rotation = TAngle<T> {0},
             const TVector2<T> scale = {1, 1},
             const TVector2<T> origin = {0, 0}
         )

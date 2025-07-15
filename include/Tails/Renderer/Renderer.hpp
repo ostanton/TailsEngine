@@ -9,12 +9,16 @@
 #include <Tails/Templated/SharedRef.hpp>
 
 #include <memory>
+#include <span>
+
+#include "Tails/Maths/FloatColour.hpp"
 
 namespace tails
 {
     class CString;
     class CTexture;
     class CFont;
+    struct SVertex;
 }
 
 // TODO - BIG CHANGE! favour rendering batches of vertices instead of hard texture/rect/text/etc
@@ -70,10 +74,32 @@ namespace tails::render
         const std::shared_ptr<CFont>& font = nullptr
     );
 
+    /**
+     * Renders lines from a set of points in screen-space
+     * @param points Screen-space points making up the lines
+     * @param colour The colour of the lines
+     */
+    TAILS_API void debugLines(
+        std::span<const SVector2f> points,
+        SFloatColour colour = SFloatColour::white
+    );
+
     TAILS_API void quad(
         const STransform2D& screenTransform,
         SVector2f size,
         SColour colour = SColour::white
+    );
+
+    /**
+     * Renders filled geometry with the specified vertices and indices in screen-space
+     * @param vertices Screen-space vertex array for the geometry
+     * @param indices Index array for the geometry
+     * @param texture Optional texture
+     */
+    TAILS_API void geometry(
+        std::span<const SVertex> vertices,
+        std::span<const int> indices,
+        const std::shared_ptr<CTexture>& texture = nullptr
     );
 }
 

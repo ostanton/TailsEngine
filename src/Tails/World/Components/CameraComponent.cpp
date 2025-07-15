@@ -4,6 +4,11 @@
 
 namespace tails
 {
+    CCameraComponent::CCameraComponent()
+    {
+        collisionType = ECollisionType::None;
+    }
+
     void CCameraComponent::activate()
     {
         auto const owner = getOwner();
