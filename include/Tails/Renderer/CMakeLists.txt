@@ -5,4 +5,5 @@ target_sources(
     PRIVATE
         Renderer.hpp
         Vertex.hpp
+        Shapes.hpp
 )

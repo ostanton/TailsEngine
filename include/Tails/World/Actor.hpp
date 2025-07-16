@@ -15,19 +15,18 @@ namespace tails
     class CLayer;
     class CComponent;
     class CLevelRenderBatch;
+    class CCollisionManager;
 
     /**
      * Actor within a level. It is made up of components, but is still inheritable,
      * much the same way Unreal Engine's actors and components work. Its transform
      * is its root component's transform. It does not have a transform by itself
-     * 
-     * TODO - Make sure this 100% just inherits the root component transformations
-     * Even collisions are just depending on if its components are colliding.
      */
     class TAILS_API CActor
     {
         friend CLevel;
         friend CLayer;
+        friend CCollisionManager;
 
     public:
         enum EFlags : u8
@@ -64,7 +63,7 @@ namespace tails
         [[nodiscard]] bool isVisible() const noexcept;
 
         /**
-         * Destroy ourself
+         * Destroy ourselves
          */
         void destroy();
 

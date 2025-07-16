@@ -270,24 +270,16 @@ namespace tails::render
     )
     {
         // could have some reusable buffer here instead (I think vector uses SBO anyway though)
-        std::vector<SDL_Vertex> sdlVertices {vertices.size()};
+        std::vector<SDL_Vertex> sdlVertices;
+        sdlVertices.reserve(vertices.size());
         for (usize i {0}; i < vertices.size(); i++)
         {
             const auto& [position, colour, texCoord] = vertices[i];
-            sdlVertices[i].position = {
-                .x = position.x,
-                .y = position.y,
-            };
-            sdlVertices[i].color = {
-                .r = colour.r,
-                .g = colour.g,
-                .b = colour.b,
-                .a = colour.a,
-            };
-            sdlVertices[i].tex_coord = {
-                .x = texCoord.x,
-                .y = texCoord.y,
-            };
+            sdlVertices.emplace_back(
+                SDL_FPoint {position.x, position.y},
+                SDL_FColor {colour.r, colour.g, colour.b, colour.a},
+                SDL_FPoint {texCoord.x, texCoord.y}
+            );
         }
 
         if (!SDL_RenderGeometry(
@@ -295,8 +287,8 @@ namespace tails::render
                 texture ? texture->getInternal() : nullptr,
                 sdlVertices.data(),
                 static_cast<int>(vertices.size()),
-                indices.data(),
-                static_cast<int>(indices.size())
+                indices.empty() ? nullptr : indices.data(),
+                indices.empty() ? 0 : static_cast<int>(indices.size())
             ))
         {
             TAILS_LOG(Renderer, Error, TAILS_FMT("Failed to render geometry, '{}'", SDL_GetError()));

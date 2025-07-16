@@ -105,4 +105,33 @@ namespace tails
         }
         return result;
     }
+
+    void CCollisionManager::cleanupCollisions(const CActor* actor) noexcept
+    {
+        // collect the actor's components in an unordered_set for faster lookup
+        std::unordered_set<const CComponent*> actorComponents;
+        actorComponents.reserve(actor->m_components.size());
+        for (const auto& comp : actor->m_components)
+            actorComponents.insert(comp.get());
+
+        // erase this actor's components from any previous collisions
+        for (auto it {m_previousComponentCollisions.begin()}; it != m_previousComponentCollisions.end();)
+        {
+            auto const [a, b] = *it;
+            if (actorComponents.contains(a) || actorComponents.contains(b))
+                it = m_previousComponentCollisions.erase(it);
+            else
+                ++it;
+        }
+
+        // erase this actor from any previous collisions
+        for (auto it {m_previousActorCollisions.begin()}; it != m_previousActorCollisions.end();)
+        {
+            auto const [a, b] = *it;
+            if (a == actor || b == actor)
+                it = m_previousActorCollisions.erase(it);
+            else
+                ++it;
+        }
+    }
 }

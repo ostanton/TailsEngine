@@ -7,11 +7,10 @@
 #include <Tails/Maths/Colour.hpp>
 #include <Tails/Maths/Transform2D.hpp>
 #include <Tails/Templated/SharedRef.hpp>
+#include <Tails/Maths/FloatColour.hpp>
 
 #include <memory>
 #include <span>
-
-#include "Tails/Maths/FloatColour.hpp"
 
 namespace tails
 {

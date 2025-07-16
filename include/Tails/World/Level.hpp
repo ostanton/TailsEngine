@@ -25,6 +25,7 @@ namespace tails
     class CLevel;
     struct SCamera;
     struct SSATShape;
+    struct SVertex;
 
     /**
      * Render-only information for every entity's components in a level
@@ -37,24 +38,57 @@ namespace tails
         friend CLevel;
 
     public:
+        /**
+         * Adds a filled rect item
+         * @param worldTransform World-space transform
+         * @param colour Fill colour
+         * @param size Local size
+         * @param texture Target texture
+         */
         void addItem(
             const STransform2D& worldTransform,
-            const SColour colour,
-            const SVector2f size,
-            const std::shared_ptr<CTexture>& texture
-        )
-        {
-            m_items.emplace_back(worldTransform, colour, size, texture);
-        }
+            SColour colour,
+            SVector2f size,
+            std::shared_ptr<CTexture> texture
+        );
+
+        /**
+         * Adds a filled convex shape via the target vertices. The vertices are transformed via the worldTransform
+         * inside the function, and so must be in local-space to whatever is rendering them
+         * @param worldTransform World-space transform
+         * @param vertices Local vertices
+         * @param texture Target texture
+         */
+        void addItem(
+            const STransform2D& worldTransform,
+            std::vector<SVertex> vertices,
+            std::shared_ptr<CTexture> texture
+        );
+
+        /**
+         * Adds a filled shape via the target vertices and indices. The vertices are transformed via the
+         * worldTransform inside the function, and so must be in local-space to whatever is rendering them
+         * @param worldTransform World-space transform
+         * @param vertices Local vertices ordered anti-clockwise
+         * @param indices Indices describing how the vertices connect
+         * @param texture Target texture
+         */
+        void addItem(
+            const STransform2D& worldTransform,
+            std::vector<SVertex> vertices,
+            std::vector<int> indices,
+            std::shared_ptr<CTexture> texture
+        );
 
     private:
+        /**
+         * A shape in world-space. Its vertices are transformed into world space from local space
+         * when created, so does not need to store the world transform
+         */
         struct SItem
         {
-            // TODO - have vertices instead of assuming rectangles
-            // and have some shape abstraction for choosing predefined vertices and such
-            STransform2D transform;
-            SColour colour;
-            SVector2f size;
+            std::vector<SVertex> vertices;
+            std::vector<int> indices;
             std::shared_ptr<CTexture> texture;
         };
 

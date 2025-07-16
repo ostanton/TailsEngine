@@ -68,6 +68,8 @@ namespace tails
                     func(pair.a, pair.b);
         }
 
+        void cleanupCollisions(const CActor* actor) noexcept;
+
     private:
         std::set<SComponentCollisionPair> m_currentComponentCollisions;
         std::set<SComponentCollisionPair> m_previousComponentCollisions;

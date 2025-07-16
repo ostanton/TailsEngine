@@ -7,4 +7,5 @@ target_sources(
         SpriteComponent.hpp
         CameraComponent.hpp
         AnimatedSpriteComponent.hpp
+        ShapeComponent.hpp
 )

@@ -14,6 +14,80 @@
 
 namespace tails
 {
+    void CLevelRenderBatch::addItem(
+        const STransform2D& worldTransform,
+        const SColour colour,
+        const SVector2f size,
+        std::shared_ptr<CTexture> texture
+    )
+    {
+        std::vector vertices {
+            SVertex {
+                .position = {},
+                .colour = colour,
+                .texCoord = {},
+            },
+            SVertex {
+                .position = {size.x, 0.f},
+                .colour = colour,
+                .texCoord = {1.f, 0.f},
+            },
+            SVertex {
+                .position = {0.f, size.y},
+                .colour = colour,
+                .texCoord = {0.f, 1.f},
+            },
+            SVertex {
+                .position = size,
+                .colour = colour,
+                .texCoord = {1.f, 1.f},
+            },
+        };
+        const int indices[6] = {
+            0, 1, 2,
+            1, 3, 2,
+        };
+        addItem(
+            worldTransform,
+            std::move(vertices),
+            std::vector<int> {std::begin(indices), std::end(indices)},
+            std::move(texture)
+        );
+    }
+
+    void CLevelRenderBatch::addItem(
+        const STransform2D& worldTransform,
+        std::vector<SVertex> vertices,
+        std::shared_ptr<CTexture> texture
+    )
+    {
+        std::vector<int> indices;
+        indices.reserve(vertices.size() * 3);
+
+        // generate the indices in anti-clockwise winding order
+        for (usize i {0}; i < vertices.size() - 1; i++)
+        {
+            indices.emplace_back(0);
+            indices.emplace_back(static_cast<int>(i));
+            indices.emplace_back(static_cast<int>(i + 1));
+        }
+
+        addItem(worldTransform, std::move(vertices), std::move(indices), std::move(texture));
+    }
+
+    void CLevelRenderBatch::addItem(
+        const STransform2D& worldTransform,
+        std::vector<SVertex> vertices,
+        std::vector<int> indices,
+        std::shared_ptr<CTexture> texture
+    )
+    {
+        for (auto& vertex : vertices)
+            vertex.position = worldTransform.transformPoint(vertex.position);
+
+        m_items.emplace_back(std::move(vertices), std::move(indices), std::move(texture));
+    }
+
     CLevel::CLevel() = default;
 
     CLevel::CLevel(ActorsVector&& actors)
@@ -298,23 +372,12 @@ namespace tails
 
         for (const auto& item : renderBatch.m_items)
         {
-            if (item.texture)
+            auto vertices = item.vertices;
+            for (auto& vertex : vertices)
             {
-                render::texture(
-                   item.texture,
-                   worldToScreen(item.transform),
-                   item.size,
-                   item.colour
-               );
+                vertex.position = worldToScreen(vertex.position);
             }
-            else
-            {
-                render::rect(
-                   worldToScreen(item.transform),
-                   item.size,
-                   item.colour
-               );
-            }
+            render::geometry(vertices, item.indices, item.texture);
         }
 
         // debug SAT shape rendering
@@ -333,6 +396,7 @@ namespace tails
 
     void CLevel::cleanupActors()
     {
+        // TODO - could improve with std::remove_if
         for (auto it {m_actors.rbegin()}; it != m_actors.rend();)
         {
             if (it->get()->flags.isBitSet(CActor::PendingKill))
@@ -340,6 +404,7 @@ namespace tails
                 if (auto const layer = getLayerFromActor(it->get()))
                     layer->removeActor(it->get());
 
+                m_collisionManager.cleanupCollisions(it->get());
                 it = decltype(it)(m_actors.erase(std::next(it).base()));
             }
             else

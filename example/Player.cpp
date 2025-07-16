@@ -9,6 +9,8 @@
 #include <Tails/Debug.hpp>
 #include <Tails/World/ActorRegistry.hpp>
 #include <Tails/World/Components/CameraComponent.hpp>
+#include <Tails/World/Components/ShapeComponent.hpp>
+#include <Tails/Renderer/Shapes.hpp>
 
 #include <iostream>
 
@@ -32,6 +34,11 @@ CPlayer::CPlayer()
     testSprite->size = {32.f, 32.f};
     testSprite->transform.setPosition({32.f, 32.f});
     testSprite->colour = tails::SColour::green;
+
+    auto const shapeComp = createComponent<tails::CShapeComponent>();
+    shapeComp->setParent(spriteComponent);
+    shapeComp->transform.setPosition({0.f, 64.f});
+    shapeComp->vertices = tails::shapes::circle(32.f, 16, tails::SFloatColour::green);
 
     m_currentSpeed = m_walkSpeed;
 
