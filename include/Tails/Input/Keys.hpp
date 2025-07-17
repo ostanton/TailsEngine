@@ -3,7 +3,7 @@
 
 #include <Tails/Core.hpp>
 
-namespace tails
+namespace tails::input
 {
     enum class EKeyType : u8
     {
@@ -15,18 +15,44 @@ namespace tails
         GamepadAxis,
     };
 
+    enum class EMouseButton : u8
+    {
+        Left = 1,
+        Middle,
+        Right,
+        Special1,
+        Special2,
+    };
+
+    enum class EMouseAxis : u8 {X, Y,};
+    enum class EMouseScrollDirection : u8 {Up, Down,};
+
     using KeyCode = u32;
-    
+
+    /**
+     * An input key, representing any supported input (keyboard keys, controller buttons, scalar inputs, etc.)
+     */
     struct TAILS_API SKey final
     {
         KeyCode code;
         EKeyType type;
 
-        [[nodiscard]] bool isScalar() const noexcept;
-        [[nodiscard]] bool isDigital() const noexcept;
+        [[nodiscard]] constexpr bool isScalar() const noexcept
+        {
+            return type == EKeyType::GamepadAxis
+                || type == EKeyType::MouseMove
+                || type == EKeyType::MouseWheel;
+        }
 
-        [[nodiscard]] bool operator==(const SKey&) const noexcept = default;
-        [[nodiscard]] bool operator!=(const SKey&) const noexcept = default;
+        [[nodiscard]] constexpr bool isDigital() const noexcept
+        {
+            return type == EKeyType::Keyboard
+                || type == EKeyType::GamepadButton
+                || type == EKeyType::MouseButton;
+        }
+
+        [[nodiscard]] constexpr bool operator==(const SKey&) const noexcept = default;
+        [[nodiscard]] constexpr bool operator!=(const SKey&) const noexcept = default;
     };
 
     /**

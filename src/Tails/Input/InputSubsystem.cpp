@@ -1,7 +1,6 @@
 #include <Tails/Input/InputSubsystem.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/Maths/Maths.hpp>
-#include <Tails/Input/Mouse.hpp>
 
 #include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_joystick.h>
@@ -208,9 +207,9 @@ namespace tails::input
                 // But it still wouldn't be normalised!
                 switch (key.code)
                 {
-                case static_cast<KeyCode>(mouse::EAxis::X):
+                case static_cast<KeyCode>(EMouseAxis::X):
                     return static_cast<i16>(SDL_JOYSTICK_AXIS_MAX * x);
-                case static_cast<KeyCode>(mouse::EAxis::Y):
+                case static_cast<KeyCode>(EMouseAxis::Y):
                     return static_cast<i16>(SDL_JOYSTICK_AXIS_MAX * y);
                 default:
                     break;

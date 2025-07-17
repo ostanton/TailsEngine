@@ -67,7 +67,7 @@ namespace
     {
         if (auto const keyEv = ev.getIf<tails::CEvent::SKeyDown>())
         {
-            if (keyEv->key == tails::EKeys::Escape)
+            if (keyEv->key == tails::input::EKeys::Escape)
                 tails::app::exit();
         }
     }
@@ -173,4 +173,3 @@ int main(const int argc, char* argv[])
     app::deinit();
     return 0;
 }
-

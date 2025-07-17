@@ -11,7 +11,7 @@ namespace tails::logger
     void init()
     {
 #ifdef TAILS_ENABLE_LOGGING
-        // SDL_Log saves to a file already, so I don't need to do that. Might as well keep this around anyway
+        // TODO - set up writing to a log file, as SDL_Log isn't used anymore
         TAILS_LOG(LoggerSubsystem, Message, "Initialised");
 #endif // TAILS_ENABLE_LOGGING
     }
@@ -80,9 +80,8 @@ namespace tails::logger
         }
 
         str += msg;
-        // for now, as zig's clang hates non-literal format strings!
         std::cout << str << '\n';
-        //SDL_Log(str.getData()); // dunno how to make my own log category so this'll have to do!
+        // TODO - write to log file
 #endif // TAILS_ENABLE_LOGGING
     }
 }

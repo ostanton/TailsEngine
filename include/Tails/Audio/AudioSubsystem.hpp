@@ -8,6 +8,11 @@ namespace tails
     class CString;
 }
 
+/**
+ * The audio namespace contains audio and sound structs, classes, and functions.
+ * The audio subsystem manages active buses and which sounds are playing in those buses.
+ * Buses themselves contain volume, concurrency, etc.
+ */
 namespace tails::audio
 {
     struct SBusHandle;

@@ -28,6 +28,9 @@ CPlayer::CPlayer()
 
     m_cameraComponent = createComponent<tails::CCameraComponent>();
     m_cameraComponent->setParent(spriteComponent);
+    m_cameraComponent->inheritRotation = false;
+    m_cameraComponent->enableLag = true;
+    m_cameraComponent->lagSpeed = 6.f;
 
     auto const testSprite = createComponent<tails::CSpriteComponent>();
     testSprite->setParent(spriteComponent);
@@ -45,35 +48,35 @@ CPlayer::CPlayer()
     m_moveDownAction = tails::input::addAction({
         "MoveDown",
         {
-            {tails::EKeys::Down, -1.f},
-            tails::EKeys::Up,
-            {tails::EKeys::GamepadLeftStickY, 1.f, 0.2f},
-            tails::EKeys::GamepadDPadDown,
-            {tails::EKeys::GamepadDPadUp, -1.f}
+            {tails::input::EKeys::Down, -1.f},
+            tails::input::EKeys::Up,
+            {tails::input::EKeys::GamepadLeftStickY, -1.f, 0.2f},
+            {tails::input::EKeys::GamepadDPadDown, -1.f},
+            tails::input::EKeys::GamepadDPadUp
         }
     });
     m_moveRightAction = tails::input::addAction({
         "MoveRight",
         {
-            tails::EKeys::Right,
-            {tails::EKeys::Left, -1.f},
-            {tails::EKeys::GamepadLeftStickX, 1.f, 0.2f},
-            tails::EKeys::GamepadDPadRight,
-            {tails::EKeys::GamepadDPadLeft, -1.f}
+            tails::input::EKeys::Right,
+            {tails::input::EKeys::Left, -1.f},
+            {tails::input::EKeys::GamepadLeftStickX, 1.f, 0.2f},
+            tails::input::EKeys::GamepadDPadRight,
+            {tails::input::EKeys::GamepadDPadLeft, -1.f}
         }
     });
     m_sprintAction = tails::input::addAction({
         "Sprint",
         {
-            tails::EKeys::Z,
-            tails::EKeys::GamepadFaceBottom
+            tails::input::EKeys::Z,
+            tails::input::EKeys::GamepadFaceBottom
         }
     });
     m_shootAction = tails::input::addAction({
         "Shoot",
         {
-            tails::EKeys::X,
-            tails::EKeys::GamepadFaceLeft
+            tails::input::EKeys::X,
+            tails::input::EKeys::GamepadFaceLeft
         }
     });
 
@@ -105,13 +108,16 @@ CPlayer::CPlayer()
 
 void CPlayer::shoot()
 {
-    TAILS_DEBUG_PRINT(2.f, TAILS_FMT("SHOOT {}!", 1.f));
+    //TAILS_DEBUG_PRINT(2.f, TAILS_FMT("SHOOT {}!", 1.f));
     //TAILS_DEBUG_PRINTF(2.f, "Hello! {}", 2);
     auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), -10);
-    bullet->moveDirection = {1.f, 0.f};
+    bullet->moveDirection = getRotation().unitVector();
+    auto worldScale = getScale();
+    TAILS_DEBUG_PRINT(2.f, TAILS_FMT("Scale: {}, {}", worldScale.x, worldScale.y));
     //m_cameraComponent->transform.rotate(tails::SFloatAngle::degrees(1.f));
     //m_cameraComponent->camera.zoom += 0.1f;
-    scale({1.01f});
+    rotate(tails::SFloatAngle::degrees(1.f));
+    scale(1.01f);
 }
 
 void CPlayer::onSpawn()
@@ -141,14 +147,14 @@ void CPlayer::onStartCollision(CActor* otherActor, tails::CComponent* otherCompo
 {
     CActor::onStartCollision(otherActor, otherComponent);
 
-    TAILS_DEBUG_PRINT(2.f, "Started collision");
+    //TAILS_DEBUG_PRINT(2.f, "Started collision");
 }
 
 void CPlayer::onEndCollision(CActor* otherActor, tails::CComponent* otherComponent)
 {
     CActor::onEndCollision(otherActor, otherComponent);
 
-    TAILS_DEBUG_PRINT(2.f, "Ended collision");
+    //TAILS_DEBUG_PRINT(2.f, "Ended collision");
 }
 
 void CPlayer::handleMoveDown(const tails::input::SActionValue actionValue)

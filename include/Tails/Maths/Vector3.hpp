@@ -5,6 +5,10 @@
 
 namespace tails
 {
+    /**
+     * 3-dimensional vector
+     * @tparam T Arithmetic type
+     */
     template<typename T>
     struct TVector3 final
     {

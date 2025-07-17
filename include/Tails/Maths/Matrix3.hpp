@@ -103,6 +103,19 @@ namespace tails
             return {matrix[0][2], matrix[1][2]};
         }
 
+        [[nodiscard]] constexpr TAngle<T> getRotation() const noexcept
+        {
+            return TAngle<T> {std::atan2(matrix[1][0], matrix[0][0])};
+        }
+
+        [[nodiscard]] constexpr TVector2<T> getScale() const noexcept
+        {
+            return {
+                maths::sqrt(matrix[0][0] * matrix[0][0] + matrix[1][0] * matrix[1][0]),
+                maths::sqrt(matrix[0][1] * matrix[0][1] + matrix[1][1] * matrix[1][1])
+            };
+        }
+
         [[nodiscard]] constexpr TVector2<T> transform(const TVector2<T> point) const noexcept
         {
             return {

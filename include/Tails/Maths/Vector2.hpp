@@ -5,6 +5,7 @@
 #include <Tails/Maths/Maths.hpp>
 
 #include <utility>
+#include <limits>
 
 namespace tails
 {
@@ -164,7 +165,7 @@ namespace tails
         [[nodiscard]] constexpr T length() const noexcept {return maths::sqrt(x * x + y * y);}
         [[nodiscard]] constexpr T lengthSquared() const noexcept {return x * x + y * y;}
 
-        constexpr bool normalise(const T tolerance) noexcept
+        constexpr bool normalise(const T tolerance = std::numeric_limits<T>::epsilon()) noexcept
         {
             const T squared {lengthSquared()};
             if (squared <= tolerance)

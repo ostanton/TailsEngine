@@ -52,8 +52,6 @@ private:
     float m_shootTimer {0.f};
     float m_fireRate {0.1f};
 
-    float m_zoomTimer {0.f};
-
     tails::TAssetPtr<tails::CTexture> m_sprite {"face.png"};
 };
 

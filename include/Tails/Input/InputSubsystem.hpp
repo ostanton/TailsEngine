@@ -12,8 +12,15 @@
 #include <vector>
 #include <unordered_map>
 
+/**
+ * The input namespace contains input managing and handling structs, classes, and functions.
+ * The input subsystem keeps track of the current state of existing actions, and updates them accordingly
+ */
 namespace tails::input
 {
+    /**
+     * Decides when an action should be triggered and call its bound delegates
+     */
     enum class EActionTrigger : u8
     {
         None,
@@ -28,6 +35,9 @@ namespace tails::input
         Released
     };
 
+    /**
+     * An action's value, which can be digital or scalar (bool or float)
+     */
     struct TAILS_API SActionValue final
     {
         SActionValue() = default;
@@ -55,9 +65,15 @@ namespace tails::input
     };
 
     TAILS_DECLARE_MULTICAST_DELEGATE_VA_PARAMS(SOnActionBinding, SActionValue);
-    
+
+    /**
+     * Maps a number of keys to delegates that can be bound to
+     */
     struct TAILS_API SAction
     {
+        /**
+         * Combines a key with extra data for an action
+         */
         struct SKeyDataPair
         {
             SKeyDataPair(const SKey inKey)
@@ -76,7 +92,10 @@ namespace tails::input
             float magnitude;
             float deadZone;
         };
-        
+
+        /**
+         * Contains the action delegate and the trigger which executes it
+         */
         struct SActionDelegatePair
         {
             SActionDelegatePair(const EActionTrigger inTrigger, SOnActionBinding::Delegate binding)
@@ -88,7 +107,7 @@ namespace tails::input
         };
 
         SAction(CString inName, std::vector<SKeyDataPair> inKeys);
-        
+
         CString name;
         std::vector<SKeyDataPair> keys;
         SActionValue currentValue;

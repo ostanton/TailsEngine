@@ -3,6 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Maths.hpp>
+#include <Tails/Maths/Vector2.hpp>
 
 #include <compare>
 
@@ -55,6 +56,16 @@ namespace tails
          * @return Angle in degrees
          */
         [[nodiscard]] constexpr T asDegrees() const noexcept {return maths::radToDeg(m_angle);}
+
+        /**
+         * Gets this angle as a 2D unit vector
+         * @return Angle as a unit vector
+         */
+        [[nodiscard]] constexpr TVector2<T> unitVector() const noexcept
+        {
+            // invert Y to match world coordinates (+Y up)
+            return {std::cos(m_angle), -std::sin(m_angle)};
+        }
 
         constexpr auto operator<=>(const TAngle& other) const noexcept = default;
 

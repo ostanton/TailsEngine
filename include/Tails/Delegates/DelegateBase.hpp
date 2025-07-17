@@ -11,7 +11,7 @@ namespace tails
      * Delegates implementation based on Simon Coenen's (https://simoncoenen.com/blog/programming/CPP_Delegates).
      * This does not (yet) implement an inline allocator, so is slower (but this engine isn't focused on efficiency
      * anyway). It allocates the function wrapper classes (TLambdaDelegate, TStaticDelegate, etc.)
-     * on the heap via an std::unique_ptr, so use with some caution
+     * on the heap via an std::unique_ptr
      */
     template<typename RetT, typename... ArgsT>
     class IDelegate
@@ -28,6 +28,12 @@ namespace tails
         [[nodiscard]] virtual IDelegate* clone() const = 0;
     };
 
+    /**
+     * Delegate for lambdas
+     * @tparam LambdaT Lambda type
+     * @tparam RetT Return type
+     * @tparam ArgsT Arguments types
+     */
     template<typename LambdaT, typename RetT, typename... ArgsT>
     requires Invocable<LambdaT, RetT, ArgsT...>
     class TLambdaDelegate final : public IDelegate<RetT, ArgsT...>
@@ -51,6 +57,11 @@ namespace tails
         LambdaT m_lambda;
     };
 
+    /**
+     * Delegate for static and free functions
+     * @tparam RetT Return type
+     * @tparam ArgsT Argument types
+     */
     template<typename RetT, typename... ArgsT>
     class TStaticDelegate final : public IDelegate<RetT, ArgsT...>
     {
@@ -93,6 +104,13 @@ namespace tails
         };
     }
 
+    /**
+     * Delegate for object member functions
+     * @tparam Const Whether this points to a const member function
+     * @tparam T Object type
+     * @tparam RetT Return type
+     * @tparam ArgsT Argument types
+     */
     template<bool Const, UserType T, typename RetT, typename... ArgsT>
     class TRawDelegate final : public IDelegate<RetT, ArgsT...>
     {

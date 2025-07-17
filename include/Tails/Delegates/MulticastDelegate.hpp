@@ -10,6 +10,11 @@
 
 namespace tails
 {
+    /**
+     * Multi-binding delegate, which can bind to any function that matches its argument types.
+     * It does not support return types
+     * @tparam ArgsT Argument types
+     */
     template<typename... ArgsT>
     class TMulticastDelegate
     {
@@ -20,9 +25,10 @@ namespace tails
         using StaticFuncSignature = void(*)(ArgsT...);
 
     public:
+        /** The internal delegate type */
         using Delegate = TDelegate<void, ArgsT...>;
         using DelegateHandle = usize;
-        
+
         TMulticastDelegate() = default;
         TMulticastDelegate(const TMulticastDelegate& other) {clone(other);}
         TMulticastDelegate(TMulticastDelegate&&) noexcept = default;
@@ -76,17 +82,15 @@ namespace tails
             if (isLocked())
                 return false;
 
-            lock();
-            for (auto i {0}; i < m_delegates.size();)
+            for (usize i {0}; i < m_delegates.size();)
             {
                 if (handle == i)
                 {
                     m_delegates.erase(m_delegates.begin() + i);
-                    unlock();
                     return true;
                 }
             }
-            unlock();
+
             return false;
         }
 
@@ -101,7 +105,7 @@ namespace tails
             m_delegates.clear();
         }
 
-        void broadcast(ArgsT&&... args)
+        void broadcast(ArgsT&&... args) const
         {
             lock();
             for (const Delegate& del : m_delegates)
@@ -124,8 +128,8 @@ namespace tails
             }
         }
 
-        void lock() {m_lockCount++;}
-        void unlock()
+        void lock() const {m_lockCount++;}
+        void unlock() const
         {
             TAILS_ASSERT(m_lockCount > 0, "TMulticastDelegate lock count is less than 0, somewhere failed to unlock!");
             m_lockCount--;
@@ -133,7 +137,7 @@ namespace tails
         [[nodiscard]] bool isLocked() const {return m_lockCount > 0;}
 
         /** If > 0, disallow removal of delegates because we are iterating them */
-        usize m_lockCount {0};
+        mutable usize m_lockCount {0};
         std::vector<Delegate> m_delegates;
     };
 }

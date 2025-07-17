@@ -39,13 +39,18 @@ namespace tails::maths
         const T absB {abs(b)};
         return abs(a - b) <= (absA < absB ? absB : absA) * tolerance;
     }
-    template<typename T> [[nodiscard]] constexpr T degToRad(T degrees) noexcept
+    template<typename T> [[nodiscard]] constexpr T degToRad(const T degrees) noexcept
     {
         return degrees * pi<T> / static_cast<T>(180);
     }
-    template<typename T> [[nodiscard]] constexpr T radToDeg(T radians) noexcept
+    template<typename T> [[nodiscard]] constexpr T radToDeg(const T radians) noexcept
     {
         return radians * static_cast<T>(180) / pi<T>;
+    }
+
+    template<typename T> [[nodiscard]] constexpr T lerp(const T a, const T b, const float deltaSeconds) noexcept
+    {
+        return a + (b - a) * deltaSeconds;
     }
 }
 

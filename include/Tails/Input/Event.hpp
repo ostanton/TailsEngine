@@ -3,7 +3,6 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Vector2.hpp>
-#include <Tails/Input/Mouse.hpp>
 #include <Tails/Templated/Variant.hpp>
 #include <Tails/Input/Keys.hpp>
 
@@ -48,12 +47,12 @@ namespace tails
         };
         struct SMouseButtonDown
         {
-            mouse::EButton button;
+            input::EMouseButton button;
             SVector2f position;
         };
         struct SMouseButtonUp
         {
-            mouse::EButton button;
+            input::EMouseButton button;
             SVector2f position;
         };
         struct SMouseMove
@@ -62,11 +61,11 @@ namespace tails
         };
         struct SKeyDown
         {
-            SKey key;
+            input::SKey key;
         };
         struct SKeyUp
         {
-            SKey key;
+            input::SKey key;
         };
 
         template<typename T>

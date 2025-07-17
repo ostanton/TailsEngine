@@ -20,7 +20,11 @@ namespace tails
     struct SVertex;
 }
 
-// TODO - BIG CHANGE! favour rendering batches of vertices instead of hard texture/rect/text/etc
+/**
+ * The render namespace contains rendering functions.
+ * Rendering is done via a single renderer, which is tied to the single window. Tails Engine only supports
+ * a single renderer with the single window (this could change in the future with render targets)
+ */
 namespace tails::render
 {
     TAILS_API void init();

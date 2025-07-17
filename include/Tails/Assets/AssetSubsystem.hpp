@@ -2,7 +2,6 @@
 #define TAILS_ASSET_SUBSYSTEM_HPP
 
 #include <Tails/Core.hpp>
-#include <Tails/Templated/Optional.hpp>
 #include <Tails/Assets/Handle.hpp>
 #include <Tails/Assets/AssetType.hpp>
 #include <Tails/Assets/AssetDeleter.hpp>
@@ -19,6 +18,11 @@ namespace tails
     struct SAssetPath;
 }
 
+/**
+ * The assets namespace contains asset management struct, classes, and functions.
+ * The asset subsystem manages alive assets, loading them from "somewhere" by calling the appropriate
+ * loader function, in addition to destroying them when all references are dropped
+ */
 namespace tails::assets
 {
     TAILS_API void init();

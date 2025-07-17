@@ -10,6 +10,11 @@
 
 namespace tails
 {
+    /**
+     * Single-binding delegate which can bind to any function that matches its return type and argument types
+     * @tparam RetT Return type
+     * @tparam ArgsT Argument types
+     */
     template<typename RetT, typename... ArgsT>
     class TDelegate
     {

@@ -5,7 +5,6 @@ target_sources(
     PRIVATE
         Event.hpp
         InputSubsystem.hpp
-        Mouse.hpp
         Keys.hpp
         ActionHandle.hpp
 )

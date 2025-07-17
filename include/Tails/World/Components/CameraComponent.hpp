@@ -8,10 +8,8 @@
 namespace tails
 {
     /**
-     * Wrapper component for an SCamera object. Updates the level when it gets destroyed
-     * so the level can auto-switch to another camera
-     *
-     * TODO - smoothing, etc. (either here or the SCamera struct, not sure)
+     * Wrapper component for an SCamera object. Allows for camera lag/smoothing and
+     * updates the level when it gets destroyed so the level can auto-switch to another camera
      */
     class TAILS_API CCameraComponent : public CComponent
     {
@@ -23,9 +21,25 @@ namespace tails
 
         SCamera camera;
 
+        /** Inherit the component's position or not */
+        bool inheritPosition {true};
+        /** Inherit the component's rotation or not */
+        bool inheritRotation {true};
+        /** Inherit the component's scale or not */
+        bool inheritScale {false};
+
+        /** Whether to lag and smooth the camera position */
+        bool enableLag {false};
+        /** How fast should the camera lag (smaller = slower) */
+        float lagSpeed {10.f};
+
     protected:
+        void onInit() override;
         void onTick(float deltaSeconds) override;
         void onDeinit() override;
+
+        /** The target position for the camera with current lag */
+        SVector2f m_targetPosition;
     };
 }
 

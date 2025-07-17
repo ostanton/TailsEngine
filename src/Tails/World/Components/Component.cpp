@@ -50,18 +50,17 @@ namespace tails
 
     SVector2f CComponent::getWorldPosition() const noexcept
     {
-        SMatrix3f worldMatrix {getWorldMatrix()};
-        return {worldMatrix.matrix[0][2], worldMatrix.matrix[1][2]};
+        return getWorldMatrix().getTranslation();
     }
 
     SFloatAngle CComponent::getWorldRotation() const noexcept
     {
-        return getWorldTransform().getRotation();
+        return getWorldMatrix().getRotation();
     }
 
     SVector2f CComponent::getWorldScale() const noexcept
     {
-        return getWorldTransform().getScale();
+        return getWorldMatrix().getScale();
     }
 
     STransform2D CComponent::getWorldTransform() const noexcept

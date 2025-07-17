@@ -58,6 +58,10 @@
 #include <cstdint>
 #include <cstddef>
 
+/**
+ * The tails namespace contains everything from the Tails Engine. It has namespaces within it for the
+ * different subsystems
+ */
 namespace tails
 {
     using u8 = std::uint8_t;

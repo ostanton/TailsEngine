@@ -23,7 +23,8 @@ namespace tails
     };
 
     /**
-     * Base class for actor components. They are arranged in a tree within their owning actor
+     * Base class for actor components. They are arranged in a tree within their owning actor,
+     * and contain a transform local to their parent component
      */
     class TAILS_API CComponent
     {

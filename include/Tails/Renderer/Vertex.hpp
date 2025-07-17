@@ -5,6 +5,7 @@
 #include <Tails/Maths/Vector2.hpp>
 #include <Tails/Maths/FloatColour.hpp>
 
+// TODO - render namespace?
 namespace tails
 {
     /**

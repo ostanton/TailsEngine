@@ -1,26 +1,11 @@
 #include <Tails/Input/Keys.hpp>
-#include <Tails/Input/Mouse.hpp>
 
 #include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_mouse.h>
 
-namespace tails
+namespace tails::input
 {
-    bool SKey::isScalar() const noexcept
-    {
-        return type == EKeyType::GamepadAxis
-            || type == EKeyType::MouseMove
-            || type == EKeyType::MouseWheel;
-    }
-
-    bool SKey::isDigital() const noexcept
-    {
-        return type == EKeyType::Keyboard
-            || type == EKeyType::GamepadButton
-            || type == EKeyType::MouseButton;
-    }
-
     const SKey EKeys::A {SDLK_A, EKeyType::Keyboard};
     const SKey EKeys::B {SDLK_B, EKeyType::Keyboard};
     const SKey EKeys::C {SDLK_C, EKeyType::Keyboard};
@@ -87,10 +72,10 @@ namespace tails
     const SKey EKeys::SpecialMouseButton1 {SDL_BUTTON_X1, EKeyType::MouseButton};
     const SKey EKeys::SpecialMouseButton2 {SDL_BUTTON_X2, EKeyType::MouseButton};
 
-    const SKey EKeys::MouseX {static_cast<KeyCode>(mouse::EAxis::X), EKeyType::MouseMove};
-    const SKey EKeys::MouseY {static_cast<KeyCode>(mouse::EAxis::Y), EKeyType::MouseMove};
-    const SKey EKeys::MouseScrollUp {static_cast<KeyCode>(mouse::EScrollDirection::Up), EKeyType::MouseWheel};
-    const SKey EKeys::MouseScrollDown {static_cast<KeyCode>(mouse::EScrollDirection::Down), EKeyType::MouseWheel};
+    const SKey EKeys::MouseX {static_cast<KeyCode>(EMouseAxis::X), EKeyType::MouseMove};
+    const SKey EKeys::MouseY {static_cast<KeyCode>(EMouseAxis::Y), EKeyType::MouseMove};
+    const SKey EKeys::MouseScrollUp {static_cast<KeyCode>(EMouseScrollDirection::Up), EKeyType::MouseWheel};
+    const SKey EKeys::MouseScrollDown {static_cast<KeyCode>(EMouseScrollDirection::Down), EKeyType::MouseWheel};
 
     const SKey EKeys::NumpadZero {SDLK_KP_0, EKeyType::Keyboard};
     const SKey EKeys::NumpadOne {SDLK_KP_1, EKeyType::Keyboard};

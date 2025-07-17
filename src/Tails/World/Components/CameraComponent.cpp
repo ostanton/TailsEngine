@@ -35,12 +35,45 @@ namespace tails
         return &level->getActiveCamera() == &camera;
     }
 
+    void CCameraComponent::onInit()
+    {
+        CComponent::onInit();
+
+        const auto worldPosition = getWorldPosition();
+        m_targetPosition = worldPosition;
+
+        if (inheritPosition)
+            camera.position = m_targetPosition;
+
+        if (inheritRotation)
+            camera.rotation = getWorldRotation();
+
+        if (inheritScale)
+            camera.zoom = getWorldScale().length();
+    }
+
     void CCameraComponent::onTick(const float deltaSeconds)
     {
         CComponent::onTick(deltaSeconds);
 
-        camera.position = getWorldPosition();
-        camera.rotation = getWorldRotation();
+        if (inheritPosition)
+        {
+            const auto worldPosition = getWorldPosition();
+
+            // smooth the position
+            if (enableLag)
+                m_targetPosition = maths::lerp(m_targetPosition, worldPosition, lagSpeed * deltaSeconds);
+            else
+                m_targetPosition = worldPosition;
+
+            camera.position = m_targetPosition;
+        }
+
+        if (inheritRotation)
+            camera.rotation = getWorldRotation();
+
+        if (inheritScale)
+            camera.zoom = getWorldScale().length();
     }
 
     void CCameraComponent::onDeinit()

@@ -87,12 +87,12 @@ namespace tails::window
                 }};
             case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 return {CEvent::SMouseButtonDown {
-                    .button = static_cast<mouse::EButton>(ev.button.button),
+                    .button = static_cast<input::EMouseButton>(ev.button.button),
                     .position = {ev.button.x, ev.button.y}
                 }};
             case SDL_EVENT_MOUSE_BUTTON_UP:
                 return {CEvent::SMouseButtonUp {
-                    .button = static_cast<mouse::EButton>(ev.button.button),
+                    .button = static_cast<input::EMouseButton>(ev.button.button),
                     .position = {ev.button.x, ev.button.y}
                 }};
             case SDL_EVENT_MOUSE_MOTION:
@@ -103,14 +103,14 @@ namespace tails::window
                 return {CEvent::SKeyDown {
                     .key = {
                         .code = ev.key.key,
-                        .type = EKeyType::Keyboard
+                        .type = input::EKeyType::Keyboard
                     }
                 }};
             case SDL_EVENT_KEY_UP:
                 return {CEvent::SKeyUp {
                     .key = {
                         .code = ev.key.key,
-                        .type = EKeyType::Keyboard
+                        .type = input::EKeyType::Keyboard
                     }
                 }};
             default:
