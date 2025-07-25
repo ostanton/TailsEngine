@@ -3,8 +3,8 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Templated/SharedRef.hpp>
-#include <Tails/Maths/Vector2.hpp>
 #include <Tails/Maths/Colour.hpp>
+#include <Tails/Renderer/Vertex.hpp>
 
 #include <vector>
 
@@ -22,9 +22,8 @@ namespace tails::ui
     public:
         struct SElement
         {
-            SVector2f position;
-            SVector2f size;
-            SColour colour;
+            std::vector<SVertex> vertices;
+            std::vector<int> indices;
             std::shared_ptr<CTexture> texture;
         };
 
@@ -35,10 +34,23 @@ namespace tails::ui
         void add(
             const SLayoutData& layoutData,
             const TSharedRef<CTexture>& texture,
-            SColour colour
+            SColour tint
         );
 
         void add(const SLayoutData& layoutData, SColour colour);
+
+        void add(
+            const SLayoutData& layoutData,
+            std::vector<SVertex> vertices,
+            std::shared_ptr<CTexture> texture
+        );
+
+        void add(
+            const SLayoutData& layoutData,
+            std::vector<SVertex> vertices,
+            std::vector<int> indices,
+            std::shared_ptr<CTexture> texture
+        );
 
         [[nodiscard]] Iterator begin();
         [[nodiscard]] Iterator end();

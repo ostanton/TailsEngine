@@ -3,6 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Concepts.hpp>
+#include <Tails/Templated/SharedRef.hpp>
 
 #include <memory>
 
@@ -46,12 +47,12 @@ namespace tails::ui
     [[nodiscard]] TAILS_API const std::shared_ptr<CPanel>& getRootPanel() noexcept;
     
     TAILS_API SSlotBase* addWidget(std::shared_ptr<CWidget> content);
-    TAILS_API SSlotBase* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent);
+    TAILS_API SSlotBase* setupWidget(std::shared_ptr<CWidget> content, const TSharedRef<CWidget>& parent);
     
     template<DerivedFrom<CPanel> ParentT>
     typename ParentT::SSlot* setupWidget(
         std::shared_ptr<CWidget> content,
-        const std::shared_ptr<ParentT>& parent
+        const TSharedRef<ParentT>& parent
     )
     {
         return static_cast<typename ParentT::SSlot*>(setupWidget(std::move(content), parent));

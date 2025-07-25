@@ -10,6 +10,11 @@ namespace tails
 {
     class CEvent;
 
+    namespace ui
+    {
+        struct SLayoutData;
+    }
+
     enum class EWindowFlags : u8
     {
         Resizable = 1 << 0,
@@ -31,16 +36,18 @@ namespace tails
     {
         TAILS_API bool init(const SWindowInfo& windowInfo);
         TAILS_API void deinit();
-        TAILS_API TOptional<CEvent> pollInput();
+        TAILS_API [[nodiscard]] TOptional<CEvent> pollInput();
 
-        TAILS_API const char* getTitle() noexcept;
-        TAILS_API SVector2i getPosition() noexcept;
+        TAILS_API [[nodiscard]] const char* getTitle() noexcept;
+        TAILS_API [[nodiscard]] SVector2i getPosition() noexcept;
 
         /**
          * Gets the window's size, or {0, 0} if it fails in any way
          * @return Window size
          */
-        TAILS_API SVector2u getSize() noexcept;
+        TAILS_API [[nodiscard]] SVector2u getSize() noexcept;
+
+        TAILS_API [[nodiscard]] ui::SLayoutData getLayoutData() noexcept;
     }
 }
 

@@ -3,7 +3,7 @@
 
 #include <Tails/Core.hpp>
 #include <Tails/Maths/Transform2D.hpp>
-#include <Tails/Maths/Rect.hpp>
+#include <Tails/Maths/OrientedRect.hpp>
 
 #include <memory>
 
@@ -36,7 +36,7 @@ namespace tails::ui
          * Gets the layout data as a rectangle, adjusted for its transform and size
          * @return Rectangle which this layout data occupies
          */
-        [[nodiscard]] SFloatRect getRect() const noexcept;
+        [[nodiscard]] SFloatOrientedRect getRect() const noexcept;
         
         STransform2D transform;
         SVector2f size;

@@ -1,6 +1,7 @@
 #include <Tails/Window.hpp>
 #include <Tails/Log.hpp>
 #include <Tails/Input/Event.hpp>
+#include <Tails/UI/LayoutData.hpp>
 
 #include <SDL3/SDL_video.h>
 #include <SDL3/SDL_events.h>
@@ -146,6 +147,14 @@ namespace tails::window
         return {
             static_cast<SVector2u::ArithmeticType>(w),
             static_cast<SVector2u::ArithmeticType>(h)
+        };
+    }
+
+    ui::SLayoutData getLayoutData() noexcept
+    {
+        return {
+            .transform = STransform2D {SVector2f {getPosition()}},
+            .size = SVector2f {getSize()},
         };
     }
 }

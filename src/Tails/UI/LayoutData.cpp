@@ -10,22 +10,24 @@ namespace tails::ui
     ) const noexcept
     {
         return {
-            std::move(widget),
-            SLayoutData {
-                {
+            .widget = std::move(widget),
+            .layoutData = {
+                .transform = {
                     transform.getPosition() + localOffset,
                     transform.getRotation(),
                     transform.getScale(),
                     transform.getOrigin()
                 },
-                localSize
+                .size = localSize
             }
         };
     }
 
-    SFloatRect SLayoutData::getRect() const noexcept
+    SFloatOrientedRect SLayoutData::getRect() const noexcept
     {
-        // TODO - account for rotation
-        return {transform.getPosition(), size * transform.getScale()};
+        return transform.getMatrix().transformToOrientedRect({
+            .position = transform.getPosition(),
+            .size = size * transform.getScale(),
+        });
     }
 }

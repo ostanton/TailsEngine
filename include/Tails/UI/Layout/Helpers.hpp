@@ -45,7 +45,7 @@ namespace tails::ui
             };
 
             transformedWidgets.addWidget(layoutData.makeWidget(child, localPosition, localSize));
-            
+
             if (child->visibility != EVisibility::Collapsed)
                 totalOffset +=
                     (Orientation == EOrientation::Vertical ? localSize.y : localSize.x) +

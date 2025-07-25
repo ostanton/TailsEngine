@@ -106,7 +106,7 @@ namespace tails
         };
     }
 
-    TTransform2D<float> SCamera::worldToView(const TTransform2D<float>& worldTransform) const noexcept
+    STransform2D SCamera::worldToView(const STransform2D& worldTransform) const noexcept
     {
         const SVector2f windowSize {getWindowSize()};
 
@@ -169,7 +169,7 @@ namespace tails
         };
     }
 
-    TTransform2D<float> SCamera::viewToWorld(const TTransform2D<float>& viewTransform) const noexcept
+    STransform2D SCamera::viewToWorld(const STransform2D& viewTransform) const noexcept
     {
         const SVector2f windowSize {getWindowSize()};
         const SMatrix3f screenToNDC {

@@ -10,8 +10,7 @@
 namespace tails
 {
     /**
-     * Row-major 3x3 matrix structure, used internally by Tails Engine and can be converted
-     * to and from the more user-friendly Transform2D.
+     * Row-major 3x3 matrix structure, used internally by TTransform2Ds to move between different spaces
      */
     template<typename T>
     struct TMatrix3 final

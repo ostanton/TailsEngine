@@ -4,6 +4,7 @@
 #include <Tails/UI/TransformedWidgets.hpp>
 #include <Tails/UI/Rendering/DrawElementList.hpp>
 #include <Tails/Renderer/Renderer.hpp>
+#include <Tails/Window.hpp>
 #include <Tails/Log.hpp>
 
 namespace tails::ui
@@ -27,10 +28,7 @@ namespace tails::ui
 
     void paint(const float deltaSeconds)
     {
-        // TODO - get window input instead of renderer, get window layout data!
-        SLayoutData layoutData;
-        layoutData.transform.setScale(1.f);
-        layoutData.size = render::getResolution();
+        const SLayoutData layoutData {window::getLayoutData()};
 
         // Gather the widgets as draw element data, then render them
         CDrawElementList drawElements;
@@ -38,19 +36,11 @@ namespace tails::ui
 
         for (const auto& element : drawElements)
         {
-            if (element.texture)
-                render::texture(
-                    element.texture,
-                    {element.position, 0.f, {1.f}},
-                    element.size,
-                    element.colour
-                );
-            else
-                render::rect(
-                    {element.position, 0.f, {1.f}},
-                    element.size,
-                    element.colour
-                );
+            render::geometry(
+                element.vertices,
+                element.indices,
+                element.texture
+            );
         }
     }
 
@@ -71,7 +61,7 @@ namespace tails::ui
         return gRootPanel->addChild(std::move(content));
     }
 
-    SSlotBase* setupWidget(std::shared_ptr<CWidget> content, const std::shared_ptr<CWidget>& parent)
+    SSlotBase* setupWidget(std::shared_ptr<CWidget> content, const TSharedRef<CWidget>& parent)
     {
         return parent->getChildren().addChild(std::move(content));
     }
