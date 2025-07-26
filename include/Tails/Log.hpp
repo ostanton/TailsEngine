@@ -32,6 +32,7 @@ namespace tails::logger
     };
 
     TAILS_API void init();
+    TAILS_API void deinit();
     TAILS_API void log(ECategory category, ESeverity severity, const CString& msg);
 }
 

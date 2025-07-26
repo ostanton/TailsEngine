@@ -80,6 +80,7 @@ namespace tails::app
         input::deinit();
         assets::deinit();
         render::deinit();
+        logger::deinit();
 
         window::deinit();
         SDL_Quit();

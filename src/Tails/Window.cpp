@@ -153,7 +153,7 @@ namespace tails::window
     ui::SLayoutData getLayoutData() noexcept
     {
         return {
-            .transform = STransform2D {SVector2f {getPosition()}},
+            .transform = STransform2D::identity(),
             .size = SVector2f {getSize()},
         };
     }

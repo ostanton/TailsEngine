@@ -4,16 +4,45 @@
 #include <Tails/String.hpp>
 #include <SDL3/SDL_log.h>
 #include <iostream>
+#include <fstream>
 #endif // TAILS_ENABLE_LOGGING
 
 namespace tails::logger
 {
+    namespace
+    {
+        std::ofstream logFileStream;
+
+        bool logToFile(const CString& string)
+        {
+            if (!logFileStream.is_open())
+                return false;
+
+            logFileStream << string << '\n';
+            return true;
+        }
+    }
+
     void init()
     {
 #ifdef TAILS_ENABLE_LOGGING
         // TODO - set up writing to a log file, as SDL_Log isn't used anymore
+        logFileStream.open("tails.log");
+        if (!logFileStream.is_open())
+        {
+            TAILS_LOG(LoggerSubsystem, Error, "Failed to create log file");
+            return;
+        }
+
         TAILS_LOG(LoggerSubsystem, Message, "Initialised");
 #endif // TAILS_ENABLE_LOGGING
+    }
+
+    void deinit()
+    {
+        TAILS_LOG(LoggerSubsystem, Message, "Deinitialised");
+        if (logFileStream.is_open())
+            logFileStream.close();
     }
 
     void log(const ECategory category, const ESeverity severity, const CString& msg)
@@ -81,7 +110,7 @@ namespace tails::logger
 
         str += msg;
         std::cout << str << '\n';
-        // TODO - write to log file
+        logToFile(str);
 #endif // TAILS_ENABLE_LOGGING
     }
 }
