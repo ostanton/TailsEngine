@@ -2,23 +2,31 @@
 
 #ifdef TAILS_ENABLE_LOGGING
 #include <Tails/String.hpp>
-#include <SDL3/SDL_log.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #endif // TAILS_ENABLE_LOGGING
 
 namespace tails::logger
 {
     namespace
     {
-        std::ofstream logFileStream;
+        std::ofstream gLogFileStream;
+        bool gInitialised {false};
 
-        bool logToFile(const CString& string)
+        std::stringstream& getLogStringStream()
         {
-            if (!logFileStream.is_open())
+            static std::stringstream stream;
+            return stream;
+        }
+
+        bool logToFile()
+        {
+            if (!gLogFileStream.is_open() || !gInitialised)
                 return false;
 
-            logFileStream << string << '\n';
+            gLogFileStream << getLogStringStream().rdbuf();
+            getLogStringStream().clear();
             return true;
         }
     }
@@ -26,23 +34,25 @@ namespace tails::logger
     void init()
     {
 #ifdef TAILS_ENABLE_LOGGING
-        // TODO - set up writing to a log file, as SDL_Log isn't used anymore
-        logFileStream.open("tails.log");
-        if (!logFileStream.is_open())
+        gLogFileStream.open("tails.log");
+        if (!gLogFileStream.is_open())
         {
             TAILS_LOG(LoggerSubsystem, Error, "Failed to create log file");
             return;
         }
 
+        gInitialised = true;
         TAILS_LOG(LoggerSubsystem, Message, "Initialised");
 #endif // TAILS_ENABLE_LOGGING
     }
 
     void deinit()
     {
+#ifdef TAILS_ENABLE_LOGGING
         TAILS_LOG(LoggerSubsystem, Message, "Deinitialised");
-        if (logFileStream.is_open())
-            logFileStream.close();
+        if (gLogFileStream.is_open())
+            gLogFileStream.close();
+#endif // TAILS_ENABLE_LOGGING
     }
 
     void log(const ECategory category, const ESeverity severity, const CString& msg)
@@ -110,7 +120,9 @@ namespace tails::logger
 
         str += msg;
         std::cout << str << '\n';
-        logToFile(str);
+        getLogStringStream() << str << '\n';
+        // TODO - only send to file under certain conditions?
+        logToFile();
 #endif // TAILS_ENABLE_LOGGING
     }
 }
