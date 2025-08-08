@@ -40,6 +40,13 @@ namespace tails
         virtual ~CComponent() = default;
 
         [[nodiscard]] CActor* getOwner() const noexcept;
+
+        /**
+         * Gets the layer that the owning actor is on
+         * @return Owning actor's layer
+         */
+        [[nodiscard]] int getLayer() const noexcept;
+
         [[nodiscard]] CLevel* getLevel() const noexcept;
 
         void setParent(CComponent* parent) noexcept;

@@ -107,17 +107,6 @@ namespace tails
         m_rootComponent->transform.scale(factor);
     }
 
-    void CActor::setLayer(const int layer)
-    {
-        if (!getLevelWeak().expired())
-            getLevelWeak().lock()->setActorLayer(this, layer);
-    }
-
-    int CActor::getLayer() const noexcept
-    {
-        return m_layer;
-    }
-
     void CActor::onRender(CLevelRenderBatch& renderBatch) const
     {
         if (!flags.isBitSet(IsVisible))

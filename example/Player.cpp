@@ -110,7 +110,7 @@ void CPlayer::shoot()
 {
     //TAILS_DEBUG_PRINT(2.f, TAILS_FMT("SHOOT {}!", 1.f));
     //TAILS_DEBUG_PRINTF(2.f, "Hello! {}", 2);
-    auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), -10);
+    auto const bullet = getLevel()->spawnActor<CBullet>(getTransform(), layer);
     bullet->moveDirection = getRotation().unitVector();
     auto worldScale = getScale();
     TAILS_DEBUG_PRINT(2.f, TAILS_FMT("Scale: {}, {}", worldScale.x, worldScale.y));

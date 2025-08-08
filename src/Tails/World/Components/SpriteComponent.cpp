@@ -24,6 +24,7 @@ namespace tails
             return;
 
         renderBatch.addItem(
+            getLayer(),
             getWorldTransform(),
             colour,
             size,

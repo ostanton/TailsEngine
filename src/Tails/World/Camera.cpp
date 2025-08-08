@@ -12,23 +12,7 @@ namespace tails
 
     SMatrix3f SCamera::getViewMatrix() const noexcept
     {
-        const float radians {rotation.asRadians()};
-        const float cosA {std::cos(-radians)};
-        const float sinA {std::sin(-radians)};
-
-        const SMatrix3f rotationMatrix {
-            cosA, -sinA, 0.f,
-            sinA, cosA, 0.f,
-            0.f, 0.f, 1.f
-        };
-
-        const SMatrix3f translationMatrix {
-            1.f, 0.f, -position.x,
-            0.f, 1.f, -position.y,
-            0.f, 0.f, 1.f
-        };
-
-        return rotationMatrix * translationMatrix;
+        return SMatrix3f::rotation(rotation.asRadians()) * SMatrix3f::translation(position);
     }
 
     /**

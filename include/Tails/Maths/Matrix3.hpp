@@ -40,6 +40,26 @@ namespace tails
 
         static const TMatrix3 identity;
 
+        static constexpr TMatrix3 rotation(const T radians)
+        {
+            const T cos {std::cos(-radians)};
+            const T sin {std::sin(-radians)};
+            return {
+                cos, -sin, 0.f,
+                sin, cos, 0.f,
+                0.f, 0.f, 1.f
+            };
+        }
+
+        static constexpr TMatrix3 translation(const TVector2<T> translation)
+        {
+            return {
+                1.f, 0.f, -translation.x,
+                0.f, 1.f, -translation.y,
+                0.f, 0.f, 1.f
+            };
+        }
+
         /**
          * Gets the transpose of this matrix
          * @return Matrix's transpose

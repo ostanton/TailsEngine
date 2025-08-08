@@ -12,6 +12,14 @@ namespace tails
         return m_owner;
     }
 
+    int CComponent::getLayer() const noexcept
+    {
+        if (!m_owner)
+            return 0;
+
+        return m_owner->layer;
+    }
+
     CLevel* CComponent::getLevel() const noexcept
     {
         if (!m_owner)

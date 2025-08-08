@@ -7,7 +7,6 @@ target_sources(
         Actor.cpp
         WorldSubsystem.cpp
         ActorRegistry.cpp
-        Layer.cpp
         CameraActor.cpp
         Camera.cpp
         CollisionManager.cpp

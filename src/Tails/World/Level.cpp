@@ -1,7 +1,6 @@
 #include <Tails/World/Level.hpp>
 #include <Tails/World/Actor.hpp>
 #include <Tails/World/ActorRegistry.hpp>
-#include <Tails/World/Layer.hpp>
 #include <Tails/World/CameraActor.hpp>
 #include <Tails/Renderer/Renderer.hpp>
 #include <Tails/Renderer/Vertex.hpp>
@@ -15,6 +14,7 @@
 namespace tails
 {
     void CLevelRenderBatch::addItem(
+        const int layer,
         const STransform2D& worldTransform,
         const SColour colour,
         const SVector2f size,
@@ -48,6 +48,7 @@ namespace tails
             1, 3, 2,
         };
         addItem(
+            layer,
             worldTransform,
             std::move(vertices),
             std::vector<int> {std::begin(indices), std::end(indices)},
@@ -56,6 +57,7 @@ namespace tails
     }
 
     void CLevelRenderBatch::addItem(
+        const int layer,
         const STransform2D& worldTransform,
         std::vector<SVertex> vertices,
         std::shared_ptr<CTexture> texture
@@ -72,10 +74,11 @@ namespace tails
             indices.emplace_back(static_cast<int>(i + 1));
         }
 
-        addItem(worldTransform, std::move(vertices), std::move(indices), std::move(texture));
+        addItem(layer, worldTransform, std::move(vertices), std::move(indices), std::move(texture));
     }
 
     void CLevelRenderBatch::addItem(
+        const int layer,
         const STransform2D& worldTransform,
         std::vector<SVertex> vertices,
         std::vector<int> indices,
@@ -85,17 +88,13 @@ namespace tails
         for (auto& vertex : vertices)
             vertex.position = worldTransform.transformPoint(vertex.position);
 
-        m_items.emplace_back(std::move(vertices), std::move(indices), std::move(texture));
+        m_items.emplace_back(std::move(vertices), std::move(indices), std::move(texture), layer);
     }
 
     CLevel::CLevel() = default;
 
     CLevel::CLevel(ActorsVector&& actors)
         : m_actors(std::move(actors))
-    {}
-
-    CLevel::CLevel(ActorsVector&& actors, LayersMap&& layers)
-        : m_layers(std::move(layers)), m_actors(std::move(actors))
     {}
 
     CLevel::~CLevel() = default;
@@ -154,8 +153,7 @@ namespace tails
     {
         m_actors.emplace_back(std::move(actor));
         auto& result = *m_actors.back();
-        m_layers[layer].m_actors.push_back(&result);
-        result.m_layer = layer;
+        result.layer = layer;
         result.m_owningLevel = std::static_pointer_cast<CLevel>(shared_from_this());
         result.setTransform(transform);
         return &result;
@@ -168,17 +166,6 @@ namespace tails
 
         actor->onInitComponents();
         actor->onSpawn();
-    }
-
-    void CLevel::setActorLayer(CActor* actor, const int layer)
-    {
-        // remove actor from its current layer
-        if (auto const layerPtr = getLayerFromActor(actor))
-            layerPtr->removeActor(actor);
-
-        // add actor to target layer
-        m_layers[layer].addActor(actor);
-        actor->m_layer = layer;
     }
 
     SVector2f CLevel::worldToScreen(const SVector2f worldPoint) const noexcept
@@ -261,9 +248,9 @@ namespace tails
 
     void CLevel::onTick(const float deltaSeconds)
     {
-        for (auto& [id, layer] : m_layers)
+        for (usize i {0}; i < m_actors.size(); i++)
         {
-            layer.onTick(deltaSeconds);
+            m_actors[i]->onTick(deltaSeconds);
         }
 
         // collision pass
@@ -365,10 +352,13 @@ namespace tails
     void CLevel::onRender() const
     {
         CLevelRenderBatch renderBatch;
-        for (const auto& [id, layer] : m_layers)
+        for (const auto& actor : m_actors)
         {
-            layer.onRender(renderBatch);
+            actor->onRender(renderBatch);
         }
+
+        // sort the render items from the lowest layer to the highest
+        std::ranges::sort(renderBatch.m_items, {}, &CLevelRenderBatch::SItem::layer);
 
         for (const auto& item : renderBatch.m_items)
         {
@@ -401,9 +391,6 @@ namespace tails
         {
             if (it->get()->flags.isBitSet(CActor::PendingKill))
             {
-                if (auto const layer = getLayerFromActor(it->get()))
-                    layer->removeActor(it->get());
-
                 m_collisionManager.cleanupCollisions(it->get());
                 it = decltype(it)(m_actors.erase(std::next(it).base()));
             }
@@ -455,11 +442,6 @@ namespace tails
         return m_actors;
     }
 
-    const CLevel::LayersMap& CLevel::getLayers() const
-    {
-        return m_layers;
-    }
-
     EAssetType CLevel::getAssetType() const noexcept
     {
         return EAssetType::Level;
@@ -478,13 +460,5 @@ namespace tails
     bool CLevel::containsActor(const CActor* actor) const
     {
         return getActorIterator(actor) != m_actors.end();
-    }
-
-    CLayer* CLevel::getLayerFromActor(const CActor* actor)
-    {
-        if (const auto it = m_layers.find(actor->getLayer()); it != m_layers.end())
-            return &it->second;
-        
-        return nullptr;
     }
 }

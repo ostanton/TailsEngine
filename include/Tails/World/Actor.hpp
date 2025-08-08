@@ -12,7 +12,6 @@
 namespace tails
 {
     class CLevel;
-    class CLayer;
     class CComponent;
     class CLevelRenderBatch;
     class CCollisionManager;
@@ -25,7 +24,6 @@ namespace tails
     class TAILS_API CActor
     {
         friend CLevel;
-        friend CLayer;
         friend CCollisionManager;
 
     public:
@@ -84,9 +82,10 @@ namespace tails
             return static_cast<T*>(addComponent(std::make_unique<T>()));
         }
 
-        void setLayer(int layer);
-        [[nodiscard]] int getLayer() const noexcept;
-
+        /**
+         * Called every frame to render this actor's components
+         * @param renderBatch The level's render data
+         */
         void onRender(CLevelRenderBatch& renderBatch) const;
 
         /**
@@ -98,6 +97,8 @@ namespace tails
         [[nodiscard]] std::vector<CActor*> getCollidingActors() const noexcept;
 
         TBitset<EFlags> flags {IsVisible};
+        /** The current layer this actor is on, currently only used for ordering in rendering */
+        int layer {0};
 
     protected:
         virtual void onInitComponents();
@@ -119,8 +120,6 @@ namespace tails
         // its components would stay the same so it can wait for a while
         std::vector<std::unique_ptr<CComponent>> m_components;
         CComponent* m_rootComponent {nullptr};
-        /** The current layer this actor is on */
-        int m_layer {0};
     };
 }
 

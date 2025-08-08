@@ -96,9 +96,14 @@ int main(const int argc, char* argv[])
                 {0.f, -128.f},
                 0.f,
                 {1.f, 1.f}
-            }
+            },
+            1
         );
-        auto test = level->spawnActor("TestActor", {{}, 0.f, {2.f, 4.f}});
+        auto test = level->spawnActor(
+            "TestActor",
+            {{}, 0.f, {2.f, 4.f}},
+            -1
+        );
         auto transform = test->getTransform();
         transform.setOrigin({0.5f});
         test->setTransform(transform);
@@ -154,8 +159,7 @@ int main(const int argc, char* argv[])
 
     auto level = world::getCurrentLevel();
     auto testActor = level->spawnActor<CTestActor2>(
-        {{128.f}, 0.f, {2.f}},
-        6
+        {{128.f}, 0.f, {2.f}}
     );
     // customised run sequence with custom input polling callback (to close the window with the escape key)
     while (!app::shouldExit())

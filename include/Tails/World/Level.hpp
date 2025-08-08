@@ -12,14 +12,12 @@
 
 #include <vector>
 #include <memory>
-#include <map>
 
 namespace tails
 {
     class CActor;
     class CComponent;
     class CString;
-    class CLayer;
     class CCameraComponent;
     class CTexture;
     class CLevel;
@@ -29,9 +27,6 @@ namespace tails
 
     /**
      * Render-only information for every entity's components in a level
-     *
-     * TODO - should probably take into account layers too. Can probably just
-     * sort the items array by some layer number
      */
     class TAILS_API CLevelRenderBatch
     {
@@ -40,12 +35,14 @@ namespace tails
     public:
         /**
          * Adds a filled rect item
+         * @param layer The item's layer, lower values are rendered first
          * @param worldTransform World-space transform
          * @param colour Fill colour
          * @param size Local size
          * @param texture Target texture
          */
         void addItem(
+            int layer,
             const STransform2D& worldTransform,
             SColour colour,
             SVector2f size,
@@ -55,11 +52,13 @@ namespace tails
         /**
          * Adds a filled convex shape via the target vertices. The vertices are transformed via the worldTransform
          * inside the function, and so must be in local-space to whatever is rendering them
+         * @param layer The item's layer, lower values are rendered first
          * @param worldTransform World-space transform
          * @param vertices Local vertices
          * @param texture Target texture
          */
         void addItem(
+            int layer,
             const STransform2D& worldTransform,
             std::vector<SVertex> vertices,
             std::shared_ptr<CTexture> texture
@@ -68,12 +67,14 @@ namespace tails
         /**
          * Adds a filled shape via the target vertices and indices. The vertices are transformed via the
          * worldTransform inside the function, and so must be in local-space to whatever is rendering them
+         * @param layer The item's layer, lower values are rendered first
          * @param worldTransform World-space transform
          * @param vertices Local vertices ordered anti-clockwise
          * @param indices Indices describing how the vertices connect
          * @param texture Target texture
          */
         void addItem(
+            int layer,
             const STransform2D& worldTransform,
             std::vector<SVertex> vertices,
             std::vector<int> indices,
@@ -90,6 +91,7 @@ namespace tails
             std::vector<SVertex> vertices;
             std::vector<int> indices;
             std::shared_ptr<CTexture> texture;
+            int layer;
         };
 
         std::vector<SItem> m_items;
@@ -104,11 +106,9 @@ namespace tails
         using ActorsVector = std::vector<std::unique_ptr<CActor>>;
         using ActorIterator = ActorsVector::iterator;
         using ConstActorIterator = ActorsVector::const_iterator;
-        using LayersMap = std::map<int, CLayer>;
 
         CLevel();
         explicit CLevel(ActorsVector&& actors);
-        explicit CLevel(ActorsVector&& actors, LayersMap&& layers);
         CLevel(const CLevel&) = delete;
         CLevel(CLevel&&) = delete;
         CLevel& operator=(const CLevel&) = delete;
@@ -185,8 +185,6 @@ namespace tails
          * @param actor Actor to finalise
          */
         void finishActorSpawn(CActor* actor) const;
-
-        void setActorLayer(CActor* actor, int layer);
 
         /**
          * Transforms a world-space point into screen-space via the active camera
@@ -286,22 +284,13 @@ namespace tails
         [[nodiscard]] ConstActorIterator getActorIterator(const CActor* actor) const;
         [[nodiscard]] const ActorsVector& getActors() const;
 
-        [[nodiscard]] const LayersMap& getLayers() const;
-
         [[nodiscard]] EAssetType getAssetType() const noexcept override;
 
     private:
         void initActors() const;
         [[nodiscard]] bool containsActor(const CActor* actor) const;
-        [[nodiscard]] CLayer* getLayerFromActor(const CActor* actor);
 
-        /*
-         * TODO - rethink how we want to do layers (they can just be ints in the actors, no?)
-         * Not sure how effects and other stuff would work, maybe a separate vector/map for each (SoA kinda thing).
-         * Actors would just have their render batch sorted by their layer index then, instead of layers being
-         * some weird view into the level actors vector
-         */
-        LayersMap m_layers;
+        /** The big array of actors in this level! */
         ActorsVector m_actors;
 
         CCollisionManager m_collisionManager;

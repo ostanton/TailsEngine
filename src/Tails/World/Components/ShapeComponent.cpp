@@ -51,6 +51,7 @@ namespace tails
             return;
 
         renderBatch.addItem(
+            getLayer(),
             getWorldTransform(),
             vertices,
             texture
