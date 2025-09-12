@@ -12,7 +12,7 @@ namespace tails
 
     SMatrix3f SCamera::getViewMatrix() const noexcept
     {
-        return SMatrix3f::rotation(rotation.asRadians()) * SMatrix3f::translation(position);
+        return SMatrix3f::rotation(rotation.asRadians()) * SMatrix3f::translation(-position);
     }
 
     /**

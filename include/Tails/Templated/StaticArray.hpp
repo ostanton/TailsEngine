@@ -33,14 +33,16 @@ namespace tails
             constexpr SIterator& operator++() {++ptr; return *this;}
             constexpr SIterator operator++(int)
             {
-                SIterator tmp = *this;
+                SIterator tmp {*this};
                 ++ptr;
                 return tmp;
             }
-            
+
+            constexpr usize operator-(const SIterator& other) const {return static_cast<usize>(ptr - other.ptr);}
+
             T* ptr;
         };
-        
+
         constexpr TStaticArray() = default;
         constexpr TStaticArray(const std::initializer_list<T>& list)
         {
@@ -67,7 +69,7 @@ namespace tails
 
         [[nodiscard]] constexpr SIterator begin() noexcept {return m_array;}
         [[nodiscard]] constexpr SIterator end() noexcept {return &m_array[Size];}
-        
+
     private:
         T m_array[Size];
     };

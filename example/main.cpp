@@ -21,6 +21,7 @@
 #include <Tails/Window.hpp>
 #include <Tails/Debug.hpp>
 #include <Tails/Input/InputSubsystem.hpp>
+#include <Tails/Templated/Slice.hpp>
 
 class CTestActor : public tails::CActor
 {
@@ -145,6 +146,16 @@ int main(const int argc, char* argv[])
         TAssetPtr<CSound> mySound {"test_sound.wav"};
         auto testBusHandle = audio::addBus("test_bus");
         testBusHandle.playSound(mySound.load());
+    }
+
+    // slice
+    {
+        TArray numbers {1, 2, 3, 6, 4, 5, 7, 8, 9};
+        TSlice<int> slice {numbers.begin(), numbers.end()};
+        for (usize i {0}; i < slice.size(); i++)
+        {
+            TAILS_LOG(Game, Message, TAILS_FMT("Slice {} value: {}", i, slice[i]));
+        }
     }
 
     // clang thinks i is unused! So commenting out for now

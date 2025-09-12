@@ -54,8 +54,8 @@ namespace tails
         static constexpr TMatrix3 translation(const TVector2<T> translation)
         {
             return {
-                1.f, 0.f, -translation.x,
-                0.f, 1.f, -translation.y,
+                1.f, 0.f, translation.x,
+                0.f, 1.f, translation.y,
                 0.f, 0.f, 1.f
             };
         }

@@ -11,4 +11,5 @@ target_sources(
         StaticArray.hpp
         Array.hpp
         UniquePtr.hpp
+        Slice.hpp
 )

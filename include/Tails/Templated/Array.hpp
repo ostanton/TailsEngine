@@ -18,6 +18,33 @@ namespace tails
     class TArray final
     {
     public:
+        using ElementType = T;
+
+        struct SIterator
+        {
+            constexpr SIterator(T* inPtr)
+                : ptr(inPtr)
+            {}
+
+            [[nodiscard]] constexpr T& operator*() const {return *ptr;}
+            [[nodiscard]] constexpr T* operator->() const {return ptr;}
+
+            [[nodiscard]] constexpr bool operator==(const SIterator& other) const {return ptr == other.ptr;}
+            [[nodiscard]] constexpr bool operator!=(const SIterator& other) const {return !(*this == other);}
+
+            constexpr SIterator& operator++() {++ptr; return *this;}
+            constexpr SIterator operator++(int)
+            {
+                SIterator tmp {*this};
+                ++ptr;
+                return tmp;
+            }
+
+            constexpr usize operator-(const SIterator& other) const {return static_cast<usize>(ptr - other.ptr);}
+
+            T* ptr;
+        };
+
         TArray()
             : m_ptr(mem::alloc<T>()), m_size(0), m_capacity(1)
         {}
@@ -75,6 +102,7 @@ namespace tails
             // TODO
         }
 
+        [[nodiscard]] T* ptr() const noexcept {return m_ptr;}
         [[nodiscard]] usize size() const noexcept {return m_size;}
         void clear() {m_size = 0;}
 
@@ -113,6 +141,9 @@ namespace tails
 
         T& operator[](const usize index) noexcept {return m_ptr[index];}
         const T& operator[](const usize index) const noexcept {return m_ptr[index];}
+
+        [[nodiscard]] SIterator begin() noexcept {return m_ptr;}
+        [[nodiscard]] SIterator end() noexcept {return &m_ptr[m_size];}
 
     private:
         T* m_ptr;

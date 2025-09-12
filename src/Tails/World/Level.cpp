@@ -236,7 +236,7 @@ namespace tails
         return *m_activeCamera;
     }
 
-    CCameraComponent * CLevel::getActiveCameraComponent() noexcept
+    CCameraComponent* CLevel::getActiveCameraComponent() noexcept
     {
         return m_activeCameraComponent;
     }
