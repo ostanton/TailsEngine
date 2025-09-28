@@ -70,17 +70,56 @@ const tails_dep = b.dependency("tails", .{
 exe.root_module.linkLibrary(tails_dep.artifact("tails"));
 ```
 
+Example `build.zig` file:
+
+```
+const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const tails_dep = b.dependency("tails", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const mod = b.createModule(.{
+        .target = target,
+        .optimize = optimize,
+        .link_libcpp = true,
+    });
+
+    mod.linkLibrary(tails_dep.artifact("tails"));
+    mod.addCSourceFile(.{
+        .file = b.path("src/main.cpp"),
+        .flags = &.{
+            "-std=c++20",
+        },
+        .language = .cpp,
+    });
+
+    const exe = b.addExecutable(.{
+        .name = "my_exe",
+        .root_module = mod,
+    });
+
+    b.installArtifact(exe);
+}
+```
+
 ### `main.cpp`
 
 A minimal `main.cpp` is like so:
 
 ```cpp
 #include <Tails/Application.hpp>
+#include <Tails/Window.hpp>
 
 int main(int argc, char* argv[])
 {
     using namespace tails;
-    app::init(argc, argv);
+    app::init(argc, argv, {});
     app::run();
     app::deinit();
     return 0;
