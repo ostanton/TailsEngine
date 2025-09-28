@@ -24,7 +24,7 @@ pub fn build(b: *std.Build) !void {
 
     const target_linkage = b.option(
         std.builtin.LinkMode,
-        "shared",
+        "linkage",
         "Whether to build a dynamic library instead of static [options: dynamic/static] (default - static)",
     ) orelse .static;
 
