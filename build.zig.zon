@@ -4,8 +4,8 @@
     .fingerprint = 0xea8d5f63b7dee9e,
     .dependencies = .{
         .sdl = .{
-            .url = "git+https://github.com/castholm/SDL.git#0ab7c9830bf17c1a2404461a88c0fdedf95309a4",
-            .hash = "sdl-0.2.3+3.2.14-7uIn9Gh6fgEdV7R2A723rZxtbgkVd0PHIs2rvshLBqgV",
+            .url = "git+https://github.com/castholm/SDL.git#b1913e7c31ad72ecfd3ab04aeac387027754cfaf",
+            .hash = "sdl-0.3.0+3.2.22-7uIn9Pg3fwGG2IyIOPxxOSVe-75nUng9clt7tXGFLzMr",
         },
     },
     .paths = .{

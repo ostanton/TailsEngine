@@ -45,26 +45,23 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimise,
     });
 
-    var lib: *std.Build.Step.Compile = undefined;
-    if (build_shared) {
-        lib = b.addSharedLibrary(.{
-            .name = "tails",
-            .target = target,
-            .optimize = optimise,
-        });
-    } else {
-        lib = b.addStaticLibrary(.{
-            .name = "tails",
-            .target = target,
-            .optimize = optimise,
-        });
-    }
+    const lib_mod = b.addModule("tails", .{
+        .target = target,
+        .optimize = optimise,
+    });
+
+    const lib = b.addLibrary(.{
+        .name = "tails",
+        .linkage = if (build_shared) .dynamic else .static,
+        .root_module = lib_mod,
+    });
+
     lib.linkLibCpp();
     lib.linkLibrary(sdl_dep.artifact("SDL3"));
     lib.addIncludePath(b.path("include"));
     lib.addIncludePath(b.path("src/stb"));
 
-    var sources = std.ArrayList([]const u8).init(b.allocator);
+    var sources = std.ArrayList([]const u8).empty;
     {
         const tails_src = "src/Tails";
         var dir = try std.fs.openDirAbsolute(
@@ -83,7 +80,7 @@ pub fn build(b: *std.Build) !void {
         while (try walker.next()) |entry| {
             const ext = std.fs.path.extension(entry.basename);
             if (std.mem.eql(u8, ext, ".cpp")) {
-                try sources.append(b.pathJoin(&.{ tails_src, entry.path }));
+                try sources.append(b.allocator, b.pathJoin(&.{ tails_src, entry.path }));
             }
         }
     }
@@ -93,27 +90,26 @@ pub fn build(b: *std.Build) !void {
         .language = .cpp,
     });
 
-    {
-        const lib_mod = lib.root_module;
-        if (enable_asserts)
-            lib_mod.addCMacro("TAILS_ENABLE_ASSERTS", "");
-        if (enable_profiling)
-            lib_mod.addCMacro("TAILS_ENABLE_PROFILING", "");
-        if (enable_logging)
-            lib_mod.addCMacro("TAILS_ENABLE_LOGGING", "");
-    }
+    if (enable_asserts)
+        lib_mod.addCMacro("TAILS_ENABLE_ASSERTS", "");
+    if (enable_profiling)
+        lib_mod.addCMacro("TAILS_ENABLE_PROFILING", "");
+    if (enable_logging)
+        lib_mod.addCMacro("TAILS_ENABLE_LOGGING", "");
 
     b.installArtifact(lib);
 
     if (build_examples) {
         const example_exe = b.addExecutable(.{
             .name = "example",
-            .target = target,
-            .optimize = optimise,
+            .root_module = b.createModule(.{
+                .target = target,
+                .optimize = optimise,
+                .link_libcpp = true,
+            }),
         });
-        example_exe.linkLibCpp();
-        example_exe.linkLibrary(lib);
-        example_exe.addCSourceFiles(.{
+        example_exe.root_module.linkLibrary(lib);
+        example_exe.root_module.addCSourceFiles(.{
             .files = &.{
                 "example/main.cpp",
                 "example/Player.cpp",

@@ -54,7 +54,7 @@ target_link_libraries(MyGame PRIVATE ostanton::Tails)
 
 ### Zig
 
-This is still early on and WIP, so don't rely on it, but:
+Requires Zig 0.15.1, and it is still early on and WIP, so don't rely on it, but:
 
 ```
 zig fetch --save git+https://github.com/ostanton/TailsEngine
@@ -67,7 +67,7 @@ const tails_dep = b.dependency("tails", .{
     .optimize = optimize,
     // etc.
 });
-exe.linkLibrary(tails_dep.artifact("tails"));
+exe.root_module.linkLibrary(tails_dep.artifact("tails"));
 ```
 
 ### `main.cpp`
