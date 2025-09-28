@@ -22,11 +22,11 @@ pub fn build(b: *std.Build) !void {
         "Enable/disable logging macros (default - true)",
     ) orelse true;
 
-    const build_shared = b.option(
-        bool,
+    const target_linkage = b.option(
+        std.builtin.LinkMode,
         "shared",
-        "Whether to build a shared library instead of static (default - false)",
-    ) orelse false;
+        "Whether to build a dynamic library instead of static [options: dynamic/static] (default - static)",
+    ) orelse .static;
 
     const build_examples = b.option(
         bool,
@@ -40,7 +40,7 @@ pub fn build(b: *std.Build) !void {
         "-std=c++20",
     };
 
-    const lib_mod = b.addModule("tails", .{
+    const tails_mod = b.addModule("tails", .{
         .target = target,
         .optimize = optimise,
         .link_libcpp = true,
@@ -51,10 +51,10 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimise,
     });
 
-    lib_mod.linkLibrary(sdl_dep.artifact("SDL3"));
+    tails_mod.linkLibrary(sdl_dep.artifact("SDL3"));
 
-    lib_mod.addIncludePath(b.path("include"));
-    lib_mod.addIncludePath(b.path("src/stb"));
+    tails_mod.addIncludePath(b.path("include"));
+    tails_mod.addIncludePath(b.path("src/stb"));
 
     var sources = std.ArrayList([]const u8).empty;
     {
@@ -80,26 +80,31 @@ pub fn build(b: *std.Build) !void {
         }
     }
 
-    lib_mod.addCSourceFiles(.{
+    tails_mod.addCSourceFiles(.{
         .files = sources.items,
         .flags = compile_flags,
         .language = .cpp,
     });
 
     if (enable_asserts)
-        lib_mod.addCMacro("TAILS_ENABLE_ASSERTS", "");
+        tails_mod.addCMacro("TAILS_ENABLE_ASSERTS", "");
     if (enable_profiling)
-        lib_mod.addCMacro("TAILS_ENABLE_PROFILING", "");
+        tails_mod.addCMacro("TAILS_ENABLE_PROFILING", "");
     if (enable_logging)
-        lib_mod.addCMacro("TAILS_ENABLE_LOGGING", "");
+        tails_mod.addCMacro("TAILS_ENABLE_LOGGING", "");
 
-    const lib = b.addLibrary(.{
+    const tails_lib = b.addLibrary(.{
         .name = "tails",
-        .linkage = if (build_shared) .dynamic else .static,
-        .root_module = lib_mod,
+        .linkage = target_linkage,
+        .root_module = tails_mod,
     });
 
-    b.installArtifact(lib);
+    tails_lib.installHeadersDirectory(b.path("include/"), "", .{
+        .exclude_extensions = &.{"CMakeLists.txt"},
+        .include_extensions = &.{".hpp"},
+    });
+
+    b.installArtifact(tails_lib);
 
     if (build_examples) {
         const example_mod = b.createModule(.{
@@ -108,7 +113,7 @@ pub fn build(b: *std.Build) !void {
             .link_libcpp = true,
         });
 
-        example_mod.linkLibrary(lib);
+        example_mod.linkLibrary(tails_lib);
         example_mod.addCSourceFiles(.{
             .files = &.{
                 "example/main.cpp",
