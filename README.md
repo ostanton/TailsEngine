@@ -72,7 +72,7 @@ exe.root_module.linkLibrary(tails_dep.artifact("tails"));
 
 Example `build.zig` file:
 
-```
+```zig
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
