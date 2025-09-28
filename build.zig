@@ -40,26 +40,21 @@ pub fn build(b: *std.Build) !void {
         "-std=c++20",
     };
 
+    const lib_mod = b.addModule("tails", .{
+        .target = target,
+        .optimize = optimise,
+        .link_libcpp = true,
+    });
+
     const sdl_dep = b.dependency("sdl", .{
         .target = target,
         .optimize = optimise,
     });
 
-    const lib_mod = b.addModule("tails", .{
-        .target = target,
-        .optimize = optimise,
-    });
+    lib_mod.linkLibrary(sdl_dep.artifact("SDL3"));
 
-    const lib = b.addLibrary(.{
-        .name = "tails",
-        .linkage = if (build_shared) .dynamic else .static,
-        .root_module = lib_mod,
-    });
-
-    lib.linkLibCpp();
-    lib.linkLibrary(sdl_dep.artifact("SDL3"));
-    lib.addIncludePath(b.path("include"));
-    lib.addIncludePath(b.path("src/stb"));
+    lib_mod.addIncludePath(b.path("include"));
+    lib_mod.addIncludePath(b.path("src/stb"));
 
     var sources = std.ArrayList([]const u8).empty;
     {
@@ -84,7 +79,8 @@ pub fn build(b: *std.Build) !void {
             }
         }
     }
-    lib.addCSourceFiles(.{
+
+    lib_mod.addCSourceFiles(.{
         .files = sources.items,
         .flags = compile_flags,
         .language = .cpp,
@@ -97,19 +93,23 @@ pub fn build(b: *std.Build) !void {
     if (enable_logging)
         lib_mod.addCMacro("TAILS_ENABLE_LOGGING", "");
 
+    const lib = b.addLibrary(.{
+        .name = "tails",
+        .linkage = if (build_shared) .dynamic else .static,
+        .root_module = lib_mod,
+    });
+
     b.installArtifact(lib);
 
     if (build_examples) {
-        const example_exe = b.addExecutable(.{
-            .name = "example",
-            .root_module = b.createModule(.{
-                .target = target,
-                .optimize = optimise,
-                .link_libcpp = true,
-            }),
+        const example_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimise,
+            .link_libcpp = true,
         });
-        example_exe.root_module.linkLibrary(lib);
-        example_exe.root_module.addCSourceFiles(.{
+
+        example_mod.linkLibrary(lib);
+        example_mod.addCSourceFiles(.{
             .files = &.{
                 "example/main.cpp",
                 "example/Player.cpp",
@@ -117,7 +117,13 @@ pub fn build(b: *std.Build) !void {
             .flags = compile_flags,
             .language = .cpp,
         });
-        example_exe.addIncludePath(b.path("include"));
+        example_mod.addIncludePath(b.path("include"));
+
+        const example_exe = b.addExecutable(.{
+            .name = "example",
+            .root_module = example_mod,
+        });
+
         b.installArtifact(example_exe);
     }
 }
