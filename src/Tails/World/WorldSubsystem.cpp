@@ -66,12 +66,12 @@ namespace tails::world
         gTargetLevel = std::move(level);
     }
 
-    std::shared_ptr<CLevel> getCurrentLevel()
+    const std::shared_ptr<CLevel>& getCurrentLevel()
     {
         return gCurrentLevel;
     }
 
-    std::shared_ptr<CLevel> getTargetLevel()
+    const std::shared_ptr<CLevel>& getTargetLevel()
     {
         return gTargetLevel;
     }

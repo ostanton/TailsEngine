@@ -36,14 +36,14 @@ namespace tails::world
      * Gets the currently loaded, active, level
      * @return Current level (can be null)
      */
-    TAILS_API [[nodiscard]] std::shared_ptr<CLevel> getCurrentLevel();
+    TAILS_API [[nodiscard]] const std::shared_ptr<CLevel>& getCurrentLevel();
 
     /**
      * Gets the target level, the level which we become the current level
      * next available time to set it (typically end of this frame)
      * @return Target level (normally null)
      */
-    TAILS_API [[nodiscard]] std::shared_ptr<CLevel> getTargetLevel();
+    TAILS_API [[nodiscard]] const std::shared_ptr<CLevel>& getTargetLevel();
 }
 
 #endif // TAILS_WORLD_SUBSYSTEM_HPP

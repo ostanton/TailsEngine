@@ -18,13 +18,13 @@ namespace tails
     {
     }
 
-    void CSpriteComponent::onRender(CLevelRenderBatch& renderBatch) const
+    void CSpriteComponent::onRender(CLevelRenderBatch& renderBatch, const int actorLayer) const
     {
         if (!visible)
             return;
 
         renderBatch.addItem(
-            getLayer(),
+            actorLayer,
             getWorldTransform(),
             colour,
             size,
@@ -44,6 +44,6 @@ namespace tails
             );
         */
 
-        CComponent::onRender(renderBatch);
+        CComponent::onRender(renderBatch, actorLayer);
     }
 }

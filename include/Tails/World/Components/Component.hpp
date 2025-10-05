@@ -64,7 +64,7 @@ namespace tails
         [[nodiscard]] STransform2D getWorldTransform() const noexcept;
         [[nodiscard]] SMatrix3f getWorldMatrix() const noexcept;
 
-        virtual void onRender(CLevelRenderBatch& renderBatch) const;
+        virtual void onRender(CLevelRenderBatch& renderBatch, int actorLayer) const;
 
         /**
          * Gets the component's local bounding rectangle as an axis-aligned bounding box

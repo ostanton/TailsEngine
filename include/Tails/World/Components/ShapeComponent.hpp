@@ -28,7 +28,7 @@ namespace tails
         [[nodiscard]] SSATShape getSATShape() const noexcept override;
 
     protected:
-        void onRender(CLevelRenderBatch& renderBatch) const override;
+        void onRender(CLevelRenderBatch& renderBatch, int actorLayer) const override;
     };
 }
 

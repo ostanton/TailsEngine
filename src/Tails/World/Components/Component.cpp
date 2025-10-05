@@ -87,11 +87,11 @@ namespace tails
         return transform.getMatrix();
     }
 
-    void CComponent::onRender(CLevelRenderBatch& renderBatch) const
+    void CComponent::onRender(CLevelRenderBatch& renderBatch, const int actorLayer) const
     {
         for (auto const child : m_children)
         {
-            child->onRender(renderBatch);
+            child->onRender(renderBatch, actorLayer);
         }
     }
 

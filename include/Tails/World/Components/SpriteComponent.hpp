@@ -26,7 +26,7 @@ namespace tails
 
     protected:
         void onTick(float deltaSeconds) override;
-        void onRender(CLevelRenderBatch& renderBatch) const override;
+        void onRender(CLevelRenderBatch& renderBatch, int actorLayer) const override;
     };
 }
 

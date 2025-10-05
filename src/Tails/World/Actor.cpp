@@ -112,7 +112,8 @@ namespace tails
         if (!flags.isBitSet(IsVisible))
             return;
 
-        m_rootComponent->onRender(renderBatch);
+        // components are rendered from the root component down the tree
+        m_rootComponent->onRender(renderBatch, layer);
     }
 
     bool CActor::isCollidingWith(const CActor* other) const noexcept

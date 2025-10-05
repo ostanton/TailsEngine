@@ -114,7 +114,7 @@ namespace tails
 
     private:
         CComponent* addComponent(std::unique_ptr<CComponent> component);
-        
+
         std::weak_ptr<CLevel> m_owningLevel;
         // TODO - could store these somewhere else more optimally. For later, the Actor's interface for
         // its components would stay the same so it can wait for a while

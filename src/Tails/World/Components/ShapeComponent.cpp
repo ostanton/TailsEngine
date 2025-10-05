@@ -42,16 +42,16 @@ namespace tails
         return {std::move(points)};
     }
 
-    void CShapeComponent::onRender(CLevelRenderBatch& renderBatch) const
+    void CShapeComponent::onRender(CLevelRenderBatch& renderBatch, const int actorLayer) const
     {
-        CComponent::onRender(renderBatch);
+        CComponent::onRender(renderBatch, actorLayer);
 
         // only render shapes with more than 3 vertices
         if (vertices.size() < 3)
             return;
 
         renderBatch.addItem(
-            getLayer(),
+            actorLayer,
             getWorldTransform(),
             vertices,
             texture
